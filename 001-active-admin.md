@@ -13,7 +13,7 @@ gem 'activeadmin'
 
     $ rails g active_admin:install
 
-預設會安裝 Devise user/model，並取名為 `AdminUser`，要換成別的名字，只消在後面加入個參數即可。
+預設會安裝 Devise user/model，並取名為 `AdminUser`，要換成別的名字，只消在後面加個參數即可。
 
     $ rails g active_admin:install User
 
@@ -88,8 +88,79 @@ config.site_title_image = "site_log_image.png"
 
 ```
 # app/admin/posts.rb
-  ActiveAdmin.register Post do
-    # ...
+ActiveAdmin.register Post do
+  # ...
+end
+```
+
+Post 會被放到 admin namespace 下面：`/admin/posts/`。
+
+每個 namespace 都有自己一份設定檔，預設會繼承 application 的設定檔。
+
+實際的例子，application 網站預設的標題為 "My Default Site Title"，每個 namespace 都有自己不一樣的標題：
+
+```
+ActiveAdmin.setup do |config|
+  config.site_title = "My Default Site Title"
+
+  config.namespace :admin do |admin|
+    admin.site_title = "Admin Site"
+  end
+
+  config.namespace :super_admin do |super_admin|
+    super_admin.site_title = "Super Admin Site"
+  end
+end
+```
+
+### Load Path
+
+預設 Active Admin 的檔案都放在 `/app/admin/` 下，可以換地方放：
+
+```
+ActiveAdmin.setup do |config|
+  config.load_paths = [File.join(Rails.root, "app", "ui")]
+end
+```
+### Comment Path
+
+預設 Active Admin 包含了 comments 與 resources。你不要的話，可以這樣關掉：
+
+```
+ActiveAdmin.setup do |config|
+  config.allow_comments = false
+end
+```
+
+針對特定 namespace 停用啟用：
+
+```
+ActiveAdmin.setup do |config|
+  config.namespace :admin do |admin|
+    admin.allow_comments = false
+  end
+end
+```
+
+也可以針對特定 resource 停用評論：
+
+```
+ActiveAdmin.register Post do
+  config.comments = false
+end
+```
+### Utility Navigation
+
+Active Admin 預設當登入後會顯示登入的 email 以及登出連結，這完全可以改成你想要的樣子：
+
+```
+ActiveAdmin.setup do |config|
+  config.namespace :admin do |admin|
+    admin.build_menu :utility_navigation do |menu|
+      menu.add label: "ActiveAdmin.info", url: "http://www.activeadmin.info", html_options: { target: :blank }
+      admin.add_logout_button_to_menu menu # can also pass priority & html_options for link_to to use
+    end
+  end
 end
 ```
 
