@@ -60,7 +60,7 @@ release candidate 即將發行的版本，在下次主要版本釋出前，通�
 
 [用 Bundler 做 Gem](http://bundler.io/)
 
-[RubyGems 官方導覽]http://guides.rubygems.org/
+[RubyGems 官方導覽](http://guides.rubygems.org/)
 
 [關於 Semantic Version 的全部知識](http://semver.org/)
 
