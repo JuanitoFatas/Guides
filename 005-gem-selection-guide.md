@@ -18,7 +18,7 @@
 
 看這個專案是不是有固定的 release 週期。
 
-可至
+可至 GitHub Repo 的 Release tab 或是該 Gem 在 RubyGems 的網頁查看。
 
 ## 可靠性
 
@@ -54,7 +54,7 @@ Forks，多少人實際貢獻到這個專案？
 
 記得加上輔助的關鍵字如：rails, ruby：
 
-HTTParty ruby
+_HTTParty ruby_
 
 * 貢獻者
 
