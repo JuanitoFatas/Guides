@@ -359,7 +359,7 @@ subcommand "remote", Remote
 
 ## 其它相同的工具
 
-### Ruby 官方的
+### Ruby 官方
 
 * [OptionParser](http://ruby-doc.org/stdlib-2.0.0/libdoc/optparse/rdoc/OptionParser.html)
 
