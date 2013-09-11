@@ -61,6 +61,61 @@ $ ruby ./cli hello Juanito
 Hello Juanito
 ```
 
+參數數目不對怎麼辦？
 
+```bash
+$ ruby ./cli hello
+"hello" was called incorrectly. Call as "test.rb hello NAME".
+```
+
+Thor 會幫你印出有用的錯誤訊息。
+
+也可讓參數變成選擇性傳入。
+
+```ruby
+class MyCLI < Thor
+  desc "hello NAME", "say hello to NAME"
+  def hello(name, from=nil)
+    puts "from: #{from}" if from
+    puts "Hello #{name}"
+  end
+end
+```
+
+執行看看：
+
+```bash
+$ ruby ./cli hello "Juanito Fatas"
+Hello Juanito Fatas
+
+$ ruby ./cli hello "Juanito Fatas" "Ana Aguilar"
+from: Ana Aguilar
+Hello Juanito Fatas
+```
+
+## 長說明
+
+預設 Thor 使用命令上方的 `desc` 作為命令的簡短說明。你也可以提供更完整的說明。使用 `long_desc` 即可。
+
+```ruby
+class MyCLI < Thor
+  desc "hello NAME", "say hello to NAME"
+  long_desc <<-LONGDESC
+    `cli hello` will print out a message to a person of your
+    choosing.
+
+    You can optionally specify a second parameter, which will print
+    out a from message as well.
+
+    > $ cli hello "Juanito Fatas" "Ana Aguilar"
+
+    > from: Carl Lerche
+  LONGDESC
+  def hello(name, from=nil)
+    puts "from: #{from}" if from
+    puts "Hello #{name}"
+  end
+end
+```
 
 [thor]: http://whatisthor.com
