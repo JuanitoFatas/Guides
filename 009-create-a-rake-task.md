@@ -22,6 +22,7 @@ namespace :db do
   task :migrate do
   # ...
   end
+end
 ```
 
 ## `rake -T` 看到的簡短敘述哪來的？
@@ -35,7 +36,7 @@ end
 
 ## 怎麼在 B 任務執行之前先執行 A?
 
-A = first, B = second
+_A = :first, B = :second_
 
 ```ruby
 namespace :dev do
@@ -52,6 +53,8 @@ end
 ```
 
 如何讓 C 任務在 A, B 都執行完後再執行？
+
+_C = :third_
 
 ```ruby
 namespace :dev do
@@ -71,7 +74,7 @@ end
 
 或是寫成這樣
 
-```
+```ruby
 namespace :dev do
   desc "first"
   task :first do
