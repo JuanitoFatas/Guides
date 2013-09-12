@@ -1,15 +1,15 @@
 desc "Add a new post to GitHub."
 task :new do
-  post_name = ARGV.last
-  git_action(post_name, 'Add')
-  task post_name.to_sym do ; end
+  file_name = ARGV.last
+  git_action(file_name, 'Add')
+  task file_name.to_sym do ; end
 end
 
 desc "Update a existing post to GitHub."
 task :update do
-  post_name = ARGV.last
-  git_action(post_name, 'Update')
-  task post_name.to_sym do ; end
+  file_name = ARGV.last
+  git_action(file_name, 'Update')
+  task file_name.to_sym do ; end
 end
 
 def git_action(name, action)
