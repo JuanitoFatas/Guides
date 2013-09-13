@@ -10,7 +10,7 @@ __請協助維護這些文件，感謝！__
 
 ## Copyright 聲明
 
-__所有的文件皆採用此授權。__
+__除非特別聲明，所有的文件皆採用此授權。__
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/tw/deed.zh_TW"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/tw/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/tw/deed.zh_TW">Creative Commons Attribution-NonCommercial 3.0 Taiwan License</a>.
 
