@@ -12,12 +12,29 @@ task :update do
   task file_name.to_sym do ; end
 end
 
-def git_action(name, action)
+desc "Write a custom commit message then deploy to GitHub."
+task :msg do
+  message = ARGV[-2]
+  file_name = ARGV.last
+  git_action(file_name, _, message)
+  task message.to_sym do ; end
+  task file_name.to_sym do ; end
+end
+
+def git_action(name, action, custom=false)
   system "git add #{name}"
-  message = "#{action} #{name} @ #{Time.now.utc} #{GITHUB_EMOJIS.sample}"
+  if custom == false
+    message = "#{action} #{name} @ #{what_time_is_it} #{GITHUB_EMOJIS.sample}"
+  else
+    message = "#{custom} #{what_time_is_it} #{GITHUB_EMOJIS.sample}"
+  end
   system "git commit -m \"#{message}\""
   system "git push origin master"
   puts "\nDeploy to GitHub complete :)"
+end
+
+def what_time_is_it
+  Time.now.utc
 end
 
 GITHUB_EMOJIS=
