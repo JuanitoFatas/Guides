@@ -1,5 +1,9 @@
 # Rails Guides
 
+## 環境
+
+* [Mac OSX 安裝 XCode Command Line Tools](/env/osx-install-xcode.md)
+
 __Pull Requests are welcome!__
 
 __請協助維護這些文件，感謝！__
