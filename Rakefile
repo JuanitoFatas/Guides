@@ -16,7 +16,7 @@ desc "Write a custom commit message then deploy to GitHub."
 task :msg do
   message = ARGV[-2]
   file_name = ARGV.last
-  git_action(file_name, _, message)
+  git_action(file_name, nil, message)
   task message.to_sym do ; end
   task file_name.to_sym do ; end
 end
