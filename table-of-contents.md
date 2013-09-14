@@ -1,10 +1,12 @@
 ## Ruby Guides
 
-[Ruby 風格指南](https://github.com/JuanitoFatas/ruby-style-guide)
+[Ruby 風格指南(繁簡中文)](https://github.com/JuanitoFatas/ruby-style-guide)
+
+[Ruby 函數式程式設計(繁簡中文)]()
 
 ## Ruby on Rails Guides
 
-[Rails 風格指南](https://github.com/JuanitoFatas/rails-style-guide)
+[Rails 風格指南(繁簡中文)](https://github.com/JuanitoFatas/rails-style-guide)
 
 [Rails I18n 指南](/006-i18n-RG.md)
 
