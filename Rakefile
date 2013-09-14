@@ -60,7 +60,12 @@ def what_time_is_it
 end
 
 def modfied_msg
-  "Update ".concat(`git ls-files -m`.chomp.gsub("\n", ", "))
+  modified_files_string = `git ls-files -m`
+  if modified_files_string.length > 28
+    "Update Many Guides"
+  else
+    "Update ".concat(modified_files_string.chomp.gsub("\n", ", "))
+  end
 end
 
 GITHUB_EMOJIS=
