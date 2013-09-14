@@ -34,9 +34,11 @@ alpha 版本的下個階段便是 beta，繼續測試。
 
 ### release candidate
 
-release candidate 即將發行的版本，在下次主要版本釋出前，通常會有個 rc1, rc2, rc3, bata 1, alpha1...etc。
+release candidate 即將發行的版本，在下次主要版本釋出前，通常會有個 rc1, rc2, rc3。
 
 ## Gemfile
+
+兩個指令
 
 ### `~>`
 
@@ -54,14 +56,20 @@ release candidate 即將發行的版本，在下次主要版本釋出前，通�
 
 當有 4.0.1, 4.1.0, 5.0 時都會升級。
 
+### `git:`
+
+可以指定使用 git repository。
+
+    gem 'rails', git: git@github.com:rails/rails.git
+
+### `github:`
+
+可以指定 GitHub 上的 Repository 及分支。
+
+    gem 'rails', github: grails/rails, branch: 'master'
+
 ## 延伸閱讀
-
-[Railscasts 245, 用 bundler 製作新的 gem](http://railscasts.com/episodes/245-new-gem-with-bundler)
-
-[用 Bundler 做 Gem](http://bundler.io/)
 
 [RubyGems 官方導覽](http://guides.rubygems.org/)
 
 [關於 Semantic Version 的全部知識](http://semver.org/)
-
-[Gem 開發教學 by Ryan Bigg](https://github.com/radar/guides/blob/master/gem-development.md)
