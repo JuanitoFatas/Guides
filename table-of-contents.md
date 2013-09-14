@@ -2,13 +2,19 @@
 
 [Ruby 風格指南(繁簡中文)](https://github.com/JuanitoFatas/ruby-style-guide)
 
-[Ruby 函數式程式設計(繁簡中文)]()
+[Ruby 函數式程式設計(繁簡中文)](https://github.com/JuanitoFatas/Ruby-Functional-Programming)
 
 ## Ruby on Rails Guides
 
-[Rails 風格指南(繁簡中文)](https://github.com/JuanitoFatas/rails-style-guide)
+### 官方 Ruby on Rails Guides
+
+> 閱讀[官方 Rails Guides][edge] 的重點整理，算是不完整的翻譯。建議可快速瀏覽一遍，有個大概的了解之後，再去看[官方文件][edge]便可以快速理解了。
 
 [Rails I18n 指南](/006-i18n-RG.md)
+
+### 非官方
+
+[Rails 風格指南(繁簡中文)](https://github.com/JuanitoFatas/rails-style-guide)
 
 ## Rails 相關
 
