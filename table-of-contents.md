@@ -37,3 +37,5 @@
 ## 環境
 
 * [Mac OSX 安裝 XCode Command Line Tools](/env/osx-install-xcode.md)
+
+[edge]: http://edgeguides.rubyonrails.org
