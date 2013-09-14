@@ -1,4 +1,4 @@
-# Active Admin Guide
+# Active Admin 簡介
 
 完整文件請移步：http://www.activeadmin.info/
 

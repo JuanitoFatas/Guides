@@ -1,4 +1,4 @@
-# CanCan can help you with authorization
+# CanCan 簡介
 
 CanCan 是由 Rails 社群知名的 RailsCasts 作者 Ryan Bates 所開發的 authorization gem。
 

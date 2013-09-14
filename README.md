@@ -4,10 +4,11 @@
 
 皆為閱讀[官方 Rails Guides][edge] 的重點整理，算是不完整的翻譯。建議可快速瀏覽一遍，有個大概的了解之後，再去看[官方文件][edge]便可以快速理解了。
 
-## 環境
+## 目錄
 
-* [Mac OSX 安裝 XCode Command Line Tools](/env/osx-install-xcode.md)
+### [點擊此處至目錄](/table-of-contents.md)
 
+友情提示：若常常需要瀏覽這些文件，可以將目錄那頁加入至書籤。
 
 ## 注意事項
 

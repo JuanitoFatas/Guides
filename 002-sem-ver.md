@@ -1,4 +1,4 @@
-# Semantic Version Guide
+# 語義版本簡介
 
 此文粗淺介紹，完整介紹請移步 &rarr; [SemVer 2.0.0 正體中文](https://github.com/wmh/semver.org/blob/d48bd903bde4fb5f202db00a156d98e445db2088/lang/zh-TW/index.md)
 
