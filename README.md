@@ -21,6 +21,6 @@ __全文轉貼請務必導回此處，因為我會一直更新這些文章。__
 
 __除非特別聲明，所有的文件皆採用此授權。__
 
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/tw/deed.zh_TW"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/tw/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/tw/deed.zh_TW">Creative Commons Attribution-NonCommercial 3.0 Taiwan License</a>.
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License (CC BY-NC-SA 3.0)</a>.
 
 [edge]: http://edgeguides.rubyonrails.org
