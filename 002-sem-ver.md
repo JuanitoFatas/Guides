@@ -16,7 +16,7 @@ API 不一定向下兼容，較多新功能。
 
 ### Y 次要版本
 
-API 兼容，通常是稍微嚴重的 bugfix，或是亮眼的 新特色。
+API 兼容，通常是稍微嚴重的 bugfix，或是亮眼的新特色。
 
 從 3.1 升級到 3.2 就有些東西需要注意了。
 
@@ -34,7 +34,7 @@ alpha 版本的下個階段便是 beta，繼續測試。
 
 ### release candidate
 
-release candidate 即將發行的版本，在下次主要版本釋出前，通常會有個 rc1, rc2, rc3。
+release candidate 即將發行的版本，在下次主要版本釋出前，通常會有個 rc1, rc2, rc3, bata 1, alpha1...etc。
 
 ## Gemfile
 
