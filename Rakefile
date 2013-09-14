@@ -1,3 +1,5 @@
+##
+# rake new README.md
 desc "Add a new post to GitHub."
 task :new do
   file_name = ARGV.last
@@ -5,6 +7,15 @@ task :new do
   task file_name.to_sym do ; end
 end
 
+##
+# rake mods
+desc "Add modified files to GitHub"
+task :mods do
+  git_action(nil, nil, action: 'git add -u')
+end
+
+##
+# rake update README.md
 desc "Update a existing post to GitHub."
 task :update do
   file_name = ARGV.last
@@ -12,24 +23,35 @@ task :update do
   task file_name.to_sym do ; end
 end
 
+##
+# rake msg "Update Guides." README.md
 desc "Write a custom commit message then deploy to GitHub."
 task :msg do
   message = ARGV[-2]
   file_name = ARGV.last
-  git_action(file_name, nil, message)
+  git_action(file_name, nil, message: message)
   task message.to_sym do ; end
   task file_name.to_sym do ; end
 end
 
-def git_action(name, action, custom=false)
-  system "git add #{name}"
-  if custom == false
-    message = "#{action} #{name} @ #{what_time_is_it} #{GITHUB_EMOJIS.sample}"
+def git_action(file, action, **opts) (custom=false)
+  if opts[:action].nil?
+    system "git add #{file}"
   else
-    message = "#{custom} #{what_time_is_it} #{GITHUB_EMOJIS.sample}"
+    system opts[:action]
   end
+
+  if opts[:message].nil?
+    message = "#{action} #{file}"
+  else
+    message = "#{opts[:message]}"
+  end
+
+  message.concat " @ #{what_time_is_it} #{GITHUB_EMOJIS.sample}"
+
   system "git commit -m \"#{message}\""
   system "git push origin master"
+
   puts "\nDeploy to GitHub complete :)"
 end
 
