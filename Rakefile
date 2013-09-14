@@ -11,7 +11,7 @@ end
 # rake mods
 desc "Add modified files to GitHub"
 task :mods do
-  git_action(nil, nil, action: 'git add -u')
+  git_action(nil, modfied_msg, action: 'git add -u')
 end
 
 ##
@@ -57,6 +57,10 @@ end
 
 def what_time_is_it
   Time.now.utc
+end
+
+def modfied_msg
+  "Update ".concat(`git ls-files -m`.chomp.gsub("\n", ", "))
 end
 
 GITHUB_EMOJIS=

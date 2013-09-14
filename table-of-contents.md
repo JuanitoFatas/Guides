@@ -1,4 +1,10 @@
-## Rails Guides
+## Ruby Guides
+
+[Ruby 風格指南](https://github.com/JuanitoFatas/ruby-style-guide)
+
+## Ruby on Rails Guides
+
+[Rails 風格指南](https://github.com/JuanitoFatas/rails-style-guide)
 
 [Rails I18n 指南](/006-i18n-RG.md)
 
@@ -17,6 +23,7 @@
 ## Misc
 
 [語義版本簡介](/002-sem-ver.md)
+
 [Gem 挑選指南](/005-gem-selection-guide.md)
 
 ## 環境
