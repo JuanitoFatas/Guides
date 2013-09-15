@@ -52,7 +52,7 @@ end
 def git_action(file, **opts)
   message = if opts[:message].nil?
               if update_whole_repo?(file, action: opts[:action])
-                "Update whole repo"
+                "Update the whole repository"
               else
                 "Update #{file}"
               end
@@ -91,7 +91,7 @@ def modified_files_str
 end
 
 def update_whole_repo?(str, **opts)
-  str == '.' || str.length <= 5 || opts[:action] == 'add -A'
+  opts[:action] == 'add -A' || str == '.' || str.length <= 5
 end
 
 ##
