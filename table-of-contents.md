@@ -6,11 +6,13 @@
 
 ## Ruby on Rails Guides
 
-### 官方 Ruby on Rails Guides
+### 官方 Ruby on Rails Guides 重點整理
 
 > 閱讀[官方 Rails Guides][edge] 的重點整理，算是不完整的翻譯。建議可快速瀏覽一遍，有個大概的了解之後，再去看[官方文件][edge]便可以快速理解了。
 
-[Rails I18n 指南](/articles/006-i18n-RG.md)
+[Rails I18n 重點整理](/articles/006-i18n-RG.md)
+
+[Rails Form Helpers 重點整理](/articles/ActionView/form_helpers-RG.md)
 
 ### 非官方
 

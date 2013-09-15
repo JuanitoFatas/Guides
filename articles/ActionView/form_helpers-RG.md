@@ -83,9 +83,111 @@ form_tag({controller: "people", action: "search"}, method: "get", class: "nifty_
 # => '<form accept-charset="UTF-8" action="/people/search" method="get" class="nifty_form">'
 ```
 
+### 1.3 生成表單的 Helpers
 
+Rails 提供一系列的 Helpers，可以產生 checkbox、text field、radio buttons。
+
+__`_tag`__ 結尾的 helper 會生成一個 `<input>`：
+
+`text_field_tag`、`check_box_tag`，第一個參數是 `input` 的 `name`。表單送出時，`name` 會與表單資料一起放到 `params` 裡送出。
+
+舉例
+
+```erb
+<%= text_field_tag(:query) %>
+```
+
+取出資料：`params[:query]`
+
+#### 1.3.1 Checkbox
+
+Checkbox? 使用者有一系列的選項，可以決定啟用或停用。
+
+```erb
+<%= check_box_tag(:pet_dog) %>
+<%= label_tag(:pet_dog, "I own a dog") %>
+<%= check_box_tag(:pet_cat) %>
+<%= label_tag(:pet_cat, "I own a cat") %>
+```
+
+會生成：
+
+```html
+<input id="pet_dog" name="pet_dog" type="checkbox" value="1" />
+<label for="pet_dog">I own a dog</label>
+<input id="pet_cat" name="pet_cat" type="checkbox" value="1" />
+<label for="pet_cat">I own a cat</label>
+```
+
+`checkbox_box_tag` 第一個參數是 `input` 的 `name`，第二個參數通常是 `input` 的 `value`，當該 checkbox 被選中時，`value` 可在 `params` 取得。
+
+#### 1.3.2 Radio Buttons
+
+跟 checkbox 類似，但只能選一個。
+
+```erb
+<%= radio_button_tag(:age, "child") %>
+<%= label_tag(:age_child, "I am younger than 21") %>
+<%= radio_button_tag(:age, "adult") %>
+<%= label_tag(:age_adult, "I'm over 21") %>
+```
+
+會生成：
+
+```html
+<input id="age_child" name="age" type="radio" value="child" />
+<label for="age_child">I am younger than 21</label>
+<input id="age_adult" name="age" type="radio" value="adult" />
+<label for="age_adult">I'm over 21</label>
+```
+
+`radio_button_tag` 第二個參數同樣是 `input` 的 `value`，上例中 `name` 都是 `age`，若使用者有按其中一個 radiobutton 的話，可以用 `params[:age]` 取出。可能的值是 `"child"` 或 `"adult"`。
+
+__記得要給 checkbox 與 radio button 加上 `label`，這樣讓可按的區域變得較廣。
+
+### 1.4 Other Helpers of Interest
+
+其它相關的 helpers：textareas, password fields, hidden fields, search fields, telephone fields, date fields, time fields, color fields, datetime fields, datetime-local fields, month fields, week fields, URL fields and email fields，其中 __search、telephone、date、time、color、datetime、datetime-local、month、week、URL、以及 email 是 HTML5 才有的 input__。
+
+```erb
+<%= text_area_tag(:message, "Hi, nice site", size: "24x6") %>
+<%= password_field_tag(:password) %>
+<%= hidden_field_tag(:parent_id, "5") %>
+<%= search_field(:user, :name) %>
+<%= telephone_field(:user, :phone) %>
+<%= date_field(:user, :born_on) %>
+<%= datetime_field(:user, :meeting_time) %>
+<%= datetime_local_field(:user, :graduation_day) %>
+<%= month_field(:user, :birthday_month) %>
+<%= week_field(:user, :birthday_week) %>
+<%= url_field(:user, :homepage) %>
+<%= email_field(:user, :address) %>
+<%= color_field(:user, :favorite_color) %>
+<%= time_field(:task, :started_at) %>
+```
+
+會生成：
+
+```html
+<textarea id="message" name="message" cols="24" rows="6">Hi, nice site</textarea>
+<input id="password" name="password" type="password" />
+<input id="parent_id" name="parent_id" type="hidden" value="5" />
+<input id="user_name" name="user[name]" type="search" />
+<input id="user_phone" name="user[phone]" type="tel" />
+<input id="user_born_on" name="user[born_on]" type="date" />
+<input id="user_meeting_time" name="user[meeting_time]" type="datetime" />
+<input id="user_graduation_day" name="user[graduation_day]" type="datetime-local" />
+<input id="user_birthday_month" name="user[birthday_month]" type="month" />
+<input id="user_birthday_week" name="user[birthday_week]" type="week" />
+<input id="user_homepage" name="user[homepage]" type="url" />
+<input id="user_address" name="user[address]" type="email" />
+<input id="user_favorite_color" name="user[favorite_color]" type="color" value="#000000" />
+<input id="task_started_at" name="task[started_at]" type="time" />
+```
 
 # 2. 處理 Model 物件
+
+
 
 # 3. 輕鬆製作下拉選單
 
