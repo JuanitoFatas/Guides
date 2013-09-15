@@ -26,7 +26,7 @@ end
 # rake all
 desc "Add all files and push to GitHub (including untracked)"
 task :all do
-  git_action(nil, message: modified_msg, action: 'add -A')
+  git_action(nil, message: 'Update the whole repository', action: 'add -A')
 end
 
 ##
@@ -51,11 +51,7 @@ end
 
 def git_action(file, **opts)
   message = if opts[:message].nil?
-              if update_whole_repo?(file, action: opts[:action])
-                "Update the whole repository"
-              else
-                "Update #{file}"
-              end
+              "Update #{file}"
             else
               opts[:message]
             end
@@ -88,10 +84,6 @@ end
 
 def modified_files_str
   `git ls-files -m`
-end
-
-def update_whole_repo?(str, **opts)
-  opts[:action] == 'add -A' || str == '.' || str.length <= 5
 end
 
 ##
