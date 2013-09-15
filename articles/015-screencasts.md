@@ -24,3 +24,6 @@ __收費方式：完全免費！__
 
 __收費方式：完全免費！__
 
+# Ruby 教學影片
+
+[Ruby Tapas | Short Screencasts of Gourmet Ruby](http://www.rubytapas.com/)
