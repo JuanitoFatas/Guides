@@ -1,6 +1,6 @@
 # Form Helpers
 
-表單是給使用者輸入的介面，web application 裡面最基礎的元素之一。表單寫起來很繁瑣，Rails 提供很多有用的 helper 讓你快速製造出不同需求的表單。
+表單（Form）是給使用者輸入的介面，web application 裡面最基礎的元素之一。表單寫起來很繁瑣，Rails 提供很多有用的 helper 讓你快速製造出不同需求的表單。
 
 # 1. 簡單的表單
 
@@ -24,7 +24,64 @@
 </form>
 ```
 
-注意到 HTML 裡有個額外的 `div` 元素，裡面有兩個 input。第一個 input 讓瀏覽器使用 `utf8`。第二個 input Rails 內建用來防止 __CSRF (cross-site request forgery protection)__ 攻擊的安全機制，每個非 GET 的表單，Rails 都會幫你產生一個這樣的 `authenticity_token`。
+注意到 HTML 裡有個額外的 `div` 元素，裡面有兩個 input。第一個 input 讓瀏覽器使用 `utf8`。第二個 input 是 Rails 內建用來防止 __CSRF (cross-site request forgery protection)__ 攻擊的安全機制，每個非 GET 的表單，Rails 都會幫你產生一個這樣的 `authenticity_token`。
+
+## 1.1 通用搜索表單
+
+最簡單的表單之一就是搜索表單了，通常有：
+
+* 一個有 GET 動詞的表單。
+* 可輸入文字的 input。
+* input 有 label。
+* 送出元素
+
+```erb
+<%= form_tag("/search", method: "get") do %>
+  <%= label_tag(:q, "Search for:") %>
+  <%= text_field_tag(:q) %>
+  <%= submit_tag("Search") %>
+<% end %>
+```
+
+用了這四個 helper：`form_tag`、`label_tag`、`text_field_tag`、`submit_tag`。
+
+會產生如下 HTML
+
+```html
+<form accept-charset="UTF-8" action="/search" method="get"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
+  <label for="q">Search for:</label>
+  <input id="q" name="q" type="text" />
+  <input name="commit" type="submit" value="Search" />
+</form>
+```
+
+ID 是根據表單名稱（上例為 `q`）所產生，可供 CSS 或 JavaScript 使用。
+
+__切記：搜索表單用 GET HTTP 動詞。__
+
+### 1.2 Form Helper 呼叫裡傳多個 Hash
+
+`form_tag` 接受 2 個參數：_動作發生的路徑（path）與選項（hash 形式傳入）__。 Hash 指定送出時要用的方法，以及可更改表單元素的 class 等。
+
+跟 `link_to` 類似，路徑可以不是字串。可以是 Rails router 看的懂的 URL 參數（以 hash 形式傳入），比如：
+
+```ruby
+{ controller: "people", action: "search" }
+```
+
+路徑跟選項都是以 hash 形式參數，很容易把兩者混在一起，看這個例子：
+
+```ruby
+form_tag(controller: "people", action: "search", method: "get", class: "nifty_form")
+# => '<form accept-charset="UTF-8" action="/people/search?method=get&class=nifty_form" method="post">'
+```
+
+這時候 Ruby 認為你只傳了一個 hash，所以 `method` 與 `class` 跑到 query string 裡了，要明顯的分隔開來才是：
+
+```ruby
+form_tag({controller: "people", action: "search"}, method: "get", class: "nifty_form")
+# => '<form accept-charset="UTF-8" action="/people/search" method="get" class="nifty_form">'
+```
 
 # 2. 處理 Model 物件
 
