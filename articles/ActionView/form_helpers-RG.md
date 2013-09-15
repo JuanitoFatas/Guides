@@ -500,9 +500,13 @@ Rails 過去使用 `country_select` 供選擇國家，但這已從 Rails 拿掉�
 
 # 4. 使用日期與時間的 Form Helpers
 
-先前有 `_tag` 的 helper 稱為 _barebones helper_，沒有 `_tag_ 的則是操作 model objects 的 helper。
+先前有 `_tag` 的 helper 稱為 _barebones helper_，沒有 `_tag_` 的則是操作 model objects 的 helper。
 
-在日期與時間這裡，`select_date`、`select_time`、 `select_datetime` 是 barebones helpers；而 `date_select`、`time_select`、`datetime_select` 則是對應的 model objects helper。
+日期與時間的情境下：
+
+`select_date`、`select_time`、 `select_datetime` 是 barebones helpers；
+
+`date_select`、`time_select`、`datetime_select` 則是對應的 model objects helper。
 
 ### Barebones Helpers
 
@@ -524,8 +528,8 @@ Rails 過去使用 `country_select` 供選擇國家，但這已從 Rails 拿掉�
 
 ```ruby
 params[:start_date][:year]
-params[:start_date][:year]
-params[:start_date][:year]
+params[:start_date][:month]
+params[:start_date][:day]
 ```
 
 要獲得實際的 `Time` 或 `Date` object，要先將這些值取出，丟給對的 constructor 處理：priate constructor, for example
@@ -538,7 +542,7 @@ Date.civil(params[:start_date][:year].to_i, params[:start_date][:month].to_i, pa
 
 ### Model Object Helpers
 
-`select_date` 與 Active Record 配合的不好。由於 Active Record 期望每個 `params` 的元素都對應到一個 attribute。
+`select_date` 與 Active Record 配合的不好，因為 Active Record 期望每個 `params` 的元素都對應到一個 attribute。
 
 而 `date_select` 則給每個參數提供了特別的名字，讓 Active Record 可以識別出來，並做相對應的處理。
 
@@ -560,22 +564,19 @@ Date.civil(params[:start_date][:year].to_i, params[:start_date][:month].to_i, pa
 {'person' => {'birth_date(1i)' => '2008', 'birth_date(2i)' => '11', 'birth_date(3i)' => '22'}}
 ```
 
-當傳給 `Person.new` 或是 `Person.update` 時，Active Record 注意到這些參數是給 `birth_date` attribute 使用的，並從字尾的 `ni` 察覺出先後順序。
+當傳給 `Person.new` 或是 `Person.update` 時，Active Record 注意到這些參數是給 `birth_date` attribute 使用的，並從字尾的 `(ni)` 察覺出先後順序。
 
 ### 4.3 常見選項
 
-預設不輸入任何 option，Rails 會使用今天的年月日來產生下拉式選單。年份 Rails 通常會產生 +- 5 年。如果這個範圍不合適，可以用 `:start_year` 及 `end_year` 來修改。完整的選項清單請查閱 [API documentation](http://api.rubyonrails.org/classes/ActionView/Helpers/DateHelper.html).
+預設不輸入任何 option，Rails 會使用當下的年月日來產生下拉式選單。比如年份，Rails 通常會產生前後 5 年。如果這個範圍不合適，可以用 `:start_year` 及 `end_year` 來修改。完整的選項清單請查閱 [API documentation](http://api.rubyonrails.org/classes/ActionView/Helpers/DateHelper.html)。
 
-__經驗法則：跟 model 用 `date_select`、其它情況用 `select_date`。 __
+__經驗法則：跟 model 用 `date_select`、其它情況用 `select_date`。__
 
 ### 4.4 單一選項
 
-有時候只想顯示年或是月而已，Rails 也有提供這些 helper：
+有時候只想顯示年月份當中的某一個，Rails 也有提供這些 helper：
 
 `select_year`、`select_month`、`select_day`、`select_hour`、`select_minute`、`select_second`。
-
-
-These helpers are fairly straightforward. By default they will generate an input field named after the time component (for example "year" for `select_year`, "month" for `select_month` etc.) although this can be overridden with the `:field_name` option. The `:prefix` option works in the same way that it does for `select_date` and `select_time` and has the same default value.
 
 預設選中的值可是數字，或是一個 `Date`、`Time`、`DateTime` 的 instance。
 
@@ -596,6 +597,8 @@ These helpers are fairly straightforward. By default they will generate an input
 
 可以進一步透過 `:prefix` 或是 `field_name` 選項來訂製 `select` 標籤。
 
+用 `field_name` 選項：
+
 ```erb
 <%= select_year(2009, :field_name => 'field_name') %>
 ```
@@ -607,6 +610,8 @@ These helpers are fairly straightforward. By default they will generate an input
 ...
 </select>
 ```
+
+用 `:prefix` 選項：
 
 ```erb
 <%= select_year(2009, :prefix => 'prefix') %>

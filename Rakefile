@@ -56,7 +56,7 @@ def git_action(file, **opts)
               opts[:message]
             end
 
-  message = if str_larger_than(modified_files_str, 50)
+  message = if str_larger_than(modified_files_str, 40)
               "#{GITHUB_EMOJIS.sample} #{message} @ #{what_time_is_it}"
             else
               "#{message} @ #{what_time_is_it} #{GITHUB_EMOJIS.sample}"
