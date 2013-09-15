@@ -4,6 +4,7 @@
 
 ## 目錄
 
+
 - [1. 簡單的表單](#1-簡單的表單)
   - [1.1 通用搜索表單](#11-通用搜索表單)
     - [1.2 Form Helper 呼叫裡傳多個 Hash](#12-form-helper-呼叫裡傳多個-hash)
@@ -28,6 +29,8 @@
     - [4.3 常見選項](#43-常見選項)
     - [4.4 單一選項](#44-單一選項)
 - [5. 上傳檔案](#5-上傳檔案)
+    - [5.1 究竟上傳了什麼？](#51-究竟上傳了什麼？)
+    - [5.2 處理 Ajax](#52-處理-ajax)
 - [6. 客製化 Form Builders](#6-客製化-form-builders)
 - [7. 了解參數的命名規範](#7-了解參數的命名規範)
 - [8. 給外部 resource 使用的表單](#8-給外部-resource-使用的表單)
@@ -658,8 +661,51 @@ __經驗法則：跟 model 用 `date_select`、其它情況用 `select_date`。_
 </select>
 ```
 
-
 # 5. 上傳檔案
+
+常見的任務是上傳檔案，無論是圖片或是 CSV。最最最重要的事情是，__必須__把 encoding 設成 `"multipart/form-data"`。`form_for` 已經設定好了、`form_tag` 要自己設定。
+
+下面包含了兩個表單，用來上傳檔案。
+
+```erb
+<%= form_tag({action: :upload}, multipart: true) do %>
+  <%= file_field_tag 'picture' %>
+<% end %>
+
+<%= form_for @person do |f| %>
+  <%= f.file_field :picture %>
+<% end %>
+```
+
+Rails 提供的 helper 通常都是成對的：barebone 的 `file_field_tag` 以及針對 model 的 `file_field`。這兩個 helper 無法設定預設值（沒意義）。
+
+要取出上傳的檔案，
+
+第一個表單：`params[:picture]`
+
+第二個表單：`params[:person][:picture]`
+
+### 5.1 究竟上傳了什麼？
+
+從 `params` 取出來的 object 是 `IO` 子類別的 instance。根據檔案大小的不同，可能是 `StringIO` 或是 `File` 的 instance。這兩個情況裡，object 都會有一個 `original_filename` attribute，內容是檔案名稱；`content_type` attribute 包含了檔案的 MIME 類型。下面的程式碼，上傳檔案至 `#{Rails.root}/public/uploads`，並用原來的名字儲存。
+
+
+```ruby
+def upload
+  uploaded_io = params[:person][:picture]
+  File.open(Rails.root.join('public', 'uploads', uploaded_io.original_filename), 'wb') do |file|
+    file.write(uploaded_io.read)
+  end
+end
+```
+
+檔案上傳之後還有很多事情要做，比如圖片要縮放大小，檔案可能要傳到 Amazon S3 等。有兩個 Rubygem 專門處理這些事情：[CarrierWave](https://github.com/jnicklas/carrierwave) 以及 [Paperclip](http://www.thoughtbot.com/projects/paperclip).
+
+若使用者沒有傳檔案，則對應的參數會是空字串。
+
+### 5.2 處理 Ajax
+
+檔案上傳要做成 Ajax 不像 `form_for` 加個 `remote: true` 選項那麼簡單。因為 Serialization 是用運行在瀏覽器的 JavaScript 完成，JavaScript 不同從計算機裡讀取檔案，則檔案無法上傳。最常見的解決辦法是插入一個 iframe，作為表單提交的目的地。
 
 # 6. 客製化 Form Builders
 
