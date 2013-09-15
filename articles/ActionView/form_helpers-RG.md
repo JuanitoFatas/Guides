@@ -4,7 +4,6 @@
 
 ## 目錄
 
-
 - [1. 簡單的表單](#1-簡單的表單)
   - [1.1 通用搜索表單](#11-通用搜索表單)
     - [1.2 Form Helper 呼叫裡傳多個 Hash](#12-form-helper-呼叫裡傳多個-hash)
@@ -705,13 +704,53 @@ end
 
 ### 5.2 處理 Ajax
 
-檔案上傳要做成 Ajax 不像 `form_for` 加個 `remote: true` 選項那麼簡單。因為 Serialization 是用運行在瀏覽器的 JavaScript 完成，JavaScript 不同從計算機裡讀取檔案，則檔案無法上傳。最常見的解決辦法是插入一個 iframe，作為表單提交的目的地。
+檔案上傳要做成 Ajax 不像 `form_for` 加個 `remote: true` 選項那麼簡單。因為 Serialization 是用戶端的 JavaScript 解決，JavaScript 不能從計算機裡讀取檔案，所以檔案無法上傳。最常見的解決辦法是插入一個 iframe，作為表單提交的目的地。
+
+加入 iframe: [AJAX File Uploads with the iFrame Method - Alfa Jango Blog](http://www.alfajango.com/blog/ajax-file-uploads-with-the-iframe-method/)
+
+> Remotipart Rails jQuery file uploads via standard Rails "remote: true" forms.
+
+[JangoSteve/remotipart](https://github.com/JangoSteve/remotipart)
 
 # 6. 客製化 Form Builders
 
+`form_for` 與 `fields_for` 是 `FormBuilder` 的 instance。`FormBuilder` 將顯示表單元素都抽象到單一的 object 裡，我們也可以自己寫一個 form builder。
 
+```erb
+<%= form_for @person do |f| %>
+  <%= text_field_with_label f, :first_name %>
+<% end %>
+```
+
+可以換成
+
+```erb
+<%= form_for @person, builder: LabellingFormBuilder do |f| %>
+  <%= f.text_field :first_name %>
+<% end %>
+```
+
+自己定義一個 `LabellingFormBuilder`：
+
+```ruby
+class LabellingFormBuilder < ActionView::Helpers::FormBuilder
+  def text_field(attribute, options={})
+    label(attribute) + super
+  end
+end
+```
+
+如果常常會用到這個 helper，可以自己定義一個 `labeled_form_for` helper 來自動加上 `builder: LabellingFormBuilder` 選項。
+
+如果 `f` 是 `FormBuilder` 的 instance，則會渲染 (render) `form` partial，並將 partial 的 object 設成 `f`。
+
+```erb
+<%= render partial: f %>
+```
 
 # 7. 了解參數的命名規範
+
+
 
 # 8. 給外部 resource 使用的表單
 
