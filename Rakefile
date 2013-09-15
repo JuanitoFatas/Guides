@@ -60,7 +60,7 @@ def git_action(file, **opts)
               opts[:message]
             end
 
-  message = if str_larger_than_80? modified_files_str
+  message = if str_larger_than modified_files_str, 40
               "#{GITHUB_EMOJIS.sample} #{message} @ #{what_time_is_it}"
             else
               "#{message} @ #{what_time_is_it} #{GITHUB_EMOJIS.sample}"
@@ -82,8 +82,8 @@ def what_time_is_it
   Time.now.utc
 end
 
-def str_larger_than_80?(str)
-  str.length > 80
+def str_larger_than(str, size)
+  str.length > size
 end
 
 def modified_files_str
@@ -94,7 +94,7 @@ end
 # this will automatically create a list of modified file names
 # if the string's length > 80, switch to a simplified message.
 def modified_msg
-  if str_larger_than_80? modified_files_str
+  if str_larger_than? modified_files_str, 40
     "Update Many Guides"
   else
     "Update ".concat(modified_files_str.chomp.gsub("\n", ", "))
