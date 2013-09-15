@@ -1,6 +1,4 @@
-# Ruby on Rails Guides
-
-__The Hitchhiker’s Guide to Ruby on Rails!__
+# The Hitchhiker's Guide to Ruby on Rails!
 
 __UNDER HEAVY ACTIVE DEVELOPMENT!__
 
