@@ -57,7 +57,7 @@ def git_action(file, **opts)
                 "Update #{file}"
               end
             else
-              message = opts[:message]
+              opts[:message]
             end
 
   message = if str_larger_than_80? modified_files_str
