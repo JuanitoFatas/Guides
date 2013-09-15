@@ -147,7 +147,7 @@ __記得要給 checkbox 與 radio button 加上 `label`，這樣讓可按的區�
 
 ### 1.4 Other Helpers of Interest
 
-其它相關的 helpers：textareas, password fields, hidden fields, search fields, telephone fields, date fields, time fields, color fields, datetime fields, datetime-local fields, month fields, week fields, URL fields and email fields，其中 __search、telephone、date、time、color、datetime、datetime-local、month、week、URL、以及 email 是 HTML5 才有的 input__。
+其它相關的 helpers：textareas, password fields, hidden fields, search fields, telephone fields, date fields, time fields, color fields, datetime fields, datetime-local fields, month fields, week fields, URL fields and email fields，__其中 search、telephone、date、time、color、datetime、datetime-local、month、week、URL、以及 email 是 HTML5 才有的 input__。
 
 ```erb
 <%= text_area_tag(:message, "Hi, nice site", size: "24x6") %>
@@ -185,9 +185,173 @@ __記得要給 checkbox 與 radio button 加上 `label`，這樣讓可按的區�
 <input id="task_started_at" name="task[started_at]" type="time" />
 ```
 
-# 2. 處理 Model 物件
+# 2. 處理 Model Object 的 Helpers
+
+## 2.1 Model Object Helpers
+
+表單通常是拿來編輯或創建一個新的 model object。帶有 `_tag` 字尾的 Helpers 可以解決這件事，但是太繁瑣了。Rails 提供更多方變得 Helpers（沒有 `_tag` 字尾），像是 `text_field`、`text_area` 等。
+
+這些 Helpers 第一個參數是 instance variable 的 `name`，第二個參數是要對 instance object 調用的方法名（通常是 attribute）。Rails 會將調用的結果存成 `input` 的 `value`，並幫你給 `input` 的 `name` 取個好名字。
+
+假設 controller 定義了 `@person`，這 person 的 `name` 叫 `Henry`，則
+
+```erb
+<%= text_field(:person, :name) %>
+```
+
+會生成
+
+```erb
+<input id="person_name" name="person[name]" type="text" value="Henry"/>
+```
+
+送出表單時，使用者的輸入會存在 `params[:person][:name]`，`params[:person]` 可傳給 `new` 或是 `update` action。由於第二個參數實在是太常用了，不給也可以：
+
+```erb
+<%= text_field(:person) %>
+```
+
+只要 `Person` objects 有 `name` 與 `name=` 就可以了。
+
+__警告：第一個參數必須是 instance 變數的名稱，如：`:person` 或 `"person"`，而不是傳實際的 instance 進去。__
+
+## 2.2 將表單綁定至 Object
+
+當 `Person` 有很多 attributes 時，我們得一直重複傳入 `:person` 來生成對應的表單。Rails 提供了 `form_for` 讓你把表單綁定至 model 的 object。
+
+假設我們有個處理文章的 controller：`app/controllers/articles_controller.rb`：
+
+```ruby
+def new
+  @article = Article.new
+end
+```
+
+對應的 view `app/views/articles/new.html.erb`：
+
+```erb
+<%= form_for @article, url: {action: "create"}, html: {class: "nifty_form"} do |f| %>
+  <%= f.text_field :title %>
+  <%= f.text_area :body, size: "60x12" %>
+  <%= f.submit "Create" %>
+<% end %>
+```
+
+幾件事情要說明一下：
+
+* `@article` 是實際被編輯的 object。
+* 有兩個 options (hash）：`:url` 與 `:html`。還可傳入 `:namespace`，用來產生獨一無二的 ID。
+* `|f|` 為 form builder。
+* 本來寫成 `text_field(:article)` 改為 `f.text_filed`。
+
+生成的 HTML 為：
+
+```html
+<form accept-charset="UTF-8" action="/articles/create" method="post" class="nifty_form">
+  <input id="article_title" name="article[title]" type="text" />
+  <textarea id="article_body" name="article[body]" cols="60" rows="12"></textarea>
+  <input name="commit" type="submit" value="Create" />
+</form>
+```
+
+除了 form builder，還有個 `fields_for` 可用。這在使用同表單編輯額外的 model object 的場合下很有用。比如你有個 `Person` model，有一個與之關聯的 `ContactDetail` model，則可以產生一個可同時編輯兩個 model 的表單：
+
+```erb
+<%= form_for @person, url: {action: "create"} do |person_form| %>
+  <%= person_form.text_field :name %>
+  <%= fields_for @person.contact_detail do |contact_details_form| %>
+    <%= contact_details_form.text_field :phone_number %>
+  <% end %>
+<% end %>
+```
+
+會生成：
+
+```html
+<form accept-charset="UTF-8" action="/people/create" class="new_person" id="new_person" method="post">
+  <input id="person_name" name="person[name]" type="text" />
+  <input id="contact_detail_phone_number" name="contact_detail[phone_number]" type="text" />
+</form>
+```
+
+## 2.3 Record Identification
+
+假設你是用 RESTful 風格：
+
+```ruby
+resources :articles
+```
+
+則便可簡化 `form_for` 的書寫。
+
+創建新文章
+
+```ruby
+form_for(@article, url: articles_path)
+```
+
+可簡化為：
+
+```ruby
+form_for(@article)
+```
 
 
+編輯一個 resource
+
+```ruby
+form_for(@article, url: article_path(@article), html: {method: "patch"})
+```
+
+可簡化為
+
+```ruby
+form_for(@article)
+```
+
+但若用 STI （Single Table Inheritance，單表繼承）則得明確指定 `:url` 與 `:method`。
+
+### 2.3.1 處理 namespace
+
+如果你有 namespace 的 route，`form_for` 也有個簡便的縮寫：
+
+```ruby
+form_for [:admin, @article]
+```
+
+會新建一個表單，在 `admin` namespace 下將表單送給 `articles` controller，等同於：
+
+```ruby
+form_for admin_article_path(@article)
+```
+
+如果有更多層的命名空間，依樣畫葫蘆即可：
+
+```ruby
+form_for [:admin, :management, @article]
+```
+
+## 2.4 PATCH、PUT、DELETE 表單是怎麼工作的？
+
+Rails 框架提倡使用 RESTful 風格來設計  application 。這表示你會有很多 “PATCH” 以及 “DELETE” 請求 (request），而不是 “GET” 與 “POST”，但多數瀏覽器在送出表單時，不支援非 `GET` 或 `POST` 的請求。Rails 透過一個 `name` 為 `_method` 的隱藏 `input` 來模擬 POST。
+
+```ruby
+form_tag(search_path, method: "patch")
+```
+
+output:
+
+```html
+<form accept-charset="UTF-8" action="/search" method="post">
+  <div style="margin:0;padding:0">
+    <input name="_method" type="hidden" value="patch" />
+    <input name="utf8" type="hidden" value="&#x2713;" />
+    <input name="authenticity_token" type="hidden" value="f755bb0ed134b76c432144748a6d4b7a7ddf2b71" />
+  </div>
+  ...
+```
+
+在送出資料時，Rails 會將 `_method` 考慮進去，模擬成一個 POST 請求。
 
 # 3. 輕鬆製作下拉選單
 
