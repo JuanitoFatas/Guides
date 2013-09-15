@@ -1,4 +1,10 @@
-# Rails Guides
+# Ruby on Rails Guides
+
+__The Hitchhiker’s Guide to Ruby on Rails!__
+
+__UNDER HEAVY ACTIVE DEVELOPMENT!__
+
+__READ WITH CAUTION!__
 
 ## 目錄
 
