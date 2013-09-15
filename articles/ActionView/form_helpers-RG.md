@@ -29,7 +29,7 @@
     - [4.3 常見選項](#43-常見選項)
     - [4.4 單一選項](#44-單一選項)
 - [5. 上傳檔案](#5-上傳檔案)
-    - [5.1 究竟上傳了什麼？](#51-究竟上傳了什麼？)
+    - [5.1 究竟上傳了什麼？](#51-究竟上傳了什麼)
     - [5.2 處理 Ajax](#52-處理-ajax)
 - [6. 客製化 Form Builders](#6-客製化-form-builders)
 - [7. 了解參數的命名規範](#7-了解參數的命名規範)
@@ -685,7 +685,7 @@ Rails 提供的 helper 通常都是成對的：barebone 的 `file_field_tag` 以
 
 第二個表單：`params[:person][:picture]`
 
-### 5.1 究竟上傳了什麼？
+### 5.1 究竟上傳了什麼
 
 從 `params` 取出來的 object 是 `IO` 子類別的 instance。根據檔案大小的不同，可能是 `StringIO` 或是 `File` 的 instance。這兩個情況裡，object 都會有一個 `original_filename` attribute，內容是檔案名稱；`content_type` attribute 包含了檔案的 MIME 類型。下面的程式碼，上傳檔案至 `#{Rails.root}/public/uploads`，並用原來的名字儲存。
 
