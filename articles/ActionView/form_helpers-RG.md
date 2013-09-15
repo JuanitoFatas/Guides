@@ -4,15 +4,37 @@
 
 ## 目錄
 
-* [1. 簡單的表單](#1-簡單的表單)
-* [2. 處理 Model Object 的 Helpers](#2-處理-model-object-的-helpers)
-* [3. 輕鬆製作下拉式選單](#3-輕鬆製作下拉式選單)
-* [4. 使用日期與時間的](#4-使用日期與時間的-form-helpers)
-* [5. 上傳檔案](#5-上傳檔案)
-* [6. 客製化 Form Builders](#6-客製化-form-helpers)
-* [7. 了解參數的命名規範](#7-了解參數的命名規範)
-* [8. 給外部 resource 使用的表單](#8-給外部-resource-使用的表單)
-* [9. 打造複雜的表單](#9-打造複雜的表單)
+- [1. 簡單的表單](#1-簡單的表單)
+  - [1.1 通用搜索表單](#11-通用搜索表單)
+    - [1.2 Form Helper 呼叫裡傳多個 Hash](#12-form-helper-呼叫裡傳多個-hash)
+    - [1.3 生成表單的 Helpers](#13-生成表單的-helpers)
+      - [1.3.1 Checkbox](#131-checkbox)
+      - [1.3.2 Radio Buttons](#132-radio-buttons)
+    - [1.4 Other Helpers of Interest](#14-other-helpers-of-interest)
+- [2. 處理 Model Object 的 Helpers](#2-處理-model-object-的-helpers)
+  - [2.1 Model Object Helpers](#21-model-object-helpers)
+  - [2.2 將表單綁定至 Object](#22-將表單綁定至-object)
+  - [2.3 Record Identification](#23-record-identification)
+    - [2.3.1 處理 namespace](#231-處理-namespace)
+  - [2.4 PATCH、PUT、DELETE 表單是怎麼工作的？](#24-patch、put、delete-表單是怎麼工作的？)
+- [3. 輕鬆製作下拉式選單](#3-輕鬆製作下拉式選單)
+  - [3.1 Select 與 Option 標籤](#31-select-與-option-標籤)
+  - [3.2 處理 Models 的下拉選單](#32-處理-models-的下拉選單)
+  - [3.3 從任意 objects 集合來的 option tags](#33-從任意-objects-集合來的-option-tags)
+  - [3.4 Time Zone 與 Country](#34-time-zone-與-country)
+- [4. 使用日期與時間的 Form Helpers](#4-使用日期與時間的-form-helpers)
+    - [Barebones Helpers](#barebones-helpers)
+    - [Model Object Helpers](#model-object-helpers)
+    - [4.3 常見選項](#43-常見選項)
+    - [4.4 單一選項](#44-單一選項)
+- [5. 上傳檔案](#5-上傳檔案)
+- [6. 客製化 Form Builders](#6-客製化-form-builders)
+- [7. 了解參數的命名規範](#7-了解參數的命名規範)
+- [8. 給外部 resource 使用的表單](#8-給外部-resource-使用的表單)
+- [9. 打造複雜的表單](#9-打造複雜的表單)
+- [相關的 RubyGems](#相關的-rubygems)
+  - [熱門](#熱門)
+- [延伸閱讀](#延伸閱讀)
 
 # 1. 簡單的表單
 
@@ -644,7 +666,7 @@ __經驗法則：跟 model 用 `date_select`、其它情況用 `select_date`。_
 
 # 7. 了解參數的命名規範
 
-# 8. 給外部 resource 使用的 Form
+# 8. 給外部 resource 使用的表單
 
 # 9. 打造複雜的表單
 
