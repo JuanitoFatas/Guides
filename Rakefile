@@ -56,7 +56,7 @@ def git_action(file, **opts)
               opts[:message]
             end
 
-  message = if str_larger_than(modified_files_str, 40)
+  message = if str_larger_than(modified_files_str, 35)
               "#{GITHUB_EMOJIS.sample} #{message} @ #{what_time_is_it}"
             else
               "#{message} @ #{what_time_is_it} #{GITHUB_EMOJIS.sample}"
@@ -83,7 +83,7 @@ def str_larger_than(str, size)
 end
 
 def modified_files_str
-  `git ls-files -m`
+  `git ls-files -m`.chomp.gsub("\n", ", ")
 end
 
 ##
@@ -93,6 +93,6 @@ def modified_msg
   if str_larger_than(modified_files_str, 80)
     "Update Many Guides"
   else
-    "Update ".concat(modified_files_str.chomp.gsub("\n", ", "))
+    "Update ".concat(modified_files_str)
   end
 end
