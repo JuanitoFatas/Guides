@@ -1,6 +1,6 @@
 # [Form Helpers][fh]
 
-表單（Form）是給使用者輸入的介面，web application 裡面最基礎的元素之一。表單寫起來很繁瑣，Rails 提供很多有用的 helper 讓你快速製造出不同需求的表單。
+表單（Form）是給使用者輸入的介面，web application 裡面最基礎的元素之一。表單寫起來很繁瑣，Rails 提供很多有用的 helper 讓你快速製造出符合不同需求的表單。
 
 ## 目錄
 
@@ -10,7 +10,7 @@
     - [1.3 生成表單的 Helpers](#13-生成表單的-helpers)
       - [1.3.1 Checkbox](#131-checkbox)
       - [1.3.2 Radio Buttons](#132-radio-buttons)
-    - [1.4 Other Helpers of Interest](#14-other-helpers-of-interest)
+    - [1.4 其它相關的 Helper](#14-其它相關的-helpers)
 - [2. 處理 Model Object 的 Helpers](#2-處理-model-object-的-helpers)
   - [2.1 Model Object Helpers](#21-model-object-helpers)
   - [2.2 將表單綁定至 Object](#22-將表單綁定至-object)
@@ -189,9 +189,9 @@ Checkbox? 使用者有一系列的選項，可多選：
 
 __記得要給 checkbox 與 radio button 加上 `label`，這樣讓可按的區域變得較廣。
 
-### 1.4 Other Helpers of Interest
+### 1.4 其它相關的 helpers
 
-其它相關的 helpers：textareas, password fields, hidden fields, search fields, telephone fields, date fields, time fields, color fields, datetime fields, datetime-local fields, month fields, week fields, URL fields and email fields，__其中 search、telephone、date、time、color、datetime、datetime-local、month、week、URL、以及 email 是 HTML5 才有的 input__。
+textareas, password fields, hidden fields, search fields, telephone fields, date fields, time fields, color fields, datetime fields, datetime-local fields, month fields, week fields, URL fields and email fields，__其中 search、telephone、date、time、color、datetime、datetime-local、month、week、URL、以及 email 是 HTML5 才有的 input__。
 
 ```erb
 <%= text_area_tag(:message, "Hi, nice site", size: "24x6") %>
