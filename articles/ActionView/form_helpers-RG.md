@@ -32,8 +32,7 @@
 - [7. 了解參數的命名規範](#7-了解參數的命名規範)
 - [8. 給外部 resource 使用的表單](#8-給外部-resource-使用的表單)
 - [9. 打造複雜的表單](#9-打造複雜的表單)
-- [相關的 RubyGems](#相關的-rubygems)
-  - [熱門](#熱門)
+- [表單相關的 RubyGems](#表單相關的-rubygems)
 - [延伸閱讀](#延伸閱讀)
 
 # 1. 簡單的表單
@@ -670,13 +669,15 @@ __經驗法則：跟 model 用 `date_select`、其它情況用 `select_date`。_
 
 # 9. 打造複雜的表單
 
-# 相關的 RubyGems
+# 表單相關的 RubyGems
 
-## 熱門
+最多人使用的是這兩個 RubyGem，
 
 [formtastic](https://github.com/justinfrench/formtastic)
 
 [simple_form](https://github.com/plataformatec/simple_form)
+
+他們的差別可看這裡 [How do Formtastic and simple_form compare? - Stack Overflow](http://stackoverflow.com/questions/7510760/how-do-formtastic-and-simple-form-compare)
 
 其它製作表單的 Gems 可參考: [Form Builders | The Ruby Toolbox](https://www.ruby-toolbox.com/categories/rails_form_builders)
 
