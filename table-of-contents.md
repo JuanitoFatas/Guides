@@ -44,7 +44,7 @@
 
 ## 社群
 
-[VPS 推薦](/articles/014-communities.md)
+[Ruby / Ruby on Rails 社群](/articles/014-communities.md)
 
 ## 主機
 
