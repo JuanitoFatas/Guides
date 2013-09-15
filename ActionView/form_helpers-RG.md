@@ -1,4 +1,4 @@
-# Form Helpers
+# [Form Helpers][fh]
 
 表單（Form）是給使用者輸入的介面，web application 裡面最基礎的元素之一。表單寫起來很繁瑣，Rails 提供很多有用的 helper 讓你快速製造出不同需求的表單。
 
@@ -45,7 +45,7 @@
 
 用了這四個 helper：`form_tag`、`label_tag`、`text_field_tag`、`submit_tag`。
 
-會產生如下 HTML
+會產生如下 HTML：
 
 ```html
 <form accept-charset="UTF-8" action="/search" method="get"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
@@ -57,19 +57,19 @@
 
 ID 是根據表單名稱（上例為 `q`）所產生，可供 CSS 或 JavaScript 使用。
 
-__切記：搜索表單用 GET HTTP 動詞。__
+__切記：搜索表單用正確的 HTTP 動詞：GET。__
 
 ### 1.2 Form Helper 呼叫裡傳多個 Hash
 
-`form_tag` 接受 2 個參數：_動作發生的路徑（path）與選項（hash 形式傳入）__。 Hash 指定送出時要用的方法，以及可更改表單元素的 class 等。
+`form_tag` 接受 2 個參數：_動作發生的路徑（path）與選項（以 hash 形式傳入）__。可指定送出時要用的方法，及更改表單元素的 class 等。
 
-跟 `link_to` 類似，路徑可以不是字串。可以是 Rails router 看的懂的 URL 參數（以 hash 形式傳入），比如：
+跟 `link_to` 類似，路徑可以不是字串。可以是 Rails router 看的懂的 URL hash，比如：
 
 ```ruby
 { controller: "people", action: "search" }
 ```
 
-路徑跟選項都是以 hash 形式參數，很容易把兩者混在一起，看這個例子：
+路徑跟選項都是以 hash 傳入，很容易把兩者混在一起，看這個例子：
 
 ```ruby
 form_tag(controller: "people", action: "search", method: "get", class: "nifty_form")
@@ -82,6 +82,8 @@ form_tag(controller: "people", action: "search", method: "get", class: "nifty_fo
 form_tag({controller: "people", action: "search"}, method: "get", class: "nifty_form")
 # => '<form accept-charset="UTF-8" action="/people/search" method="get" class="nifty_form">'
 ```
+
+
 
 # 2. 處理 Model 物件
 
@@ -99,9 +101,20 @@ form_tag({controller: "people", action: "search"}, method: "get", class: "nifty_
 
 # 9. 打造複雜的表單
 
+# 相關的 RubyGems
+
+## 熱門
+
+[formtastic](https://github.com/justinfrench/formtastic)
+
+[simple_form](https://github.com/plataformatec/simple_form)
+
+其它製作表單的 Gems 可參考: [Form Builders | The Ruby Toolbox](https://www.ruby-toolbox.com/categories/rails_form_builders)
+
 # 延伸閱讀
 
-* [Form Helpers — Ruby on Rails Guides](http://edgeguides.rubyonrails.org/form_helpers.html)
+* [Form Helpers — Ruby on Rails Guides][fh]
 
 * [Ruby on Rails 實戰聖經 | ActionView Helpers 輔助方法](http://ihower.tw/rails3/actionview-helpers.html)
 
+[fh]: http://edgeguides.rubyonrails.org/form_helpers.html
