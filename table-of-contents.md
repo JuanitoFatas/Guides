@@ -16,10 +16,6 @@
 
 [Rails 風格指南(繁簡中文)](https://github.com/JuanitoFatas/rails-style-guide)
 
-## Rails 相關
-
-[Active Admin 簡介](/articles/001-active-admin.md)
-
 ## 命令行
 
 [使用 Thor 打造命令行工具](/articles/007-thor.md)
@@ -27,6 +23,10 @@
 ## 工具
 
 [如何撰寫簡單的 Rake 任務](/articles/009-create-a-rake-task.md)
+
+## Rails 相關
+
+[Active Admin 簡介](/articles/001-active-admin.md)
 
 ## 進修
 
