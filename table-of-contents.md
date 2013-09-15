@@ -28,6 +28,12 @@
 
 [如何撰寫簡單的 Rake 任務](/009-create-a-rake-task.md)
 
+## 進修
+
+[Screencasts 教學影片](/015-screencasts.md)
+
+[Ruby on Rails 線上課程](/016-online-learning.md)
+
 ## Misc
 
 [語義版本簡介](/002-sem-ver.md)
