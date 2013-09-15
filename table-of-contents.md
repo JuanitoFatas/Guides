@@ -30,12 +30,6 @@
 
 [Active Admin 簡介](/articles/001-active-admin.md)
 
-## 進修
-
-[Screencasts 教學影片](/articles/015-screencasts.md)
-
-[Ruby on Rails 線上課程](/articles/016-online-learning.md)
-
 ## Misc
 
 [語義版本簡介](/articles/002-sem-ver.md)
@@ -44,6 +38,26 @@
 
 ## 環境
 
-* [Mac OSX 安裝 XCode Command Line Tools](/articles/env/osx-install-xcode.md)
+[Mac OSX 安裝 XCode Command Line Tools](/articles/env/osx-install-xcode.md)
 
 [edge]: http://edgeguides.rubyonrails.org
+
+## 社群
+
+[VPS 推薦](/articles/014-communities.md)
+
+## 主機
+
+[VPS 推薦](/articles/024-vps.md)
+
+## 進修
+
+[Ruby on Rails 書籍](/articles/018-books.md)
+
+[Screencasts 教學影片](/articles/015-screencasts.md)
+
+[Ruby on Rails 線上課程](/articles/016-online-learning.md)
+
+## 工作
+
+[找 Ruby / Ruby on Rails 相關的工作](/articles/021-jobs.md)

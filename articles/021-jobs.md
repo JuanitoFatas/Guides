@@ -1,4 +1,4 @@
-# 找工作
+# 找 Ruby / Ruby on Rails 相關的工作
 
 ## 臺灣
 
