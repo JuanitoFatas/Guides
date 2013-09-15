@@ -1,4 +1,3 @@
-
 GITHUB_EMOJIS=
 [
   ":bowtie:",
