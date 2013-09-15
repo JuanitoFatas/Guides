@@ -750,7 +750,139 @@ end
 
 # 7. 了解參數的命名規範
 
+用 Rack 的參數解析器來實驗不同的 query，用來了解參數的命名規範。
 
+```ruby
+Rack::Utils.parse_query "name=fred&phone=0123456789"
+# => {"name"=>"fred", "phone"=>"0123456789"}
+```
+
+## 7.1 基本結構
+
+舉例
+
+```html
+<input id="person_name" name="person[name]" type="text" value="Henry"/>
+```
+
+則 `params` hash：
+
+```erb
+{'person' => {'name' => 'Henry'}}
+```
+
+用 `params[:person][:name]` 可取出送至 controller 的值。
+
+Hash 可以嵌套：
+
+```html
+<input id="person_address_city" name="person[address][city]" type="text" value="New York"/>
+```
+
+則 `params` hash 變成
+
+```ruby
+{'person' => {'address' => {'city' => 'New York'}}}
+```
+
+通常 Rails 會忽略重複的參數名稱。如果參數名稱含有 `[]`，則會變成 array。這可以幹嘛？比如想要讓使用者輸入多組電話：
+
+```html
+<input name="person[phone_number][]" type="text"/>
+<input name="person[phone_number][]" type="text"/>
+<input name="person[phone_number][]" type="text"/>
+```
+
+`params[:person][:phone_number]` 會是使用者輸入的多組電話。
+
+## 7.2 結合起來
+
+hash 裡可以有 array，或是 array 裡可以有 hash。舉例來說，表單可以讓你填入任何地址：
+
+We can mix and match these two concepts. For example, one element of a hash might be an array as in the previous example, or you can have an array of hashes. For example a form might let you create any number of addresses by repeating the following form fragment
+
+```html
+<input name="addresses[][line1]" type="text"/>
+<input name="addresses[][line2]" type="text"/>
+<input name="addresses[][city]" type="text"/>
+```
+
+則 `params[:address]` 會是個 hash，裡面有 array。hash 的 key 為 `line1`、`line2`、`city`。Rails 在碰到已經存在的名稱時才會新建一個 hash。
+
+```ruby
+{ 'addresses' => { 'line1' => {...}, 'line2' => {...}, 'city' => {...} } }
+```
+
+雖然 hash 可以隨意嵌套，但 array 只能有一層。Array 通常可以換成 hash。舉例來說，model 的 objects 可以表示成 array，但也可用 hash，key 是 object 的 id。
+
+__警告：__
+
+Array 參數跟 `check_box` 配合的不好。根據 HTML 的規範來看，沒有勾選的 checkbox 不會送出值。但 checkbox 總是送出某個值會比較方便，`check_box` 藉由創建一個隱藏的 input 來送出假值。而選中的 checkbox 送出的值優先級比較高，所以假值不會影響。
+
+要用 Array 類型的參數最好使用 `check_box_tag` 或是使用 hash 形式的參數。
+
+## 7.3 使用 Form Helpers
+
+`form_for` 與 `fields_for` 都接受 `:index` 選項。
+
+假設我們要做個 person 的地址表單：
+
+```erb
+<%= form_for @person do |person_form| %>
+  <%= person_form.text_field :name %>
+  <% @person.addresses.each do |address| %>
+    <%= person_form.fields_for address, index: address do |address_form|%>
+      <%= address_form.text_field :city %>
+    <% end %>
+  <% end %>
+<% end %>
+```
+
+假設每個人有兩組地址，id 分別是 23 與 45，則上面的代碼會生成：
+
+```html
+<form accept-charset="UTF-8" action="/people/1" class="edit_person" id="edit_person_1" method="post">
+  <input id="person_name" name="person[name]" type="text" />
+  <input id="person_address_23_city" name="person[address][23][city]" type="text" />
+  <input id="person_address_45_city" name="person[address][45][city]" type="text" />
+</form>
+```
+
+最終生成的 `params` hash：
+
+```ruby
+{'person' => {'name' => 'Bob', 'address' => {'23' => {'city' => 'Paris'}, '45' => {'city' => 'London'}}}}
+```
+
+<!-- NOT CLEAR -->
+Rails 知道這些輸入都是 person 的一部分，因為我們用的是 `fields_for`。而指定 `:index` 選項你告訴 Rails 在 `person[address][city]` 之間插入 id。這通常是用來，修改特定 id 的 Active Record object。
+
+
+看另外一個嵌套的例子。
+
+```erb
+<%= fields_for 'person[address][primary]', address, index: address do |address_form| %>
+  <%= address_form.text_field :city %>
+<% end %>
+```
+
+會產生像是這樣的 `input`：
+
+```html
+<input id="person_address_primary_1_city" name="person[address][primary][1][city]" type="text" value="bologna" />
+```
+
+通用規則：
+
+__`fields_for` 或 `form_for` 傳入的名字 ＋ index 的值 ＋ 屬性名稱__
+
+有一個小技巧是加上 `[]`，而不用傳入 `index: address` 選項，上面的例子等同於：
+
+```erb
+<%= fields_for 'person[address][primary][]', address do |address_form| %>
+  <%= address_form.text_field :city %>
+<% end %>
+```
 
 # 8. 給外部 resource 使用的表單
 
