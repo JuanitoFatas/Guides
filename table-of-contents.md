@@ -30,6 +30,8 @@
 
 [Active Admin 簡介](/articles/001-active-admin.md)
 
+[ERB 轉換成 HAML](/articles/030-erb-to-haml.md)
+
 ## Misc
 
 [語義版本簡介](/articles/002-sem-ver.md)
