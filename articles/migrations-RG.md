@@ -810,9 +810,9 @@ class Product < ActiveRecord::Base
 end
 ```
 
-Migrations 在 祝英台的電腦上都沒有問題。
+Migrations 在祝英台的電腦上都沒有問題。
 
-梁山伯放假歸來：
+梁山伯放假回來之後：
 
 * 先更新代碼 - 包含了最新的 migrations 及 Product model。
 * 接著執行 `rake db:migrate`
@@ -880,26 +880,15 @@ end
 
 ## 7.1 Schema 有什麼用
 
-Migrations, mighty as they may be, are not the authoritative source for your
-database schema. That role falls to either `db/schema.rb` or an SQL file which
-Active Record generates by examining the database. They are not designed to be
-edited, they just represent the current state of the database.
+Migrations，是可以變化的，要確定資料庫的 schema，還是看 `db/schema.rb` 最可靠，或是由 Active Record 產生的 SQL 檔案。`db/schema.rb` 與 SQL 都是用來表示資料庫目前的狀態，不要修改這兩個檔案。
 
-There is no need (and it is error prone) to deploy a new instance of an app by
-replaying the entire migration history. It is much simpler and faster to just
-load into the database a description of the current schema.
+依靠 migration 來佈署新的 app 是不可靠而且容易出錯的。最簡單的辦法是把 `db/schema.rb` 加載到資料庫裡。
 
-For example, this is how the test database is created: the current development
-database is dumped (either to `db/schema.rb` or `db/structure.sql`) and then
-loaded into the test database.
+舉例來說吧，這便是測試資料庫如何產生的過程：dump 目前的開發資料庫，dump 成 `db/schema.rb` 或是 `db/structure.sql`，並載入至測試資料庫。
 
-Schema files are also useful if you want a quick look at what attributes an
-Active Record object has. This information is not in the model's code and is
-frequently spread across several migrations, but the information is nicely
-summed up in the schema file. The
-[annotate_models](https://github.com/ctran/annotate_models) gem automatically
-adds and updates comments at the top of each model summarizing the schema if
-you desire that functionality.
+若想了解 Active Record object 有什麼屬性，直接看 Schema 檔案是很有用的。因為屬性總是透過 migration 添加，要追蹤這些 migration 不容易，但最後的結果都總結在 schema 檔案裡。
+
+[annotate_models](https://github.com/ctran/annotate_models) Gem 自動替你在每個 model 最上方，添加或更新註解，描述每個 model 屬性的註解。
 
 ## 7.2 Schema Dump 的種類
 
