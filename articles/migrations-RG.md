@@ -916,28 +916,13 @@ ActiveRecord::Schema.define(version: 20080906171750) do
 end
 ```
 
-In many ways this is exactly what it is. This file is created by inspecting the
-database and expressing its structure using `create_table`, `add_index`, and so
-on. Because this is database-independent, it could be loaded into any database
-that Active Record supports. This could be very useful if you were to
-distribute an application that is able to run against multiple databases.
+許多情況下，這便是資料庫裡有的東西。這個檔案是檢查資料庫之後，用 `create_table`、`add_index` 這些 helper 來表示資料庫的結構。由於這獨立於資料庫，可以加載到任何 Active Record 所支援的資料庫。如果你的 app 要執行許多資料庫的時候，這點非常有用。
 
-There is however a trade-off: `db/schema.rb` cannot express database specific
-items such as foreign key constraints, triggers, or stored procedures. While in
-a migration you can execute custom SQL statements, the schema dumper cannot
-reconstitute those statements from the database. If you are using features like
-this, then you should set the schema format to `:sql`.
+但有好有壞：`db/schema.rb` 不能表達資料庫特有的功能，像是 foreign key constraints、triggers、或是 stored procedures。在 migration 可以執行任何 SQL 語句，但 schema dumper 不能從這些 SQL 語句裡重建出資料庫。如果要執行自訂的 SQL，記得將 schema 格式設定為 `:sql`。
 
-Instead of using Active Record's schema dumper, the database's structure will
-be dumped using a tool specific to the database (via the `db:structure:dump`
-Rake task) into `db/structure.sql`. For example, for PostgreSQL, the `pg_dump`
-utility is used. For MySQL, this file will contain the output of `SHOW CREATE
-TABLE` for the various tables.
+與其使用 Active Record 提供的 schema dumper，可以用資料庫專門的工具。透過 `db:structure:dump` 任務來導出 `db/structure.sql`。舉例來說，PostgreSQL 使用 `pg_dump`。MySQL 只不過是多張表的 `SHOW CREATE TABLE` 的結果。
 
-Loading these schemas is simply a question of executing the SQL statements they
-contain. By definition, this will create a perfect copy of the database's
-structure. Using the `:sql` schema format will, however, prevent loading the
-schema into a RDBMS other than the one used to create it.
+載入這些 schema ，不過是執行裡面的 SQL 語句。定義上來說，這可以完美拷貝一份資料庫的結構。但使用 `:sql` schema 格式，便不能從一種 RDBMS 資料庫，切換到另一種 RDBMS 資料庫了。
 
 ## 7.3 Schema Dumps 與版本管理
 
