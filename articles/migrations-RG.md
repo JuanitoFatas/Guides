@@ -592,40 +592,33 @@ rake db:rollback VERSION=20080906120000
 
 ## 4.1 回滾
 
-A common task is to rollback the last migration. For example, if you made a
-mistake in it and wish to correct it. Rather than tracking down the version
-number associated with the previous migration you can run
+最常見的就是回滾上一個 task。假設你犯了個錯誤，並想修正。可以：
 
 ```bash
 $ rake db:rollback
 ```
 
-This will rollback the latest migration, either by reverting the `change`
-method or by running the `down` method. If you need to undo
-several migrations you can provide a `STEP` parameter:
+會回退一個 migration。可以指定要回退幾步，使用 `STEP` 參數
 
 ```bash
 $ rake db:rollback STEP=3
 ```
 
-will revert the last 3 migrations.
+會取消前 3 次 migrations。
 
-The `db:migrate:redo` task is a shortcut for doing a rollback and then migrating
-back up again. As with the `db:rollback` task, you can use the `STEP` parameter
-if you need to go more than one version back, for example
+
+
+`db:migrate:redo` 用來回退、接著再一次 migrate，同樣接受 `STEP` 參數：
 
 ```bash
 $ rake db:migrate:redo STEP=3
 ```
 
-Neither of these Rake tasks do anything you could not do with `db:migrate`. They
-are simply more convenient, since you do not need to explicitly specify the
-version to migrate to.
+這些操作用 `db:migrate` 都辦得到，只是方便你使用而已。
 
 ## 4.2 設定資料庫
 
-The `rake db:setup` task will create the database, load the schema and initialize
-it with the seed data.
+The `rake db:setup` 會新建資料庫、載入 schema、並用種子資料來初始化資料庫。
 
 ## 4.3 重置資料庫
 
@@ -965,14 +958,13 @@ schema into a RDBMS other than the one used to create it.
 
 ## 7.3 Schema Dumps 與版本管理
 
-Because schema dumps are the authoritative source for your database schema, it
-is strongly recommended that you check them into source control.
+因為 schema dumps 是資料庫 schema 最完整的來源，強烈建議你將 schema 用版本管理來追蹤。
 
 # 8. Active Record 及 Referential Integrity
 
 Active Record 認為事情要在 model 裡處理好，不是在資料庫。也是因為這個原因，像是 trigger 或 foreign key constraints 這種牽涉到資料庫的事情不常使用
 
-`validates :foreign_key, uniqueness: true` 是整合資料的一種方法。`:dependet` 選項讓 model 可以自動 destory 與其關聯的資料。有人認為這種操作不能保證 referential integrity，要在資料庫解決才是。
+`validates :foreign_key, uniqueness: true` 是整合資料的一種方法。`:dependet` 選項讓 model 可以自動 destroy 與其關聯的資料。有人認為這種操作不能保證 referential integrity，要在資料庫解決才是。
 
 雖然 Active Record 沒有直接提供任何工具來解決這件事，但你可以用 `execute` 方法來執行 SQL 語句，也可以使用像是 [foreigner](https://github.com/matthuhiggins/foreigner) 這種 Gem。Foreigner 給  Active Record 加入 foreign key 的支援（包含在 `db/schema.rb` dumping foreign key。）
 
