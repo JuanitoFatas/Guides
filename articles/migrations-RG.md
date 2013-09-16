@@ -899,7 +899,7 @@ referencing the Product model in a migration, ensuring the Active Record's
 knowledge of the table structure is current before manipulating data in those
 records.
 
-# 7. Schema Dumping and You
+# 7. Schema Dumping 與你
 
 ## 7.1 Schema 有什麼用
 
@@ -926,13 +926,11 @@ you desire that functionality.
 
 ## 7.2 Schema Dump 的種類
 
-There are two ways to dump the schema. This is set in `config/application.rb`
-by the `config.active_record.schema_format` setting, which may be either `:sql`
-or `:ruby`.
+兩種方式來 dump schema。可在 `config/application.rb` 來設定：
 
-If `:ruby` is selected then the schema is stored in `db/schema.rb`. If you look
-at this file you'll find that it looks an awful lot like one very big
-migration:
+`config.active_record.schema_format`，可以是 `:sql` 或 `:ruby`。
+
+如果選擇用 `:ruby`，則 schema 會儲存在 `db/schema.rb`。打開這個檔案，你會看到像是下面的 migration：
 
 ```ruby
 ActiveRecord::Schema.define(version: 20080906171750) do
