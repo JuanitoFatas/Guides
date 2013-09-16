@@ -310,5 +310,58 @@ class AddDetailsToProducts < ActiveRecord::Migration
 end
 ```
 
+# 3. 撰寫 Migration
+
+## 3.1 產生 Table
+
+`create_table`，通常用 `rails generate model` 或是 `rails generate scaffold` 的時候會自動產生 Migration，裡面就帶有 `create_table`，比如 `rails g model product name:string`：
+
+```ruby
+create_table :products do |t|
+  t.string :name
+end
+```
+
+`create_table` 預設會產生主鍵（`id`），可以給主鍵換名字。用 `:primary_key`，或者是不要主鍵，可以傳入 `id: false`。要傳入資料庫相關的選項，可以用 `:options`
+
+```ruby
+create_table :products, options: "ENGINE=BLACKHOLE" do |t|
+  t.string :name, null: false
+end
+```
+
+會在產生出來的 SQL 語句，加上 `ENGINE=BLACKHOLE`。
+
+更多可查閱 [create_table](http://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-create_table) API。
 
 
+### 3.2 產生 Join Table
+
+`create_join_table` 會產生 HABTM (HasAndBelongsToMany) join table。常見的應用場景：
+
+```ruby
+create_join_table :products, :categories
+```
+
+會產生一個 `categories_products` 表，有著 `category_id` 與 `product_id` 欄位。這些欄位的預設選項是 `null: false`，可以在 `:column_options` 裡改為 `true`：
+
+```ruby
+create_join_table :products, :categories, column_options: {null: true}
+```
+
+可以更改 join table 的名字，使用 `table_name:` 選項：
+
+```ruby
+create_join_table :products, :categories, table_name: :categorization
+```
+
+便會產生出 `categorization` 表，一樣有 `category_id` 與 `product_id`。
+
+`create_join_table` 也接受區塊，可以用來加索引、或是再新增欄位：
+
+```ruby
+create_join_table :products, :categories do |t|
+  t.index :product_id
+  t.index :category_id
+end
+```
