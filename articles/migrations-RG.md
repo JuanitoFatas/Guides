@@ -672,10 +672,7 @@ $ rake db:migrate:up VERSION=20080906120000
 
 ## 4.5 在不同環境下執行 migration
 
-By default running `rake db:migrate` will run in the `development` environment.
-To run migrations against another environment you can specify it using the
-`RAILS_ENV` environment variable while running the command. For example to run
-migrations against the `test` environment you could run:
+默認 `rake db:migrate` 會在 `development` 環境下執行。可以通過指定 `RAILS_ENV` 來指定運行的環境，比如在 `test` 環境下：
 
 ```bash
 $ rake db:migrate RAILS_ENV=test
