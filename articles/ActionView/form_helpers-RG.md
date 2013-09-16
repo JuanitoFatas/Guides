@@ -503,7 +503,7 @@ __注意：__ `options_for_select` 的第二個參數的類型必須與你想要
 
 ## 3.3 從任意 objects 集合來的 option tags
 
-`options_for_select` 需要給一個 array 參數，包含了 option 的 text 與 value。但要是你已經有了 City model，而你想要從 model 裡生成這些選項該怎麼做？
+`options_for_select` 需要給一個 array 參數，包含了 option 的 `text` 與 `value`。但要是已經有了 City model，想要直接從 model 裡生成這些選項該怎麼做？
 
 ```erb
 <% cities_array = City.all.map { |city| [city.name, city.id] } %>
@@ -514,7 +514,7 @@ __注意：__ `options_for_select` 的第二個參數的類型必須與你想要
 
 這個 helper 接受一個隨意物件的集合（collection of arbitrary objects）及兩個額外的參數：讀取 `option` 的 **value** 與 **text** 的名稱。
 
-__注意__ **value** 與 **text** 的順序與 `options_for_select` 顛倒。
+__注意__ `options_from_collection_for_select` 參數 **value** 與 **text** 的順序與 `options_for_select` __顛倒__。
 
 ```erb
 <%= options_from_collection_for_select(City.all, :id, :name) %>
