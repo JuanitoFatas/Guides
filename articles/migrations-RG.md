@@ -14,6 +14,38 @@ __學習目標__
 * 了解 Migration 與 schema.rb 的關係。
 
 
+# 目錄
+
+- [1. 概要](#1-概要)
+- [2. 新增 Migration](#2-新增-migration)
+  - [2.1 新增獨立的 Migration](#21-新增獨立的-migration)
+  - [2.2 Modle 產生器](#22-modle-產生器)
+  - [2.3 類型修飾符](#23-類型修飾符)
+- [3. 撰寫 Migration](#3-撰寫-migration)
+  - [3.1 產生 Table](#31-產生-table)
+    - [3.2 產生 Join Table](#32-產生-join-table)
+    - [3.3 變更 Table](#33-變更-table)
+    - [3.4 When Helpers aren't Enough](#34-when-helpers-aren't-enough)
+    - [3.5 使用 `change` 方法](#35-使用-change-方法)
+    - [3.6 使用 `reversible`](#36-使用-reversible)
+    - [3.7 使用 `up`、`down` 方法](#37-使用-up、down-方法)
+    - [3.8 取消之前的 Migration](#38-取消之前的-migration)
+- [4. 執行 Migrations](#4-執行-migrations)
+  - [4.1 回滾](#41-回滾)
+  - [4.2 設定資料庫](#42-設定資料庫)
+  - [4.3 重置資料庫](#43-重置資料庫)
+  - [4.4 執行特定的 migration](#44-執行特定的-migration)
+  - [4.5 在不同環境下執行 migration](#45-在不同環境下執行-migration)
+  - [4.6 修改執行中 migration 的輸出](#46-修改執行中-migration-的輸出)
+- [5. 修改現有的 Migrations](#5-修改現有的-migrations)
+- [6. 在 Migration 裡使用 Model](#6-在-migration-裡使用-model)
+- [7. Schema Dumping and You](#7-schema-dumping-and-you)
+  - [7.1 Schema 有什麼用](#71-schema-有什麼用)
+  - [7.2 Schema Dump 的種類](#72-schema-dump-的種類)
+  - [7.3 Schema Dumps 與版本管理](#73-schema-dumps-與版本管理)
+- [8. Active Record 及 Referential Integrity](#8-active-record-及-referential-integrity)
+- [9. Migrations 與 Seed Data](#9-migrations-與-seed-data)
+
 # 1. 概要
 
 Migration 讓你...
@@ -622,13 +654,11 @@ The `rake db:setup` 會新建資料庫、載入 schema、並用種子資料來�
 
 ## 4.3 重置資料庫
 
-The `rake db:reset` task will drop the database and set it up again. This is
-functionally equivalent to `rake db:drop db:setup`.
+`rake db:reset` 會將資料庫 drop 掉，並重新恢復。
 
-NOTE: This is not the same as running all the migrations. It will only use the
-contents of the current schema.rb file. If a migration can't be rolled back,
-'rake db:reset' may not help you. To find out more about dumping the schema see
-'[schema dumping and you](#schema-dumping-and-you).'
+`rake db:reset` ＝ `rake db:drop db:setup`。
+
+__注意！__ 這跟執行所有的 migration 不一樣。這只會用 `schema.rb` 裡的內容來操作。如果 migration 不能回退， `rake db:reset` 也是派不上用場的！了解更多參考 [schema dumping and you](#schema-dumping-and-you)。
 
 ## 4.4 執行特定的 migration
 
