@@ -751,16 +751,11 @@ end
 
 舉例來說，
 
-一、用了尚未存在的資料庫欄位
+一、用了尚未存在的資料庫欄位。
 
-二、
+二、用了即將新增的資料庫欄位。
 
-For example, problems occur when the model uses database columns which are (1)
-not currently in the database and (2) will be created by this or a subsequent
-migration.
-
-Consider this example, where Alice and Bob are working on the same code base
-which contains a `Product` model:
+下面舉個例子，Alice 跟 Bob 協同開發，手上是兩份相同的代碼，裡面有一個 `Product` model：
 
 Bob 去度假了。
 
@@ -804,7 +799,7 @@ class AddFuzzToProduct < ActiveRecord::Migration
 end
 ```
 
-She also adds a validation to the `Product` model for the new column:
+又給 `Product` model 的新欄位加了驗證：
 
 ```ruby
 # app/models/product.rb
@@ -815,14 +810,14 @@ class Product < ActiveRecord::Base
 end
 ```
 
-Both migrations work for Alice.
+Migrations 在 Alice 的電腦上都沒有問題。
 
-Bob comes back from vacation and:
+Bob 放假歸來：
 
-*   Updates the source - which contains both migrations and the latest version
-    of the Product model.
-*   Runs outstanding migrations with `rake db:migrate`, which
-    includes the one that updates the `Product` model.
+* 先更新代碼 - 包含了 migrations 及最新的 Product model。
+* 執行 `rake db:migrate`
+
+Migration 突然失敗了，因為當執行第一個 migration 時，model 試圖要儲存第二次新增的欄位，而這個欄位資料庫裡還沒有：
 
 The migration crashes because when the model attempts to save, it tries to
 validate the second added column, which is not in the database when the _first_
