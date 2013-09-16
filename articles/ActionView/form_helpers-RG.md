@@ -522,9 +522,10 @@ __注意__ `options_from_collection_for_select` 參數 **value** 與 **text** �
 
 接著搭配 `select_tag` 使用，便可生成下拉式選單。但處理 model 時，要用 `collection_select`。
 
-複習下：
+複習：
 
 `select` = `select_tag` + `options_for_select`
+
 `collection_select` = `select_tag` + `options_from_collection_for_select`
 
 
