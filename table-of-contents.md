@@ -14,6 +14,8 @@
 
 [Rails Form Helpers 重點整理](/articles/ActionView/form_helpers-RG.md)
 
+[Active Record Migrations](/articles/migrations-RG.md)
+
 ### 非官方
 
 [Rails 風格指南(繁簡中文)](https://github.com/JuanitoFatas/rails-style-guide)

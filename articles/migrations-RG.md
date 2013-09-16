@@ -357,7 +357,7 @@ create_join_table :products, :categories, table_name: :categorization
 
 便會產生出 `categorization` 表，一樣有 `category_id` 與 `product_id`。
 
-`create_join_table` 也接受區塊，可以用來加索引、或是再新增欄位：
+`create_join_table` 也接受區塊，可以用來加索引、或是新增更多欄位：
 
 ```ruby
 create_join_table :products, :categories do |t|
@@ -365,3 +365,230 @@ create_join_table :products, :categories do |t|
   t.index :category_id
 end
 ```
+
+### 3.3 變更 Table
+
+`change_table` 用來變更已存在的 table。
+
+```ruby
+change_table :products do |t|
+  t.remove :description, :name
+  t.string :part_number
+  t.index :part_number
+  t.rename :upccode, :upc_code
+end
+```
+
+會移除 `description` 與 `name` 欄位。新增 `part_number` （字串）欄位，並打上索引。並將 `upccode` 欄位重新命名為 `upc_code`。
+
+### 3.4 When Helpers aren't Enough
+
+Active Record 提供的 Helper 無法完成你想做的事情時，可以使用 `execute` 方法來執行任何 SQL 語句：
+
+```ruby
+Products.connection.execute('UPDATE `products` SET `price`=`free` WHERE 1')
+```
+
+每個方法的更多細節與範例，請查閱 API 文件，特別是：
+
+[`ActiveRecord::ConnectionAdapters::SchemaStatements`](http://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html)
+(which provides the methods available in the `change`, `up` and `down` methods)
+
+[`ActiveRecord::ConnectionAdapters::TableDefinition`](http://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/TableDefinition.html)
+(which provides the methods available on the object yielded by `create_table`)
+
+[`ActiveRecord::ConnectionAdapters::Table`](http://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/Table.html)
+(which provides the methods available on the object yielded by `change_table`).
+
+### 3.5 使用 `change` 方法
+
+撰寫 migration 主要用 `change`，大多數情況 Active Record 知道如何執行逆操作。下面是 Active Record 可以自動產生逆操作的方法：
+
+* `add_column`
+* `add_index`
+* `add_reference`
+* `add_timestamps`
+* `create_table`
+* `create_join_table`
+* `drop_table` (must supply a block)
+* `drop_join_table` (must supply a block)
+* `remove_timestamps`
+* `rename_column`
+* `rename_index`
+* `remove_reference`
+* `rename_table`
+
+`change_table` 也是可逆的，只要傳給 `change_table` 的區塊沒有呼叫 `change`、`change_default` 或是 `remove` 即可。
+
+如果你想有更多的靈活性，可以使用 `reversible` 或是撰寫 `up`、`down` 方法。
+
+### 3.6 使用 `reversible`
+
+複雜的 migration Active Record 可能不知道怎麼變回來。這時候可以使用 `reversible`：
+
+```ruby
+class ExampleMigration < ActiveRecord::Migration
+  def change
+    create_table :products do |t|
+      t.references :category
+    end
+
+    reversible do |dir|
+      dir.up do
+        #add a foreign key
+        execute <<-SQL
+          ALTER TABLE products
+            ADD CONSTRAINT fk_products_categories
+            FOREIGN KEY (category_id)
+            REFERENCES categories(id)
+        SQL
+      end
+      dir.down do
+        execute <<-SQL
+          ALTER TABLE products
+            DROP FOREIGN KEY fk_products_categories
+        SQL
+      end
+    end
+
+    add_column :users, :home_page_url, :string
+    rename_column :users, :email, :email_address
+  end
+```
+
+Using `reversible` will ensure that the instructions are executed in the
+right order too. If the previous example migration is reverted,
+the `down` block will be run after the `home_page_url` column is removed and
+right before the table `products` is dropped.
+
+Sometimes your migration will do something which is just plain irreversible; for
+example, it might destroy some data. In such cases, you can raise
+`ActiveRecord::IrreversibleMigration` in your `down` block. If someone tries
+to revert your migration, an error message will be displayed saying that it
+can't be done.
+
+### 3.7 使用 `up`、`down` 方法
+
+You can also use the old style of migration using `up` and `down` methods
+instead of the `change` method.
+The `up` method should describe the transformation you'd like to make to your
+schema, and the `down` method of your migration should revert the
+transformations done by the `up` method. In other words, the database schema
+should be unchanged if you do an `up` followed by a `down`. For example, if you
+create a table in the `up` method, you should drop it in the `down` method. It
+is wise to reverse the transformations in precisely the reverse order they were
+made in the `up` method. The example in the `reversible` section is equivalent to:
+
+```ruby
+class ExampleMigration < ActiveRecord::Migration
+  def up
+    create_table :products do |t|
+      t.references :category
+    end
+
+    # add a foreign key
+    execute <<-SQL
+      ALTER TABLE products
+        ADD CONSTRAINT fk_products_categories
+        FOREIGN KEY (category_id)
+        REFERENCES categories(id)
+    SQL
+
+    add_column :users, :home_page_url, :string
+    rename_column :users, :email, :email_address
+  end
+
+  def down
+    rename_column :users, :email_address, :email
+    remove_column :users, :home_page_url
+
+    execute <<-SQL
+      ALTER TABLE products
+        DROP FOREIGN KEY fk_products_categories
+    SQL
+
+    drop_table :products
+  end
+end
+```
+
+If your migration is irreversible, you should raise
+`ActiveRecord::IrreversibleMigration` from your `down` method. If someone tries
+to revert your migration, an error message will be displayed saying that it
+can't be done.
+
+### 3.8 取消之前的 Migration
+
+You can use Active Record's ability to rollback migrations using the `revert` method:
+
+```ruby
+require_relative '2012121212_example_migration'
+
+class FixupExampleMigration < ActiveRecord::Migration
+  def change
+    revert ExampleMigration
+
+    create_table(:apples) do |t|
+      t.string :variety
+    end
+  end
+end
+```
+
+The `revert` method also accepts a block of instructions to reverse.
+This could be useful to revert selected parts of previous migrations.
+For example, let's imagine that `ExampleMigration` is committed and it
+is later decided it would be best to serialize the product list instead.
+One could write:
+
+```ruby
+class SerializeProductListMigration < ActiveRecord::Migration
+  def change
+    add_column :categories, :product_list
+
+    reversible do |dir|
+      dir.up do
+        # transfer data from Products to Category#product_list
+      end
+      dir.down do
+        # create Products from Category#product_list
+      end
+    end
+
+    revert do
+      # copy-pasted code from ExampleMigration
+      create_table :products do |t|
+        t.references :category
+      end
+
+      reversible do |dir|
+        dir.up do
+          #add a foreign key
+          execute <<-SQL
+            ALTER TABLE products
+              ADD CONSTRAINT fk_products_categories
+              FOREIGN KEY (category_id)
+              REFERENCES categories(id)
+          SQL
+        end
+        dir.down do
+          execute <<-SQL
+            ALTER TABLE products
+              DROP FOREIGN KEY fk_products_categories
+          SQL
+        end
+      end
+
+      # The rest of the migration was ok
+    end
+  end
+end
+```
+
+The same migration could also have been written without using `revert`
+but this would have involved a few more steps: reversing the order
+of `create_table` and `reversible`, replacing `create_table`
+by `drop_table`, and finally replacing `up` by `down` and vice-versa.
+This is all taken care of by `revert`.
+
+
