@@ -572,7 +572,7 @@ end
 
 這其實就是 `revert` 做的事。
 
-# 4. Running Migrations
+# 4. 執行 Migrations
 
 Rails 提供了許多 Rake 任務用來執行 migration。
 
@@ -590,7 +590,7 @@ rake db:rollback VERSION=20080906120000
 
 會從最新的版本，執行 `down` 方法到 `20080906120000` 但不包含（`20080906120000`）
 
-## 4.1 Rolling Back
+## 4.1 回滾
 
 A common task is to rollback the last migration. For example, if you made a
 mistake in it and wish to correct it. Rather than tracking down the version
@@ -622,12 +622,12 @@ Neither of these Rake tasks do anything you could not do with `db:migrate`. They
 are simply more convenient, since you do not need to explicitly specify the
 version to migrate to.
 
-## 4.2 Setup the Database
+## 4.2 設定資料庫
 
 The `rake db:setup` task will create the database, load the schema and initialize
 it with the seed data.
 
-## 4.3 Resetting the Database
+## 4.3 重置資料庫
 
 The `rake db:reset` task will drop the database and set it up again. This is
 functionally equivalent to `rake db:drop db:setup`.
@@ -637,7 +637,7 @@ contents of the current schema.rb file. If a migration can't be rolled back,
 'rake db:reset' may not help you. To find out more about dumping the schema see
 '[schema dumping and you](#schema-dumping-and-you).'
 
-## 4.4 Running Specific Migrations
+## 4.4 執行特定的 migration
 
 If you need to run a specific migration up or down, the `db:migrate:up` and
 `db:migrate:down` tasks will do that. Just specify the appropriate version and
@@ -653,7 +653,7 @@ will run the 20080906120000 migration by running the `change` method (or the
 first check whether the migration is already performed and will do nothing if
 Active Record believes that it has already been run.
 
-## 4.5 Running Migrations in Different Environments
+## 4.5 在不同環境下執行 migration
 
 By default running `rake db:migrate` will run in the `development` environment.
 To run migrations against another environment you can specify it using the
@@ -664,7 +664,7 @@ migrations against the `test` environment you could run:
 $ rake db:migrate RAILS_ENV=test
 ```
 
-## 4.6 Changing the Output of Running Migrations
+## 4.6 修改執行中 migration 的輸出
 
 By default migrations tell you exactly what they're doing and how long it took.
 A migration creating a table and adding an index might produce output like this
@@ -970,24 +970,11 @@ is strongly recommended that you check them into source control.
 
 # 8. Active Record 及 Referential Integrity
 
-The Active Record way claims that intelligence belongs in your models, not in
-the database. As such, features such as triggers or foreign key constraints,
-which push some of that intelligence back into the database, are not heavily
-used.
+Active Record 認為事情要在 model 裡處理好，不是在資料庫。也是因為這個原因，像是 trigger 或 foreign key constraints 這種牽涉到資料庫的事情不常使用
 
-Validations such as `validates :foreign_key, uniqueness: true` are one way in
-which models can enforce data integrity. The `:dependent` option on
-associations allows models to automatically destroy child objects when the
-parent is destroyed. Like anything which operates at the application level,
-these cannot guarantee referential integrity and so some people augment them
-with foreign key constraints in the database.
+`validates :foreign_key, uniqueness: true` 是整合資料的一種方法。`:dependet` 選項讓 model 可以自動 destory 與其關聯的資料。有人認為這種操作不能保證 referential integrity，要在資料庫解決才是。
 
-Although Active Record does not provide any tools for working directly with
-such features, the `execute` method can be used to execute arbitrary SQL. You
-can also use a gem like
-[foreigner](https://github.com/matthuhiggins/foreigner) which adds foreign key
-support to Active Record (including support for dumping foreign keys in
-`db/schema.rb`).
+雖然 Active Record 沒有直接提供任何工具來解決這件事，但你可以用 `execute` 方法來執行 SQL 語句，也可以使用像是 [foreigner](https://github.com/matthuhiggins/foreigner) 這種 Gem。Foreigner 給  Active Record 加入 foreign key 的支援（包含在 `db/schema.rb` dumping foreign key。）
 
 # 9. Migrations 與 Seed Data
 
