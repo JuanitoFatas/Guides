@@ -456,28 +456,16 @@ class ExampleMigration < ActiveRecord::Migration
   end
 ```
 
-Using `reversible` will ensure that the instructions are executed in the
-right order too. If the previous example migration is reverted,
-the `down` block will be run after the `home_page_url` column is removed and
-right before the table `products` is dropped.
+使用 `reversible` 會確保執行順序的正確性。若你做了不可逆的操作，比如刪除資料。Active Record 會在執行 `down` 區塊時，raise 一個 `ActiveRecord::IrreversibleMigration`。
 
-Sometimes your migration will do something which is just plain irreversible; for
-example, it might destroy some data. In such cases, you can raise
-`ActiveRecord::IrreversibleMigration` in your `down` block. If someone tries
-to revert your migration, an error message will be displayed saying that it
-can't be done.
 
 ### 3.7 使用 `up`、`down` 方法
 
-You can also use the old style of migration using `up` and `down` methods
-instead of the `change` method.
-The `up` method should describe the transformation you'd like to make to your
-schema, and the `down` method of your migration should revert the
-transformations done by the `up` method. In other words, the database schema
-should be unchanged if you do an `up` followed by a `down`. For example, if you
-create a table in the `up` method, you should drop it in the `down` method. It
-is wise to reverse the transformations in precisely the reverse order they were
-made in the `up` method. The example in the `reversible` section is equivalent to:
+可以不用 `change` 撰寫 migration，使用經典的寫法 `up`、`down` 寫法。
+
+`up` 撰寫 migrate、`down` 撰寫 rollback。兩個操作要可以互相抵消。舉例來說，`up` 建了一個 table，`down` 就要 drop 那個 table。
+
+上面使用 `reversible` 可以用 `up`＋`down` 改寫：
 
 ```ruby
 class ExampleMigration < ActiveRecord::Migration
@@ -512,14 +500,11 @@ class ExampleMigration < ActiveRecord::Migration
 end
 ```
 
-If your migration is irreversible, you should raise
-`ActiveRecord::IrreversibleMigration` from your `down` method. If someone tries
-to revert your migration, an error message will be displayed saying that it
-can't be done.
+如果 migration 是不可逆的操作，要在 `down` raise 一個 `ActiveRecord::IrreversibleMigration`。
 
 ### 3.8 取消之前的 Migration
 
-You can use Active Record's ability to rollback migrations using the `revert` method:
+用 `revert` 來取消先前的 migration：
 
 ```ruby
 require_relative '2012121212_example_migration'
@@ -535,11 +520,7 @@ class FixupExampleMigration < ActiveRecord::Migration
 end
 ```
 
-The `revert` method also accepts a block of instructions to reverse.
-This could be useful to revert selected parts of previous migrations.
-For example, let's imagine that `ExampleMigration` is committed and it
-is later decided it would be best to serialize the product list instead.
-One could write:
+`revert` 方法也接受區塊，可以只取消部份的 migration。看看這個例子（取消 `ExampleMigration`）：
 
 ```ruby
 class SerializeProductListMigration < ActiveRecord::Migration
@@ -585,10 +566,8 @@ class SerializeProductListMigration < ActiveRecord::Migration
 end
 ```
 
-The same migration could also have been written without using `revert`
-but this would have involved a few more steps: reversing the order
-of `create_table` and `reversible`, replacing `create_table`
-by `drop_table`, and finally replacing `up` by `down` and vice-versa.
-This is all taken care of by `revert`.
+上面這個 migration 也可以不用 `revert` 寫成。
 
+把 `create_table` 與 `reversible` 順序對換，`create_table` 換成 `drop_table`，最後對換 `up` `down`。
 
+這其實就是 `revert` 做的事。
