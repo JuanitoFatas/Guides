@@ -1,3 +1,4 @@
+
 # Active Record Migrations
 
 Migration，遷移。Active Record 眾多功能之一，可以追蹤管理資料庫的 schema，而不是寫死。最棒的是 Migration 提供了簡潔的 Ruby DSL，讓管理資料庫的 table 更方便。
@@ -16,6 +17,7 @@ __學習目標__
 
 # 目錄
 
+- [目錄](#目錄)
 - [1. 概要](#1-概要)
 - [2. 新增 Migration](#2-新增-migration)
   - [2.1 新增獨立的 Migration](#21-新增獨立的-migration)
@@ -39,12 +41,13 @@ __學習目標__
   - [4.6 修改執行中 migration 的輸出](#46-修改執行中-migration-的輸出)
 - [5. 修改現有的 Migrations](#5-修改現有的-migrations)
 - [6. 在 Migration 裡使用 Model](#6-在-migration-裡使用-model)
-- [7. Schema Dumping and You](#7-schema-dumping-and-you)
+- [7. Schema Dumping 與你](#7-schema-dumping-與你)
   - [7.1 Schema 有什麼用](#71-schema-有什麼用)
   - [7.2 Schema Dump 的種類](#72-schema-dump-的種類)
   - [7.3 Schema Dumps 與版本管理](#73-schema-dumps-與版本管理)
 - [8. Active Record 及 Referential Integrity](#8-active-record-及-referential-integrity)
 - [9. Migrations 與 Seed Data](#9-migrations-與-seed-data)
+  - [延伸閱讀](#延伸閱讀)
 
 # 1. 概要
 
@@ -658,7 +661,7 @@ The `rake db:setup` 會新建資料庫、載入 schema、並用種子資料來�
 
 `rake db:reset` ＝ `rake db:drop db:setup`。
 
-__注意！__ 這跟執行所有的 migration 不一樣。這只會用 `schema.rb` 裡的內容來操作。如果 migration 不能回退， `rake db:reset` 也是派不上用場的！了解更多參考 [schema dumping and you](#schema-dumping-and-you)。
+__注意！__ 這跟執行所有的 migration 不一樣。這只會用 `schema.rb` 裡的內容來操作。如果 migration 不能回退， `rake db:reset` 也是派不上用場的！了解更多參考 [schema dumping and you](#7-schema-dumping-與你)。
 
 ## 4.4 執行特定的 migration
 
@@ -963,3 +966,9 @@ end
 ```
 
 這個辦法比用 migration 來建立資料到空的資料庫好。
+
+## 延伸閱讀
+
+[Active Record Migrations — Ruby on Rails Guides](http://edgeguides.rubyonrails.org/migrations.html)
+
+[Ruby on Rails 實戰聖經 | Migrations（資料庫遷移）](http://ihower.tw/rails3/migrations.html)
