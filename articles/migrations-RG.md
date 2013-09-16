@@ -755,11 +755,11 @@ end
 
 二、用了即將新增的資料庫欄位。
 
-下面舉個例子，Alice 跟 Bob 協同開發，手上是兩份相同的代碼，裡面有一個 `Product` model：
+下面舉個例子，祝英台跟梁山伯協同開發，手上是兩份相同的代碼，裡面有一個 `Product` model：
 
-Bob 去度假了。
+梁山伯去度假了。
 
-Alice 給 `products` table 新增了一個 migration，加了新欄位，並初始化這個欄位。
+祝英台給 `products` table 新增了一個 migration，加了新欄位，並初始化這個欄位。
 
 ```ruby
 # db/migrate/20100513121110_add_flag_to_product.rb
@@ -784,7 +784,7 @@ class Product < ActiveRecord::Base
 end
 ```
 
-Alice 加入第二個驗證，並加入另一個欄位到 `products` table，並初始化：
+祝英台加入第二個驗證，並加入另一個欄位到 `products` table，並初始化：
 
 ```ruby
 # db/migrate/20100515121110_add_fuzz_to_product.rb
@@ -810,18 +810,14 @@ class Product < ActiveRecord::Base
 end
 ```
 
-Migrations 在 Alice 的電腦上都沒有問題。
+Migrations 在 祝英台的電腦上都沒有問題。
 
-Bob 放假歸來：
+梁山伯放假歸來：
 
-* 先更新代碼 - 包含了 migrations 及最新的 Product model。
-* 執行 `rake db:migrate`
+* 先更新代碼 - 包含了最新的 migrations 及 Product model。
+* 接著執行 `rake db:migrate`
 
-Migration 突然失敗了，因為當執行第一個 migration 時，model 試圖要儲存第二次新增的欄位，而這個欄位資料庫裡還沒有：
-
-The migration crashes because when the model attempts to save, it tries to
-validate the second added column, which is not in the database when the _first_
-migration runs:
+Migration 突然失敗了，因為當執行第一個 migration 時，model 試圖去驗證第二次新增的欄位，而這些欄位資料庫裡還沒有：
 
 ```
 rake aborted!
@@ -830,14 +826,11 @@ An error has occurred, this and all later migrations canceled:
 undefined method `fuzz' for #<Product:0x000001049b14a0>
 ```
 
-A fix for this is to create a local model within the migration. This keeps
-Rails from running the validations, so that the migrations run to completion.
+一個解決辦法是在 Migration 裡建一個 local model。這可以騙過 Rails，便不會觸發驗證。
 
-When using a local model, it's a good idea to call
-`Product.reset_column_information` to refresh the Active Record cache for the
-`Product` model prior to updating data in the database.
+使用 local model 時，在更新資料庫資料之前，記得要呼叫 `Product.reset_column_information` 來刷新 Active Record 對 `Product` model 的 cache。
 
-If Alice had done this instead, there would have been no problem:
+如果祝英台早知道這麼做，就不會有問題啦：
 
 ```ruby
 # db/migrate/20100513121110_add_flag_to_product.rb
@@ -873,26 +866,15 @@ class AddFuzzToProduct < ActiveRecord::Migration
 end
 ```
 
-There are other ways in which the above example could have gone badly.
+可能有比上面的例子更糟的情況。
 
-For example, imagine that Alice creates a migration that selectively
-updates the `description` field on certain products. She runs the
-migration, commits the code, and then begins working on the next feature,
-which is to add a new column `fuzz` to the products table.
+舉例來說，想想看，要是祝英台新增了一個 migration，選擇性地對某些 product 更新 `description` 欄位。她執行 migration，提交代碼，並開始做下個功能：添加 `fuzz` 到 products 表。
 
-She creates two migrations for this new feature, one which adds the new
-column, and a second which selectively updates the `fuzz` column based on
-other product attributes.
+她為這個新功能，又新增了兩個 migration，一個加入新欄位，另一個根據 product 的屬性選擇性更新 `fuzz` 欄位。
 
-These migrations run just fine, but when Bob comes back from his vacation
-and calls `rake db:migrate` to run all the outstanding migrations, he gets a
-subtle bug: The descriptions have defaults, and the `fuzz` column is present,
-but `fuzz` is `nil` on all products.
+這些 migration 在祝英台的計算機上執行沒有問題。但當梁山伯放假回來，執行 `rake db:migrate`，梁山伯碰到奇妙的 bug：`description` 有預設值，還新增了 `fuzz` 欄位，且所有的 products 的 `fuzz` 都是 `nil`。
 
-The solution is again to use `Product.reset_column_information` before
-referencing the Product model in a migration, ensuring the Active Record's
-knowledge of the table structure is current before manipulating data in those
-records.
+解決辦法是再次使用 `Product.reset_column_information`，確保 Active Record 在對這些 record 處理之前，知道整個 table 的結構。
 
 # 7. Schema Dumping 與你
 
