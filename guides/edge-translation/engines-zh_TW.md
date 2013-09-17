@@ -12,15 +12,15 @@ __特別要強調的翻譯名詞__
 
 讀完本篇可能會學到：
 
-* 什麼是 Engine。
+  * 什麼是 Engine。
 
-* 如何產生 Engine。
+  * 如何產生 Engine。
 
-* 怎麼給 Engine 加功能。
+  * 怎麼給 Engine 加功能。
 
-* 怎麼讓 Engine 與應用程式結合。
+  * 怎麼讓 Engine 與應用程式結合。
 
-* 在 application 裡覆寫 Engine 的功能。
+  * 在 application 裡覆寫 Engine 的功能。
 
 
 # 1. What are engines?
