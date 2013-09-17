@@ -10,11 +10,11 @@
 
 > 閱讀[官方 Rails Guides][edge] 的重點整理，算是不完整的翻譯。建議可快速瀏覽一遍，有個大概的了解之後，再去看[官方文件][edge]便可以快速理解了。
 
-[Rails I18n 重點整理](/articles/006-i18n-RG.md)
+[Rails I18n 重點整理](guides/edge-translation/i18n-zh_TW.md)
 
-[Rails Form Helpers 重點整理](/articles/ActionView/form_helpers-RG.md)
+[Rails Form Helpers 重點整理](guides/edge-translation/form-helpers-zh_TW.md)
 
-[Active Record Migrations](/articles/migrations-RG.md)
+[Active Record Migrations](guides/edge-translation/migrations-zh_TW.md)
 
 ### 非官方
 
