@@ -620,7 +620,7 @@ $ rake db:migrate VERSION=20080906120000
 ```
 
 ```bash
-rake db:rollback VERSION=20080906120000
+$ rake db:rollback VERSION=20080906120000
 ```
 
 會從最新的版本，執行 `down` 方法到 `20080906120000` 但不包含（`20080906120000`）
