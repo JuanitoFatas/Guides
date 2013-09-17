@@ -47,7 +47,7 @@ __學習目標__
   - [7.3 Schema Dumps 與版本管理](#73-schema-dumps-與版本管理)
 - [8. Active Record 及 Referential Integrity](#8-active-record-及-referential-integrity)
 - [9. Migrations 與 Seed Data](#9-migrations-與-seed-data)
-  - [延伸閱讀](#延伸閱讀)
+- [延伸閱讀](#延伸閱讀)
 
 # 1. 概要
 
@@ -967,7 +967,7 @@ end
 
 這個辦法比用 migration 來建立資料到空的資料庫好。
 
-## 延伸閱讀
+# 延伸閱讀
 
 [Active Record Migrations — Ruby on Rails Guides](http://edgeguides.rubyonrails.org/migrations.html)
 
