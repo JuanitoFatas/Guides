@@ -1,5 +1,8 @@
 require File.dirname(__FILE__) + "/github-emojis"
 
+DOCGUIDES_REPO_PATH  = "#{Dir.home}/docs/guides"
+RAILS_EDGE_REPO_PATH = "#{Dir.home}/dev/rails-edge/guides/source"
+
 ##
 # task 'whatsoever'.to_sym do ; end
 # This is necessary because rake will try to run every given args
@@ -47,6 +50,15 @@ task :msg do
   git_action(file_name, message: message)
   task message.to_sym do ; end
   task file_name.to_sym do ; end
+end
+
+desc "Update edge guides from Rails repo."
+task :update_guide do
+  system "cd #{RAILS_EDGE_REPO_PATH}"
+  puts "Pulling Latest Changes from rails/rails..."
+  system "git pull"
+  system "cp #{RAILS_EDGE_REPO_PATH}/*.md #{DOCGUIDES_REPO_PATH}/guides/edge/"
+  puts "All Guides Updated Successfully."
 end
 
 def git_action(file, **opts)
