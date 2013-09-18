@@ -4,7 +4,7 @@
 
 [Ruby 函數式程式設計(繁簡中文)](https://github.com/JuanitoFatas/Ruby-Functional-Programming)
 
-[Ruby Tips](/Ruby/index.md)
+[Ruby Tips](/articles/Ruby/index.md)
 
 ## Ruby on Rails Guides
 
