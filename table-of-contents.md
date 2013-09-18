@@ -4,6 +4,8 @@
 
 [Ruby 函數式程式設計(繁簡中文)](https://github.com/JuanitoFatas/Ruby-Functional-Programming)
 
+[Ruby Tips](/Ruby/index.md)
+
 ## Ruby on Rails Guides
 
 ### 官方 Ruby on Rails Edge Guides 重點整理
