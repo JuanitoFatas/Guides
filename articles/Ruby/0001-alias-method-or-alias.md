@@ -2,7 +2,7 @@
 
 `alias_method` __可重定義__。
 
-`alias` 根據 scope 的不同，會產生不同行為，__難以預期__。
+`alias` 根據 scope 的不同，會產生不同行為， __難以預期__。
 
 __結論：用 `alias_method` 即可。__
 
