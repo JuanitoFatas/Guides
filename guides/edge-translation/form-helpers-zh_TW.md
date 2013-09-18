@@ -105,7 +105,7 @@ __切記：搜索表單用正確的 HTTP 動詞：GET。__
 
 ### 1.2 Form Helper 呼叫裡傳多個 Hash
 
-`form_tag` 接受 2 個參數：_動作發生的路徑（path）與選項（以 hash 形式傳入）__。可指定送出時要用的方法，及更改表單元素的 class 等。
+`form_tag` 接受 2 個參數： __動作發生的路徑（path）與選項（以 hash 形式傳入）__。可指定送出時要用的方法，及更改表單元素的 class 等。
 
 跟 `link_to` 類似，路徑可以不是字串。可以是 Rails router 看的懂的 URL hash，比如：
 
