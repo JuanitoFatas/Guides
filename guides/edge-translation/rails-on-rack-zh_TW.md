@@ -10,6 +10,23 @@
 
 ## 目錄
 
+- [1. 簡介 Rack](#1-簡介-rack)
+- [2. Rails on Rack](#2-rails-on-rack)
+  - [2.1 Rails 應用程式的 Rack Object](#21-rails-應用程式的-rack-object)
+  - [2.2 `rails server`](#22-rails-server)
+  - [2.3 `rack up`](#23-rack-up)
+- [3. Action Dispatcher Middleware Stack](#3-action-dispatcher-middleware-stack)
+  - [3.1 查看 Middleware Stack](#31-查看-middleware-stack)
+  - [3.2 設定 Middleware Stack](#32-設定-middleware-stack)
+    - [3.2.1 新增 Middleware](#321-新增-middleware)
+    - [3.2.2 Swapping a Middleware](#322-swapping-a-middleware)
+    - [3.2.3 Middleware Stack is an Enumerable](#323-middleware-stack-is-an-enumerable)
+  - [3.3 內部 Middleware Stack](#33-內部-middleware-stack)
+  - [3.4 使用 Rack Builder](#34-使用-rack-builder)
+- [4. 學習資源](#4-學習資源)
+  - [4.1 學習 Rack](#41-學習-rack)
+  - [4.2 理解 Middlewares](#42-理解-middlewares)
+
 # 1. 簡介 Rack
 
 Rack 提供了簡單、精簡、模組化的介面，在 Ruby 裡開發 web 應用程式的介面。Rack 將 HTTP request 與 response 包裝成最簡單的形式，統整了 web 伺服器、web 框架、使用者與伺服器之間所需的軟體、API（這也是為什麼會稱為 middleware），全包裝成一個簡單的方法，`call`。
@@ -144,8 +161,7 @@ use Rack::ETag
 run MyApp::Application.routes
 ```
 
-每個 middleware 的用途在[3.3 內部 Middleware Stack]() 講解。
-
+每個 middleware 的用途在[3.3 內部 Middleware Stack](#33-內部-middleware-stack) 講解。
 
 ## 3.2 設定 Middleware Stack
 
