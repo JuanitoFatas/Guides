@@ -219,7 +219,7 @@ Action Controller 多數的功能皆以 middleware 的方式實現，下面這�
 | **`ActionDispatch::Static`** | 讓 Rails 提供靜態 assets。可透過 `config.serve_static_assets` 選項來開啟或關閉。 |
 | **`Rack::Lock`** | 將 `env["rack.multithread"]` 設為 `false` 可將應用程式包在 Mutex 裡。|
 | **`ActiveSupport::Cache::Strategy::LocalCache::Middleware`** | Used for memory caching. This cache is not thread safe. |
-| **`Rack::Runtime`** | Sets an X-Runtime header, containing the time (in seconds) taken to execute the request. |
+| **`Rack::Runtime`** | X-Runtime header, containing the time (in seconds) taken to execute the request. |
 | **`Rack::MethodOverride`** | * Allows the method to be overridden if `params[:_method]` is set. This is the middleware which supports the PUT and DELETE HTTP method types. |
 | **`ActionDispatch::RequestId`** | Makes a unique `X-Request-Id` header available to the response and enables the `ActionDispatch::Request#uuid` method. |
 | **`Rails::Rack::Logger`** | Notifies the logs that the request has began. After request is complete, flushes all the logs. |
@@ -243,6 +243,23 @@ Action Controller 多數的功能皆以 middleware 的方式實現，下面這�
 
 ## 3.4 使用 Rack Builder
 
+下面示範如何使用 Rack Builder 換掉 Rails 提供的 Middleware stack。
+
+__先清除 Rails 的 Middleware stack__
+
+```ruby
+# config/application.rb
+config.middleware.clear
+```
+
+修改 Rails.root 目錄下的 `config.ru`：
+
+```ruby
+# config.ru
+use MyOwnStackFromScratch
+run Rails.application
+```
+
 # 4. 學習資源
 
 ## 4.1 學習 Rack
@@ -251,7 +268,11 @@ Action Controller 多數的功能皆以 middleware 的方式實現，下面這�
 * [Introducing Rack](http://chneukirchen.org/blog/archive/2007/02/introducing-rack.html)
 * [Ruby on Rack #1 - Hello Rack!](http://m.onkey.org/ruby-on-rack-1-hello-rack)
 * [Ruby on Rack #2 - The Builder](http://m.onkey.org/ruby-on-rack-2-the-builder)
+* [#317 Rack App from Scratch (pro) - RailsCasts](http://railscasts.com/episodes/317-rack-app-from-scratch)
+* [#222 Rack in Rails 3 - RailsCasts](http://railscasts.com/episodes/222-rack-in-rails-3)
 
 ## 4.2 理解 Middlewares
+
+* [List of Rack Middlewares](https://github.com/rack/rack/wiki/List-of-Middleware)
 
 * [Railscast on Rack Middlewares](http://railscasts.com/episodes/151-rack-middleware)
