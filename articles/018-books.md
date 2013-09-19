@@ -22,6 +22,8 @@
 
 簡體中文：[Ruby on Rails 教程](http://railstutorial-china.org/)
 
+* [Rails 3 實戰聖經](http://ihower.tw/rails3)
+
 ## 收費
 
 * [Manning: Rails 4 in Action](http://www.manning.com/bigg2/)
@@ -32,12 +34,12 @@
 
 * [The Rails 4 way](https://leanpub.com/tr4w)
 
-* [Multitenancy with Rails by Ryan Bigg](https://leanpub.com/multi-tenancy-rails)
+* [Multitenancy with Rails by Ryan Bigg (Rails 3)](https://leanpub.com/multi-tenancy-rails)
 
 * [Riding Rails with AngularJS](https://leanpub.com/angularjs-rails)
 
 ## 測試相關書籍
 
-* [Everyday Rails Testing… by Aaron Sumner [PDF/iPad/Kindle]](https://leanpub.com/everydayrailsrspec)
+* [Everyday Rails Testing with Rails by Aaron Sumner (Rails 4)](https://leanpub.com/everydayrailsrspec)
 
-簡體中文：[使用 RSpec 测试… by Aaron Sumner et al. [PDF/iPad/Kindle]](https://leanpub.com/everydayrailsrspec-cn)
+簡體中文：[使用 RSpec 测试](https://leanpub.com/everydayrailsrspec-cn)
