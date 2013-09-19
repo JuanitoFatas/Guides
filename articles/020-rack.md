@@ -1,15 +1,15 @@
 # [Rack](http://rack.github.io)
 
 ```
- －－－－
-｜     ｜ <= User, Request goes in the form of HTTP protocol.
- －－－－
-｜     ｜ <= Web Server，Give you the Response back.
- －－－－
-｜     ｜ <= Your middle man between server and app, so called Middleware.
- －－－－
-｜     ｜ <= Rails application stack.
- －－－－
+ －－－－－
+｜Browser｜ <= User, Request goes in the form of HTTP protocol.
+ －－－－－
+｜Server ｜ <= Web Server，Give you the Response back.
+ －－－－－
+｜Rack   ｜ <= Your middle man between server and app, so called Middleware.
+ －－－－－
+｜       ｜ <= Rails application stack.
+ －－－－－
 ```
 
 __Response ＝ [Status, Header, Body]__
