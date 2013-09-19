@@ -20,6 +20,8 @@
 
 [Rails Engine 重點整理](guides/edge-translation/engines-zh_TW.md)
 
+[Rails on Rack 重點整理](guides/edge-translation/rails-on-rack-zh_TW.md)
+
 ### 非官方
 
 [Rails 風格指南(繁簡中文)](https://github.com/JuanitoFatas/rails-style-guide)
