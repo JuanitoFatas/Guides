@@ -43,7 +43,7 @@ Rack 提供了簡單、精簡、模組化的介面，在 Ruby 裡開發 web 應�
 
 ## 2.2 `rails server`
 
-執行 `rails server` 的時候，也會新建一個 Rack object，並啟動伺服器：
+執行 `rails server` 的時候，會新建一個 Rack object，並啟動伺服器：
 
 ```ruby
 Rails::Server.new.tap do |server|
@@ -53,7 +53,7 @@ Rails::Server.new.tap do |server|
 end
 ```
 
-`Rails::Server` 從 `::Rack::Server` 繼承而來，並這麼呼叫 `call`：
+`Rails::Server` 從 `::Rack::Server` 繼承而來，用 `start` 來呼叫 `call`：
 
 
 ```ruby
@@ -76,7 +76,7 @@ def middleware
 end
 ```
 
-開發模式下有多 2 個 Middleware：
+開發模式下，多 2 個 Middleware：
 
 | Middleware | 用途 |
 | :--------- | :------ |
@@ -85,7 +85,7 @@ end
 
 ## 2.3 `rack up`
 
-可以不用 `rails server` 來啟動 Rails，修改 Rails 專案的 `config.ru`：
+可以不用 `rails server` 來啟動 Rails，修改 Rails 專案的 `config.ru` 即可：
 
 ```ruby
 # Rails.root/config.ru
@@ -161,7 +161,7 @@ use Rack::ETag
 run MyApp::Application.routes
 ```
 
-每個 middleware 的用途在 [3.3 內部 Middleware Stack](#33-內部-middleware-stack) 講解。
+每個 middleware 的用途在 [3.3 內部 Middleware Stack](#33-內部-middleware-stack) 小節講解。
 
 ## 3.2 設定 Middleware Stack
 
@@ -234,24 +234,24 @@ Action Controller 多數的功能皆以 middleware 的方式實現，下面這�
 | :-- | :-- |
 | **`ActionDispatch::Static`** | 讓 Rails 提供靜態 assets。可透過 `config.serve_static_assets` 選項來開啟或關閉。 |
 | **`Rack::Lock`** | 將 `env["rack.multithread"]` 設為 `false` 可將應用程式包在 Mutex 裡。|
-| **`ActiveSupport::Cache::Strategy::LocalCache::Middleware`** | 用來做 memory cache。注意，但此 cache 不是線程安全。|
+| **`ActiveSupport::Cache::Strategy::LocalCache::Middleware`** | 用來做 memory cache。注意，此 cache 不是線程安全的。|
 | **`Rack::Runtime`** | 設定 X-Runtime header，並記錄這個 Request 跑多久（秒為單位）。|
-| **`Rack::MethodOverride`** | 透過 `params[:_method]` 允許 overridden 方法。這也是用來處理 HTTP PUT 與 DELETE 方法的 middleware。|
+| **`Rack::MethodOverride`** | 透過 `params[:_method]` 允許重寫方法。這也是用來處理 HTTP PUT 與 DELETE 方法的 middleware。|
 | **`ActionDispatch::RequestId`** | 給 response 產生獨立的 `X-Request-Id` Header，並啟用 `ActionDispatch::Request#uuid` 方法。|
 | **`Rails::Rack::Logger`** | 告訴 log 有 Request 進來了，Request 結束時，清空 log。|
 | **`ActionDispatch::ShowExceptions`** | Rescue 任何由應用程式拋出的 exception，並呼叫 exceptions app，將 expception 包裝成適合顯示給使用者的格式。|
 | **`ActionDispatch::DebugExceptions`** | 負責記錄 exceptions 並在 request 為本機的情況下，顯示 debugging 頁面。|
 | **`ActionDispatch::RemoteIp`** | 檢查 IP spoofing 攻擊。|
-| **`ActionDispatch::Reloader`** | 準備及清除 callbacks，在開發模式用來重新加載程式碼。|
+| **`ActionDispatch::Reloader`** | 準備及清除 callbacks。在開發模式下用來重新加載程式碼的 middleware。|
 | **`ActionDispatch::Callbacks`** | 處理請求前，先執行預備好的 callback。|
-| **`ActiveRecord::Migration::CheckPending`** | 檢查是否有未執行的 migrations，若有，觸發 `PendingMigrationError` 錯誤。|
-| **`ActiveRecord::ConnectionAdapters::ConnectionManagement`** | 每個請求結束後，除非 `rack.test` 設定為真，否則將作用中的連結（active connection）結束。|
+| **`ActiveRecord::Migration::CheckPending`** | 檢查是否有未執行的 migrations，若有，拋出 `PendingMigrationError` 錯誤。|
+| **`ActiveRecord::ConnectionAdapters::ConnectionManagement`** | 每個請求結束後，若 `rack.test` 不為真，則將作用中的連結（active connection）結束。|
 | **`ActiveRecord::QueryCache`** | 啟用 Active Record 的 query cache。|
 | **`ActionDispatch::Cookies`** | 幫請求設定 cookie。|
 | **`ActionDispatch::Session::CookieStore`** | 負責把 session 存到 cookie。|
 | **`ActionDispatch::Flash`** | `config.action_controller.session_store` 設定為真時，設定 [flash][theflash] keys。|
 | **`ActionDispatch::ParamsParser`** | 將參數解析成 `params` hash。|
-| **`ActionDispatch::Head`** | 將 HEAD 請求轉換成 GET 請求處理。|
+| **`ActionDispatch::Head`** | 將 HTTP HEAD 請求轉換成 GET 請求處理。|
 | **`Rack::ConditionalGet`** | 讓 Server 支持 HTTP 的 Conditional GET。|
 | **`Rack::ETag`** | 為所有字串 body 加上 ETag header，用來驗證 cache 之用。|
 
@@ -291,7 +291,6 @@ run Rails.application
 
 * [List of Rack Middlewares](https://github.com/rack/rack/wiki/List-of-Middleware)
 
-* [Railscast on Rack Middlewares](http://railscasts.com/episodes/151-rack-middleware)
-
+* [#151 Rack Middleware - RailsCasts](http://railscasts.com/episodes/151-rack-middleware)
 
 [theflash]: http://edgeguides.rubyonrails.org/action_controller_overview.html#the-flash
