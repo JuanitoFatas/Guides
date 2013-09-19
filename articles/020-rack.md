@@ -2,11 +2,13 @@
 
 ```
  －－－－
-｜     ｜ <= Web Server，Give you Response.
- －－－－
-｜     ｜ <= Your middle man between server, so called Middleware.
- －－－－
 ｜     ｜ <= User, Request goes in the form of HTTP protocol.
+ －－－－
+｜     ｜ <= Web Server，Give you the Response back.
+ －－－－
+｜     ｜ <= Your middle man between server and app, so called Middleware.
+ －－－－
+｜     ｜ <= Rails application stack.
  －－－－
 ```
 
