@@ -161,7 +161,7 @@ use Rack::ETag
 run MyApp::Application.routes
 ```
 
-每個 middleware 的用途在[3.3 內部 Middleware Stack](#33-內部-middleware-stack) 講解。
+每個 middleware 的用途在 [3.3 內部 Middleware Stack](#33-內部-middleware-stack) 講解。
 
 ## 3.2 設定 Middleware Stack
 
@@ -179,7 +179,7 @@ Rails 提供了 `config.middleware` 介面，讓你新增、移除、修改 midd
 
 範例：
 
-```
+```ruby
 # Push Rack::BounceFavicon at the bottom
 config.middleware.use Rack::BounceFavicon
 
@@ -192,7 +192,7 @@ config.middleware.insert_after ActiveRecord::QueryCache, Lifo::Cache, page_cache
 
 將 Middleware stack 的 middleware 交換位置：
 
-```
+```ruby
 # config/application.rb
 
 # Replace ActionDispatch::ShowExceptions with Lifo::ShowExceptions
@@ -234,26 +234,26 @@ Action Controller 多數的功能皆以 middleware 的方式實現，下面這�
 | :-- | :-- |
 | **`ActionDispatch::Static`** | 讓 Rails 提供靜態 assets。可透過 `config.serve_static_assets` 選項來開啟或關閉。 |
 | **`Rack::Lock`** | 將 `env["rack.multithread"]` 設為 `false` 可將應用程式包在 Mutex 裡。|
-| **`ActiveSupport::Cache::Strategy::LocalCache::Middleware`** | Used for memory caching. This cache is not thread safe. |
-| **`Rack::Runtime`** | X-Runtime header, containing the time (in seconds) taken to execute the request. |
-| **`Rack::MethodOverride`** | * Allows the method to be overridden if `params[:_method]` is set. This is the middleware which supports the PUT and DELETE HTTP method types. |
-| **`ActionDispatch::RequestId`** | Makes a unique `X-Request-Id` header available to the response and enables the `ActionDispatch::Request#uuid` method. |
-| **`Rails::Rack::Logger`** | Notifies the logs that the request has began. After request is complete, flushes all the logs. |
-| **`ActionDispatch::ShowExceptions`** | Rescues any exception returned by the application and calls an exceptions app that will wrap it in a format for the end user. |
-| **`ActionDispatch::DebugExceptions`** | Responsible for logging exceptions and showing a debugging page in case the request is local. |
-| **`ActionDispatch::RemoteIp`** | Checks for IP spoofing attacks. |
-| **`ActionDispatch::Reloader`** | Provides prepare and cleanup callbacks, intended to assist with code reloading during development. |
-| **`ActionDispatch::Callbacks`** | Runs the prepare callbacks before serving the request.
-| **`ActiveRecord::Migration::CheckPending`** | Checks pending migrations and raises `ActiveRecord::PendingMigrationError` if any migrations are pending. |
-| **`ActiveRecord::ConnectionAdapters::ConnectionManagement`** | Cleans active connections after each request, unless the `rack.test` key in the request environment is set to `true`. |
-| **`ActiveRecord::QueryCache`** | Enables the Active Record query cache. |
-| **`ActionDispatch::Cookies`** | Sets cookies for the request. |
-| **`ActionDispatch::Session::CookieStore`** | Responsible for storing the session in cookies. |
-| **`ActionDispatch::Flash`** | Sets up the flash keys. Only available if `config.action_controller.session_store` is set to a value. |
-| **`ActionDispatch::ParamsParser`** | Parses out parameters from the request into `params`. |
-| **`ActionDispatch::Head`** | Converts HEAD requests to `GET` requests and serves them as so. |
-| **`Rack::ConditionalGet`** | Adds support for "Conditional `GET`" so that server responds with nothing if page wasn't changed. |
-| **`Rack::ETag`** | Adds ETag header on all String bodies. ETags are used to validate cache. |
+| **`ActiveSupport::Cache::Strategy::LocalCache::Middleware`** | 用來做 memory cache。注意，但此 cache 不是線程安全。|
+| **`Rack::Runtime`** | 設定 X-Runtime header，並記錄這個 Request 跑多久（秒為單位）。|
+| **`Rack::MethodOverride`** | 透過 `params[:_method]` 允許 overridden 方法。這也是用來處理 HTTP PUT 與 DELETE 方法的 middleware。|
+| **`ActionDispatch::RequestId`** | 給 response 產生獨立的 `X-Request-Id` Header，並啟用 `ActionDispatch::Request#uuid` 方法。|
+| **`Rails::Rack::Logger`** | 告訴 log 有 Request 進來了，Request 結束時，清空 log。|
+| **`ActionDispatch::ShowExceptions`** | Rescue 任何由應用程式拋出的 exception，並呼叫 exceptions app，將 expception 包裝成適合顯示給使用者的格式。|
+| **`ActionDispatch::DebugExceptions`** | 負責記錄 exceptions 並在 request 為本機的情況下，顯示 debugging 頁面。|
+| **`ActionDispatch::RemoteIp`** | 檢查 IP spoofing 攻擊。|
+| **`ActionDispatch::Reloader`** | 準備及清除 callbacks，在開發模式用來重新加載程式碼。|
+| **`ActionDispatch::Callbacks`** | 處理請求前，先執行預備好的 callback。|
+| **`ActiveRecord::Migration::CheckPending`** | 檢查是否有未執行的 migrations，若有，觸發 `PendingMigrationError` 錯誤。|
+| **`ActiveRecord::ConnectionAdapters::ConnectionManagement`** | 每個請求結束後，除非 `rack.test` 設定為真，否則將作用中的連結（active connection）結束。|
+| **`ActiveRecord::QueryCache`** | 啟用 Active Record 的 query cache。|
+| **`ActionDispatch::Cookies`** | 幫請求設定 cookie。|
+| **`ActionDispatch::Session::CookieStore`** | 負責把 session 存到 cookie。|
+| **`ActionDispatch::Flash`** | `config.action_controller.session_store` 設定為真時，設定 [flash][theflash] keys。|
+| **`ActionDispatch::ParamsParser`** | 將參數解析成 `params` hash。|
+| **`ActionDispatch::Head`** | 將 HEAD 請求轉換成 GET 請求處理。|
+| **`Rack::ConditionalGet`** | 讓 Server 支持 HTTP 的 Conditional GET。|
+| **`Rack::ETag`** | 為所有字串 body 加上 ETag header，用來驗證 cache 之用。|
 
 以上的 middleware 都可以在自己的 Rack stack 裡使用。
 
@@ -292,3 +292,6 @@ run Rails.application
 * [List of Rack Middlewares](https://github.com/rack/rack/wiki/List-of-Middleware)
 
 * [Railscast on Rack Middlewares](http://railscasts.com/episodes/151-rack-middleware)
+
+
+[theflash]: http://edgeguides.rubyonrails.org/action_controller_overview.html#the-flash
