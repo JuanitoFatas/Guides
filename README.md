@@ -2,6 +2,8 @@
 
 ## [點擊此處至目錄](/table-of-contents.md)
 
+## [Ruby on Rails Edge Guides 翻譯](/guides/index.md)
+
 ## 意見？
 
 [歡迎開 issue 與我討論](https://github.com/JuanitoFatas/Guides/issues)，或是寫信給我吧：
