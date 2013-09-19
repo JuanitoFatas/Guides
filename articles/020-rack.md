@@ -12,9 +12,9 @@
 
 Response ＝ [Status, Header, Body]
 
-> Status: Integer
-> Header: Hash
-> Body:   Array
+> Status: Integer <br>
+> Header: Hash <br>
+> Body:   Array <br>
 
 ```ruby
 # Typical Response
@@ -35,7 +35,7 @@ Sinatra、Ruby on Rails、幾乎所有用 Ruby 寫成的 web framework，都采�
 
 # 延伸閱讀
 
-https://github.com/rack/rack/wiki
+* [Rack Wiki](https://github.com/rack/rack/wiki)
 
 * [Creating Static Sites in Ruby with Rack | Heroku Dev Center](https://devcenter.heroku.com/articles/static-sites-ruby)
 
@@ -43,4 +43,4 @@ https://github.com/rack/rack/wiki
 
 * [Exploring Rack | Nettuts+](http://net.tutsplus.com/tutorials/exploring-rack/)
 
-[Build your own web framework with Rack and Ruby - Part 1 – Blog – isotope|eleven](http://isotope11.com/blog/build-your-own-web-framework-with-rack-and-ruby-part-1) No part 2.
+* [Build your own web framework with Rack and Ruby - Part 1 – Blog – isotope|eleven](http://isotope11.com/blog/build-your-own-web-framework-with-rack-and-ruby-part-1) No part 2.
