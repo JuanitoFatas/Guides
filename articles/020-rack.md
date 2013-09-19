@@ -4,13 +4,13 @@
  －－－－
 ｜     ｜ <= Web Server，Give you Response.
  －－－－
-｜     ｜ <= Your middle man between server, we called it Middleware.
+｜     ｜ <= Your middle man between server, so called Middleware.
  －－－－
-｜     ｜ <= User，Your Request goes in form of HTTP protocol.
+｜     ｜ <= User, Request goes in the form of HTTP protocol.
  －－－－
 ```
 
-Response ＝ [Status, Header, Body]
+__Response ＝ [Status, Header, Body]__
 
 > Status: Integer <br>
 > Header: Hash <br>
