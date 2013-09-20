@@ -29,11 +29,11 @@ __特別要強調的翻譯名詞__
 
 # 1. What are engines?
 
-Engine 可以想成__微型的 Rails 應用程式__ ，抽掉了某些功能。可以安裝到（mount）宿主程式裡，添加新功能。Rails 本身也是個 Engine，Rails 應用程式 `Rails::Application` 繼承自 `Rails::Engine`，Rails 不過就是個“強大的” Engine。
+Engine 可以想成 __微型的 Rails 應用程式__ ，抽掉了某些功能。可以安裝到（mount）宿主程式裡，為宿主添加新功能。Rails 本身也是個 Engine，Rails 應用程式 `Rails::Application` 繼承自 `Rails::Engine`，其實 Rails 不過就是個“強大的” Engine。
 
-Rails 還有 plugin，plugin 跟 Engine 很像。兩者都有 `lib` 目錄結構，皆采用 `rails plugin new` 來產生 Engine 與 plugin。但還是不太一樣，Engine 可以想成是“完整的 plugin”。Engine 可以是 plugin；Plugin 也可是 Engine。
+Rails 還有 plugin，plugin 跟 Engine 很像。兩者都有 `lib` 目錄結構，皆采用 `rails plugin new` 來產生 Engine 與 plugin。Engine 可以是 plugin；Plugin 也可是 Engine。但還是不太一樣，Engine 可以想成是“完整的 plugin”。
 
-下面會用一個 “blorgh” Engine 的例子來講解。這個 “blorgh” 給宿主提供了：新增 post、新增 comments 等功能。接著我們會先開發 Engine，再把 Engine 安裝到應用程式。
+下面會用一個 `blorgh` Engine 的例子來講解。這個 `blorgh` 給宿主提供了：新增 posts、新增 comments 等功能。接著我們會先開發 Engine，再把 Engine 安裝到應用程式。
 
 假設路由裡有 `posts_path` 這個 routing helper，宿主會提供這個功能、Engine 也會提供，這兩者並不衝突。也就是說 Engine 可從宿主抽離出來。
 
@@ -48,6 +48,12 @@ __記住！宿主的優先權最高，Engine 不過給宿主提供新功能。__
 [Spree](https://github.com/spree/spree) 提供電子商務平台。
 
 [RefineryCMS](https://github.com/refinery/refinerycms) 內容管理系統。
+
+[Rails Admin](https://github.com/sferik/rails_admin) 內容管理系統。
+
+[Active Admin](https://github.com/sferik/active_admin) 內容管理系統。
+
+## 1.1 Rails Engine 開發簡史
 
 感謝 James Adam、Piotr Sarnacki、Rails 核心成員及無數人員的辛苦努力，沒有他們就沒有 Rails Engine！
 
