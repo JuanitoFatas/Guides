@@ -64,7 +64,7 @@ __特別要強調的翻譯名詞__
 
 # 1. Engine 是什麼
 
-Engine 可以想成是抽掉了某些功能的 Rails 應用程式：__微型的 Rails 應用程式__ 。可以安裝到（mount）宿主，為宿主添加新功能。Rails 本身也是個 Engine，Rails 應用程式 `Rails::Application` 繼承自 `Rails::Engine`，其實 Rails 不過就是個“強大的” Engine。
+Engine 可以想成是抽掉了某些功能的 Rails 應用程式： __微型的 Rails 應用程式__ 。可以安裝到（mount）宿主，為宿主添加新功能。Rails 本身也是個 Engine，Rails 應用程式 `Rails::Application` 繼承自 `Rails::Engine`，其實 Rails 不過就是個“強大的” Engine。
 
 Rails 還有插件功能，插件跟 Engine 很像。兩者都有 `lib` 目錄結構，皆采用 `rails plugin new` 來產生 Engine 與插件。Engine 可以是插件；插件也可是 Engine。但還是不太一樣，Engine 可以想成是“完整的插件”。
 
@@ -928,10 +928,258 @@ get :index
 get :index, use_route: :blorgh
 ```
 
-# 6. Improving engine functionality
+# 6. 增進 Engine 的功能
 
 本節講解如何在宿主應用程式裡，為 Engine 添加新功能，或是覆寫 Engine 的功能。
 
+## 6.1 覆寫 Model 與 Controller
+
+要擴展 Engine 的 model 與 controller，在宿主利用 Ruby 可打開某個類的特性，“打開”要修改的類別即可。通常會使用叫做 “decorator” 的設計模式。
+
+簡單的類別修改呢，可以用 `Class#class_eval`，複雜的修改用 `ActiveSupport::Concern`。
+
+## 6.2 關於 Decorator 與加載代碼
+
+因為這些 `decorator` 是你加的，Rails 應用程式不知道他們在哪，Rails 的 autoload 不會自動幫你加載，也就是需要自己手工 `require`：
+
+比如可以這樣子加載（Engine 目錄下的 `lib/blorgh/engine.rb`）：
+
+```ruby
+module Blorgh
+  class Engine < ::Rails::Engine
+    isolate_namespace Blorgh
+
+    config.to_prepare do
+      Dir.glob(Rails.root + "app/decorators/**/*_decorator*.rb").each do |c|
+        require_dependency(c)
+      end
+    end
+  end
+end
+```
+
+不僅是 Decorator，任何你為 Engine 新增，而宿主無法參照的功能都可以。
+
+## 6.3 用 `Class#class_eval` 來實現 Decorator 設計模式
+
+**比如要新增** `Post#time_since_created`，
+
+```ruby
+# unicorn/app/decorators/models/blorgh/post_decorator.rb
+
+Blorgh::Post.class_eval do
+  def time_since_created
+    Time.current - created_at
+  end
+end
+```
+
+```ruby
+# Blorgh/app/models/post.rb
+
+class Post < ActiveRecord::Base
+  has_many :comments
+end
+```
+
+**覆寫** `Post#summary`
+
+```ruby
+# unicorn/app/decorators/models/blorgh/post_decorator.rb
+
+Blorgh::Post.class_eval do
+  def summary
+    "#{title} - #{truncate(text)}"
+  end
+end
+```
+
+```ruby
+# Blorgh/app/models/post.rb
+
+class Post < ActiveRecord::Base
+  has_many :comments
+  def summary
+    "#{title}"
+  end
+end
+```
+
+## 6.4 用 `ActiveSupport::Concern` 來實現 Decorator 設計模式
+
+簡單的改動用 `Class#class_eval` 就可以了，更複雜的情況，考慮看看使用 [`ActiveSupport::Concern`](http://edgeapi.rubyonrails.org/classes/ActiveSupport/Concern.html) 吧。
+
+`ActiveSupport::Concern` 幫你處理錯綜複雜的 module 相依關係。
+
+**添加** `Post#time_since_created` 並 **覆寫** `Post#summary`
+
+```ruby
+# MyApp/app/models/blorgh/post.rb
+
+class Blorgh::Post < ActiveRecord::Base
+  include Blorgh::Concerns::Models::Post
+
+  def time_since_created
+    Time.current - created_at
+  end
+
+  def summary
+    "#{title} - #{truncate(text)}"
+  end
+end
+```
+
+```ruby
+# Blorgh/app/models/post.rb
+
+class Post < ActiveRecord::Base
+  include Blorgh::Concerns::Models::Post
+end
+```
+
+```ruby
+# Blorgh/lib/concerns/models/post
+
+module Blorgh::Concerns::Models::Post
+  extend ActiveSupport::Concern
+
+  # 'included do' causes the included code to be evaluated in the
+  # context where it is included (post.rb), rather than be
+  # executed in the module's context (blorgh/concerns/models/post).
+  included do
+    attr_accessor :author_name
+    belongs_to :author, class_name: "User"
+
+    before_save :set_author
+
+    private
+      def set_author
+        self.author = User.find_or_create_by(name: author_name)
+      end
+  end
+
+  def summary
+    "#{title}"
+  end
+
+  module ClassMethods
+    def some_class_method
+      'some class method string'
+    end
+  end
+end
+```
+
+## 6.5 覆寫 views
+
+當 Rails 要渲染某個 view 時，會先從宿主的 `app/views` 找起，接著才是 Engine 的 `app/views`。
+
+`Blorgh::PostController` 的 `index` action 執行時，首先會在宿主的 `app/views/blorgh/posts/index.html.erb` 尋找是否有 `index.html.erb`，接著才在自己的 `app/views/blorgh/posts/index.html.erb` 下尋找。
+
+那要怎麼覆寫這個 view 呢？在宿主目錄下新建 `app/views/blorgh/posts/index.html.erb`。試試看，並填入以下內容：
+
+```html+erb
+<h1>Posts</h1>
+<%= link_to "New Post", new_post_path %>
+<% @posts.each do |post| %>
+  <h2><%= post.title %></h2>
+  <small>By <%= post.author %></small>
+  <%= simple_format(post.text) %>
+  <hr>
+<% end %>
+```
+
+## 6.6 路由
+
+在 Engine 裡定義的路由，默認下是與宿主定義的路由分離，確保兩者之間不衝突。
+
+假設今天，想要要是 erb 是從 Engine 渲染的，則存取 Engine 的 `posts_path`，要是從宿主，就去宿主的 `posts_path`：
+
+```erb
+<%= link_to "Blog posts", posts_path %>
+```
+這有可能會跳到 Engine 或是宿主的 `posts_path`。
+
+Engine 與宿主的存取方法如下：
+
+Engine 的 `posts_path` （這叫 routing proxy 方法，與 Engine 名字相同）：
+
+```erb
+<%= link_to "Blog posts", blorgh.posts_path %>
+```
+
+宿主的 `posts_path` （`Rails::Engine` 提供的 [`main_app`](http://edgeapi.rubyonrails.org/classes/Rails/Engine.html) helper）：
+
+```erb
+<%= link_to "Home", main_app.root_path %>
+```
+
+這可以拿來實現回首頁的功能。
+
+## 6.7 Assets
+
+Assets 跟平常 Rails 應用程式的工作方式相同。記得 assets 也要放在命名空間下，避免衝突。比如 Engine 有 `style.css`，放在 `app/assets/stylesheets/[engine name]/style.css` 即可。
+
+假設 Engine 有 `app/assets/stylesheets/blorgh/style.css`，在宿主怎麼引用呢？用 `stylesheet_link_tag`：
+
+```erb
+<%= stylesheet_link_tag "blorgh/style.css" %>
+```
+
+Asset Pipeline 的 require 語句同樣有效：
+
+```
+/*
+ *= require blorgh/style
+*/
+```
+
+要使用 Sass 或是 CoffeeScript，記得將這些 gem 加到 Engine 的 `[engine name].gemspec`。
+
+## 6.8 Separate Assets & Precompiling
+
+某些情況下宿主不需要用到 engine 的 assets。比如說針對 Engine 管理員的 `admin.css` 或 `admin.js`。只有 Engine 的 admin layout 需要這些 assets。這個情況下，可以在預編譯裡定義這些 assets，告訴 sprockets 要在 `rake assets:precompile` 加入 Engine 的 assets。
+
+可以在 Engine 目錄下的 `lib/blorgh/engine.rb`，定義要預編譯的 assets：
+
+```ruby
+initializer "blorgh.assets.precompile" do |app|
+  app.config.assets.precompile += %w(admin.css admin.js)
+end
+```
+
+更多細節請閱讀： [Asset Pipeline guide](asset_pipeline.html)。
+
+## 6.9 Other gem dependencies
+
+Engine 依賴的 Gem 要在 `[engine name].gemspec` 裡明確聲明。因為 Engine 可能會被當成 gem 安裝到宿主，把 Engine 依賴的 Gem 寫在 Engine 的 `Gemfile`，不會像傳統的 `gem install` 那樣安裝這些 Gem，進而導致你的 Engine 無法工作。
+
+聲明 Engine 執行會用到 Gem，打開 `[engine name].gemspec`，找到 `Gem::Specification` 區塊：
+
+```ruby
+s.add_dependency "moo"
+```
+
+開發 Engine 會用到的 Gem：
+
+```ruby
+s.add_development_dependency "moo"
+```
+
+執行 `bundle install` 時會安裝這些 gems，而 development dependency 的 gem 只有在跑 Engine 的測試時會用到。
+
+注意！若想在 Engine 被使用時，就用到某些相依的 RubyGems，要在 Engine 的 `engine.rb` 裡明確 `require`：
+
+
+```ruby
+require 'other_engine/engine'
+require 'yet_another_engine/engine'
+
+module MyEngine
+  class Engine < ::Rails::Engine
+  end
+end
+```
 
 # 延伸閱讀
 
