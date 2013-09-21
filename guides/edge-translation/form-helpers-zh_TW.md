@@ -72,7 +72,7 @@
 
 ## 1.1 通用搜索表單
 
-最簡單的表單之一就是搜索表單了，通常有：
+最簡單的表單就是搜索表單了，通常有：
 
 * 一個有 GET 動詞的表單。
 * 可輸入文字的 input。
@@ -87,7 +87,7 @@
 <% end %>
 ```
 
-用了這四個 helper：`form_tag`、`label_tag`、`text_field_tag`、`submit_tag`。
+用到這四個 helper：`form_tag`、`label_tag`、`text_field_tag`、`submit_tag`。
 
 會產生如下 HTML：
 
@@ -120,7 +120,7 @@ form_tag(controller: "people", action: "search", method: "get", class: "nifty_fo
 # => '<form accept-charset="UTF-8" action="/people/search?method=get&class=nifty_form" method="post">'
 ```
 
-這時候 Ruby 認為你只傳了一個 hash，所以 `method` 與 `class` 跑到 query string 裡了，要明顯的分隔開來才是：
+這時候 Ruby 認為你只傳了一個 hash，所以 `method` 與 `class` 跑到 query string 裡了，要明確的分隔開來才是：
 
 ```ruby
 form_tag({controller: "people", action: "search"}, method: "get", class: "nifty_form")
@@ -185,7 +185,7 @@ Checkbox? 使用者有一系列的選項，可多選：
 <label for="age_adult">I'm over 21</label>
 ```
 
-`radio_button_tag` 第二個參數同樣是 `input` 的 `value`，上例中 `name` 都是 `age`，若使用者有按其中一個 radiobutton 的話，可以用 `params[:age]` 取出。可能的值是 `"child"` 或 `"adult"`。
+`radio_button_tag` 第二個參數同樣是 `input` 的 `value`，上例中 `name` 都是 `age`，若使用者有按其中一個 radio button 的話，可以用 `params[:age]` 取出。可能的值是 `"child"` 或 `"adult"`。
 
 __記得要給 checkbox 與 radio button 加上 `label`，這樣讓可按的區域變得較廣。__
 
@@ -385,7 +385,7 @@ Rails 框架提倡使用 _RESTful_ 風格來設計  application 。這表示會�
 form_tag(search_path, method: "patch")
 ```
 
-output:
+輸出：
 
 ```html
 <form accept-charset="UTF-8" action="/search" method="post">
@@ -490,7 +490,7 @@ __注意：__ `options_for_select` 的第二個參數的類型必須與你想要
 <%= select(:person, :city_id, [['Lisbon', 1], ['Madrid', 2], ...]) %>
 ```
 
-注意到第三個參數，跟傳給 `options_for_select` 的參數一樣。你無需煩惱如果使用者已經屬於某個城市，Rails 會自己去讀取 `@person.city_id` 幫你決定預選擇的城市是哪個。
+注意到第三個參數，跟傳給 `options_for_select` 的參數一樣。無需煩惱使用者是否屬於某個城市，Rails 會自己去讀取 `@person.city_id` 幫你決定預選擇的城市是哪個。
 
 也可以用 form builder：
 
@@ -577,7 +577,7 @@ params[:start_date][:month]
 params[:start_date][:day]
 ```
 
-要獲得實際的 `Time` 或 `Date` object，要先將這些值取出，丟給對的 constructor 處理：priate constructor, for example
+要獲得實際的 `Time` 或 `Date` object，要先將這些值取出，丟給對的 constructor 處理：priate constructor，舉例來說：
 
 ```ruby
 Date.civil(params[:start_date][:year].to_i, params[:start_date][:month].to_i, params[:start_date][:day].to_i)
@@ -867,7 +867,6 @@ Array 參數跟 `check_box` 配合的不好。根據 HTML 的規範來看，沒�
 <!-- NOT CLEAR -->
 Rails 知道這些輸入都是 person 的一部分，因為我們用的是 `fields_for`。而指定 `:index` 選項你告訴 Rails 在 `person[address][city]` 之間插入 id。這通常是用來，修改特定 id 的 Active Record object。
 
-
 看另外一個嵌套的例子。
 
 ```erb
@@ -896,7 +895,7 @@ __`fields_for` 或 `form_for` 傳入的名字 ＋ index 的值 ＋ 屬性名稱_
 
 # 8. 給外部的 resource 使用的表單
 
-如果需要將資料 post 到外部的 resource，通常外部的 resource 會給你一個 token，可以用 `form_tag` 加入這個選項：
+如果需要將資料 POST 到外部的 resource，通常外部的 resource 會給你一個 token，可以用 `form_tag` 加入這個選項：
 
 ```erb
 <%= form_tag 'http://farfar.away/form', authenticity_token: 'external_token') do %>
