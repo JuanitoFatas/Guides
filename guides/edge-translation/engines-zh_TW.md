@@ -457,10 +457,14 @@ create      test/fixtures/blorgh/comments.yml
 
 同樣，這都放在 Engine 的 Namespace 下。
 
-migrate 一下：
+migrate 我們的 comment model：
 
 ```bash
 $ rake db:migrate
+==  CreateBlorghComments: migrating ===========================================
+-- create_table(:blorgh_comments)
+   -> 0.0051s
+==  CreateBlorghComments: migrated (0.0052s) ==================================
 ```
 
 要在文章裡顯示評論，打開 `app/views/blorgh/posts/show.html.erb`，找到：
@@ -552,9 +556,7 @@ invoke    css
 create      app/assets/stylesheets/blorgh/comments.css
 ```
 
-當表單送 POST 請求到 `/posts/:post_id/comments/` 時，controller （`Blorgh::CommentsController`）要有 `create` action 來回應，打開 `app/controllers/blorgh/comments_controller.rb`：
-
-添加：
+當表單送 POST 請求到 `/posts/:post_id/comments/` 時，controller （`Blorgh::CommentsController`）要有 `create` action 來回應，打開 `app/controllers/blorgh/comments_controller.rb`，並添加：
 
 ```ruby
 def create
@@ -574,8 +576,8 @@ private
 
 ```
 Missing partial blorgh/comments/comment with {:handlers=>[:erb, :builder], :formats=>[:html], :locale=>[:en, :en]}. Searched in:
-  * "/Users/ryan/Sites/side_projects/blorgh/test/dummy/app/views"
-  * "/Users/ryan/Sites/side_projects/blorgh/app/views"
+  * "/Users/yourname/parth-to-engine/blorgh/test/dummy/app/views"
+  * "/Users/yourname/parth-to-engine/blorgh/app/views"
 ```
 
 Engine 找不到 partial。因為 Rails 在 `test/dummy` 的 `app/views` 目錄下面找，接著去 Engine 的 `app/views` 目錄找，然後沒找到！
@@ -586,7 +588,7 @@ Engine 找不到 partial。因為 Rails 在 `test/dummy` 的 `app/views` 目錄�
 <%= comment_counter + 1 %>. <%= comment.text %> <br>
 ```
 
-`comment_counter` 是從哪來的？`<%= render @post.comments %>`。
+`comment_counter` 是從哪來的？ :point_right: `<%= render @post.comments %>`。
 
 好了，評論功能做完了！
 
