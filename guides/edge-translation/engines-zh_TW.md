@@ -314,7 +314,7 @@ Engine 的整合測試（Integration test）放這裡。其他相關的測試也
 $ rails generate scaffold post title:string text:text
 ```
 
-This command will output this information:
+會輸出：
 
 ```
 invoke  active_record
