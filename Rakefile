@@ -1,6 +1,10 @@
 require File.dirname(__FILE__) + "/github-emojis"
 
+##
+# this repository's path
 DOCGUIDES_REPO_PATH  = "#{Dir.home}/docs/guides"
+##
+# where you clone rails/rails
 RAILS_EDGE_REPO_PATH = "#{Dir.home}/dev/rails-edge/guides/source"
 
 ##
