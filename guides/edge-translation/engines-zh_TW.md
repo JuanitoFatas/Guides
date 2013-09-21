@@ -31,7 +31,7 @@
   - [6.4 用 `ActiveSupport::Concern` 來實現 Decorator 設計模式](#64-用-activesupportconcern-來實現-decorator-設計模式)
   - [6.5 覆寫 views](#65-覆寫-views)
   - [6.6 路由](#66-路由)
-    - [6.6.1 Rename Engine Routing Proxy method](#rename-engine-routing-proxy-method)
+    - [6.6.1 重新命名 Engine Routing Proxy 方法](#661-重新命名-engine-routing-proxy-方法)
   - [6.7 Assets](#67-assets)
   - [6.8 宿主用不到的 Assets 與預編譯](#68-宿主用不到的-assets-與預編譯)
   - [6.9 Engine 依賴的 Gem](#69-engine-依賴的-gem)
@@ -1116,7 +1116,7 @@ Engine 的 `posts_path` （這叫 routing proxy 方法，與 Engine 名字相同
 
 這可以拿來實現回首頁的功能。
 
-### 6.6.1 Rename Engine Routing Proxy method
+### 6.6.1 重新命名 Engine Routing Proxy 方法
 
 有兩個地方可換 Engine 名字：
 
