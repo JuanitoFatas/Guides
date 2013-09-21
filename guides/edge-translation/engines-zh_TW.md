@@ -2,9 +2,7 @@
 
 ## 目錄
 
-- [1. Rails Engine](#1-rails-engine)
-  - [](#)
-- [1. What are engines?](#1-what-are-engines)
+- [1. Engine 是什麼](#1-engine-是什麼)
   - [1.1 Rails Engine 開發簡史](#11-rails-engine-開發簡史)
 - [2. 產生 Engine](#2-產生-engine)
   - [2.1 Engine 裡面有什麼](#21-engine-裡面有什麼)
@@ -15,8 +13,29 @@
 - [3. 給 Engine 加功能](#3-給-engine-加功能)
   - [3.1 建立 post resource](#31-建立-post-resource)
   - [3.2 產生 comment resource](#32-產生-comment-resource)
-
-# 1. Rails Engine
+- [4. 安裝至宿主](#4-安裝至宿主)
+  - [4.1 安裝 Engine](#41-安裝-engine)
+  - [4.2 Engine setup](#42-engine-setup)
+  - [4.3 使用宿主提供的類別](#43-使用宿主提供的類別)
+    - [4.3.1 使用宿主提供的 model](#431-使用宿主提供的-model)
+    - [4.3.2 使用宿主提供的 controller](#432-使用宿主提供的-controller)
+  - [4.4 設定 Engine](#44-設定-engine)
+    - [4.4.1 在宿主設定](#441-在宿主設定)
+    - [4.4.2 Engine 的通用設定](#442-engine-的通用設定)
+- [5. 測試 Engine](#5-測試-engine)
+  - [5.1 功能性測試](#51-功能性測試)
+- [6. Improving engine functionality](#6-improving-engine-functionality)
+  - [6.1 Overriding Models and Controllers](#61-overriding-models-and-controllers)
+  - [6.2 A note on Decorators and loading code](#62-a-note-on-decorators-and-loading-code)
+  - [6.3 Implementing Decorator Pattern Using Class#class_eval](#63-implementing-decorator-pattern-using-class#class_eval)
+  - [6.4 Implementing Decorator Pattern Using ActiveSupport::Concern](#64-implementing-decorator-pattern-using-activesupportconcern)
+  - [6.5 Overriding views](#65-overriding-views)
+    - [Routes](#routes)
+  - [6.6 Routes](#66-routes)
+  - [6.7 Assets](#67-assets)
+  - [6.8 Separate Assets & Precompiling](#68-separate-assets-&-precompiling)
+  - [6.9 Other gem dependencies](#69-other-gem-dependencies)
+- [延伸閱讀](#延伸閱讀)
 
 __特別要強調的翻譯名詞__
 
@@ -30,7 +49,7 @@ __特別要強調的翻譯名詞__
 
 本篇介紹 「Rails Engine」。怎麼優雅地把 Engine 掛到應用程式裡。
 
-讀完本篇可能會學到：
+讀完本篇可能會學到.....
 
   * 什麼是 Engine。
 
@@ -43,7 +62,7 @@ __特別要強調的翻譯名詞__
   * 在應用程式裡覆寫 Engine 的功能。
 
 
-# 1. What are engines?
+# 1. Engine 是什麼
 
 Engine 可以想成是抽掉了某些功能的 Rails 應用程式：__微型的 Rails 應用程式__ 。可以安裝到（mount）宿主，為宿主添加新功能。Rails 本身也是個 Engine，Rails 應用程式 `Rails::Application` 繼承自 `Rails::Engine`，其實 Rails 不過就是個“強大的” Engine。
 
@@ -911,23 +930,8 @@ get :index, use_route: :blorgh
 
 # 6. Improving engine functionality
 
-## 6.1 Overriding Models and Controllers
+本節講解如何在宿主應用程式裡，為 Engine 添加新功能，或是覆寫 Engine 的功能。
 
-## 6.2 A note on Decorators and loading code
-
-## 6.3 Implementing Decorator Pattern Using Class#class_eval
-
-## 6.4 Implementing Decorator Pattern Using ActiveSupport::Concern
-
-## 6.5 Overriding views
-
-## 6.6 Routes
-
-## 6.7 Assets
-
-## 6.8 Separate Assets & Precompiling
-
-## 6.9 Other gem dependencies
 
 # 延伸閱讀
 
