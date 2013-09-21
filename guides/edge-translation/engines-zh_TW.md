@@ -909,9 +909,9 @@ initializer、i18n、或是做其他的設定，在 Engine 裡怎麼做呢？Eng
 
 就跟設定 Rails 應用程式一樣。
 
-#### 4.4.2.1 Initalizer Example: Devise `devise_for`
+#### 4.4.2.1 Initalizer 例子：Devise `devise_for`
 
-用過 Devise 同學可能在 `config/routes.rb` 都看過 `devise_for` 大概是怎麼實現的呢？
+用過 Devise 同學可能在 `config/routes.rb` 都看過 `devise_for` ，大概是怎麼實現的呢？
 
 以下代碼僅做示意之用，並非實際 Devise 的代碼：
 
@@ -938,6 +938,45 @@ module Devise
       mount Devise::Engine => "/user"
       get "sign_in", :to => "devise/sessions#new"
     end
+  end
+end
+```
+
+#### 4.4.2.2 變更 Engine 預設的測試框架
+
+```ruby
+# lib/blorgh/engine.rb
+module Blorgh
+  class Engine < ::Rails::Engines
+    isolate_namespace Blorgh
+    config.app_generators.test_framework :rspec
+  end
+end
+```
+
+#### 4.4.2.3 變更 Engine 預設的模版引擎
+
+```ruby
+# lib/blorgh/engine.rb
+module Blorgh
+  class Engine < ::Rails::Engines
+    isolate_namespace Blorgh
+    config.app_generators.template_engine :haml
+  end
+end
+```
+
+#### 4.4.2.4 添加 Middleware 到 Engine 的 Middleware stack
+
+```ruby
+# lib/blorgh/engine.rb
+module Blorgh
+  class Engine < ::Rails::Engines
+    isolate_namespace Blorgh
+    middleware.use Rack::Cache,
+      :verbose => true,
+      :metastore   => 'file:/var/cache/rack/meta',
+      :entitystore => 'file:/var/cache/rack/body'
   end
 end
 ```
