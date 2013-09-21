@@ -515,7 +515,7 @@ __注意__ `options_for_select` 的第二个参数的类型必须与你想要的
 
 这个 helper 接受一个随意对象的集合（collection of arbitrary objects）及两个额外的参数：读取 `option` 的 **value** 与 **text** 的名称。
 
-__ 注意 `options_from_collection_for_select` 参数 `value` 与 `text` 的顺序与 `options_for_select` 颠倒 __。
+__注意 `options_from_collection_for_select` 参数 `value` 与 `text` 的顺序与 `options_for_select` 颠倒__。
 
 ```erb
 <%= options_from_collection_for_select(City.all, :id, :name) %>
@@ -673,7 +673,7 @@ __经验法则：跟 model 用 `date_select`、其它情况用 `select_date`。_
 
 # 5. 上传文件
 
-常见的任务是上传文件，无论是图片或是 CSV。最最最重要的事情是，__必须__ 把编码设成 `"multipart/form-data"`。 `form_for` 已经设定好了、`form_tag` 要自己设定。
+常见的任务是上传文件，无论是图片或是 CSV。最最最重要的事情是， __必须__ 把编码设成 `"multipart/form-data"`。 `form_for` 已经设定好了、`form_tag` 要自己设定。
 
 下面包含了两个表单，用来上传文件。
 
@@ -884,7 +884,7 @@ Rails 知道这些输入都是 person 的一部分，因为我们用的是 `fiel
 
 通用规则：
 
-__`fields_for` 或 `form_for` 传入的名字 ＋ index 的值 ＋ 属性名称 __
+__`fields_for` 或 `form_for` 传入的名字 ＋ index 的值 ＋ 属性名称__
 
 有一个小技巧是加上 `[]`，而不用传入 `index: address` 选项，上面的例子等同于：
 
