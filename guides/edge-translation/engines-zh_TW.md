@@ -318,7 +318,7 @@ $ rails generate scaffold post title:string text:text
 
 ```
 invoke  active_record
-create    db/migrate/20130921092807_create_blorgh_posts.rb
+create    db/migrate/[timestamp]_create_blorgh_posts.rb
 create    app/models/blorgh/post.rb
 invoke    test_unit
 create      test/models/blorgh/post_test.rb
@@ -432,9 +432,98 @@ root to: "posts#index"
 
 現在只要到 [http://localhost:3000/blorgh](http://localhost:3000/blorgh/) 就可以跳轉到 [http://localhost:3000/blorgh/posts](http://localhost:3000/blorgh/posts) 了！
 
-__這裡的 `root` 指得是 Engine 的：`http://localhost:3000/blorgh/`__
+__這裡的 `root` 是 Engine 的：`http://localhost:3000/blorgh/`__
 
-## 3.2 Generating a comment resource
+## 3.2 產生 comment resource
+
+好了，Engine 現在可以新增文章了！接下來加入評論功能。怎麼加呢？先產生 comment model、comment controller 並修改由 scaffold 產生出的 post，讓使用者可以瀏覽評論或新增評論。
+
+一步一步來，從建立 `Comment` model 開始，每個 comment 都有與之關聯的 post (`post_id`)：
+
+```bash
+$ rails generate model Comment post_id:integer text:text
+```
+
+會輸出：
+
+```
+invoke  active_record
+create    db/migrate/[timestamp]_create_blorgh_comments.rb
+create    app/models/blorgh/comment.rb
+invoke    test_unit
+create      test/models/blorgh/comment_test.rb
+create      test/fixtures/blorgh/comments.yml
+```
+
+同樣，這都放在 Engine 的 Namespace 下。
+
+要在文章裡顯示評論，打開 `app/views/blorgh/posts/show.html.erb`，找到：
+
+```erb
+<%= link_to 'Edit', edit_post_path(@post) %> |
+```
+
+在這行之前添加：
+
+```html+erb
+<h3>Comments</h3>
+<%= render @post.comments %>
+```
+
+`@post.comments` 會需要聲明 Post 與 Comment 之間的關係。打開 `app/models/blorgh/post.rb`，添加 `has_many :comments`：
+
+```ruby
+module Blorgh
+  class Post < ActiveRecord::Base
+    has_many :comments
+  end
+end
+```
+
+好了，厲害的同學可能會問：「老師！為什麼不用 `has_many` 裡面的 `:class_name` 選項呢？」因為 model 是定義在 `Blorgh` Module 裡面，Rails 自己就知道要用 `Blorgh::Comment` model 了哦 ^_^！
+
+接下來新增在文章中添加評論的表單，打開 `app/views/blorgh/posts/show.html.erb`，添加這行到剛剛添加的 `render @post.comments` 下面：
+
+```erb
+<%= render "blorgh/comments/form" %>
+```
+
+但我們還沒有新增這個 partial，首先新增目錄：
+
+```bash
+mkdir -p app/views/blorgh/comments
+```
+
+並新增：
+
+```bash
+touch app/views/blorgh/comments/_form.html.erb
+```
+
+```html+erb
+<h3>New comment</h3>
+<%= form_for [@post, @post.comments.build] do |f| %>
+  <p>
+    <%= f.label :text %><br>
+    <%= f.text_area :text %>
+  </p>
+  <%= f.submit %>
+<% end %>
+```
+
+表單送出時，會對 `/posts/:post_id/comments/` 做 POST。目前還沒有這條路由，讓我們來添加一下，打開 `config/routes.rb`
+
+```ruby
+resources :posts do
+  resources :comments
+end
+```
+
+現在 model、路由有了，接著就是處理 route 的 controller 了：
+
+```bash
+$ rails g controller comments
+```
 
 # 4. Hooking into an application
 
