@@ -10,6 +10,8 @@ __特別要強調的翻譯名詞__
 
 > host application ＝ 宿主。
 
+> plugin ＝ 插件。
+
 --
 
 本篇介紹 「Rails Engine」。怎麼優雅地把 Engine 掛到應用程式裡。
@@ -24,14 +26,14 @@ __特別要強調的翻譯名詞__
 
   * 怎麼讓 Engine 與應用程式結合。
 
-  * 在 application 裡覆寫 Engine 的功能。
+  * 在應用程式裡覆寫 Engine 的功能。
 
 
 # 1. What are engines?
 
-Engine 可以想成 __微型的 Rails 應用程式__ ，抽掉了某些功能。可以安裝到（mount）宿主程式裡，為宿主添加新功能。Rails 本身也是個 Engine，Rails 應用程式 `Rails::Application` 繼承自 `Rails::Engine`，其實 Rails 不過就是個“強大的” Engine。
+Engine 可以想成是抽掉了某些功能的 Rails 應用程式：__微型的 Rails 應用程式__ 。可以安裝到（mount）宿主，為宿主添加新功能。Rails 本身也是個 Engine，Rails 應用程式 `Rails::Application` 繼承自 `Rails::Engine`，其實 Rails 不過就是個“強大的” Engine。
 
-Rails 還有 plugin，plugin 跟 Engine 很像。兩者都有 `lib` 目錄結構，皆采用 `rails plugin new` 來產生 Engine 與 plugin。Engine 可以是 plugin；Plugin 也可是 Engine。但還是不太一樣，Engine 可以想成是“完整的 plugin”。
+Rails 還有插件功能，插件跟 Engine 很像。兩者都有 `lib` 目錄結構，皆采用 `rails plugin new` 來產生 Engine 與插件。Engine 可以是插件；插件也可是 Engine。但還是不太一樣，Engine 可以想成是“完整的插件”。
 
 下面會用一個 `blorgh` Engine 的例子來講解。這個 `blorgh` 給宿主提供了：新增 posts、新增 comments 等功能。接著我們會先開發 Engine，再把 Engine 安裝到應用程式。
 
@@ -39,22 +41,23 @@ Rails 還有 plugin，plugin 跟 Engine 很像。兩者都有 `lib` 目錄結構
 
 __記住！宿主的優先權最高，Engine 不過給宿主提供新功能。__
 
-有幾個 Rails Engine 的例子：
+以下皆是以 Rails Engine 實現的 RubyGems：
 
-[Devise](https://github.com/plataformatec/devise) 提供使用者驗證功能。
+* [Devise](https://github.com/plataformatec/devise) 提供使用者驗證功能。
 
-[Forem](https://github.com/radar/forem) 提供論壇功能。
+* [Forem](https://github.com/radar/forem) 提供論壇功能。
 
-[Spree](https://github.com/spree/spree) 提供電子商務平台。
+* [Spree](https://github.com/spree/spree) 提供電子商務平台。
 
-[RefineryCMS](https://github.com/refinery/refinerycms) 內容管理系統。
+* [RefineryCMS](https://github.com/refinery/refinerycms) 內容管理系統。
 
-[Rails Admin](https://github.com/sferik/rails_admin) 內容管理系統。
+* [Rails Admin](https://github.com/sferik/rails_admin) 內容管理系統。
 
-[Active Admin](https://github.com/sferik/active_admin) 內容管理系統。
+* [Active Admin](https://github.com/sferik/active_admin) 內容管理系統。
 
 ## 1.1 Rails Engine 開發簡史
 
+<!--TOWRITE-->
 感謝 James Adam、Piotr Sarnacki、Rails 核心成員及無數人員的辛苦努力，沒有他們就沒有 Rails Engine！
 
 # 2. 產生 Engine
@@ -65,22 +68,53 @@ __記住！宿主的優先權最高，Engine 不過給宿主提供新功能。__
 $ rails plugin new blorgh --mountable
 ```
 
-完整選項輸入 `--help` 查看：
+產生出的 Engine 的目錄結構：
+
+```
+.
+├── app
+├── bin
+├── blorgh.gemspec
+├── config
+├── lib
+├── test
+├── Gemfile
+├── Gemfile.lock
+├── MIT-LICENSE
+├── README.rdoc
+└── Rakefile
+```
+
+`--help` 可查看完整說明：
 
 ```bash
 $ rails plugin --help
 ```
 
-The `--full` 選項告訴產生器，你要產生一個包含如下目錄結構的 Engine：
+讓我們看看 `--full` 選項跟 `--mountable` 的差異，`--mountable` 多加了下列檔案：
 
-  * An `app` directory tree
-  * A `config/routes.rb` file:
+* Asset Manifest files（`application.css`、`application.js`）。
+* Controller `application_controller.rb`。
+* Helper `application_helper.rb`。
+* layout 的 view 模版: `application.html.erb`。
+* 命名空間與 Rails 應用程式分離的 `config/routes.rb`：
+
+  - `--full`：
 
     ```ruby
     Rails.application.routes.draw do
     end
     ```
-  * A file at `lib/blorgh/engine.rb` which is identical in function to a standard Rails application's `config/application.rb` file:
+
+  - `--mountable`：
+
+    ```ruby
+    Blorgh::Engine.routes.draw do
+    end
+    ```
+* `lib/blorgh/engine.rb`：
+
+  - `--full`：
 
     ```ruby
     module Blorgh
@@ -89,20 +123,7 @@ The `--full` 選項告訴產生器，你要產生一個包含如下目錄結構�
     end
     ```
 
-The `--mountable` option tells the generator that you want to create a "mountable" and namespace-isolated engine. This generator will provide the same skeleton structure as would the `--full` option, and will add:
-
-  * Asset manifest files (`application.js` and `application.css`)
-  * A namespaced `ApplicationController` stub
-  * A namespaced `ApplicationHelper` stub
-  * A layout view template for the engine
-  * Namespace isolation to `config/routes.rb`:
-
-    ```ruby
-    Blorgh::Engine.routes.draw do
-    end
-    ```
-
-  * Namespace isolation to `lib/blorgh/engine.rb`:
+  - `--mountable`：
 
     ```ruby
     module Blorgh
@@ -112,80 +133,162 @@ The `--mountable` option tells the generator that you want to create a "mountabl
     end
     ```
 
-Additionally, the `--mountable` option tells the generator to mount the engine inside the dummy testing application located at `test/dummy` by adding the following to the dummy application's routes file at `test/dummy/config/routes.rb`:
+除了上述差異外，`--mountable` 還會把產生出來的 Engine 安裝至 `test/dummy` 下的 Rails 應用程式，`test/dummy/config/routes.rb`:
 
 ```ruby
 mount Blorgh::Engine, at: "blorgh"
 ```
 
-### Inside an engine
+## 2.1 Engine 裡面有什麼
 
-#### Critical files
+Engine 目錄結構：
+```
+.
+├── app
+├── bin
+├── blorgh.gemspec
+├── config
+├── db
+├── lib
+├── test
+├── Gemfile
+├── Gemfile.lock
+├── MIT-LICENSE
+├── README.rdoc
+└── Rakefile
+```
 
-At the root of this brand new engine's directory lives a `blorgh.gemspec` file. When you include the engine into an application later on, you will do so with this line in the Rails application's `Gemfile`:
+### 2.1.1 重要的檔案
+
+__`blorgh.gemspec`__
+
+當 Engine 開發完畢時，安裝到宿主的時候，需要在宿主的 Gemfile 添加：
 
 ```ruby
 gem 'blorgh', path: "vendor/engines/blorgh"
 ```
 
-Don't forget to run `bundle install` as usual. By specifying it as a gem within the `Gemfile`, Bundler will load it as such, parsing this `blorgh.gemspec` file and requiring a file within the `lib` directory called `lib/blorgh.rb`. This file requires the `blorgh/engine.rb` file (located at `lib/blorgh/engine.rb`) and defines a base module called `Blorgh`.
+執行 `bundle install` 安裝時，Bundler 會去解析 `blorgh.gemspec`，並安裝其他相依的 Gems；同時，Bundler 會 require Engine `lib` 目錄下的 `lib/blorgh.rb`，這個檔案又 require 了 `lib/blorgh/engine.rb` 達到將 Engine 定義成 Module 的目的：
 
-```ruby
-require "blorgh/engine"
-
-module Blorgh
-end
 ```
-
-TIP: Some engines choose to use this file to put global configuration options for their engine. It's a relatively good idea, and so if you want to offer configuration options, the file where your engine's `module` is defined is perfect for that. Place the methods inside the module and you'll be good to go.
-
-Within `lib/blorgh/engine.rb` is the base class for the engine:
-
-```ruby
+# Engine 目錄下的 lib/blorgh/engine.rb
 module Blorgh
-  class Engine < Rails::Engine
+  class Engine < ::Rails::Engine
     isolate_namespace Blorgh
   end
 end
 ```
 
-By inheriting from the `Rails::Engine` class, this gem notifies Rails that there's an engine at the specified path, and will correctly mount the engine inside the application, performing tasks such as adding the `app` directory of the engine to the load path for models, mailers, controllers and views.
+__這裡可以放 Engine 的全域設定 `lib/blorgh/engine.rb`。__
 
-The `isolate_namespace` method here deserves special notice. This call is responsible for isolating the controllers, models, routes and other things into their own namespace, away from similar components inside the application. Without this, there is a possibility that the engine's components could "leak" into the application, causing unwanted disruption, or that important engine components could be overridden by similarly named things within the application. One of the examples of such conflicts are helpers. Without calling `isolate_namespace`, engine's helpers would be included in an application's controllers.
+Engine 繼承自 `::Rails::Engine`，告訴 Rails 說：嘿！這個目錄下有個 Engine 呢！Rails 便知道該如何安裝這個 Engine，並把 Engine `app` 目錄下的 model、mailers、controllers、views 加載到 Rails 應用程式的 load path 裡。
 
-NOTE: It is **highly** recommended that the `isolate_namespace` line be left within the `Engine` class definition. Without it, classes generated in an engine **may** conflict with an application.
+__`isolate_namespace` 方法非常重要！__ 這把 Engine 的代碼放到自己的命名空間下，不與宿主衝突。
 
-What this isolation of the namespace means is that a model generated by a call to `rails g model` such as `rails g model post` won't be called `Post`, but instead be namespaced and called `Blorgh::Post`. In addition, the table for the model is namespaced, becoming `blorgh_posts`, rather than simply `posts`. Similar to the model namespacing, a controller called `PostsController` becomes `Blorgh::PostsController` and the views for that controller will not be at `app/views/posts`, but `app/views/blorgh/posts` instead. Mailers are namespaced as well.
+加了這行，在我們開發 Engine，產生 model 時 `rails g model post` 便會將 model 放在對的命名空間下：
 
-Finally, routes will also be isolated within the engine. This is one of the most important parts about namespacing, and is discussed later in the [Routes](#routes) section of this guide.
-
-#### `app` directory
-
-Inside the `app` directory are the standard `assets`, `controllers`, `helpers`, `mailers`, `models` and `views` directories that you should be familiar with from an application. The `helpers`, `mailers` and `models` directories are empty and so aren't described in this section. We'll look more into models in a future section, when we're writing the engine.
-
-Within the `app/assets` directory, there are the `images`, `javascripts` and `stylesheets` directories which, again, you should be familiar with due to their similarity to an application. One difference here however is that each directory contains a sub-directory with the engine name. Because this engine is going to be namespaced, its assets should be too.
-
-Within the `app/controllers` directory there is a `blorgh` directory and inside that a file called `application_controller.rb`. This file will provide any common functionality for the controllers of the engine. The `blorgh` directory is where the other controllers for the engine will go. By placing them within this namespaced directory, you prevent them from possibly clashing with identically-named controllers within other engines or even within the application.
-
-NOTE: The `ApplicationController` class inside an engine is named just like a Rails application in order to make it easier for you to convert your applications into engines.
-
-Lastly, the `app/views` directory contains a `layouts` folder which contains a file at `blorgh/application.html.erb` which allows you to specify a layout for the engine. If this engine is to be used as a stand-alone engine, then you would add any customization to its layout in this file, rather than the application's `app/views/layouts/application.html.erb` file.
-
-If you don't want to force a layout on to users of the engine, then you can delete this file and reference a different layout in the controllers of your engine.
-
-#### `bin` directory
-
-This directory contains one file, `bin/rails`, which enables you to use the `rails` sub-commands and generators just like you would within an application. This means that you will very easily be able to generate new controllers and models for this engine by running commands like this:
-
-```bash
-rails g model
+``` $ rails g model Post
+invoke  active_record
+create    db/migrate/20130921084428_create_blorgh_posts.rb
+create    app/models/blorgh/post.rb
+invoke    test_unit
+create      test/models/blorgh/post_test.rb
+create      test/fixtures/blorgh/posts.yml
 ```
 
-Keeping in mind, of course, that anything generated with these commands inside an engine that has `isolate_namespace` inside the `Engine` class will be namespaced.
+資料庫的 table 名稱也會更改成 `blorgh_posts`。Controller 與 view 同理，都會被放在命名空間下。
 
-#### `test` directory
+想了解更多可看看 [`isolate_namespace` 的源碼](https://github.com/rails/rails/blob/master/railties/lib/rails/engine.rb)：
 
-The `test` directory is where tests for the engine will go. To test the engine, there is a cut-down version of a Rails application embedded within it at `test/dummy`. This application will mount the engine in the `test/dummy/config/routes.rb` file:
+### 2.1.2 `app` 目錄
+
+`app` 目錄下有一般 Rails 應用程式裡常見的 `assets`、`controllers`、`helpers`、`mailers`、`models`、`views`。
+
+__`app/assets` 目錄__
+
+```
+app/assets/
+├── images
+│   └── blorgh
+├── javascripts
+│   └── blorgh
+│       └── application.js
+└── stylesheets
+    └── blorgh
+        └── application.css
+```
+
+存放 Engine 所需的 `images`、`javascripts`、`stylesheets`，皆放在 `blorgh` 下（命名空間分離）：
+
+__`app/controllers` 目錄__
+
+```
+app/controllers/
+└── blorgh
+    └── application_controller.rb
+```
+
+注意到
+
+```
+module Blorgh
+  class ApplicationController < ActionController::Base
+  end
+end
+```
+
+命名成 `ApplicationController` 的原因是讓你能夠輕鬆的將現有的 Rails 應用抽離成 Engine。
+Engine controller 的功能放這裡。
+
+__`app/views` 目錄__
+
+```
+app/views/
+└── layouts
+    └── blorgh
+        └── application.html.erb
+```
+
+Engine 的 layout 放這裡。Engine 單獨使用的話，就可以在這裡改 layout，而不用到 Rails 應用程式的 `app/views/layouts/application.html.erb` 下修改。
+
+要是不想用 Engine 的使用者，使用 Engine 的 layout，刪除這個檔案，並在 Engine 的 controller 指定你要用的 layout。
+
+### 2.1.3 `bin` 目錄
+
+```
+bin
+└── rails
+```
+
+這讓 Engine 可以像原本的 Rails 應用程式一樣，用 `rails` 相關的命令。
+
+### 2.1.4 `test` directory
+
+```
+test
+├── blorgh_test.rb
+├── dummy
+│   ├── README.rdoc
+│   ├── Rakefile
+│   ├── app
+│   ├── bin
+│   ├── config
+│   ├── config.ru
+│   ├── db
+│   ├── lib
+│   ├── log
+│   ├── public
+│   └── tmp
+├── fixtures
+│   └── blorgh
+├── integration
+│   └── navigation_test.rb
+├── models
+│   └── blorgh
+└── test_helper.rb
+```
+
+關於 Engine 的測試放這裡。裡面還附了一個 `test/dummy` Rails 應用程式，供你測試 Engine，這個 dummy 應用程式已經裝好了你正在開發的 Engine：
 
 ```ruby
 Rails.application.routes.draw do
@@ -193,9 +296,9 @@ Rails.application.routes.draw do
 end
 ```
 
-This line mounts the engine at the path `/blorgh`, which will make it accessible through the application only at that path.
+__`test/integration`__
 
-In the test directory there is the `test/integration` directory, where integration tests for the engine should be placed. Other directories can be created in the `test` directory as well. For example, you may wish to create a `test/models` directory for your models tests.
+Engine 的整合測試（Integration test）放這裡。其他相關的測試也可以放在這裡，比如關於 controller 的測試（`test/controller`）、關於 model （`test/model`）等。
 
 # 3. Providing engine functionality
 
