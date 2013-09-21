@@ -264,7 +264,7 @@ bin
 
 這讓 Engine 可以像原本的 Rails 應用程式一樣，用 `rails` 相關的命令。
 
-### 2.1.4 `test` directory
+### 2.1.4 `test` 目錄
 
 ```
 test
@@ -457,6 +457,12 @@ create      test/fixtures/blorgh/comments.yml
 
 同樣，這都放在 Engine 的 Namespace 下。
 
+migrate 一下：
+
+```bash
+$ rake db:migrate
+```
+
 要在文章裡顯示評論，打開 `app/views/blorgh/posts/show.html.erb`，找到：
 
 ```erb
@@ -491,14 +497,16 @@ end
 但我們還沒有新增這個 partial，首先新增目錄：
 
 ```bash
-mkdir -p app/views/blorgh/comments
+$ mkdir -p app/views/blorgh/comments
 ```
 
 並新增：
 
 ```bash
-touch app/views/blorgh/comments/_form.html.erb
+$ touch app/views/blorgh/comments/_form.html.erb
 ```
+
+填入：
 
 ```html+erb
 <h3>New comment</h3>
@@ -524,6 +532,63 @@ end
 ```bash
 $ rails g controller comments
 ```
+
+會輸出：
+
+```
+create  app/controllers/blorgh/comments_controller.rb
+invoke  erb
+ exist    app/views/blorgh/comments
+invoke  test_unit
+create    test/controllers/blorgh/comments_controller_test.rb
+invoke  helper
+create    app/helpers/blorgh/comments_helper.rb
+invoke    test_unit
+create      test/helpers/blorgh/comments_helper_test.rb
+invoke  assets
+invoke    js
+create      app/assets/javascripts/blorgh/comments.js
+invoke    css
+create      app/assets/stylesheets/blorgh/comments.css
+```
+
+當表單送 POST 請求到 `/posts/:post_id/comments/` 時，controller （`Blorgh::CommentsController`）要有 `create` action 來回應，打開 `app/controllers/blorgh/comments_controller.rb`：
+
+添加：
+
+```ruby
+def create
+  @post = Post.find(params[:post_id])
+  @comment = @post.comments.create(comment_params)
+  flash[:notice] = "Comment has been created!"
+  redirect_to posts_path
+end
+
+private
+  def comment_params
+    params.require(:comment).permit(:text)
+  end
+```
+
+好了，新增評論的功能完成了！但...有點小問題，如果你試著要新增評論，則會看到下面這個錯誤：
+
+```
+Missing partial blorgh/comments/comment with {:handlers=>[:erb, :builder], :formats=>[:html], :locale=>[:en, :en]}. Searched in:
+  * "/Users/ryan/Sites/side_projects/blorgh/test/dummy/app/views"
+  * "/Users/ryan/Sites/side_projects/blorgh/app/views"
+```
+
+Engine 找不到 partial。因為 Rails 在 `test/dummy` 的 `app/views` 目錄下面找，接著去 Engine 的 `app/views` 目錄找，然後沒找到！
+
+但 Engine 知道要在 `blorgh/comments/comment` 找，因為 model 物件是從 `Blorgh:Comment` 傳來的，好，那就新增 `app/views/blorgh/comments/_comment.html.erb` 並添加：
+
+```erb
+<%= comment_counter + 1 %>. <%= comment.text %> <br>
+```
+
+`comment_counter` 是從哪來的？`<%= render @post.comments %>`。
+
+好了，評論功能做完了！
 
 # 4. Hooking into an application
 
