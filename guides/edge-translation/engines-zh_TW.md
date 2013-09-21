@@ -1122,21 +1122,22 @@ Engine 的 `posts_path` （這叫 routing proxy 方法，與 Engine 名字相同
 
 1. `lib/blorgh/engine.rb`：
 
+```ruby
 module Blorgh
   class Engine < ::Rails::Engine
     isolate_namespace Blorgh
     engine_name "blogger"
   end
 end
+```
 
 2. 在宿主或是使用 Engine 的（`test/dummy`） `config/routes.rb`：
 
-```
+```ruby
 Rails.application.routes.draw do
   mount Blorgh::Engine => "/blorgh", as: "blogger"
 end
 ```
-
 
 ## 6.7 Assets
 
