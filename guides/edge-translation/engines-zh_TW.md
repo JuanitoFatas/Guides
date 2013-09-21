@@ -388,20 +388,20 @@ __注意，產生出來的檔案都是放在 Engine 的命名空間下，因為�
 
 __注意這裡繼承的 `ApplicationController` 是 `Blorgh::ApplicationController`。__
 
-__`require_dependency` 是 Rails 特有的方法，讓你開發 Engine 時不用重啟。__
+__`require_dependency` 是 Rails 特有的方法，讓你開發 Engine 時不用重啟（開發模式下）。__
 
 [require_dependency 源代碼可在此找到](https://github.com/rails/rails/blob/master/activesupport/lib/active_support/dependencies.rb#L201)
 
 * `invoke    erb` 產生 controller 相關的 views。
 * `invoke    test_unit` 產生 controller 相關的測試。
 * `invoke    helper` 產生 controller 相關的 helper。
-* `invoke      test_unit` 產生 controller 的 helper 的測試。
+* `invoke      test_unit` 產生 helper 的測試。
 * `invoke  assets` 產生關於這個 resource 的 css 與 js。
 * `invoke    js` 產生關於這個 resource 的 js
 * `invoke    css` 產生關於這個 resource 的 css
 * `invoke  css` scaffold 為這個 resource 產生的樣式。
 
-要載入這個樣式，添加下面這行到 `app/views/layouts/blorgh/application.html.erb`：
+要載入 scaffold 產生的樣式，添加下面這行到 `app/views/layouts/blorgh/application.html.erb`：
 
 ```erb
 <%= stylesheet_link_tag "scaffold" %>
@@ -413,7 +413,7 @@ __`require_dependency` 是 Rails 特有的方法，讓你開發 Engine 時不用
 $ test/dummy/bin/rails server
 ```
 
-打開 http://localhost:3000/blorgh/posts 看看剛剛用 scaffold 產生出來的 Post resource。
+打開 [http://localhost:3000/blorgh/posts](http://localhost:3000/blorgh/posts) 看看剛剛用 scaffold 產生出來的 Post resource。
 
 哇賽！你給 Engine 加了一個新功能了，自己掌聲鼓勵一下。
 
@@ -430,7 +430,7 @@ $ test/dummy/bin/rails server
 root to: "posts#index"
 ```
 
-現在只要到 http://localhost:3000/blorgh 就可以跳轉到 http://localhost:3000/blorgh/posts 了！
+現在只要到 [http://localhost:3000/blorgh](http://localhost:3000/blorgh/) 就可以跳轉到 [http://localhost:3000/blorgh/posts](http://localhost:3000/blorgh/posts) 了！
 
 __這裡的 `root` 指得是 Engine 的：`http://localhost:3000/blorgh/`__
 
