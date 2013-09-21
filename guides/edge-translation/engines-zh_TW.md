@@ -26,6 +26,7 @@
       - [4.4.2.2 變更 Engine 預設的測試框架](#4422-變更-engine-預設的測試框架)
       - [4.4.2.3 變更 Engine 預設的模版引擎](#4423-變更-engine-預設的模版引擎)
       - [4.4.2.4 添加 Middleware 到 Engine 的 Middleware stack](#4424-添加-middleware-到-engine-的-middleware-stack)
+    - [4.4.3 撰寫 Engine 的 Generator](#443-撰寫-engine-的-generator)
 - [5. 測試 Engine](#5-測試-engine)
   - [5.1 功能性測試](#51-功能性測試)
 - [6. 增進 Engine 的功能](#6-增進-engine-的功能)
@@ -980,6 +981,30 @@ module Blorgh
       :verbose => true,
       :metastore   => 'file:/var/cache/rack/meta',
       :entitystore => 'file:/var/cache/rack/body'
+  end
+end
+```
+
+### 4.4.3 撰寫 Engine 的 Generator
+
+讓使用者輕鬆安裝你的 Engine，比如：
+
+```bash
+$ rake generate blorgh:install
+```
+
+Generator 該怎麼寫呢？（示意）
+
+```ruby
+# lib/generators/blorgh/install_generator.rb
+module Blorgh
+  class InstallGenerator < Rails::Generator::Base
+    def install
+      run "bundle install"
+      route "mount Blorgh::Engine" => '/blorgh'
+      rake "blorgh:install:migrations"
+      ...
+    end
   end
 end
 ```
