@@ -373,19 +373,18 @@ __注意，產生出來的檔案都是放在 Engine 的命名空間下，因為�
     resources :posts
     ```
 
-* `invoke  resource_route` 添加了一條 route 到 `config/routes.rb`。
 * `invoke  scaffold_controller` 產生 controller：
 
-```
-# Engine 目錄下的 app/controllers/blorgh/posts_controller.rb
-require_dependency "blorgh/application_controller"
+    ```
+    # Engine 目錄下的 app/controllers/blorgh/posts_controller.rb
+    require_dependency "blorgh/application_controller"
 
-module Blorgh
-  class PostsController < ApplicationController
-  ...
-  end
-end
-```
+    module Blorgh
+      class PostsController < ApplicationController
+      ...
+      end
+    end
+    ```
 
 __注意這裡繼承的 `ApplicationController` 是 `Blorgh::ApplicationController`。__
 
