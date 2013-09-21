@@ -707,7 +707,7 @@ rails g model user name:string
 
 接著讓我們來把新增文章的表單加上 `author_name`，Engine 會用這個名字來新增一個 `User` 物件，並把 `user` 與 `post` 關聯起來。
 
-新增 `author_name` text field 加到 Engine 的 `app/views/blorgh/posts/_form.html.erb` partial：
+新增 `author_name` text field 加到 Engine 的 `app/views/blorgh/posts/_form.html.erb` partial，加在 `title` 上面吧：
 
 ```html+erb
 <div class="field">
@@ -724,21 +724,25 @@ def post_params
 end
 ```
 
-`Blorgh::Post` model 要能夠把 `author_name` 轉換成實際的 `User` 物件，並在 `post` 儲存前，將該 `post` 與 `author` 關聯起來。同時加上 `attr_accessor` 讓我們可以 `author_name` 知道作者是誰以及修改作者。
+`Blorgh::Post` model 要能夠把 `author_name` 轉換成實際的 `User` 物件，並在 `post` 儲存前，將該 `post` 與 `author` 關聯起來。同時加上 `attr_accessor` 讓我們可以 `author_name` 知道作者是誰以及修改作者，將 `app/models/blorgh/post.rb` 修改為：
 
 ```ruby
-attr_accessor :author_name
-belongs_to :author, class_name: "User"
+module Blorgh
+  class Post < ActiveRecord::Base
+    has_many :comments
+    attr_accessor :author_name
+    belongs_to :author, class_name: "User"
+    before_save :set_author
 
-before_save :set_author
-
-private
-  def set_author
-    self.author = User.find_or_create_by(name: author_name)
+    private
+      def set_author
+        self.author = User.find_or_create_by(name: author_name)
+      end
   end
+end
 ```
 
-接著處理 `blorgh_posts` table 與 `users` table 的關係。由於我們想要的是 `author`，所以要幫 `blorgh_posts` 加上 `author_id`：
+接著處理 `blorgh_posts` table 與 `users` table 的關係。由於我們想要的是 `author`，所以要幫 `blorgh_posts` 加上 `author_id`，在 Engine 的根目錄下執行：
 
 ```bash
 $ rails g migration add_author_id_to_blorgh_posts author_id:integer
@@ -759,11 +763,25 @@ $ rake db:migrate
 
 現在作者（宿主：`users`）與文章（Engine：`blorgh_posts`）的關聯做好了！
 
+首頁顯示作者，打開 `app/views/blorgh/posts/index.html.erb`：
+
+在這行 `<th>Title</th>` 上面添加：
+
+```html
+<th>Author</th>
+```
+
+並在 `<td><%= post.title %></td>` 上面添加：
+
+```erb+html
+<td><%= post.author %></td>
+```
+
 最後，在文章頁面顯示作者吧，打開 `app/views/blorgh/posts/show.html.erb`：
 
 ```html+erb
 <p>
-  <b>Author:</b>
+  <strong>Author:</strong>
   <%= @post.author %>
 </p>
 ```
@@ -781,6 +799,8 @@ def to_s
   name
 end
 ```
+
+完成！
 
 # 5. 測試 Engine
 
