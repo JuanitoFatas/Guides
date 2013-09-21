@@ -349,7 +349,7 @@ invoke  css
 create    app/assets/stylesheets/scaffold.css
 ```
 
-好，究竟產生了什麼？
+好，究竟產生了什麼？一個一個看。
 
 ```
 invoke  active_record
@@ -363,15 +363,15 @@ invoke  assets
 invoke  css
 ```
 
-__注意，產生出來的檔案都是放在 Engine 的命名空間下__
+__注意，產生出來的檔案都是放在 Engine 的命名空間下，因為我們有 `isolate_namespace Blorgh`__
 
 * `invoke  active_record` 產生 migration 與 model。
 * `invoke    text_unit` 產生該 model 的測試及假資料。
 * `invoke  resource_route` 添加了一個 route 到 `config/routes.rb`：
 
-```ruby
-resources :posts
-```
+    ```ruby
+    resources :posts
+    ```
 
 * `invoke  resource_route` 添加了一條 route 到 `config/routes.rb`。
 * `invoke  scaffold_controller` 產生 controller：
