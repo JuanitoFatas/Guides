@@ -606,15 +606,51 @@ Engine 找不到 partial。因為 Rails 在 `test/dummy` 的 `app/views` 目錄�
 
 好了，評論功能做完了！
 
-# 4. Hooking into an application
+# 4. 安裝至宿主
 
-## 4.1 Mounting the engine
+接下來講解如何將 Engine 安裝到宿主，並假設宿主有 `User` class，把我們的評論與文章功能添加到宿主的 User 上。
+
+## 4.1 安裝 Engine
+
+首先產生一個宿主吧：
+
+```bash
+$ rails new unicorn
+```
+
+打開 Gemfile，添加 Devise：
+
+```ruby
+gem 'devise'
+```
+
+接著加入我們的 `blorgh` Engine：
+
+```ruby
+gem 'blorgh', path: "/path/to/blorgh"
+```
+
+接著添加 `blorgh` Engine 所需的路由，打開宿主的 `config/routes.rb`：
+
+```ruby
+mount Blorgh::Engine, at: "/blog"
+```
+
+`http://localhost:3000/blog` 就會交給我們的 Engine 處理。
 
 ## 4.2 Engine setup
 
-## 4.3 Using a class provided by the application
+接著要把 Engine 的 migration 拷貝到宿主這裡，產生對應的 tables。Rails 已經幫我們提供了方便的命令：
 
-## 4.4 Configuring an engine
+```bash
+$ rake blorgh:install:migrations
+```
+
+如果有多個 Engine 都要把 migration 拷貝過來，可以：
+
+```bash
+$ rake railties:install:migrations
+```
 
 # 5. 測試 Engine
 
@@ -654,18 +690,17 @@ get :index, use_route: :blorgh
 
 ## 6.8 Separate Assets & Precompiling
 
+## 6.9 Other gem dependencies
+
 # 延伸閱讀
 
-* [Rails Engines by Ryan Bigg](https://github.com/radar/guides/blob/master/engines.md)
-
-用很短的篇幅介紹了 Rails Engine，值得一讀。
-
+* Rails Conf 2013 Creating Mountable Engines
+    - [slide](https://speakerdeck.com/peakpg/creating-mountable-engines)
+    - [video](http://www.confreaks.com/videos/2476-railsconf2013-creating-mountable-engines)
+* Rails Engines — Lesson Learned by Ryan Bigg | SpreeConf 2012
+    - [slide](https://speakerdeck.com/radar/rails-engines-lessons-learned)
+    - [video](http://www.youtube.com/watch?v=bHKZfIeAbds)
+* [Integration Testing Engines by Ryan Bigg](https://speakerdeck.com/radar/integration-testing-engines)
 * [#277 Mountable Engines - RailsCasts](http://railscasts.com/episodes/277-mountable-engines)
-
-3.1.0.rc5 初次介紹 Engines 所做的影片教學。
-
-* [Start Your Engines by Ryan Bigg at Ruby on Ales 2012 - YouTube](http://www.youtube.com/watch?v=bHKZfIeAbds)
-
-* [Rails Conf 2013 Creating Mountable Engines by Patrick Peak](http://www.youtube.com/watch?v=s3NJ15Svq8U)
-
-* Rails in Actions 4 | Chapter 17 Rails Engine
+    - Railscasts 於 Rails 3.1.0.rc5 引入 Engine 的介紹。
+* Rails in Actions 3 | Chapter 17 Rails Engine
