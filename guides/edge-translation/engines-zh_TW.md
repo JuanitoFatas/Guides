@@ -93,7 +93,7 @@ $ rails plugin --help
 
 讓我們看看 `--full` 選項跟 `--mountable` 的差異，`--mountable` 多加了下列檔案：
 
-* Asset Manifest files（`application.css`、`application.js`）。
+* Asset Manifest 檔案（`application.css`、`application.js`）。
 * Controller `application_controller.rb`。
 * Helper `application_helper.rb`。
 * layout 的 view 模版: `application.html.erb`。
@@ -183,11 +183,12 @@ __這裡可以放 Engine 的全域設定 `lib/blorgh/engine.rb`。__
 
 Engine 繼承自 `::Rails::Engine`，告訴 Rails 說：嘿！這個目錄下有個 Engine 呢！Rails 便知道該如何安裝這個 Engine，並把 Engine `app` 目錄下的 model、mailers、controllers、views 加載到 Rails 應用程式的 load path 裡。
 
-__`isolate_namespace` 方法非常重要！__ 這把 Engine 的代碼放到自己的命名空間下，不與宿主衝突。
+__`isolate_namespace` 方法非常重要！這把 Engine 的代碼放到 Engine 的命名空間下，不與宿主衝突。__
 
 加了這行，在我們開發 Engine，產生 model 時 `rails g model post` 便會將 model 放在對的命名空間下：
 
-``` $ rails g model Post
+```
+$ rails g model Post
 invoke  active_record
 create    db/migrate/20130921084428_create_blorgh_posts.rb
 create    app/models/blorgh/post.rb
