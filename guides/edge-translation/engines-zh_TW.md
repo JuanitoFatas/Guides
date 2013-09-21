@@ -688,9 +688,9 @@ rake db:migrate SCOPE=blorgh
 rake db:migrate SCOPE=blorgh VERSION=0
 ```
 
-## 4.3 Using a class provided by the application
+## 4.3 使用宿主提供的類別
 
-### 4.3.1 Using a model provided by the application
+### 4.3.1 使用宿主提供的 model
 
 好了，現在 `blorgh` 裝起來了，現在看看 Engine 怎麼跟宿主結合：幫我們的 post 與 comment 加上 author。
 
@@ -801,6 +801,93 @@ end
 ```
 
 完成！
+
+### 4.3.2 使用宿主提供的 controller
+
+Rails controller 通常會共享一些功能，像是authentication、session 變數，通常都從 `ApplicationController` 繼承而來。Rails Engine，是獨立運行在宿主之外，每個 Engine 有自己的 `ApplicationController` （在某個 scope 之下），像我們例子中的 `Blorgh::ApplicationController`。
+
+但有時 Engine 需要宿主 `ApplicationController` 的某些功能，該怎麼做呢？簡單的辦法是讓 Engine 的繼承自宿主的 `ApplicationController`：
+
+將 `app/controllers/blorgh/application_controller.rb` 修改為
+
+```ruby
+class Blorgh::ApplicationController < ApplicationController
+end
+```
+
+便可獲得來自宿主 `ApplicationController` 的功能，這樣看起來就像是宿主的某個 controller。
+
+## 4.4 設定 Engine
+
+要是 `User` model 要換成別的名字怎麼辦？讓我們看看，要怎麼實現訂製 `User` model 這個功能。
+
+### 4.4.1 在宿主設定
+
+Engine 可以加入一個設定，叫做 `author_class`，可以讓使用 Engine 的人設定，他們的 “User” model 叫什麼名字。
+
+打開 Engine 目錄下，`lib/blorgh.rb`，加入這行：
+
+```ruby
+mattr_accessor :author_class
+```
+
+`mattr_accessor` 跟 `attr_accessor` 與 `cattr_accessor` 很類似。可以 `Blorgh.author_class` 來存取。
+
+下一步是修改 `Blorgh::Post` model：
+
+```ruby
+belongs_to :author, class_name: Blorgh.author_class
+```
+
+同時也得修改 `set_author` 方法：
+
+```ruby
+self.author = Blorgh.author_class.constantize.find_or_create_by(name: author_name)
+```
+
+但這樣每次都得對 `author_class` 呼叫 `constantize`，可以覆寫 `Blorgh` module 裡面，`author_class` 的 getter 方法（`lib/blorgh.rb`）：
+
+```ruby
+def self.author_class
+  @@author_class.constantize
+end
+```
+
+這樣剛剛的 `set_author` 方法便可以改成：
+
+```ruby
+self.author = Blorgh.author_class.find_or_create_by(name: author_name)
+```
+
+由於更改了 `author_class` 方法（永遠回傳 `Class` 物件），也得修改 `Blorgh::Post` 的 `belongs_to`：
+
+```ruby
+belongs_to :author, class_name: Blorgh.author_class.to_s
+```
+
+接著在宿主裡新建一個 initializer。Initializer 可確保宿主在啟動之前、或是呼叫任何 Engine 的 model 方法之前，會先套用我們的設定。
+
+在宿主的根目錄下，新建 `config/initializers/blorgh.rb`：
+
+```ruby
+Blorgh.author_class = "User"
+```
+
+__警告！用字串來設定，而不是直接使用 model。__
+
+因為執行 initializer 的時候，model 可能還不存在。
+
+接著試試新增一篇文章，看是不是跟之前一樣可以用。但現在我們的 class 是可設定的，YA！
+
+### 4.4.2 Engine 的通用設定
+
+initializer、i18n、或是做其他的設定，在 Engine 裡怎麼做呢？Engine 其實就是個微型的 Rails 應用程式，所以可以像是在 Rails 裡面那般設定。
+
+要設定 initializer，在 Engine 目錄 `config/initializers` 新增你的設定即可。關於 initializer 的更多說明請參考 [Rails 官方文件的 Initalizers section](http://edgeguides.rubyonrails.org/configuring.html#initializers)
+
+語系設定放在 Engine 目錄下的 `config/locales` 即可。
+
+就跟設定 Rails 應用程式一樣。
 
 # 5. 測試 Engine
 
