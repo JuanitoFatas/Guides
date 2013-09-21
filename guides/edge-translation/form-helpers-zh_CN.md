@@ -4,8 +4,6 @@
 
 ## 目录
 
-- [[Form Helpers][fh]](#form-helpersfh)
-  - [目录](#目录)
 - [1. 简单的表单](#1-简单的表单)
   - [1.1 通用搜索表单](#11-通用搜索表单)
     - [1.2 Form Helper 呼叫里传多个 Hash](#12-form-helper-呼叫里传多个-hash)
@@ -13,9 +11,9 @@
       - [1.3.1 Checkbox](#131-checkbox)
       - [1.3.2 Radio Buttons](#132-radio-buttons)
     - [1.4 其它相关的 helpers](#14-其它相关的-helpers)
-- [2. 处理 Model Object 的 Helpers](#2-处理-model-object-的-helpers)
-  - [2.1 Model Object Helpers](#21-model-object-helpers)
-  - [2.2 将表单绑定至 Object](#22-将表单绑定至-object)
+- [2. 处理 Model 对象的 Helpers](#2-处理-model-对象的-helpers)
+  - [2.1 Model 对象的 Helpers](#21-model-对象的-helpers)
+  - [2.2 将表单绑定至对象](#22-将表单绑定至对象)
   - [2.3 Record Identification](#23-record-identification)
     - [2.3.1 处理 namespace](#231-处理-namespace)
   - [2.4 PATCH、PUT、DELETE 表单是怎么工作的？](#24-patch、put、delete-表单是怎么工作的？)
@@ -42,7 +40,7 @@
   - [9.1 设​​定 Model](#91-设​​定-model)
   - [9.2 制作表单](#92-制作表单)
   - [9.3 控制器层面](#93-控制器层面)
-    - [9.4 移除 Objects](#94-移除-objects)
+    - [9.4 移除对象](#94-移除对象)
     - [9.5 避免有空的 Record](#95-避免有空的-record)
     - [9.6 动态加入 Fields](#96-动态加入-fields)
 - [表单相关的 RubyGems](#表单相关的-rubygems)
@@ -231,9 +229,9 @@ textareas, password fields, hidden fields, search fields, telephone fields, date
 <input id="task_started_at" name="task[started_at]" type="time" />
 ```
 
-# 2. 处理 Model Object 的 Helpers
+# 2. 处理 Model 对象的 Helpers
 
-## 2.1 Model Object Helpers
+## 2.1 Model 对象的 Helpers
 
 表单通常是拿来编辑或新建一个 model 对象。带有 `_tag` 字尾的 Helpers 可以解决这件事，但是太繁琐了。 Rails 提供更多方便的 Helpers（没有 `_tag` 字尾），像是 `text_field`、`text_area` 等，用来处理 Model 对象。
 
@@ -257,11 +255,11 @@ textareas, password fields, hidden fields, search fields, telephone fields, date
 <%= text_field(:person) %>
 ```
 
-只要 `Person` objects 有 `name` 与 `name=` 就可以了。
+只要 `Person` 对象 有 `name` 与 `name=` 就可以了。
 
 __警告：第一个参数必须是实例变量的名称，如：`:person` 或 `"person"`，而不是传实际的实例进去。__
 
-## 2.2 将表单绑定至 Object
+## 2.2 将表单绑定至对象
 
 当 `Person` 有很多属性时，我们得一直重复传入 `:person` 来生成对应的表单。 Rails 提供了 `form_for` 让你把表单绑定至 model 的对象。
 
@@ -437,7 +435,7 @@ HTML 纯手写下拉式选单（Select box）需要花很多工夫，比如说�
 ...
 ```
 
-`options_for_select` 的第一个参数是嵌套的 array，每个元素有两个元素，城市名称（option text）与数值（option value）。 option value 是会传给 controller 的数值。通常会是数据库 object 里对应的 id。
+`options_for_select` 的第一个参数是嵌套的 array，每个元素有两个元素，城市名称（option text）与数值（option value）。 option value 是会传给 controller 的数值。通常会是数据库对象里对应的 id。
 
 现在把 `select_tag` 与 `options_for_select` 结合起来：
 
@@ -546,13 +544,13 @@ Rails 过去使用 `country_select` 供选择国家，但这已从 Rails 拿掉�
 
 # 4. 使用日期与时间的 Form Helpers
 
-先前有 `_tag` 的 helper 称为 _barebones helper_，没有 `_tag_` 的则是操作 model objects 的 helper。
+先前有 `_tag` 的 helper 称为 _barebones helper_，没有 `_tag_` 的则是操作 model 对象的 helper。
 
 日期与时间的情境下：
 
 `select_date`、`select_time`、 `select_datetime` 是 barebones helpers；
 
-`date_select`、`time_select`、`datetime_select` 则是对应的 model objects helper。
+`date_select`、`time_select`、`datetime_select` 则是对应的 model 对象的 helper。
 
 ### Barebones Helpers
 
@@ -578,7 +576,7 @@ params[:start_date][:month]
 params[:start_date][:day]
 ```
 
-要获得实际的 `Time` 或 `Date` object，要先将这些值取出，丢给对的 constructor 处理：priate constructor，举例来说：
+要获得实际的 `Time` 或 `Date` 对象，要先将这些值取出，丢给对的 constructor 处理：priate constructor，举例来说：
 
 ```ruby
 Date.civil(params[:start_date][:year].to_i, params[:start_date][:month].to_i, params[:start_date][:day].to_i)
@@ -697,7 +695,7 @@ Rails 提供的 helper 通常都是成对的：barebone 的 `file_field_tag​�
 
 ### 5.1 究竟上传了什么
 
-从 `params` 取出来的 object 是 `IO` 子类别的实例。根据文件大小的不同，可能是 `StringIO` 或是 `File` 的 instance。这两个情况里，对象都会有一个 `original_filename` 属性，内容是文件名称；`content_type` 属性包含了文件的 MIME 类型。下面的程式码，上传文件至 `#{Rails.root}/public/uploads`，并用原来的名字储存。
+从 `params` 取出来的对象是 `IO` 子类别的实例。根据文件大小的不同，可能是 `StringIO` 或是 `File` 的 instance。这两个情况里，对象都会有一个 `original_filename` 属性，内容是文件名称；`content_type` 属性包含了文件的 MIME 类型。下面的程式码，上传文件至 `#{Rails.root}/public/uploads`，并用原来的名字储存。
 
 
 ```ruby
@@ -824,7 +822,7 @@ We can mix and match these two concepts. For example, one element of a hash migh
 { 'addresses' => { 'line1' => {...}, 'line2' => {...}, 'city' => {...} } }
 ```
 
-虽然 hash 可以随意嵌套，但数组只能有一层。 数组通常可替换成 hash。举例来说，model 的对象可以表示成数组，但也可用键是 object 的 id 的 hash，。
+虽然 hash 可以随意嵌套，但数组只能有一层。 数组通常可替换成 hash。举例来说，model 的对象可以表示成数组，但也可用键是对象的 id 的 hash，。
 
 __警告：__
 
@@ -1020,7 +1018,7 @@ private
   end
 ```
 
-### 9.4 移除 Objects
+### 9.4 移除对象
 
 可以允许使用者删除地址，透过传入 `allow_destroy: true` 给 `accepts_nested_attributes_for`
 
@@ -1031,7 +1029,7 @@ class Person < ActiveRecord::Base
 end
 ```
 
-当 `_destroy` 为 `'1'` 或 `'true'` 时，object 会被销毁。用来移除地址的表单：
+当 `_destroy` 为 `'1'` 或 `'true'` 时，对象会被销毁。用来移除地址的表单：
 
 ```erb
 <%= form_for @person do |f| %>
