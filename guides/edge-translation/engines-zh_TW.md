@@ -22,6 +22,7 @@
   - [4.4 設定 Engine](#44-設定-engine)
     - [4.4.1 在宿主設定](#441-在宿主設定)
     - [4.4.2 Engine 的通用設定](#442-engine-的通用設定)
+      - [4.4.2.1 Initalizer Example: Devise `devise_for`](#4421-initalizer-example-devise-devise_for)
 - [5. 測試 Engine](#5-測試-engine)
   - [5.1 功能性測試](#51-功能性測試)
 - [6. 增進 Engine 的功能](#6-增進-engine-的功能)
@@ -907,6 +908,39 @@ initializer、i18n、或是做其他的設定，在 Engine 裡怎麼做呢？Eng
 語系設定放在 Engine 目錄下的 `config/locales` 即可。
 
 就跟設定 Rails 應用程式一樣。
+
+#### 4.4.2.1 Initalizer Example: Devise `devise_for`
+
+用過 Devise 同學可能在 `config/routes.rb` 都看過 `devise_for` 大概是怎麼實現的呢？
+
+以下代碼僅做示意之用，並非實際 Devise 的代碼：
+
+```ruby
+# lib/devise/engine.rb
+require 'devise/routing_extensions'
+
+module Devise
+  class Engine < ::Rails::Engines
+    isolate_namespace Devise
+
+    initializer 'devise.new_routes', after: 'action_dispatch.prepare_dispatcher' do |app|
+      ActionDispatch::Routing::Mapper.send :include, Devise::RouteExtensions
+    end
+  end
+end
+```
+
+```ruby
+# lib/devise/routing_extensions.rb
+module Devise
+  module RouteExtensions
+    def devise_for
+      mount Devise::Engine => "/user"
+      get "sign_in", :to => "devise/sessions#new"
+    end
+  end
+end
+```
 
 # 5. 測試 Engine
 
