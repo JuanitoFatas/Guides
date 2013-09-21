@@ -4,7 +4,7 @@
 
 [Rails I18n 重點整理](/guides/edge-translation/i18n-zh_TW.md)
 
-[Rails Form Helpers 重點整理](/guides/edge-translation/form-helpers-zh_TW.md) &arr; [簡體中文](/guides/edge-translation/form-helpers-zh_CN.md)
+[Rails Form Helpers 重點整理](/guides/edge-translation/form-helpers-zh_TW.md) → [簡體中文](/guides/edge-translation/form-helpers-zh_CN.md)
 
 [Active Record Migrations 重點整理](/guides/edge-translation/migrations-zh_TW.md)
 
