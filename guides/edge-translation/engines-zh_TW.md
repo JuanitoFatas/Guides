@@ -24,17 +24,16 @@
     - [4.4.2 Engine 的通用設定](#442-engine-的通用設定)
 - [5. 測試 Engine](#5-測試-engine)
   - [5.1 功能性測試](#51-功能性測試)
-- [6. Improving engine functionality](#6-improving-engine-functionality)
-  - [6.1 Overriding Models and Controllers](#61-overriding-models-and-controllers)
-  - [6.2 A note on Decorators and loading code](#62-a-note-on-decorators-and-loading-code)
-  - [6.3 Implementing Decorator Pattern Using Class#class_eval](#63-implementing-decorator-pattern-using-class#class_eval)
-  - [6.4 Implementing Decorator Pattern Using ActiveSupport::Concern](#64-implementing-decorator-pattern-using-activesupportconcern)
-  - [6.5 Overriding views](#65-overriding-views)
-    - [Routes](#routes)
-  - [6.6 Routes](#66-routes)
+- [6. 增進 Engine 的功能](#6-增進-engine-的功能)
+  - [6.1 覆寫 Model 與 Controller](#61-覆寫-model-與-controller)
+  - [6.2 關於 Decorator 與加載代碼](#62-關於-decorator-與加載代碼)
+  - [6.3 用 `Class#class_eval` 來實現 Decorator 設計模式](#63-用-class#class_eval-來實現-decorator-設計模式)
+  - [6.4 用 `ActiveSupport::Concern` 來實現 Decorator 設計模式](#64-用-activesupportconcern-來實現-decorator-設計模式)
+  - [6.5 覆寫 views](#65-覆寫-views)
+  - [6.6 路由](#66-路由)
   - [6.7 Assets](#67-assets)
-  - [6.8 Separate Assets & Precompiling](#68-separate-assets-&-precompiling)
-  - [6.9 Other gem dependencies](#69-other-gem-dependencies)
+  - [6.8 宿主用不到的 Assets 與預編譯](#68-宿主用不到的-assets-與預編譯)
+  - [6.9 Engine 依賴的 Gem](#69-engine-依賴的-gem)
 - [延伸閱讀](#延伸閱讀)
 
 __特別要強調的翻譯名詞__
@@ -1014,7 +1013,7 @@ end
 **添加** `Post#time_since_created` 並 **覆寫** `Post#summary`
 
 ```ruby
-# MyApp/app/models/blorgh/post.rb
+# unicorn/app/models/blorgh/post.rb
 
 class Blorgh::Post < ActiveRecord::Base
   include Blorgh::Concerns::Models::Post
@@ -1136,7 +1135,7 @@ Asset Pipeline 的 require 語句同樣有效：
 
 要使用 Sass 或是 CoffeeScript，記得將這些 gem 加到 Engine 的 `[engine name].gemspec`。
 
-## 6.8 Separate Assets & Precompiling
+## 6.8 宿主用不到的 Assets 與預編譯
 
 某些情況下宿主不需要用到 engine 的 assets。比如說針對 Engine 管理員的 `admin.css` 或 `admin.js`。只有 Engine 的 admin layout 需要這些 assets。這個情況下，可以在預編譯裡定義這些 assets，告訴 sprockets 要在 `rake assets:precompile` 加入 Engine 的 assets。
 
@@ -1150,7 +1149,7 @@ end
 
 更多細節請閱讀： [Asset Pipeline guide](asset_pipeline.html)。
 
-## 6.9 Other gem dependencies
+## 6.9 Engine 依賴的 Gem
 
 Engine 依賴的 Gem 要在 `[engine name].gemspec` 裡明確聲明。因為 Engine 可能會被當成 gem 安裝到宿主，把 Engine 依賴的 Gem 寫在 Engine 的 `Gemfile`，不會像傳統的 `gem install` 那樣安裝這些 Gem，進而導致你的 Engine 無法工作。
 
