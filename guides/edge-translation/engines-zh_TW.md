@@ -168,7 +168,7 @@ __`blorgh.gemspec`__
 gem 'blorgh', path: "vendor/engines/blorgh"
 ```
 
-執行 `bundle install` 安裝時，Bundler 會去解析 `blorgh.gemspec`，並安裝其他相依的 Gems；同時，Bundler 會 require Engine `lib` 目錄下的 `lib/blorgh.rb`，這個檔案又 require 了 `lib/blorgh/engine.rb` 達到將 Engine 定義成 Module 的目的：
+執行 `bundle install` 安裝時，Bundler 會去解析 `blorgh.gemspec`，並安裝其他相依的 Gems；同時，Bundler 會 require Engine `lib` 目錄下的 `lib/blorgh.rb`，這個檔案又 require 了 `lib/blorgh/engine.rb`，達到將 Engine 定義成 Module 的目的：
 
 ```
 # Engine 目錄下的 lib/blorgh/engine.rb
@@ -179,9 +179,9 @@ module Blorgh
 end
 ```
 
-__這裡可以放 Engine 的全域設定 `lib/blorgh/engine.rb`。__
+__`lib/blorgh/engine.rb` 可以放 Engine 的全域設定。__
 
-Engine 繼承自 `::Rails::Engine`，告訴 Rails 說：嘿！這個目錄下有個 Engine 呢！Rails 便知道該如何安裝這個 Engine，並把 Engine `app` 目錄下的 model、mailers、controllers、views 加載到 Rails 應用程式的 load path 裡。
+Engine 繼承自 `Rails::Engine`，告訴 Rails 說：嘿！這個目錄下有個 Engine 呢！Rails 便知道該如何安裝這個 Engine，並把 Engine `app` 目錄下的 model、mailers、controllers、views 加載到 Rails 應用程式的 load path 裡。
 
 __`isolate_namespace` 方法非常重要！這把 Engine 的代碼放到 Engine 的命名空間下，不與宿主衝突。__
 
@@ -223,6 +223,8 @@ app/assets/
 
 __`app/controllers` 目錄__
 
+Engine controller 的功能放這裡。
+
 ```
 app/controllers/
 └── blorgh
@@ -238,8 +240,7 @@ module Blorgh
 end
 ```
 
-命名成 `ApplicationController` 的原因是讓你能夠輕鬆的將現有的 Rails 應用抽離成 Engine。
-Engine controller 的功能放這裡。
+命名成 `ApplicationController` 的原因，是讓你能夠輕鬆的將現有的 Rails 應用程式，抽離成 Engine。
 
 __`app/views` 目錄__
 
@@ -252,7 +253,7 @@ app/views/
 
 Engine 的 layout 放這裡。Engine 單獨使用的話，就可以在這裡改 layout，而不用到 Rails 應用程式的 `app/views/layouts/application.html.erb` 下修改。
 
-要是不想用 Engine 的使用者，使用 Engine 的 layout，刪除這個檔案，並在 Engine 的 controller 指定你要用的 layout。
+要是不想 Engine 的使用者，使用 Engine 的 layout，刪除這個檔案，並在 Engine 的 controller 指定你要用的 layout。
 
 ### 2.1.3 `bin` 目錄
 
@@ -301,9 +302,138 @@ __`test/integration`__
 
 Engine 的整合測試（Integration test）放這裡。其他相關的測試也可以放在這裡，比如關於 controller 的測試（`test/controller`）、關於 model （`test/model`）等。
 
-# 3. Providing engine functionality
+# 3. 給 Engine 加功能
 
-## 3.1 Generating a post resource
+我們的 blorgh Engine，提供了 post 與 comment 的功能，跟 [Getting Started Guide](http://edgeguides.rubyonrails.org/getting_started.html) 功能差不多。
+
+## 3.1 建立 post resource
+
+先產生 `Post` model：
+
+```bash
+$ rails generate scaffold post title:string text:text
+```
+
+This command will output this information:
+
+```
+invoke  active_record
+create    db/migrate/20130921092807_create_blorgh_posts.rb
+create    app/models/blorgh/post.rb
+invoke    test_unit
+create      test/models/blorgh/post_test.rb
+create      test/fixtures/blorgh/posts.yml
+invoke  resource_route
+ route    resources :posts
+invoke  scaffold_controller
+create    app/controllers/blorgh/posts_controller.rb
+invoke    erb
+create      app/views/blorgh/posts
+create      app/views/blorgh/posts/index.html.erb
+create      app/views/blorgh/posts/edit.html.erb
+create      app/views/blorgh/posts/show.html.erb
+create      app/views/blorgh/posts/new.html.erb
+create      app/views/blorgh/posts/_form.html.erb
+invoke    test_unit
+create      test/controllers/blorgh/posts_controller_test.rb
+invoke    helper
+create      app/helpers/blorgh/posts_helper.rb
+invoke      test_unit
+create        test/helpers/blorgh/posts_helper_test.rb
+invoke  assets
+invoke    js
+create      app/assets/javascripts/blorgh/posts.js
+invoke    css
+create      app/assets/stylesheets/blorgh/posts.css
+invoke  css
+create    app/assets/stylesheets/scaffold.css
+```
+
+好，究竟產生了什麼？
+
+```
+invoke  active_record
+invoke    test_unit
+invoke  resource_route
+invoke  scaffold_controller
+invoke    erb
+invoke    test_unit
+invoke    helper
+invoke  assets
+invoke  css
+```
+
+__注意，產生出來的檔案都是放在 Engine 的命名空間下__
+
+* `invoke  active_record` 產生 migration 與 model。
+* `invoke    text_unit` 產生該 model 的測試及假資料。
+* `invoke  resource_route` 添加了一個 route 到 `config/routes.rb`：
+
+```ruby
+resources :posts
+```
+
+* `invoke  resource_route` 添加了一條 route 到 `config/routes.rb`。
+* `invoke  scaffold_controller` 產生 controller：
+
+```
+# Engine 目錄下的 app/controllers/blorgh/posts_controller.rb
+require_dependency "blorgh/application_controller"
+
+module Blorgh
+  class PostsController < ApplicationController
+  ...
+  end
+end
+```
+
+__注意這裡繼承的 `ApplicationController` 是 `Blorgh::ApplicationController`。__
+
+__`require_dependency` 是 Rails 特有的方法，讓你開發 Engine 時不用重啟。__
+
+[require_dependency 源代碼可在此找到](https://github.com/rails/rails/blob/master/activesupport/lib/active_support/dependencies.rb#L201)
+
+* `invoke    erb` 產生 controller 相關的 views。
+* `invoke    test_unit` 產生 controller 相關的測試。
+* `invoke    helper` 產生 controller 相關的 helper。
+* `invoke      test_unit` 產生 controller 的 helper 的測試。
+* `invoke  assets` 產生關於這個 resource 的 css 與 js。
+* `invoke    js` 產生關於這個 resource 的 js
+* `invoke    css` 產生關於這個 resource 的 css
+* `invoke  css` scaffold 為這個 resource 產生的樣式。
+
+要載入這個樣式，添加下面這行到 `app/views/layouts/blorgh/application.html.erb`：
+
+```erb
+<%= stylesheet_link_tag "scaffold" %>
+```
+
+好了，可以執行我們熟悉的 `rake db:migrate` 了。並在 `test/dummy` 下執行 `rails server`：
+
+```bash
+$ test/dummy/bin/rails server
+```
+
+打開 http://localhost:3000/blorgh/posts 看看剛剛用 scaffold 產生出來的 Post resource。
+
+哇賽！你給 Engine 加了一個新功能了，自己掌聲鼓勵一下。
+
+也可以用 `rails console`，不過要注意 model 的名稱是 `Blorgh::Post`。
+
+```ruby
+>> Blorgh::Post.find(1)
+=> #<Blorgh::Post id: 1 ...>
+```
+
+最後把 `root` 指向 `post` 的 `index` action 吧，修改 Engine 目錄的 `config/routes.rb`：
+
+```ruby
+root to: "posts#index"
+```
+
+現在只要到 http://localhost:3000/blorgh 就可以跳轉到 http://localhost:3000/blorgh/posts 了！
+
+__這裡的 `root` 指得是 Engine 的：`http://localhost:3000/blorgh/`__
 
 ## 3.2 Generating a comment resource
 
