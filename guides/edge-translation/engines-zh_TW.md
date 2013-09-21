@@ -630,6 +630,8 @@ gem 'devise'
 gem 'blorgh', path: "/path/to/blorgh"
 ```
 
+記得 `bundle install` 安裝。
+
 接著添加 `blorgh` Engine 所需的路由，打開宿主的 `config/routes.rb`：
 
 ```ruby
@@ -650,6 +652,134 @@ $ rake blorgh:install:migrations
 
 ```bash
 $ rake railties:install:migrations
+```
+
+__已經拷貝過的 migraiton 不會重複拷貝__
+
+
+好了，有細心的同學又發問了：「老師！那拷貝過來，timestamp 不就是當初開發 Engine 的 Timestamp 嗎？要是很久以前開發的 Engine，不就比我的應用程式的 migration 還早執行了嗎？」呵呵，小朋友，Rails 也想到這件事了！
+
+執行 `$ rake blorgh:install:migrations` 會輸出：
+
+```
+Copied migration [timestamp_1]_create_blorgh_posts.rb from blorgh
+Copied migration [timestamp_2]_create_blorgh_comments.rb from blorgh
+```
+
+`timestamp_1` 會是拷貝當下的時間，`timestamp_2` 會是現在時間加 1 秒，以此類推。
+
+OK. 準備完畢，現在可以跑 migration 了：
+
+```bash
+rake db:migrate
+```
+
+打開 [http://localhost:3000/blog](http://localhost:3000/blog) 看看。
+
+今天要是裝了很多個 Engine，只想跑某個 Engine 的 migration 怎麼辦？
+
+```bash
+rake db:migrate SCOPE=blorgh
+```
+
+取消（Revert）Blorgh Engine 的 migration 呢？
+
+```bash
+rake db:migrate SCOPE=blorgh VERSION=0
+```
+
+## 4.3 Using a class provided by the application
+
+### 4.3.1 Using a model provided by the application
+
+好了，現在 `blorgh` 裝起來了，現在看看 Engine 怎麼跟宿主結合：幫我們的 post 與 comment 加上 author。
+
+通常會用 `User` 來表示文章或評論的作者，但叫 `Person` 也不是不可以，Engine 在處理 model 關聯時，不要寫死成 `User`。
+
+
+這裡為了保持簡單，就用 `User` 當評論或文章的作者：
+
+```bash
+rails g model user name:string
+```
+
+記得執行 `rake db:migrate` 來產生 `users` table。
+
+接著讓我們來把新增文章的表單加上 `author_name`，Engine 會用這個名字來新增一個 `User` 物件，並把 `user` 與 `post` 關聯起來。
+
+新增 `author_name` text field 加到 Engine 的 `app/views/blorgh/posts/_form.html.erb` partial：
+
+```html+erb
+<div class="field">
+  <%= f.label :author_name %><br>
+  <%= f.text_field :author_name %>
+</div>
+```
+
+接下來，更新 `Blorgh::PostController` 的 `post_params`：
+
+```ruby
+def post_params
+  params.require(:post).permit(:title, :text, :author_name)
+end
+```
+
+`Blorgh::Post` model 要能夠把 `author_name` 轉換成實際的 `User` 物件，並在 `post` 儲存前，將該 `post` 與 `author` 關聯起來。同時加上 `attr_accessor` 讓我們可以 `author_name` 知道作者是誰以及修改作者。
+
+```ruby
+attr_accessor :author_name
+belongs_to :author, class_name: "User"
+
+before_save :set_author
+
+private
+  def set_author
+    self.author = User.find_or_create_by(name: author_name)
+  end
+```
+
+接著處理 `blorgh_posts` table 與 `users` table 的關係。由於我們想要的是 `author`，所以要幫 `blorgh_posts` 加上 `author_id`：
+
+```bash
+$ rails g migration add_author_id_to_blorgh_posts author_id:integer
+```
+<!-- rails g migration add_author_id_to_blorgh_posts author_id:references -->
+
+把 migration 拷貝到宿主：
+
+```bash
+$ rake blorgh:install:migrations
+```
+
+執行 migration：
+
+```bash
+$ rake db:migrate
+```
+
+現在作者（宿主：`users`）與文章（Engine：`blorgh_posts`）的關聯做好了！
+
+最後，在文章頁面顯示作者吧，打開 `app/views/blorgh/posts/show.html.erb`：
+
+```html+erb
+<p>
+  <b>Author:</b>
+  <%= @post.author %>
+</p>
+```
+
+默認行為會輸出：
+
+```
+#<User:0x00000100ccb3b0>
+```
+
+但我們要的是名字，添加 `to_s` 到 `User`：
+
+```ruby
+def to_s
+  name
+end
 ```
 
 # 5. 測試 Engine
