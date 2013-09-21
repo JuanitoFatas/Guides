@@ -3,6 +3,7 @@ require File.dirname(__FILE__) + "/github-emojis"
 ##
 # this repository's path
 DOCGUIDES_REPO_PATH  = "#{Dir.home}/docs/guides"
+
 ##
 # where you clone rails/rails
 RAILS_EDGE_REPO_PATH = "#{Dir.home}/dev/rails-edge/guides/source"
@@ -49,20 +50,20 @@ end
 # rake msg "Update Guides." README.md
 desc "Write a custom commit message then push to GitHub."
 task :msg do
-  message = ARGV[-2]
+  message   = ARGV[-2]
   file_name = ARGV.last
   git_action(file_name, message: message)
-  task message.to_sym do ; end
+  task message.to_sym   do ; end
   task file_name.to_sym do ; end
 end
 
 desc "Update edge guides from Rails repo."
 task :update_guide do
   system "cd #{RAILS_EDGE_REPO_PATH}"
-  puts "Pulling Latest Changes from rails/rails..."
+    puts "Pulling Latest Changes from rails/rails..."
   system "git pull"
   system "cp #{RAILS_EDGE_REPO_PATH}/*.md #{DOCGUIDES_REPO_PATH}/guides/edge/"
-  puts "All Guides Updated Successfully."
+    puts "All Guides Updated Successfully."
 end
 
 def git_action(file, **opts)
@@ -72,7 +73,7 @@ def git_action(file, **opts)
               opts[:message]
             end
 
-  message = if str_larger_than(modified_files_str, 35)
+  message = if str_larger_than(modified_files_str, 38)
               "#{GITHUB_EMOJIS.sample} #{message} @ #{what_time_is_it}"
             else
               "#{message} @ #{what_time_is_it} #{GITHUB_EMOJIS.sample}"
