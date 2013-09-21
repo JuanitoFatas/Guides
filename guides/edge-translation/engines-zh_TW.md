@@ -1147,7 +1147,7 @@ initializer "blorgh.assets.precompile" do |app|
 end
 ```
 
-更多細節請閱讀： [Asset Pipeline guide](asset_pipeline.html)。
+更多細節請閱讀： [Asset Pipeline guide](http://edgeguides.rubyonrails.org/asset_pipeline.html)。
 
 ## 6.9 Engine 依賴的 Gem
 
@@ -1165,9 +1165,9 @@ s.add_dependency "moo"
 s.add_development_dependency "moo"
 ```
 
-執行 `bundle install` 時會安裝這些 gems，而 development dependency 的 gem 只有在跑 Engine 的測試時會用到。
+執行 `bundle install` 時會安裝這些 Gem，而 development dependency 的 Gem 只有在跑 Engine 的測試時會被使用。
 
-注意！若想在 Engine 被使用時，就用到某些相依的 RubyGems，要在 Engine 的 `engine.rb` 裡明確 `require`：
+注意！若想在 Engine 被使用時，馬上用某些相依的 Gem，要在 Engine 的 `engine.rb` 裡明確 `require`：
 
 
 ```ruby
