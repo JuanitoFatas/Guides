@@ -63,7 +63,6 @@ __特别要强调的翻译名词__
 
   * 在应用程序里覆写 Engine 的功能。
 
-
 # 1. Engine 是什么
 
 Engine 可以想成是抽掉了某些功能的 Rails 应用程序： __微型的 Rails 应用程序__ 。可以安装到（mount）宿主，为宿主添加新功能。Rails 本身也是个 Engine，Rails 应用程序 `Rails::Application` 继承自 `Rails::Engine`，其实 Rails 不过就是个“强大的” Engine。
@@ -1367,5 +1366,5 @@ end
     - [video](http://www.youtube.com/watch?v=bHKZfIeAbds)
 * [Integration Testing Engines by Ryan Bigg](https://speakerdeck.com/radar/integration-testing-engines)
 * [#277 Mountable Engines - RailsCasts](http://railscasts.com/episodes/277-mountable-engines)
-    - Railscasts 于 Rails 3.1.0.rc5 引入 Engine 的介绍。
+    Railscasts 于 Rails 3.1.0.rc5 引入 Engine 的介绍。
 * Rails in Actions 3 | Chapter 17 Rails Engine
