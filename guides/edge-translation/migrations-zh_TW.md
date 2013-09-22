@@ -316,6 +316,10 @@ end
 
 `rails generate model Product` 後面可接無限個欄位名及類型。
 
+__Active Record 支援的欄位有哪些？__
+
+> :primary_key, :string, :text, :integer, :float, :decimal, :datetime, :timestamp, :time, :date, :binary, :boolean.
+
 ## 2.3 類型修飾符
 
 類型後面還可加修飾符（modifiers），支持下列修飾符：
