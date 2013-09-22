@@ -93,7 +93,7 @@ __記住！宿主的優先權最高，Engine 不過給宿主提供新功能。__
 
 * [Active Admin](https://github.com/sferik/active_admin) 內容管理系統。
 
-## 1.1 Rails Engine 開發簡史
+## 1.1 Engine 開發簡史
 
 > 滾滾長江東逝水，<br>
 > 浪花滔盡英雄。<br>
@@ -106,26 +106,28 @@ __記住！宿主的優先權最高，Engine 不過給宿主提供新功能。__
 
 James Adam 2005 年 10 月 31 日（萬聖節）開始開發 Rails Engine，作為 plugin 的形式提交到 Rails（當時 Rails 的版本為 0.14.2），Kevin Smith 稍後寫了一篇文章提到：
 
-> Engine is also a nasty hack that breaks every new version of Rails because it hooks into internals that aren’t publicly supported. <br>
+> Engine is also a nasty hack that breaks every new version of Rails because it hooks into internals that aren’t publicly supported.
 > [Guide: Things You Shouldn't do in Rails by Kevin Smith ](http://glu.ttono.us/articles/2006/08/30/guide-things-you-shouldnt-be-doing-in-rails)
 
 DHH 也說：
 
-> I didn't want Rails to succumb to the lure of high-level components like login systems, forums, content management, and the likes. <br>
+> I didn't want Rails to succumb to the lure of high-level components like login systems, forums, content management, and the likes.
 > [The case against high-level components](http://david.heinemeierhansson.com/arc/000407.html)
 
 DHH 又說：
 
-> But the goal of Rails is to create a world where they are neither needed or strongly desired. Obviously, we are not quite there yet. <br>
+> But the goal of Rails is to create a world where they are neither needed or strongly desired. Obviously, we are not quite there yet.
 > [Why engines and components are not evil but distracting](http://weblog.rubyonrails.org/2005/11/11/why-engines-and-components-are-not-evil-but-distracting/)
 
+...
+
 > Engines have not received the blessing of the RoR core team, and I wouldn't expect any different, because it would be madness to include them in the
-core Rails. <br>
-> [mailing list](http://article.gmane.org/gmane.comp.lang.ruby.rails/29166)
+core Rails.
+> [gmane.comp.lang.ruby.rails mailing list](http://article.gmane.org/gmane.comp.lang.ruby.rails/29166)
 
 哇賽，Madness...這看起來像是 DHH 會講的話，但是卻是 Engine 作者 James Adam 自己說的。
 
-歷經了多少無數的編程夜晚，本來與 Rails 錯綜複雜各種核心功能，在 Rails 3.1 起，全都被 抽離出來，變成 `Rails::Engine` 了，甚至 Rails 本身也是個 Engine：
+歷經了多少無數的編程夜晚，本來與 Rails 錯綜複雜各種核心功能，在 Rails 3.1 起，全都被抽離出來，變成 `Rails::Engine` 了，甚至 Rails 本身也是個 Engine：
 
 ```
 # Rails 3.1+, try this in Pry or Irb.
@@ -137,11 +139,11 @@ Rails::Application.superclass
 Rails 3.2 Plugin 走入歷史，Engine 正式當家。
 
 感謝 [James Adam](http://lazyatom.com/)、[Piotr Sarnacki](http://piotrsarnacki.com/)、Rails 核心成員及無數人員的辛苦努力，
-沒有他們就沒有 Rails Engine！下次碰到他們記得感謝他們一下.....
+沒有他們就沒有 Rails Engine！下次碰到他們記得感謝他們一下.....DHH 又再度被打臉了。
 
 ## 1.2 Using Engine with Rails 2.x
 
-:point_right: [lazyatom/engines](https://github.com/lazyatom/engines)
+:point_right: &nbsp; [lazyatom/engines](https://github.com/lazyatom/engines)
 
 # 2. 產生 Engine
 
