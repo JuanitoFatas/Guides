@@ -138,6 +138,8 @@ Rails::Application.superclass
 
 Rails 3.2 Plugin 走入歷史，Engine 正式當家。
 
+Piotr Sarnacki 在 2010 Ruby Summer of Code 把 [Russian Doll Pattern](http://vimeo.com/4611379) 實現到 Rails Engine 裡...
+
 感謝 [James Adam](http://lazyatom.com/)、[Piotr Sarnacki](http://piotrsarnacki.com/)、Rails 核心成員及無數人員的辛苦努力，
 沒有他們就沒有 Rails Engine！下次碰到他們記得感謝他們一下.....DHH 又再度被打臉了。
 
