@@ -143,7 +143,7 @@ Rails 3.2 Plugin 走入歷史，Engine 正式當家。
 
 ## 1.2 Using Engine with Rails 2.x
 
-:point_right: &nbsp; [lazyatom/engines](https://github.com/lazyatom/engines)
+&nbsp;&nbsp;&nbsp;&nbsp; :point_right: &nbsp; [lazyatom/engines](https://github.com/lazyatom/engines)
 
 # 2. 產生 Engine
 
