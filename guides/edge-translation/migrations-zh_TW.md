@@ -318,7 +318,10 @@ end
 
 __Active Record 支援的欄位有哪些？__
 
-> `:primary_key`, `:string`, `:text`, `:integer`, `:float`, `:decimal`, `:datetime`, `:timestamp`, `:time`, `:date`, `:binary`, `:boolean`, `:references`
+> `:primary_key`, `:string`, `:text`, <br>
+> `:integer`, `:float`, `:decimal`, <br>
+> `:datetime`, `:timestamp`, `:time`, <br>
+> `:date`, `:binary`, `:boolean`, `:references`
 
 ## 2.3 類型修飾符
 
@@ -329,8 +332,9 @@ __Active Record 支援的欄位有哪些？__
 |`:limit`      | 設定 `string/text/binary/integer` 欄位的最大值。|
 |`:precision`  | 定義 `decimal` 欄位的精度，含小數點可以有幾個數字。|
 |`:scale`      | 定義 `decimal` 欄位的位數，小數點可以有幾位。|
-|`:polymorphic`| 給 `belongs_to` association 加上 `type` 欄位。|
 |`:null`       | 欄位允不允許 NULL 值。|
+|`:polymorphic`| 給 `belongs_to` association 加上 `type` 欄位。|
+
 
 舉例來說
 
