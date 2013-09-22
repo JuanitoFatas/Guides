@@ -141,7 +141,9 @@ Rails 3.2 Plugin 走入歷史，Engine 正式當家。
 感謝 [James Adam](http://lazyatom.com/)、[Piotr Sarnacki](http://piotrsarnacki.com/)、Rails 核心成員及無數人員的辛苦努力，
 沒有他們就沒有 Rails Engine！下次碰到他們記得感謝他們一下.....DHH 又再度被打臉了。
 
-## 1.2 Using Engine with Rails 2.x
+## 1.2 Rails 2.x 使用 Engine
+
+還在用 2.x? COOL. 可以用這個 GEM：
 
 &nbsp;&nbsp;&nbsp;&nbsp; :point_right: &nbsp; [lazyatom/engines](https://github.com/lazyatom/engines)
 
