@@ -6,11 +6,8 @@ Migration，遷移。Active Record 眾多功能之一，可以追蹤管理資料
 __學習目標__
 
 * 產生 migration。
-
 * 熟悉 Active Record 提供用來操作資料庫的方法。
-
 * 撰寫 Rake task 來管理資料庫的 schema。
-
 * 了解 Migration 與 schema.rb 的關係。
 
 
@@ -316,7 +313,7 @@ end
 
 `rails generate model Product` 後面可接無限個欄位名及類型。
 
-__Active Record 支援的欄位有哪些？__
+__Active Record 支援的欄位類型有哪些？__
 
 > `:primary_key`, `:string`, `:text`, <br>
 > `:integer`, `:float`, `:decimal`, <br>
@@ -334,7 +331,6 @@ __Active Record 支援的欄位有哪些？__
 |`:scale`      | 定義 `decimal` 欄位的位數，小數點可以有幾位。|
 |`:null`       | 欄位允不允許 NULL 值。|
 |`:polymorphic`| 給 `belongs_to` association 加上 `type` 欄位。|
-
 
 舉例來說
 
@@ -424,7 +420,7 @@ end
 
 會移除 `description` 與 `name` 欄位。新增 `part_number` （字串）欄位，並打上索引。並將 `upccode` 欄位重新命名為 `upc_code`。
 
-### 3.4 When Helpers aren't Enough
+### 3.4 Helpers 不夠用怎麼辦
 
 Active Record 提供的 Helper 無法完成你想做的事情時，可以使用 `execute` 方法來執行任何 SQL 語句：
 
@@ -939,7 +935,7 @@ end
 
 因為 schema dumps 是資料庫 schema 最完整的來源，強烈建議你將 schema 用版本管理來追蹤。
 
-# 8. Active Record 及 Referential Integrity
+# 8. Active Record 與 Referential Integrity
 
 Active Record 認為事情要在 model 裡處理好，不是在資料庫。也是因為這個原因，像是 trigger 或 foreign key constraints 這種牽涉到資料庫的事情不常使用
 
