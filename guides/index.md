@@ -8,8 +8,7 @@
 
 [Rails Database Migrations](/guides/edge-translation/migrations-zh_TW.md) :point_right: :point_right: :point_right: [簡體中文](/guides/edge-translation/migrations-zh_CN.md)
 
-
-[Getting Started with Engines](/guides/edge-translation/engines-zh_TW.md)
+[Getting Started with Engines](/guides/edge-translation/engines-zh_TW.md) :point_right: :point_right: :point_right: [簡體中文](/guides/edge-translation/engines-zh_CN.md)
 
 [Rails on Rack](/guides/edge-translation/rails-on-rack-zh_TW.md) :point_right: :point_right: :point_right: [簡體中文](/guides/edge-translation/rails-on-rack-zh_CN.md)
 
