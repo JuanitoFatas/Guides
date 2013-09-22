@@ -6,12 +6,11 @@ __特别要强调的翻译名词__
 
 > mount ＝ 安装
 
---
-
 ## 目录
 
 - [1. Engine 是什么](#1-engine-是什么)
-  - [1.1 Rails Engine 开发简史](#11-rails-engine-开发简史)
+  - [1.1 Engine 开发简史](#11-engine-开发简史)
+  - [1.2 Rails 2.x 使用 Engine](#12-rails-2x-使用-engine)
 - [2. 产生 Engine](#2-产生-engine)
   - [2.1 Engine 里面有什么](#21-engine-里面有什么)
     - [2.1.1 重要的文件](#211-重要的文件)
