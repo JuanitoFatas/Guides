@@ -92,7 +92,7 @@ def git_action(file, **opts)
 end
 
 def what_time_is_it
-  Time.now
+  Time.now.to_s.gsub('+0800', '(Taipei Time)')
 end
 
 def str_larger_than(str, size)
