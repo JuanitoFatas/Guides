@@ -1,4 +1,4 @@
-## 官方 Ruby on Rails Edge Guides 重點整理
+## 官方 Ruby on Rails Edge Guides 非全文翻譯
 
 [官方 Rails Guides][edge] 的譯文
 
