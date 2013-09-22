@@ -1366,5 +1366,5 @@ end
     - [video](http://www.youtube.com/watch?v=bHKZfIeAbds)
 * [Integration Testing Engines by Ryan Bigg](https://speakerdeck.com/radar/integration-testing-engines)
 * [#277 Mountable Engines - RailsCasts](http://railscasts.com/episodes/277-mountable-engines)
-    Railscasts 于 Rails 3.1.0.rc5 引入 Engine 的介绍。
+    - Railscasts 于 Rails 3.1.0.rc5 引入 Engine 的介绍。
 * Rails in Actions 3 | Chapter 17 Rails Engine
