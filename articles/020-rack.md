@@ -8,9 +8,11 @@
  －－－－－
 ｜Rack   ｜ <= Your middle man between server and app, so called Middleware.
  －－－－－
-｜       ｜ <= Rails application stack.
+｜Rails  ｜ <= Rails application stack.
  －－－－－
 ```
+
+# Simplest Rack application
 
 __Response ＝ [Status, Header, Body]__
 
@@ -39,10 +41,8 @@ Sinatra、Ruby on Rails、幾乎所有用 Ruby 寫成的 web framework，都采�
 
 * [Rack Wiki](https://github.com/rack/rack/wiki)
 
+* [Exploring Rack | Nettuts+](http://net.tutsplus.com/tutorials/exploring-rack/)
+
 * [Creating Static Sites in Ruby with Rack | Heroku Dev Center](https://devcenter.heroku.com/articles/static-sites-ruby)
 
 * [Creating Static Sites in Ruby with Rack](http://kmikael.com/2013/05/28/creating-static-sites-in-ruby-with-rack/)
-
-* [Exploring Rack | Nettuts+](http://net.tutsplus.com/tutorials/exploring-rack/)
-
-* [Build your own web framework with Rack and Ruby - Part 1 – Blog – isotope|eleven](http://isotope11.com/blog/build-your-own-web-framework-with-rack-and-ruby-part-1) No part 2.
