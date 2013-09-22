@@ -39,7 +39,7 @@ Rack 提供了简单、精简、模组化的介面，在 Ruby 里开发 web 应�
 
 假设我们的 Rails 应用程序叫做 `myapp`
 
-`Myapp::Application` 便是 Rails 应用程序的 Rack 对象，可以用 `Rails.application` 来存取。
+`MyApp::Application` 便是 Rails 应用程序的 Rack 对象，可以用 `Rails.application` 来存取。
 
 ## 2.2 `rails server`
 
