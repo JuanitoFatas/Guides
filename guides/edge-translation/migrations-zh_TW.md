@@ -1,4 +1,3 @@
-
 # Active Record Migrations
 
 Migration，遷移。Active Record 眾多功能之一，可以追蹤管理資料庫的 schema，而不是寫死。最棒的是 Migration 提供了簡潔的 Ruby DSL，讓管理資料庫的 table 更方便。
@@ -21,7 +20,7 @@ __學習目標__
 - [1. 概要](#1-概要)
 - [2. 新增 Migration](#2-新增-migration)
   - [2.1 新增獨立的 Migration](#21-新增獨立的-migration)
-  - [2.2 Modle 產生器](#22-modle-產生器)
+  - [2.2 Model 產生器](#22-model-產生器)
   - [2.3 類型修飾符](#23-類型修飾符)
 - [3. 撰寫 Migration](#3-撰寫-migration)
   - [3.1 產生 Table](#31-產生-table)
@@ -291,7 +290,7 @@ class CreateJoinTableCustomerProduct < ActiveRecord::Migration
 end
 ```
 
-## 2.2 Modle 產生器
+## 2.2 Model 產生器
 
 看看 `rails generate model` 會產生出來的 migration 例子，比如：
 
