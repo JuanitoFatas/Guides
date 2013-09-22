@@ -12,7 +12,7 @@
 
 - [1. 简介 Rack](#1-简介-rack)
 - [2. Rails on Rack](#2-rails-on-rack)
-  - [2.1 Rails 应用程序的 Rack Object](#21-rails-应用程序的-rack-对象)
+  - [2.1 Rails 应用程序的 Rack 对象](#21-rails-应用程序的-rack-对象)
   - [2.2 `rails server`](#22-rails-server)
   - [2.3 `rack up`](#23-rack-up)
 - [3. Action Dispatcher Middleware Stack](#3-action-dispatcher-middleware-stack)
