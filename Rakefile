@@ -92,7 +92,7 @@ def git_action(file, **opts)
 end
 
 def what_time_is_it
-  Time.now.utc
+  Time.now
 end
 
 def str_larger_than(str, size)
