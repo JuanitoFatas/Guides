@@ -2,7 +2,7 @@
 
 講解 Rails 與 Rack 的關係。
 
-讀完本篇你可能會學到...
+讀完可能會學到...
 
 * 在 Rails 裡如何使用 Rack Middleware。
 * ActionPack 內部的 Middleware 介紹。
@@ -190,7 +190,7 @@ config.middleware.insert_after ActiveRecord::QueryCache, Lifo::Cache, page_cache
 
 ### 3.2.2 Swapping a Middleware
 
-將 Middleware stack 的 middleware 交換位置：
+將 Middleware stack 的 middleware 交換加載順序：
 
 ```ruby
 # config/application.rb
