@@ -141,11 +141,13 @@ Rails 3.2 Plugin 走入歷史，Engine 正式當家。
 Piotr Sarnacki 在 2010 Ruby Summer of Code 把 [Russian Doll Pattern](http://vimeo.com/4611379) 實現到 Rails Engine 裡...
 
 感謝 [James Adam](http://lazyatom.com/)、[Piotr Sarnacki](http://piotrsarnacki.com/)、Rails 核心成員及無數人員的辛苦努力，
-沒有他們就沒有 Rails Engine！下次碰到他們記得感謝他們一下.....DHH 又再度被打臉了。
+沒有他們就沒有 Rails Engine！下次碰到他們記得感謝他們一下.....
+
+__DHH 又再度被打臉了。__
 
 ## 1.2 Rails 2.x 使用 Engine
 
-還在用 2.x? COOL. 可以用這個 GEM：
+還在用 2.x? COOL. 可以用這個 Gem：
 
 &nbsp;&nbsp;&nbsp;&nbsp; :point_right: &nbsp; [lazyatom/engines](https://github.com/lazyatom/engines)
 
@@ -157,7 +159,7 @@ Piotr Sarnacki 在 2010 Ruby Summer of Code 把 [Russian Doll Pattern](http://vi
 $ rails plugin new blorgh --mountable
 ```
 
-產生出的 Engine 的目錄結構：
+看看產生出來的 Engine 的目錄結構：
 
 ```
 .
@@ -201,6 +203,7 @@ $ rails plugin --help
     Blorgh::Engine.routes.draw do
     end
     ```
+
 * `lib/blorgh/engine.rb`：
 
   - `--full`：
@@ -231,6 +234,7 @@ mount Blorgh::Engine, at: "blorgh"
 ## 2.1 Engine 裡面有什麼
 
 Engine 目錄結構：
+
 ```
 .
 ├── app
@@ -308,7 +312,7 @@ app/assets/
         └── application.css
 ```
 
-存放 Engine 所需的 `images`、`javascripts`、`stylesheets`，皆放在 `blorgh` 下（命名空間分離）：
+Engine 所需的 `images`、`javascripts`、`stylesheets`，皆放在 `blorgh` 下（命名空間分離）：
 
 __`app/controllers` 目錄__
 
@@ -389,7 +393,7 @@ end
 
 __`test/integration`__
 
-Engine 的整合測試（Integration test）放這裡。其他相關的測試也可以放在這裡，比如關於 controller 的測試（`test/controller`）、關於 model （`test/model`）等。
+Engine 的整合測試（Integration test）放這裡。其他相關的測試也可以放在這裡，比如關於 controller 的測試（`test/controller`）、關於 model （`test/model`）的測試等。
 
 # 3. 給 Engine 加功能
 
@@ -397,7 +401,7 @@ Engine 的整合測試（Integration test）放這裡。其他相關的測試也
 
 ## 3.1 建立 post resource
 
-先產生 `Post` model：
+先用鷹架產生 `Post` model：
 
 ```bash
 $ rails generate scaffold post title:string text:text
@@ -769,7 +773,7 @@ rake db:migrate SCOPE=blorgh VERSION=0
 
 好了，現在 `blorgh` 裝起來了，現在看看 Engine 怎麼跟宿主結合：幫我們的 post 與 comment 加上 author。
 
-通常會用 `User` 來表示文章或評論的作者，但叫 `Person` 也不是不可以，Engine 在處理 model 關聯時，不要寫死成 `User`。
+通常會用 `User` 來表示文章或評論的作者，但叫 `Person` 也不是不可以，Engine 在處理 model 關聯時，不要寫死成 `User`。之後講解如何自定作者的類別名稱。
 
 
 這裡為了保持簡單，就用 `User` 當評論或文章的作者：
@@ -879,7 +883,7 @@ end
 
 ### 4.3.2 使用宿主提供的 controller
 
-Rails controller 通常會共享一些功能，像是authentication、session 變數，通常都從 `ApplicationController` 繼承而來。Rails Engine，是獨立運行在宿主之外，每個 Engine 有自己的 `ApplicationController` （在某個 scope 之下），像我們例子中的 `Blorgh::ApplicationController`。
+Rails controller 通常會共享一些功能，像是 authentication、session 變數，通常都從 `ApplicationController` 繼承而來。Rails Engine，是獨立運行在宿主之外，每個 Engine 有自己的 `ApplicationController` （在某個 scope 之下），像我們例子中的 `Blorgh::ApplicationController`。
 
 但有時 Engine 需要宿主 `ApplicationController` 的某些功能，該怎麼做呢？簡單的辦法是讓 Engine 的繼承自宿主的 `ApplicationController`：
 
@@ -894,7 +898,7 @@ end
 
 ## 4.4 設定 Engine
 
-要是 `User` model 要換成別的名字怎麼辦？讓我們看看，要怎麼實現訂製 `User` model 這個功能。
+要是 `User` model 要換成別的名字怎麼辦？讓我們看看，要怎麼實現客製化 `User` model 這個功能。
 
 ### 4.4.1 在宿主設定
 
@@ -1301,7 +1305,7 @@ Assets 跟平常 Rails 應用程式的工作方式相同。記得 assets 也要�
 <%= stylesheet_link_tag "blorgh/style.css" %>
 ```
 
-Asset Pipeline 的 require 語句同樣有效：
+Asset Pipeline 的 `require` 語句同樣有效：
 
 ```
 /*
@@ -1366,5 +1370,5 @@ end
     - [video](http://www.youtube.com/watch?v=bHKZfIeAbds)
 * [Integration Testing Engines by Ryan Bigg](https://speakerdeck.com/radar/integration-testing-engines)
 * [#277 Mountable Engines - RailsCasts](http://railscasts.com/episodes/277-mountable-engines)
-    - Railscasts 於 Rails 3.1.0.rc5 引入 Engine 的介紹。
+    Railscasts 於 Rails 3.1.0.rc5 引入 Engine 的介紹。
 * Rails in Actions 3 | Chapter 17 Rails Engine
