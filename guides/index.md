@@ -11,6 +11,6 @@
 
 [Getting Started with Engines](/guides/edge-translation/engines-zh_TW.md)
 
-[Rails on Rack](/guides/edge-translation/rails-on-rack-zh_TW.md)
+[Rails on Rack](/guides/edge-translation/rails-on-rack-zh_TW.md) :point_right: :point_right: :point_right: [簡體中文](/guides/edge-translation/rails-on-rack-zh_CN.md)
 
 [edge]: http://edgeguides.rubyonrails.org
