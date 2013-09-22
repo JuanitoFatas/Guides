@@ -247,7 +247,7 @@ Action Controller 多數的功能皆以 middleware 的方式實現，下面這�
 | **`ActiveRecord::Migration::CheckPending`** | 檢查是否有未執行的 migrations，若有，拋出 `PendingMigrationError` 錯誤。|
 | **`ActiveRecord::ConnectionAdapters::ConnectionManagement`** | 每個請求結束後，若 `rack.test` 不為真，則將作用中的連結（active connection）結束。|
 | **`ActiveRecord::QueryCache`** | 啟用 Active Record 的 query cache。|
-| **`ActionDispatch::Cookies`** | 幫請求設定 cookie。|
+| **`ActionDispatch::Cookies`** | 幫 Request 設定 cookie。|
 | **`ActionDispatch::Session::CookieStore`** | 負責把 session 存到 cookie。|
 | **`ActionDispatch::Flash`** | `config.action_controller.session_store` 設定為真時，設定 [flash][theflash] keys。|
 | **`ActionDispatch::ParamsParser`** | 將參數解析成 `params` hash。|
