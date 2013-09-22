@@ -91,7 +91,7 @@ Migration 是前進下一關，那回到上一關叫做什麼？ __Rollback，�
 
 注意：有些 query 不能在事務裡執行。如果你的資料庫支援的是 DDL 事務，可以用 `disable_ddl_transaction!` 停用它。
 
-如果你做的事 Active Record 不知道如何 rollback，你可以自己寫，用 `reversible`：
+如果 Active Record 不知道如何 rollback，你可以自己寫，用 `reversible`：
 
 ```ruby
 class ChangeProductsPrice < ActiveRecord::Migration
@@ -137,6 +137,7 @@ __Migration 存在那裡？__
 __Migration 檔名規則？__
 
 `YYYYMMDDHHMMSS_migration_name.rb`，前面的 `YYYYMMDDHHMMSS` 是 UTC 形式的時間戳章，後面接的是該 Migration 的名稱（前例 `migration_name.rb`）。Migration 的類別是用駝峰形式（CamelCased）定義的，會對應到檔名。
+
 舉個例子：
 
 `20130916204300_create_products.rb` 會定義出 `CreateProducts` 這樣的類別名稱。
@@ -499,9 +500,9 @@ class ExampleMigration < ActiveRecord::Migration
 
 ### 3.7 使用 `up`、`down` 方法
 
-可以不用 `change` 撰寫 Migration，使用經典的寫法 `up`、`down` 寫法。
+可以不用 `change` 撰寫 Migration，使用經典的 `up`、`down` 寫法。
 
-`up` 撰寫 migrate、`down` 撰寫 rollback。兩個操作要可以互相抵消。舉例來說，`up` 建了一個 table，`down` 就要 drop 那個 table。
+`up` 撰寫 migrate、`down` 撰寫 rollback。兩個操作要可以互相抵消。舉例來說，`up` 建了一個 table，`down` 就要 `drop` 那個 table。
 
 上面使用 `reversible` 可以用 `up`＋`down` 改寫：
 
