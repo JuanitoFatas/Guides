@@ -2,7 +2,6 @@
 
 Migration，迁移。Active Record 众多功能之一，可以追踪管理数据库的 schema，而不是硬编码。最棒的是 Migration 提供了简洁的 Ruby DSL，让管理数据库的 table 更方便。
 
-
 __学习目标__
 
 * 产生 Migration。
@@ -457,7 +456,7 @@ Products.connection.execute('UPDATE `products` SET `price`=`free` WHERE 1')
 * `remove_reference`
 * `rename_table`
 
-`change_table` 也是可逆的，只要传给 `change_table` 的区块没有呼叫 `change`、`change_default` 或是 `remove` 即可。
+`change_table` 也是可逆的，只要传给 `change_table` 的区块没有调用 `change`、`change_default` 或是 `remove` 即可。
 
 如果你想有更多的灵活性，可以使用 `reversible` 或是撰写 `up`、`down` 方法。
 
@@ -835,7 +834,7 @@ undefined method `fuzz' for #<Product:0x000001049b14a0>
 
 一个解决办法是在 Migration 里建一个 local model。这可以骗过 Rails，便不会触发验证。
 
-使用 local model 时，在更新数据库数据之前，记得要呼叫 `Product.reset_column_information` 来刷新 Active Record 对 `Product` model 的 cache。
+使用 local model 时，在更新数据库数据之前，记得要调用 `Product.reset_column_information` 来刷新 Active Record 对 `Product` model 的 cache。
 
 如果祝英台早知道这么做，就不会有问题啦：
 

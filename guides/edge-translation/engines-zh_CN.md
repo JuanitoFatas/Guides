@@ -920,7 +920,7 @@ belongs_to :author, class_name: Blorgh.author_class
 self.author = Blorgh.author_class.constantize.find_or_create_by(name: author_name)
 ```
 
-但这样每次都得对 `author_class` 呼叫 `constantize`，可以覆写 `Blorgh` module 里面，`author_class` 的 getter 方法（`lib/blorgh.rb`）：
+但这样每次都得对 `author_class` 调用 `constantize`，可以覆写 `Blorgh` module 里面，`author_class` 的 getter 方法（`lib/blorgh.rb`）：
 
 ```ruby
 def self.author_class
@@ -940,7 +940,7 @@ self.author = Blorgh.author_class.find_or_create_by(name: author_name)
 belongs_to :author, class_name: Blorgh.author_class.to_s
 ```
 
-接著在宿主里新建一个 initializer。Initializer 可确保宿主在启动之前、或是呼叫任何 Engine 的 model 方法之前，会先套用我们的设定。
+接著在宿主里新建一个 initializer。Initializer 可确保宿主在启动之前、或是调用任何 Engine 的 model 方法之前，会先套用我们的设定。
 
 在宿主的根目录下，新建 `config/initializers/blorgh.rb`：
 

@@ -53,7 +53,7 @@ Rails::Server.new.tap do |server|
 end
 ```
 
-`Rails::Server` 从 `::Rack::Server` 继承而来，用 `start` 来呼叫 `call`：
+`Rails::Server` 从 `::Rack::Server` 继承而来，用 `start` 来调用 `call`：
 
 
 ```ruby
@@ -239,7 +239,7 @@ Action Controller 多数的功能皆以 middleware 的方式实现，下面这�
 | **`Rack::MethodOverride`** | 透过 `params[:_method]` 允许重写方法。这也是用来处理 HTTP PUT 与 DELETE 方法的 middleware。|
 | **`ActionDispatch::RequestId`** | 给 response 产生独立的 `X-Request-Id` Header，并启用 `ActionDispatch::Request#uuid` 方法。|
 | **`Rails::Rack::Logger`** | 告诉 log 有 Request 进来了，Request 结束时，清空 log。|
-| **`ActionDispatch::ShowExceptions`** | Rescue 任何由应用程序抛出的 exception，并呼叫 exceptions app，将 expception 包装成适合显示给使用者的格式。|
+| **`ActionDispatch::ShowExceptions`** | Rescue 任何由应用程序抛出的 exception，并调用 exceptions app，将 expception 包装成适合显示给使用者的格式。|
 | **`ActionDispatch::DebugExceptions`** | 负责记录 exceptions 并在 request 为本机的情况下，显示 debugging 页面。|
 | **`ActionDispatch::RemoteIp`** | 检查 IP spoofing 攻击。|
 | **`ActionDispatch::Reloader`** | 准备及清除 callbacks。在开发模式下用来重新加载程式码的 middleware。|

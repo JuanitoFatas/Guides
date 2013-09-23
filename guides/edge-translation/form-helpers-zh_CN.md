@@ -6,7 +6,7 @@
 
 - [1. 简单的表单](#1-简单的表单)
   - [1.1 通用搜索表单](#11-通用搜索表单)
-    - [1.2 Form Helper 呼叫里传多个 Hash](#12-form-helper-呼叫里传多个-hash)
+    - [1.2 Form Helper 调用里传多个 Hash](#12-form-helper-调用里传多个-hash)
     - [1.3 生成表单的 Helpers](#13-生成表单的-helpers)
       - [1.3.1 Checkbox](#131-checkbox)
       - [1.3.2 Radio Buttons](#132-radio-buttons)
@@ -103,7 +103,7 @@ ID 是根据表单名称（上例为 `q`）所生成，可供 CSS 或 JavaScript
 
 __切记：搜索表单用正确的 HTTP 动词：GET。__
 
-### 1.2 Form Helper 呼叫里传多个 Hash
+### 1.2 Form Helper 调用里传多个 Hash
 
 `form_tag` 接受 2 个参数： __动作发生的路径（path）与选项（以 hash 形式传入）__。可指定送出时要用的方法，及更改表单元素的 class 等。
 
