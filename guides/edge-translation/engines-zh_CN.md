@@ -966,7 +966,7 @@ initializer、i18n、或是做其他的设定，在 Engine 里怎么做呢？Eng
 
 #### 4.4.2.1 Initalizer 例子：Devise `devise_for`
 
-用过 Devise 同学可能在 `config/routes.rb` 都看过 `devise_for` ，大概是怎么实现的呢？
+用过 Devise 的同学可能在 `config/routes.rb` 都看过 `devise_for` ，大概是怎么实现的呢？
 
 以下代码仅做示意之用，并非实际 Devise 的代码：
 
