@@ -895,7 +895,7 @@ end
 
 便可獲得來自宿主 `ApplicationController` 的功能，這樣看起來就像是宿主的某個 controller。
 
-## 4.4 設定 Engine
+## 4.4 自定 `User` model
 
 要是 `User` model 要換成別的名字怎麼辦？讓我們看看，要怎麼實現客製化 `User` model 這個功能。
 
@@ -957,7 +957,7 @@ __警告！用字串來設定，而不是直接使用 model。__
 
 接著試試新增一篇文章，看是不是跟之前一樣可以用。但現在我們的 class 是可設定的，YA！
 
-### 4.4.2 Engine 的通用設定
+### 4.4.2 設定 Engine
 
 initializer、i18n、或是做其他的設定，在 Engine 裡怎麼做呢？Engine 其實就是個微型的 Rails 應用程式，所以可以像是在 Rails 裡面那般設定。
 
@@ -1026,6 +1026,28 @@ module Blorgh
       c.template_engine :haml
       c.test_framework  :rspec
     end
+  end
+end
+```
+
+#### 4.4.2.3 變更 Engine 的名稱
+
+Engine 的名稱在兩個地方會用到：
+
+* routes
+
+`mount Blorgh::Engine => '/blorgh'` 有默認的 default 選項 `:as`，
+
+默認的名稱便是 `as: 'engine_name'`
+
+* 複製 migration 的 rake task （如 `blorgh:install:migrations`）
+
+__如何變更？__
+
+```ruby
+module MyEngine
+  class Engine < Rails::Engine
+    engine_name "my_engine"
   end
 end
 ```
@@ -1277,7 +1299,32 @@ Engine 的 `posts_path` （這叫 routing proxy 方法，與 Engine 名字相同
 
 這可以拿來實現回首頁的功能。
 
-### 6.6.1 重新命名 Engine Routing Proxy 方法
+### 6.6.1 路由優先權
+
+將 Engine 安裝至宿主之後，就會有 2 個 router。讓我們看下面這個例子：
+
+```ruby
+# host application
+Rails.application.routes.draw do
+  mount MyEngine::Engine => "/blog"
+  get "/blog/omg" => "main#omg"
+end
+```
+
+`MyEngine` 安裝在 `/blog`，`/blog/omg` 會指向宿主的 `main` controller 的 `omg` action。當有 `/blog/omg` 有 request 進來時，會先到 `MyEngine`，要是 `MyEngine` 沒有定義這條路由，則會轉發給宿主的 `main#omg`。
+
+改寫成這樣：
+
+```ruby
+Rails.application.routes.draw do
+  get "/blog/omg" => "main#omg"
+  mount MyEngine::Engine => "/blog"
+end
+```
+
+則 Engine 只會處理宿主沒有處理的 request。
+
+### 6.6.2 重新命名 Engine Routing Proxy 方法
 
 有兩個地方可換 Engine 名字：
 
