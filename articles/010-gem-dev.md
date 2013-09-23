@@ -5,3 +5,5 @@
 [用 Bundler 做 Gem](http://bundler.io/)
 
 [Gem 開發教學 by Ryan Bigg](https://github.com/radar/guides/blob/master/gem-development.md)
+
+[Crafting Gems: RailsConf 2013 // Speaker Deck](https://speakerdeck.com/pat/crafting-gems-railsconf-2013)
