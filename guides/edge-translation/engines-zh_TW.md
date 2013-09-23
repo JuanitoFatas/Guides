@@ -1000,31 +1000,37 @@ module Devise
 end
 ```
 
-#### 4.4.2.2 變更 Engine 預設的測試框架
+#### 4.4.2.2 變更 Engine 預設的 ORM、模版引擎、測試框架
 
 ```ruby
 # lib/blorgh/engine.rb
 module Blorgh
   class Engine < ::Rails::Engines
     isolate_namespace Blorgh
-    config.app_generators.test_framework :rspec
-  end
-end
-```
-
-#### 4.4.2.3 變更 Engine 預設的模版引擎
-
-```ruby
-# lib/blorgh/engine.rb
-module Blorgh
-  class Engine < ::Rails::Engines
-    isolate_namespace Blorgh
+    config.app_generators.orm             :datamapper
     config.app_generators.template_engine :haml
+    config.app_generators.test_framework  :rspec
   end
 end
 ```
 
-#### 4.4.2.4 新增 Middleware 到 Engine 的 Middleware stack
+亦可：
+
+```ruby
+# lib/blorgh/engine.rb
+module Blorgh
+  class Engine < ::Rails::Engines
+    isolate_namespace Blorgh
+    config.app_generators do |c|
+      c.orm             :datamapper
+      c.template_engine :haml
+      c.test_framework  :rspec
+    end
+  end
+end
+```
+
+#### 4.4.2.5 新增 Middleware 到 Engine 的 Middleware stack
 
 ```ruby
 # lib/blorgh/engine.rb
