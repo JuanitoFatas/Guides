@@ -483,7 +483,7 @@ __注意這裡繼承的 `ApplicationController` 是 `Blorgh::ApplicationControll
 
 __`require_dependency` 是 Rails 特有的方法，讓你開發 Engine 時不用重啟（開發模式下）。__
 
-[require_dependency 源代碼可在此找到](https://github.com/rails/rails/blob/master/activesupport/lib/active_support/dependencies.rb#L201)
+[require_dependency 原始碼可在此找到](https://github.com/rails/rails/blob/master/activesupport/lib/active_support/dependencies.rb#L201)
 
 * `invoke    erb` 產生 controller 相關的 views。
 * `invoke    test_unit` 產生 controller 相關的測試。
