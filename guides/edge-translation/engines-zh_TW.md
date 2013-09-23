@@ -1056,7 +1056,7 @@ module MyEngine
 end
 ```
 
-#### 4.4.2.5 新增 Middleware 到 Engine 的 Middleware stack
+#### 4.4.2.4 新增 Middleware 到 Engine 的 Middleware stack
 
 ```ruby
 # lib/blorgh/engine.rb
