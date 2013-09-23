@@ -13,7 +13,8 @@ __特別要強調的翻譯名詞__
 ## 目錄
 
 - [1. Engine 是什麼](#1-engine-是什麼)
-  - [1.1 Rails Engine 開發簡史](#11-rails-engine-開發簡史)
+  - [1.1 Engine 開發簡史](#11-engine-開發簡史)
+  - [1.2 Rails 2.x 使用 Engine](#12-rails-2x-使用-engine)
 - [2. 產生 Engine](#2-產生-engine)
   - [2.1 Engine 裡面有什麼](#21-engine-裡面有什麼)
     - [2.1.1 重要的檔案](#211-重要的檔案)
@@ -29,13 +30,13 @@ __特別要強調的翻譯名詞__
   - [4.3 使用宿主提供的類別](#43-使用宿主提供的類別)
     - [4.3.1 使用宿主提供的 model](#431-使用宿主提供的-model)
     - [4.3.2 使用宿主提供的 controller](#432-使用宿主提供的-controller)
-  - [4.4 設定 Engine](#44-設定-engine)
+  - [4.4 自定 `User` model](#44-自定-user-model)
     - [4.4.1 在宿主設定](#441-在宿主設定)
-    - [4.4.2 Engine 的通用設定](#442-engine-的通用設定)
+    - [4.4.2 設定 Engine](#442-設定-engine)
       - [4.4.2.1 Initalizer 例子：Devise `devise_for`](#4421-initalizer-例子：devise-devise_for)
-      - [4.4.2.2 變更 Engine 預設的測試框架](#4422-變更-engine-預設的測試框架)
-      - [4.4.2.3 變更 Engine 預設的模版引擎](#4423-變更-engine-預設的模版引擎)
-      - [4.4.2.4 新增 Middleware 到 Engine 的 Middleware stack](#4424-新增-middleware-到-engine-的-middleware-stack)
+      - [4.4.2.2 變更 Engine 預設的 ORM、模版引擎、測試框架](#4422-變更-engine-預設的-orm、模版引擎、測試框架)
+      - [4.4.2.3 變更 Engine 的名稱](#4423-變更-engine-的名稱)
+      - [4.4.2.5 新增 Middleware 到 Engine 的 Middleware stack](#4425-新增-middleware-到-engine-的-middleware-stack)
     - [4.4.3 撰寫 Engine 的 Generator](#443-撰寫-engine-的-generator)
 - [5. 測試 Engine](#5-測試-engine)
   - [5.1 功能性測試](#51-功能性測試)
@@ -46,7 +47,8 @@ __特別要強調的翻譯名詞__
   - [6.4 用 `ActiveSupport::Concern` 來實現 Decorator 設計模式](#64-用-activesupportconcern-來實現-decorator-設計模式)
   - [6.5 覆寫 views](#65-覆寫-views)
   - [6.6 路由](#66-路由)
-    - [6.6.1 重新命名 Engine Routing Proxy 方法](#661-重新命名-engine-routing-proxy-方法)
+    - [6.6.1 路由優先權](#661-路由優先權)
+    - [6.6.2 重新命名 Engine Routing Proxy 方法](#662-重新命名-engine-routing-proxy-方法)
   - [6.7 Assets](#67-assets)
   - [6.8 宿主用不到的 Assets 與預編譯](#68-宿主用不到的-assets-與預編譯)
   - [6.9 Engine 依賴的 Gem](#69-engine-依賴的-gem)
@@ -1030,17 +1032,19 @@ module Blorgh
 end
 ```
 
+__Rails 3.1 以前請使用 `config.app_generators`__
+
 #### 4.4.2.3 變更 Engine 的名稱
 
 Engine 的名稱在兩個地方會用到：
 
 * routes
 
-`mount Blorgh::Engine => '/blorgh'` 有默認的 default 選項 `:as`，
+`mount MyEngine::Engine => '/myengine'` 有默認的 default 選項 `:as`，
 
 默認的名稱便是 `as: 'engine_name'`
 
-* 複製 migration 的 rake task （如 `blorgh:install:migrations`）
+* 複製 migration 的 Rake task （如 `myengine:install:migrations`）
 
 __如何變更？__
 
