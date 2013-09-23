@@ -1004,7 +1004,9 @@ end
 module Blorgh
   class Engine < ::Rails::Engines
     isolate_namespace Blorgh
-    config.app_generators.test_framework :rspec
+    config.generators do |g|
+      g.test_framework :rspec
+    end
   end
 end
 ```
@@ -1016,7 +1018,9 @@ end
 module Blorgh
   class Engine < ::Rails::Engines
     isolate_namespace Blorgh
-    config.app_generators.template_engine :haml
+    config.generators do |g|
+      g.template_engine :haml
+    end
   end
 end
 ```
