@@ -26,12 +26,12 @@ __特别要强调的翻译名词__
   - [4.3 使用宿主提供的类别](#43-使用宿主提供的类别)
     - [4.3.1 使用宿主提供的 model](#431-使用宿主提供的-model)
     - [4.3.2 使用宿主提供的 controller](#432-使用宿主提供的-controller)
-  - [4.4 设定 Engine](#44-设定-engine)
+  - [4.4 自定 `User` model](#44-自定-user-model)
     - [4.4.1 在宿主设定](#441-在宿主设定)
-    - [4.4.2 Engine 的通用设定](#442-engine-的通用设定)
+    - [4.4.2 配置 Engine](#442-配置-engine)
       - [4.4.2.1 Initalizer 例子：Devise `devise_for`](#4421-initalizer-例子：devise-devise_for)
-      - [4.4.2.2 变更 Engine 预设的测试框架](#4422-变更-engine-预设的测试框架)
-      - [4.4.2.3 变更 Engine 预设的模版引擎](#4423-变更-engine-预设的模版引擎)
+      - [4.4.2.2 变更 Engine 默认的 ORM、模版引擎、测试框架](#4422-变更-engine-默认的-orm、模版引擎、测试框架)
+      - [4.4.2.3 变更 Engine 的名称](#4423-变更-engine-的名称)
       - [4.4.2.4 添加 Middleware 到 Engine 的 Middleware stack](#4424-添加-middleware-到-engine-的-middleware-stack)
     - [4.4.3 撰写 Engine 的 Generator](#443-撰写-engine-的-generator)
 - [5. 测试 Engine](#5-测试-engine)
@@ -43,7 +43,8 @@ __特别要强调的翻译名词__
   - [6.4 用 `ActiveSupport::Concern` 来实现 Decorator 设计模式](#64-用-activesupportconcern-来实现-decorator-设计模式)
   - [6.5 覆写 views](#65-覆写-views)
   - [6.6 路由](#66-路由)
-    - [6.6.1 重新命名 Engine Routing Proxy 方法](#661-重新命名-engine-routing-proxy-方法)
+    - [6.6.1 路由优先权](#661-路由优先权)
+    - [6.6.2 重新命名 Engine Routing Proxy 方法](#662-重新命名-engine-routing-proxy-方法)
   - [6.7 Assets](#67-assets)
   - [6.8 宿主用不到的 Assets 与预编译](#68-宿主用不到的-assets-与预编译)
   - [6.9 Engine 依赖的 Gem](#69-engine-依赖的-gem)
@@ -892,7 +893,7 @@ end
 
 便可获得来自宿主 `ApplicationController` 的功能，这样看起来就像是宿主的某个 controller。
 
-## 4.4 设定 Engine
+## 4.4 自定 `User` model
 
 要是 `User` model 要换成别的名字怎么办？让我们看看，要怎么实现自定 `User` model 这个功能。
 
@@ -954,7 +955,7 @@ __警告！用字串来设定，而不是直接使用 model。__
 
 接著试试新增一篇文章，看是不是跟之前一样可以用。但现在我们的 class 是可设定的，YA！
 
-### 4.4.2 Engine 的通用设定
+### 4.4.2 配置 Engine
 
 initializer、i18n、或是做其他的设定，在 Engine 里怎么做呢？Engine 其实就是个微型的 Rails 应用程序，所以可以像是在 Rails 里面那般设定。
 
@@ -997,30 +998,56 @@ module Devise
 end
 ```
 
-#### 4.4.2.2 变更 Engine 预设的测试框架
+#### 4.4.2.2 变更 Engine 默认的 ORM、模版引擎、测试框架
 
 ```ruby
 # lib/blorgh/engine.rb
 module Blorgh
   class Engine < ::Rails::Engines
     isolate_namespace Blorgh
-    config.generators do |g|
-      g.test_framework :rspec
+    config.app_generators.orm             :datamapper
+    config.app_generators.template_engine :haml
+    config.app_generators.test_framework  :rspec
+  end
+end
+```
+
+亦可：
+
+```ruby
+# lib/blorgh/engine.rb
+module Blorgh
+  class Engine < ::Rails::Engines
+    isolate_namespace Blorgh
+    config.generators do |c|
+      c.orm             :datamapper
+      c.template_engine :haml
+      c.test_framework  :rspec
     end
   end
 end
 ```
 
-#### 4.4.2.3 变更 Engine 预设的模版引擎
+__Rails 3.1 以前请使用 `config.app_generators`__
+
+#### 4.4.2.3 变更 Engine 的名称
+
+Engine 的名称在两个地方会用到：
+
+* routes
+
+`mount MyEngine::Engine => '/myengine'` 有默认的 default 选项 `:as`，
+
+默认的名称便是 `as: 'engine_name'`
+
+* 拷贝 migration 的 Rake task （如 `myengine:install:migrations`）
+
+__如何变更？__
 
 ```ruby
-# lib/blorgh/engine.rb
-module Blorgh
-  class Engine < ::Rails::Engines
-    isolate_namespace Blorgh
-    config.generators do |g|
-      g.template_engine :haml
-    end
+module MyEngine
+  class Engine < Rails::Engine
+    engine_name "my_engine"
   end
 end
 ```
@@ -1272,7 +1299,32 @@ Engine 的 `posts_path` （这叫 routing proxy 方法，与 Engine 名字相同
 
 这可以拿来实现回首页的功能。
 
-### 6.6.1 重新命名 Engine Routing Proxy 方法
+### 6.6.1 路由优先权
+
+将 Engine 安装至宿主之后，就会有 2 个 router。让我们看下面这个例子：
+
+```ruby
+# host application
+Rails.application.routes.draw do
+  mount MyEngine::Engine => "/blog"
+  get "/blog/omg" => "main#omg"
+end
+```
+
+`MyEngine` 安装在 `/blog`，`/blog/omg` 会指向宿主的 `main` controller 的 `omg` action。当有 `/blog/omg` 有 request 进来时，会先到 `MyEngine`，要是 `MyEngine` 没有定义这条路由，则会转发给宿主的 `main#omg`。
+
+改写成这样：
+
+```ruby
+Rails.application.routes.draw do
+  get "/blog/omg" => "main#omg"
+  mount MyEngine::Engine => "/blog"
+end
+```
+
+则 Engine 只会处理宿主没有处理的 request。
+
+### 6.6.2 重新命名 Engine Routing Proxy 方法
 
 有两个地方可换 Engine 名字：
 
