@@ -969,7 +969,7 @@ initializer、i18n、或是做其他的設定，在 Engine 裡怎麼做呢？Eng
 
 #### 4.4.2.1 Initalizer 例子：Devise `devise_for`
 
-用過 Devise 同學可能在 `config/routes.rb` 都看過 `devise_for` ，大概是怎麼實現的呢？
+用過 Devise 的同學可能在 `config/routes.rb` 都看過 `devise_for` ，大概是怎麼實現的呢？
 
 以下代碼僅做示意之用，並非實際 Devise 的代碼：
 
