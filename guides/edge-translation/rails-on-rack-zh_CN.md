@@ -85,7 +85,7 @@ end
 
 ## 2.3 `rack up`
 
-可以不用 `rails server` 来启动 Rails，修改 Rails 专案的 `config.ru` 即可：
+可以不用 `rails server` 来启动 Rails，修改 Rails 项目的 `config.ru` 即可：
 
 ```ruby
 # Rails.root/config.ru
