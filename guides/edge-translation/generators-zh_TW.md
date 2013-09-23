@@ -4,18 +4,155 @@ __特別要強調的翻譯名詞__
 
 > invoke 調用
 
-要改進工作流程，Rails Generators 是基本工具。
-這篇指南教你如何自己做一個 generator 及如何客製化現有的 generator。
+> 不翻譯的名詞我用英文大寫，如 Generator、Template。
 
-讀完本篇你可能會學到.....
+要改進工作流程，Rails Generators 是基本工具。
+這篇指南教你如何自己做一個 Generator 及如何客製化現有的 Generator。
+
+讀完本篇可能會學到.....
 
 * 知道應用程式裡有哪些 Generator 可用。
-* 如何用 template 產生 generator。
-* Rails 如何在調用 genrator 之前找到它們。
-* 如何用新的 generator 來客製化鷹架。
-* 如何變更 generator template 來客製化鷹架。
-* 如何用替代方案避免覆寫一大組 generator。
-* 如何新建應用程序 template。
+* 如何用 Template 產生 Generator。
+* Rails 如何在調用 Generator 之前找到它們。
+* 如何用新的 Generator 來客製化鷹架。
+* 如何變更 Generator Template 來客製化鷹架。
+* 如何用替代方案避免覆寫一大組 Generator。
+* 如何新建應用程序 Template。
+
+## 目錄
+
+# 1. 初次接觸
+
+最開始用 `rails` 指令時，其實就使用了 Rails Generator。查看完整 Rails Generator 的選項，輸入 `rails generate`：
+
+```bash
+$ rails new myapp
+$ cd myapp
+$ rails generate
+```
+
+便可查看 Rails 所有的 Generator。需要特定 generator 的詳細說明，比如 helper generator 的說明：
+
+```bash
+$ rails generate helper --help
+```
+
+# 2. 新增你的第一個 Generator
+
+從 Rails 3.0 起，Generators 用 [Thor](https://github.com/erikhuda/thor)
+重寫了。Thor 提供命令行選項的解析、具有強大的 API 來處理檔案。讓我們打造一個能在 `config/initializers` 目錄下產生 `initializer` 檔案（`initializer.rb`）的 Generator。
+
+第一步先在 `lib/generators/initializer_generator.rb` 新建一個檔案，並填入如下內容：
+
+
+```ruby
+class InitializerGenerator < Rails::Generators::Base
+  def create_initializer_file
+    create_file "config/initializers/initializer.rb", "# Add initialization content here"
+  end
+end
+```
+
+注意：`create_file` 是 `Thor::Actions` 提供的方法。`create_file` 及其它 Thor 提供的方法請查閱 [Thor 的 API](http://rdoc.info/github/wycats/thor/master/Thor/Actions.html)
+
+讓我們來分析一下剛剛的產生器。
+
+從 `Rails::Generators::Base` 繼承而來：
+
+```ruby
+class InitializerGenerator < Rails::Generators::Base
+```
+
+並定義了一個方法：
+
+```ruby
+def create_initializer_file
+  create_file "config/initializers/initializer.rb", "Add initialization content here"
+end
+```
+
+當每個 Generator 被調用時，公有的方法會依定義的順序執行。最後，呼叫 `create_file` 方法，依據 `content` 填入內容（`"Add initialization content here"`）至指定位置（`"config/initializers/initializer.rb"`）。
+
+如何使用我們自己寫的 Generator：
+
+```bash
+$ rails generate initializer
+```
+
+甚至還有指令說明！
+
+```bash
+$ rails generate initializer --help
+```
+
+如果 Generator 有適當的命名，比如 `ActiveRecord::Generators::ModelGenerator`，Rails 通常會幫你產生出不錯的指令敘述。當然也可自己寫敘述：用 `desc`：
+
+```ruby
+class InitializerGenerator < Rails::Generators::Base
+  desc "This generator creates an initializer file at config/initializers"
+  def create_initializer_file
+    create_file "config/initializers/initializer.rb", "# Add initialization content here"
+  end
+end
+```
+
+另一種方式是將敘述寫在 `USAGE` 檔案裡，下節示範。
+
+# 3. 用 `rails generate` 指令來新建 Generator
+
+```bash
+$ rails generate generator initializer
+      create  lib/generators/initializer
+      create  lib/generators/initializer/initializer_generator.rb
+      create  lib/generators/initializer/USAGE
+      create  lib/generators/initializer/templates
+```
+
+這是我們剛產生的 Generator，`initializer`：
+
+```ruby
+class InitializerGenerator < Rails::Generators::NamedBase
+  source_root File.expand_path("../templates", __FILE__)
+end
+```
+
+首先注意到我們從 `Rails::Generators::NamedBase` 而不是前例 `Rails::Generators::Base` 繼承而來。這表示我們的 Generator 至少接受一個參數，會是 `initializer` 的名字，並會存在 `name` 變數裡。
+
+用 `--help` 看看我們說的對不對：
+
+```bash
+$ rails generate initializer --help
+Usage:
+  rails generate initializer NAME [options]
+```
+
+`source_root` 指向 Generator Template 所在之處，預設指向 `lib/generators/initializer/templates` 目錄。
+
+那什麼是 Generator Template？新建一個 `lib/generators/initializer/templates/initializer.rb` 檔案，並填入如下內容：
+
+```ruby
+# Add initialization content here
+```
+
+接著修改剛剛的 generator，讓它在調用時，複製這個新填入的 Template：
+
+```ruby
+class InitializerGenerator < Rails::Generators::NamedBase
+  source_root File.expand_path("../templates", __FILE__)
+
+  def copy_initializer_file
+    copy_file "initializer.rb", "config/initializers/#{file_name}.rb"
+  end
+end
+```
+
+現在執行我們的 Generator：
+
+```bash
+$ rails generate initializer core_extensions
+```
+
+現在 `config/initializers/` 目錄下產生了 `core_extensions.rb`，內容為剛剛填入的內容。這也間接說明了，`copy_file` 在 `source_root` 指向的地方複製一個檔案。那 `file_name` 怎麼來的？由 `Rails::Generators::NamedBase` 類自動幫我們產生？
 
 # 9. Generator 方法
 
