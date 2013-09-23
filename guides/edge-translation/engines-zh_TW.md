@@ -1021,7 +1021,7 @@ end
 module Blorgh
   class Engine < ::Rails::Engines
     isolate_namespace Blorgh
-    config.app_generators do |c|
+    config.generators do |c|
       c.orm             :datamapper
       c.template_engine :haml
       c.test_framework  :rspec
