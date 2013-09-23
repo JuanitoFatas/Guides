@@ -720,22 +720,22 @@ mount Blorgh::Engine, at: "/blog"
 
 ## 4.2 Engine setup
 
-接著要把 Engine 的 migration 拷貝到宿主這裡，產生對應的 tables。Rails 已經幫我們提供了方便的命令：
+接著要把 Engine 的 migration 複製到宿主這裡，產生對應的 tables。Rails 已經幫我們提供了方便的命令：
 
 ```bash
 $ rake blorgh:install:migrations
 ```
 
-如果有多個 Engine 都要把 migration 拷貝過來，可以：
+如果有多個 Engine 都要把 migration 複製過來，可以：
 
 ```bash
 $ rake railties:install:migrations
 ```
 
-__已經拷貝過的 migraiton 不會重複拷貝__
+__已經複製過的 migraiton 不會重複複製__
 
 
-好了，有細心的同學又發問了：「老師！那拷貝過來，timestamp 不就是當初開發 Engine 的 Timestamp 嗎？要是很久以前開發的 Engine，不就比我的應用程式的 migration 還早執行了嗎？」呵呵，小朋友，Rails 也想到這件事了！
+好了，有細心的同學又發問了：「老師！那複製過來，timestamp 不就是當初開發 Engine 的 Timestamp 嗎？要是很久以前開發的 Engine，不就比我的應用程式的 migration 還早執行了嗎？」呵呵，小朋友，Rails 也想到這件事了！
 
 執行 `$ rake blorgh:install:migrations` 會輸出：
 
@@ -744,7 +744,7 @@ Copied migration [timestamp_1]_create_blorgh_posts.rb from blorgh
 Copied migration [timestamp_2]_create_blorgh_comments.rb from blorgh
 ```
 
-`timestamp_1` 會是拷貝當下的時間，`timestamp_2` 會是現在時間加 1 秒，以此類推。
+`timestamp_1` 會是複製當下的時間，`timestamp_2` 會是現在時間加 1 秒，以此類推。
 
 OK. 準備完畢，現在可以跑 migration 了：
 
@@ -827,7 +827,7 @@ $ rails g migration add_author_id_to_blorgh_posts author_id:integer
 ```
 <!-- rails g migration add_author_id_to_blorgh_posts author_id:references -->
 
-把 migration 拷貝到宿主：
+把 migration 複製到宿主：
 
 ```bash
 $ rake blorgh:install:migrations
