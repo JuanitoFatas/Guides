@@ -31,7 +31,7 @@ $ cd myapp
 $ rails generate
 ```
 
-便可查看 Rails 所有的 Generator。需要特定 generator 的詳細說明，比如 helper generator 的說明：
+便可查看 Rails 所有的 Generator。需要特定 Generator 的詳細說明，比如 helper Generator 的說明：
 
 ```bash
 $ rails generate helper --help
@@ -39,7 +39,7 @@ $ rails generate helper --help
 
 # 2. 新增你的第一個 Generator
 
-從 Rails 3.0 起，Generators 用 [Thor](https://github.com/erikhuda/thor)
+從 Rails 3.0 起，Generator 用 [Thor](https://github.com/erikhuda/thor)
 重寫了。Thor 提供命令行選項的解析、具有強大的 API 來處理檔案。讓我們打造一個能在 `config/initializers` 目錄下產生 `initializer` 檔案（`initializer.rb`）的 Generator。
 
 第一步先在 `lib/generators/initializer_generator.rb` 新建一個檔案，並填入如下內容：
@@ -156,7 +156,7 @@ $ rails generate initializer core_extensions
 
 # 9. Generator 方法
 
-下面是 Rails generator 與 template 內可用的方法：
+下面是 Rails Generator 與 template 內可用的方法：
 
 關於 Thor 提供的方法請查閱 [Thor 的 API](http://rdoc.info/github/wycats/thor/master/Thor/Actions.html)。
 
