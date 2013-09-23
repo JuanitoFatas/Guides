@@ -35,7 +35,7 @@ __特別要強調的翻譯名詞__
       - [4.4.2.1 Initalizer 例子：Devise `devise_for`](#4421-initalizer-例子：devise-devise_for)
       - [4.4.2.2 變更 Engine 預設的測試框架](#4422-變更-engine-預設的測試框架)
       - [4.4.2.3 變更 Engine 預設的模版引擎](#4423-變更-engine-預設的模版引擎)
-      - [4.4.2.4 添加 Middleware 到 Engine 的 Middleware stack](#4424-添加-middleware-到-engine-的-middleware-stack)
+      - [4.4.2.4 新增 Middleware 到 Engine 的 Middleware stack](#4424-新增-middleware-到-engine-的-middleware-stack)
     - [4.4.3 撰寫 Engine 的 Generator](#443-撰寫-engine-的-generator)
 - [5. 測試 Engine](#5-測試-engine)
   - [5.1 功能性測試](#51-功能性測試)
@@ -66,10 +66,9 @@ __特別要強調的翻譯名詞__
 
   * 在應用程式裡覆寫 Engine 的功能。
 
-
 # 1. Engine 是什麼
 
-Engine 可以想成是抽掉了某些功能的 Rails 應用程式： __微型的 Rails 應用程式__ 。可以安裝到（mount）宿主，為宿主添加新功能。Rails 本身也是個 Engine，Rails 應用程式 `Rails::Application` 繼承自 `Rails::Engine`，其實 Rails 不過就是個“強大的” Engine。
+Engine 可以想成是抽掉了某些功能的 Rails 應用程式： __微型的 Rails 應用程式__ 。可以安裝到（mount）宿主，為宿主新增新功能。Rails 本身也是個 Engine，Rails 應用程式 `Rails::Application` 繼承自 `Rails::Engine`，其實 Rails 不過就是個“強大的” Engine。
 
 Rails 還有外掛功能，外掛跟 Engine 很像。兩者都有 `lib` 目錄結構，皆採用 `rails plugin new` 來產生 Engine 與外掛。Engine 可以是外掛；外掛也可是 Engine。但還是不太一樣，Engine 可以想成是“完整的外掛”。
 
@@ -255,7 +254,7 @@ Engine 目錄結構：
 
 __`blorgh.gemspec`__
 
-當 Engine 開發完畢時，安裝到宿主的時候，需要在宿主的 Gemfile 添加：
+當 Engine 開發完畢時，安裝到宿主的時候，需要在宿主的 Gemfile 新增：
 
 ```ruby
 gem 'blorgh', path: "vendor/engines/blorgh"
@@ -460,7 +459,7 @@ __注意，產生出來的檔案都是放在 Engine 的命名空間下，因為�
 
 * `invoke  active_record` 產生 migration 與 model。
 * `invoke    text_unit` 產生該 model 的測試及假資料。
-* `invoke  resource_route` 添加了一個 route 到 `config/routes.rb`：
+* `invoke  resource_route` 新增了一個 route 到 `config/routes.rb`：
 
     ```ruby
     resources :posts
@@ -494,7 +493,7 @@ __`require_dependency` 是 Rails 特有的方法，讓你開發 Engine 時不用
 * `invoke    css` 產生關於這個 resource 的 css
 * `invoke  css` scaffold 為這個 resource 產生的樣式。
 
-要載入 scaffold 產生的樣式，添加下面這行到 `app/views/layouts/blorgh/application.html.erb`：
+要載入 scaffold 產生的樣式，新增下面這行到 `app/views/layouts/blorgh/application.html.erb`：
 
 ```erb
 <%= stylesheet_link_tag "scaffold" %>
@@ -566,14 +565,14 @@ $ rake db:migrate
 <%= link_to 'Edit', edit_post_path(@post) %> |
 ```
 
-在這行之前添加：
+在這行之前新增：
 
 ```html+erb
 <h3>Comments</h3>
 <%= render @post.comments %>
 ```
 
-`@post.comments` 會需要聲明 Post 與 Comment 之間的關係。打開 `app/models/blorgh/post.rb`，添加 `has_many :comments`：
+`@post.comments` 會需要聲明 Post 與 Comment 之間的關係。打開 `app/models/blorgh/post.rb`，新增 `has_many :comments`：
 
 ```ruby
 module Blorgh
@@ -585,7 +584,7 @@ end
 
 好了，厲害的同學可能會問：「老師！為什麼不用 `has_many` 裡面的 `:class_name` 選項呢？」因為 model 是定義在 `Blorgh` Module 裡面，Rails 自己就知道要用 `Blorgh::Comment` model 了哦 ^_^！
 
-接下來新增在文章中添加評論的表單，打開 `app/views/blorgh/posts/show.html.erb`，添加這行到剛剛添加的 `render @post.comments` 下面：
+接下來新增在文章中新增評論的表單，打開 `app/views/blorgh/posts/show.html.erb`，新增這行到剛剛新增的 `render @post.comments` 下面：
 
 ```erb
 <%= render "blorgh/comments/form" %>
@@ -616,7 +615,7 @@ $ touch app/views/blorgh/comments/_form.html.erb
 <% end %>
 ```
 
-表單送出時，會對 `/posts/:post_id/comments/` 做 POST。目前還沒有這條路由，讓我們來添加一下，打開 `config/routes.rb`
+表單送出時，會對 `/posts/:post_id/comments/` 做 POST。目前還沒有這條路由，讓我們來新增一下，打開 `config/routes.rb`
 
 ```ruby
 resources :posts do
@@ -649,7 +648,7 @@ invoke    css
 create      app/assets/stylesheets/blorgh/comments.css
 ```
 
-當表單送 POST 請求到 `/posts/:post_id/comments/` 時，controller （`Blorgh::CommentsController`）要有 `create` action 來回應，打開 `app/controllers/blorgh/comments_controller.rb`，並添加：
+當表單送 POST 請求到 `/posts/:post_id/comments/` 時，controller （`Blorgh::CommentsController`）要有 `create` action 來回應，打開 `app/controllers/blorgh/comments_controller.rb`，並新增：
 
 ```ruby
 def create
@@ -675,7 +674,7 @@ Missing partial blorgh/comments/comment with {:handlers=>[:erb, :builder], :form
 
 Engine 找不到 partial。因為 Rails 在 `test/dummy` 的 `app/views` 目錄下面找，接著去 Engine 的 `app/views` 目錄找，然後沒找到！
 
-但 Engine 知道要在 `blorgh/comments/comment` 找，因為 model 物件是從 `Blorgh:Comment` 傳來的，好，那就新增 `app/views/blorgh/comments/_comment.html.erb` 並添加：
+但 Engine 知道要在 `blorgh/comments/comment` 找，因為 model 物件是從 `Blorgh:Comment` 傳來的，好，那就新增 `app/views/blorgh/comments/_comment.html.erb` 並新增：
 
 ```erb
 <%= comment_counter + 1 %>. <%= comment.text %> <br>
@@ -687,7 +686,7 @@ Engine 找不到 partial。因為 Rails 在 `test/dummy` 的 `app/views` 目錄�
 
 # 4. 安裝至宿主
 
-接下來講解如何將 Engine 安裝到宿主，並假設宿主有 `User` class，把我們的評論與文章功能添加到宿主的 User 上。
+接下來講解如何將 Engine 安裝到宿主，並假設宿主有 `User` class，把我們的評論與文章功能新增到宿主的 User 上。
 
 ## 4.1 安裝 Engine
 
@@ -697,7 +696,7 @@ Engine 找不到 partial。因為 Rails 在 `test/dummy` 的 `app/views` 目錄�
 $ rails new unicorn
 ```
 
-打開 Gemfile，添加 Devise：
+打開 Gemfile，新增 Devise：
 
 ```ruby
 gem 'devise'
@@ -711,7 +710,7 @@ gem 'blorgh', path: "/path/to/blorgh"
 
 記得 `bundle install` 安裝。
 
-接著添加 `blorgh` Engine 所需的路由，打開宿主的 `config/routes.rb`：
+接著新增 `blorgh` Engine 所需的路由，打開宿主的 `config/routes.rb`：
 
 ```ruby
 mount Blorgh::Engine, at: "/blog"
@@ -844,13 +843,13 @@ $ rake db:migrate
 
 首頁顯示作者，打開 `app/views/blorgh/posts/index.html.erb`：
 
-在這行 `<th>Title</th>` 上面添加：
+在這行 `<th>Title</th>` 上面新增：
 
 ```html
 <th>Author</th>
 ```
 
-並在 `<td><%= post.title %></td>` 上面添加：
+並在 `<td><%= post.title %></td>` 上面新增：
 
 ```erb+html
 <td><%= post.author %></td>
@@ -871,7 +870,7 @@ $ rake db:migrate
 #<User:0x00000100ccb3b0>
 ```
 
-但我們要的是名字，添加 `to_s` 到 `User`：
+但我們要的是名字，新增 `to_s` 到 `User`：
 
 ```ruby
 def to_s
@@ -1025,7 +1024,7 @@ module Blorgh
 end
 ```
 
-#### 4.4.2.4 添加 Middleware 到 Engine 的 Middleware stack
+#### 4.4.2.4 新增 Middleware 到 Engine 的 Middleware stack
 
 ```ruby
 # lib/blorgh/engine.rb
@@ -1086,7 +1085,7 @@ get :index, use_route: :blorgh
 
 # 6. 增進 Engine 的功能
 
-本節講解如何在宿主應用程式裡，為 Engine 添加新功能，或是覆寫 Engine 的功能。
+本節講解如何在宿主應用程式裡，為 Engine 新增新功能，或是覆寫 Engine 的功能。
 
 ## 6.1 覆寫 Model 與 Controller
 
@@ -1167,7 +1166,7 @@ end
 
 `ActiveSupport::Concern` 幫你處理錯綜複雜的 module 相依關係。
 
-**添加** `Post#time_since_created` 並 **覆寫** `Post#summary`
+**新增** `Post#time_since_created` 並 **覆寫** `Post#summary`
 
 ```ruby
 # unicorn/app/models/blorgh/post.rb
