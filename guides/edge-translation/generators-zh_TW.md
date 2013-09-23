@@ -14,8 +14,8 @@ __特別要強調的翻譯名詞__
 * Rails 如何在調用 genrator 之前找到它們。
 * 如何用新的 generator 來客製化鷹架。
 * 如何變更 generator template 來客製化鷹架。
-* 如何用替代方案避免覆寫一大組 generator
-* 如何新建應用程序 template
+* 如何用替代方案避免覆寫一大組 generator。
+* 如何新建應用程序 template。
 
 # 9. Generator 方法
 
@@ -216,8 +216,8 @@ rake "db:migrate"
 
 可用選項有：
 
-* `:env` - Specifies the environment in which to run this rake task.
-* `:sudo` - Whether or not to run this task using `sudo`. Defaults to `false`.
+* `:env` - 指定執行此 Rake 任務的環境。
+* `:sudo` - 是否用 `sudo` 執行此任務，預設為 `false`。
 
 ### `capify!`
 
