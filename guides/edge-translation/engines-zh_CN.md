@@ -342,7 +342,7 @@ app/views/
 
 Engine 的 layout 放这里。Engine 单独使用的话，就可以在这里改 layout，而不用到 Rails 应用程序的 `app/views/layouts/application.html.erb` 下修改。
 
-要是不想 Engine 的使用者，使用 Engine 的 layout，删除这个文件，并在 Engine 的 controller 指定你要用的 layout。
+要是不想要使用 Engine 的 layout，删除这个文件，并在 Engine 的 controller 指定你要用的 layout。
 
 ### 2.1.3 `bin` 目录
 
