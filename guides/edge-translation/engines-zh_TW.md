@@ -6,7 +6,7 @@ __特別要強調的翻譯名詞__
 
 > host application ＝ 宿主。
 
-> plugin ＝ 插件。
+> plugin ＝ 外掛。
 
 --
 
@@ -71,7 +71,7 @@ __特別要強調的翻譯名詞__
 
 Engine 可以想成是抽掉了某些功能的 Rails 應用程式： __微型的 Rails 應用程式__ 。可以安裝到（mount）宿主，為宿主添加新功能。Rails 本身也是個 Engine，Rails 應用程式 `Rails::Application` 繼承自 `Rails::Engine`，其實 Rails 不過就是個“強大的” Engine。
 
-Rails 還有插件功能，插件跟 Engine 很像。兩者都有 `lib` 目錄結構，皆采用 `rails plugin new` 來產生 Engine 與插件。Engine 可以是插件；插件也可是 Engine。但還是不太一樣，Engine 可以想成是“完整的插件”。
+Rails 還有外掛功能，外掛跟 Engine 很像。兩者都有 `lib` 目錄結構，皆采用 `rails plugin new` 來產生 Engine 與外掛。Engine 可以是外掛；外掛也可是 Engine。但還是不太一樣，Engine 可以想成是“完整的外掛”。
 
 下面會用一個 `blorgh` Engine 的例子來講解。這個 `blorgh` 給宿主提供了：新增文章（posts）、新增評論（comments），這兩個功能。我們會先開發 Engine，再把 Engine 安裝到應用程式。
 
