@@ -177,9 +177,7 @@ generators/initializer_generator.rb
 
 直到找到對應的 Generator 為止，沒找到會回報錯誤訊息。
 
-上例將
-
-但之前講新增 Generator ，怎把 Generator 放在 `lib` 目錄下？因為 `lib` 屬於 `$LOAD_PATH`，Rails 會自動幫我們加載。
+但之前講新增 Generator 的時候，怎把 Generator 放在 `lib` 目錄下？因為 `lib` 屬於 `$LOAD_PATH`，Rails 會自動幫我們加載。
 
 # 5. 客製化工作流程
 
@@ -338,6 +336,126 @@ hook_for :test_framework, as: :helper
 
 大功告成！
 
+# 6. 更改 Generator 的 Template 來客製化工作流程
+
+上例我們不過給 helper Generator 新增一行程式碼，沒加別的功能。其實還有更簡單的方法，即換掉 Rails helper Generator （`Rails::Generators::HelperGenerator`）的 Template。
+
+Rails 3.0 之後，Generator 不僅會在 Template 的 `source_root` 查找，也會在其它路徑下，找看看有沒有 Template。現在讓我們來客製化 `Rails::Generators::HelperGenerator`，新增所需的資料夾及檔案：
+
+```bash
+mkdir -p lib/templates/rails/helper
+touch lib/templates/rails/helper/helper.rb
+```
+
+並填入如下內容：
+
+```erb
+module <%= class_name %>Helper
+  attr_reader :<%= plural_name %>, :<%= plural_name.singularize %>
+end
+```
+
+將上節 `config/application.rb` 的修改還原（刪除下面這段）：
+
+```ruby
+config.app_generators do |g|
+  g.orm             :active_record
+  g.template_engine :erb
+  g.test_framework  :test_unit, fixture: false
+  g.stylesheets     false
+end
+```
+
+這與上例的效果相同。改 Template 在想客製化鷹架產生的 `edit.html.erb`、`index.html.erb`，在 `lib/templates/erb/scaffold/` 目錄下新建 `index.html.erb` 與 `edit.html.erb`，並填入想產生的內容即可。
+
+# 7. 加入 Generators 替代方案
+
+Generator 最後要加入的功能是替代方案（Fallbacks）。舉個例子，假設妳想在 `TestUnit` 加入像是 [shoulda](https://github.com/thoughtbot/shoulda) 的功能。由於 TestUnit 已實作所有 Rails Generators 需要的方法，而 shoulda 不過是覆寫某部分功能，不需要為了 shoulda 重新實作這些 Generators，可以告訴 Rails 在 `Shoulda` 命名空間下沒找到 Generator 時可以用 `TestUnit`
+
+
+看看怎麼加入 Fallback，打開 `config/application.rb`：
+
+```ruby
+config.generators do |g|
+  g.orm             :active_record
+  g.template_engine :erb
+  g.test_framework  :shoulda, fixture: false
+  g.stylesheets     false
+
+  # Add a fallback!
+  g.fallbacks[:shoulda] = :test_unit
+end
+```
+
+Now, if you create a Comment scaffold, you will see that the shoulda generators are being invoked, and at the end, they are just falling back to TestUnit generators:
+
+```bash
+$ rails generate scaffold Comment body:text
+      invoke  active_record
+      create    db/migrate/20091120151323_create_comments.rb
+      create    app/models/comment.rb
+      invoke    shoulda
+      create      test/models/comment_test.rb
+      create      test/fixtures/comments.yml
+      invoke  resource_route
+       route    resources :comments
+      invoke  scaffold_controller
+      create    app/controllers/comments_controller.rb
+      invoke    erb
+      create      app/views/comments
+      create      app/views/comments/index.html.erb
+      create      app/views/comments/edit.html.erb
+      create      app/views/comments/show.html.erb
+      create      app/views/comments/new.html.erb
+      create      app/views/comments/_form.html.erb
+      invoke    shoulda
+      create      test/controllers/comments_controller_test.rb
+      invoke    my_helper
+      create      app/helpers/comments_helper.rb
+      invoke      shoulda
+      create        test/helpers/comments_helper_test.rb
+      invoke  assets
+      invoke    coffee
+      create      app/assets/javascripts/comments.js.coffee
+      invoke    scss
+```
+
+Fallback 允許 Generator 各司其職、提高程式碼重用性、減少程式碼重複性。
+
+# 8. 應用程式 Templates
+
+現在已經會用 Generator 了，那想客製化產生出來的應用程式該怎麼做？透過應用程式 Templates 來實作。下面是 Templates API 的概要，詳細資訊請查閱 [Rails Application Templates guide](rails_application_templates.html)。
+
+```ruby
+gem "rspec-rails", group: "test"
+gem "cucumber-rails", group: "test"
+
+if yes?("Would you like to install Devise?")
+  gem "devise"
+  generate "devise:install"
+  model_name = ask("What would you like the user model to be called? [user]")
+  model_name = "user" if model_name.blank?
+  generate "devise", model_name
+end
+```
+
+上例中我們為產生的 Rails 應用程式新增了兩個 gem（`rspec-rails`、`cucumber-rails`），放在 `test` group，會自動加到 Gemfile。接著問使用者是否要安裝 Devise？若使用者回答 `y` 或 `yes`，則會把 `gem "devise"` 加到 Gemfile，並執行 `devise:install` generator，並詢問默認的用戶 model 名稱為？並產生出該 model。
+
+現在將上面的程式碼存成 `template.rb`，便可以在 `rails new` 輸入 `-m` 選項來使用這個 Template：
+
+```bash
+$ rails new thud -m template.rb
+```
+
+這個指令會用給入的 Template 產生出 `Thud` 應用程式。
+
+Template 也可存在網路上，如：
+
+```bash
+$ rails new thud -m https://gist.github.com/radar/722911/raw/
+```
+
+下一節會帶你走一遍 Template 與 Generator 可用的方法有哪些，這些方法組合起來有無窮的可能性。上吧，孩子！
 
 # 9. Generator 方法
 
