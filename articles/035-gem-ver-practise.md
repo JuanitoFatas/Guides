@@ -1,6 +1,6 @@
 # Gem Version Practice
 
-```
+```ruby
 module YourGemName
   module VERSION
     MAJOR = 0
