@@ -9,6 +9,6 @@
 |[Rails Database Migrations](/guides/edge/migrations.md)|[zh-TW](/guides/edge-translation/migrations-zh_TW.md)|[zh-CN](/guides/edge-translation/migrations-zh_CN.md)|
 |[Getting Started with Engines](/guides/edge/engines.md)|[zh-TW](/guides/edge-translation/engines-zh_TW.md)|[zh-CN](/guides/edge-translation/engines-zh_CN.md)|
 |[Rails on Rack](/guides/edge/rails_on_rack.md)|[zh-TW](/guides/edge-translation/rails-on-rack-zh_TW.md)|[zh-CN](/guides/edge-translation/rails-on-rack-zh_CN.md)|
-|[Creating and Customizing Rails Generators & Templates](/guides/edge/generators.md)|[Work In Progress](/guides/edge-translation/generators-zh_TW.md)|_Available soon_|
+|[Creating and Customizing Rails Generators & Templates](/guides/edge/generators.md)|[zh-TW](/guides/edge-translation/generators-zh_TW.md)|_Available soon_|
 
 [edge]: http://edgeguides.rubyonrails.org
