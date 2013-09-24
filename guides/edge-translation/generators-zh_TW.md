@@ -21,6 +21,32 @@ __特別要強調的翻譯名詞__
 
 ## 目錄
 
+- [1. 初次接觸](#1-初次接觸)
+- [2. 新增你的第一個 Generator](#2-新增你的第一個-generator)
+- [3. 用 `rails generate` 指令來新建 Generator](#3-用-rails-generate-指令來新建-generator)
+- [4. Generators 查找順序](#4-generators-查找順序)
+- [5. 客製化工作流程](#5-客製化工作流程)
+- [6. 更改 Generator 的 Template 來客製化工作流程](#6-更改-generator-的-template-來客製化工作流程)
+- [7. 加入 Generators 替代方案](#7-加入-generators-替代方案)
+- [8. 應用程式 Templates](#8-應用程式-templates)
+- [9. Generator 方法](#9-generator-方法)
+    - [`gem`](#gem)
+    - [`gem_group`](#gem_group)
+    - [`add_source`](#add_source)
+    - [`inject_into_file`](#inject_into_file)
+    - [`gsub_file`](#gsub_file)
+    - [`application`](#application)
+    - [`git`](#git)
+    - [`vendor`](#vendor)
+    - [`lib`](#lib)
+    - [`rakefile`](#rakefile)
+    - [`initializer`](#initializer)
+    - [`generate`](#generate)
+    - [`rake`](#rake)
+    - [`capify!`](#capify!)
+    - [`route`](#route)
+    - [`readme`](#readme)
+
 # 1. 初次接觸
 
 最開始用 `rails` 指令時，其實就使用了 Rails Generator。要查看 Rails 完整的 Generator 清單，輸入 `rails generate`：
