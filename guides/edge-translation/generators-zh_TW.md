@@ -22,7 +22,7 @@ __特別要強調的翻譯名詞__
 ## 目錄
 
 - [1. 初次接觸](#1-初次接觸)
-- [2. 新增你的第一個 Generator](#2-新增你的第一個-generator)
+- [2. 第一個 Generator](#2-第一個-generator)
 - [3. 用 `rails generate` 指令來新建 Generator](#3-用-rails-generate-指令來新建-generator)
 - [4. Generators 查找順序](#4-generators-查找順序)
 - [5. 客製化工作流程](#5-客製化工作流程)
