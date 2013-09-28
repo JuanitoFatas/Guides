@@ -171,12 +171,10 @@ class InitializerGenerator < Rails::Generators::NamedBase
   source_root File.expand_path("../templates", __FILE__)
 
   def copy_initializer_file
-    copy_file "initializer.rb", "config/initializers/#{file_name}.rb"
+    copy_file "initializer.rb", "config/initializers/#{name}.rb"
   end
 end
 ```
-
-> `copy_file source, destination`
 
 執行看看：
 
@@ -184,22 +182,29 @@ end
 $ rails generate initializer core_extensions
 ```
 
-現在 `config/initializers/` 目錄下產生了 `core_extensions.rb`，內容為剛剛填入的內容。
+現在 `config/initializers/` 目錄下產生了 `core_extensions.rb`，內容為剛剛填入的內容：
 
+```ruby
+# Add initialization content here
+```
 
-這也解釋了 `copy_file` 的用途：`copy_file 甲 乙` 將位於 `source_root` 的甲，複製到乙。
+稍稍解釋下 `copy_file` 的用途：
 
-其中：
+`copy_file 來源檔案 目的檔案` 將位於 `source_root` 的`來源檔案`，複製到`目的檔案`。
 
-甲：`"../templates/initializer.rb"`
+```ruby
+copy_file "initializer.rb", "config/initializers/#{file_name}.rb"
+```
 
-乙：`config/initializers/#{file_name}.rb`
+來源檔案：`"../templates/initializer.rb"`
 
-`file_name` 怎麼來的？`Rails::Generators::NamedBase` 自動會產生。
+目的檔案：`config/initializers/#{name}.rb`
+
+`name` 怎麼來的？`Rails::Generators::NamedBase` [幫你捕捉傳入的參數](https://github.com/rails/rails/blob/master/railties/lib/rails/generators/named_base.rb#L8)。
 
 # 4. Generators 查找順序
 
-執行 `rails generate initializer core_extensions` 時，Rails 檢查順序如下：
+執行 `rails generate initializer core_extensions` 時，Rails 怎麼知道要用哪個 Generator？查找順序如下：
 
 ```bash
 rails/generators/initializer/initializer_generator.rb
@@ -210,11 +215,13 @@ generators/initializer_generator.rb
 
 直到找到對應的 Generator 為止，沒找到會回報錯誤訊息。
 
-但之前講新增 Generator 的時候，怎把 Generator 放在 `lib` 目錄下？因為 `lib` 屬於 `$LOAD_PATH`，Rails 會自動幫我們加載。
+但是上節我們的 Generator 是在 `lib/generators/initializer/initializer_generator.rb` 這裡呀，沒在 Rails 的查找目錄裡啊？
+
+這是因為 `lib` 屬於 `$LOAD_PATH`，Rails 會自動幫我們加載。
 
 # 5. 客製化工作流程
 
-Rails 原生的 Generator 非常靈活，可讓你客製化鷹架。可在 `config/application.rb` 修改設定：
+Rails 原生的 Generator 非常靈活，可用來客製化鷹架。打開 `config/application.rb`，修改設定：
 
 ```ruby
 config.app_generators do |g|
@@ -224,7 +231,7 @@ config.app_generators do |g|
 end
 ```
 
-在客製化我們的工作流程之前，先看看現在 scaffold 的輸出如何：
+在客製化之前，先看看目前鷹架的輸出如何：
 
 ```bash
 $ rails generate scaffold User name:string
@@ -263,9 +270,13 @@ $ rails generate scaffold User name:string
       create    app/assets/stylesheets/scaffolds.css.scss
 ```
 
-光看輸出就知道是怎回事了。鷹架 Generator 自己沒有產生東西，只是幫你調用其它的 Generator。如此一來我們便可把調用的這些 Generator 換掉。舉例來說，鷹架 Generator 調用 scaffold_controller Generator，scaffold_controller 又調用了 erb, test_unit 及 helper Generator。每個人各司其職，重用性高，程式碼重複少。
+光看輸出就知道是怎回事了。鷹架 Generator 自己沒有產生東西，只是幫你調用（invoke）其它的 Generator。如此一來我們便可把調用的這些 Generator 換掉。
 
-首先要對鷹架做的客製化，便是不要產生樣式表及假資料 (fixture)。
+舉例來說，鷹架 Generator 調用了 scaffold_controller Generator、scaffold_controller 又調用了 erb、test_unit 及 helper Generator。
+
+每個 Generator 各司其職，因此達到「重用性高，程式碼重複少」的目標。
+
+假如我們不要產生樣式表及假資料（fixture）。
 
 ```ruby
 # config/application.rb
@@ -277,9 +288,17 @@ config.app_generators do |g|
 end
 ```
 
-現在再次執行 `$ rails generate scaffold User name:string` 便不會產生假資料、樣式表及單元測試。亦可把測試框架換成 RSpec；ORM 換成 DataMapper。
+現在再次執行
 
-接著我們自己做一個 helper Generator，加入某些 instance variable 的 reader。首先新建這個 Generator，並放在 rails 命名空間下，以便 Rails 查找我們的 Generator：
+```bash
+$ rails generate scaffold User name:string
+```
+
+便不會產生假資料、樣式表及單元測試。亦可把測試框架換成 RSpec；ORM 換成 DataMapper。
+
+接著我們來自己做一個 helper Generator，幫 helper 裡，某些 instance variable 自動加入 reader。
+
+首先新建這個 Generator，並放在 rails 命名空間下，以便 Rails 查找我們的 Generator：
 
 ```bash
 $ rails generate generator rails/my_helper
@@ -324,7 +343,7 @@ end
 現在讓鷹架使用我們寫的 helper Generator，編輯 `config/application.rb`：
 
 ```ruby
-config.generators do |g|
+config.app_generators do |g|
   g.orm             :active_record
   g.template_engine :erb
   g.test_framework  :test_unit, fixture: false
@@ -371,7 +390,7 @@ hook_for :test_framework, as: :helper
 
 # 6. 更改 Generator 的 Template 來客製化工作流程
 
-上例我們不過給 helper Generator 新增一行程式碼，沒加別的功能。其實還有更簡單的方法，即換掉 Rails helper Generator （`Rails::Generators::HelperGenerator`）的 Template。
+上例我們不過給 helper Generator 新增一行程式碼，沒加別的功能。其實還有更簡單的方法，即換掉 Rails helper Generator （`Rails::Generators::HelperGenerator`）原生的 Template。
 
 Rails 3.0 之後，Generator 不僅會在 Template 的 `source_root` 查找，也會在其它路徑下，找看看有沒有 Template。現在讓我們來客製化 `Rails::Generators::HelperGenerator`，新增所需的目錄及檔案：
 
@@ -399,7 +418,10 @@ config.app_generators do |g|
 end
 ```
 
-這與上例的效果相同。想客製化鷹架，比如只產生 `edit.html.erb`、`index.html.erb`，改 Template 很有用。
+這與上例的效果相同。想客製化鷹架，
+
+
+改 Template 在只想產生某些檔案的場景下很有用，比如 scaffold 只想產生 `edit.html.erb`、`index.html.erb`。
 
 在 `lib/templates/erb/scaffold/` 目錄下新建 `index.html.erb` 與 `edit.html.erb`，填入想產生的內容即可。
 
@@ -459,7 +481,7 @@ Fallback 允許 Generator 各司其職、提高程式碼重用性、減少程式
 
 # 8. 應用程式 Templates
 
-現在已經會用 Generator 了，那想客製化產生出來的應用程式該怎麼做？透過應用程式 Templates 來實作。下面是 Templates API 的概要，詳細資訊請查閱 [Rails Application Templates guide](rails_application_templates.html)。
+現在已經會用 Generator 了，那想客製化產生出來的應用程式該怎麼做？透過應用程式 Templates 來實作。下面是 Templates API 的概要，詳細資訊請查閱 [Rails Application Templates guide](http://edgeguides.rubyonrails.org/rails_application_templates.html)。
 
 ```ruby
 gem "rspec-rails", group: "test"
@@ -491,6 +513,10 @@ $ rails new thud -m https://gist.github.com/radar/722911/raw/
 ```
 
 下一節會帶你走一遍 Template 與 Generator 可用的方法有哪些，這些方法組合起來有無窮的可能性。上吧，孩子！
+
+了解更多關於 Application Template 的內容：
+
+[#148 App Templates in Rails 2.3 - RailsCasts](http://railscasts.com/episodes/148-app-templates-in-rails-2-3)
 
 # 9. Generator 方法
 
@@ -717,3 +743,10 @@ route "resources :people"
 ```ruby
 readme "README"
 ```
+
+## 延伸閱讀
+
+[#218 Making Generators in Rails 3 - RailsCasts](http://railscasts.com/episodes/218-making-generators-in-rails-3)
+
+[#148 Custom App Generators (revised) - RailsCasts](http://railscasts.com/episodes/148-custom-app-generators-revised)
+
