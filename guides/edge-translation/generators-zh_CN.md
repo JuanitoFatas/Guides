@@ -1,4 +1,4 @@
-# 定制与新增 Rails 生成器与模版
+# 定制与添加 Rails 生成器与模版
 
 要改进工作流程，Rails 生成器是基本工具。
 这篇指南教你如何自己写生成器、定制 Rails 的生成器。
@@ -106,7 +106,7 @@ $ rails generate initializer
 $ rails generate initializer --help
 ```
 
-如果生成器命名适当，比如 `ActiveRecord::Generators::ModelGenerator`，Rails 通常会生出“堪用”的命令说明。当然也可自己写，用 `desc`：
+如果生成器命名适当，比如 `ActiveRecord::Generators::ModelGenerator`，Rails 通常会生出“还凑合”的命令说明。当然也可自己写，用 `desc`：
 
 ```ruby
 class InitializerGenerator < Rails::Generators::Base
@@ -131,7 +131,7 @@ $ rails generate generator initializer
       create  lib/generators/initializer/templates
 ```
 
-这是我们刚生成的生成器，`initializer`：
+刚生成的生成器，`initializer`：
 
 ```ruby
 class InitializerGenerator < Rails::Generators::NamedBase
@@ -159,14 +159,14 @@ Usage:
 # Add initialization content here
 ```
 
-接著修改刚刚的 generator，让它在调用时，复制这个模版：
+接著修改刚刚的生成器，让它在调用时，拷贝这个模版：
 
 ```ruby
 class InitializerGenerator < Rails::Generators::NamedBase
   source_root File.expand_path("../templates", __FILE__)
 
   def copy_initializer_file
-    copy_file "initializer.rb", "config/initializers/#{name}.rb"
+    copy_file "initializer.rb", "config/initializers/#{file_name}.rb"
   end
 end
 ```
@@ -185,7 +185,7 @@ $ rails generate initializer core_extensions
 
 稍稍解释下 `copy_file` 的用途：
 
-`copy_file 来源文件 目的文件` 将位于 `source_root` 的`来源文件`，复制到`目的文件`。
+`copy_file 来源文件 目的文件` 将位于 `source_root` 的`来源文件`，拷贝到`目的文件`。
 
 ```ruby
 copy_file "initializer.rb", "config/initializers/#{file_name}.rb"
@@ -195,9 +195,9 @@ copy_file "initializer.rb", "config/initializers/#{file_name}.rb"
 
 目的文件：`config/initializers/#{name}.rb`
 
-`name` 怎么来的？`Rails::Generators::NamedBase` [帮你捕捉传入的参数](https://github.com/rails/rails/blob/master/railties/lib/rails/generators/named_base.rb#L8)。
+`file_name` 方法怎么来的？ 从 [`Rails::Generators::NamedBase` 继承而来](https://github.com/rails/rails/blob/master/railties/lib/rails/generators/named_base.rb)。
 
-# 4.生成器查找顺序
+# 4.生成器查找顺序信息
 
 运行 `rails generate initializer core_extensions` 时，Rails 怎么知道要用哪个生成器？查找顺序如下：
 
@@ -208,7 +208,7 @@ rails/generators/initializer_generator.rb
 generators/initializer_generator.rb
 ```
 
-直到找到对应的生成器为止，没找到会回报错误讯息。
+直到找到对应的生成器为止，没找到会回报错误信息。
 
 但是上节我们的生成器是在 `lib/generators/initializer/initializer_generator.rb` 这里呀，没在 Rails 的查找目录里啊？
 
@@ -265,7 +265,7 @@ $ rails generate scaffold User name:string
       create    app/assets/stylesheets/scaffolds.css.scss
 ```
 
-光看输出就知道是怎回事了。脚手架生成器自己没有生成东西，只是帮你调用其它的生成器。如此一来我们便可把调用的这些生成器换掉。
+光看输出就知道是咋回事了。脚手架生成器自己没有生成东西，只是帮你调用其它的生成器。如此一来我们便可把调用的这些生成器换掉。
 
 举例来说，脚手架生成器调用了 scaffold_controller 生成器、scaffold_controller 又调用了 erb、test_unit 及 helper 生成器。
 
@@ -283,7 +283,7 @@ config.app_generators do |g|
 end
 ```
 
-现在再次运行
+现在再次运行：
 
 ```bash
 $ rails generate scaffold User name:string
@@ -291,7 +291,7 @@ $ rails generate scaffold User name:string
 
 便不会生成假资料、样式表及单元测试。亦可把测试框架换成 RSpec；ORM 换成 DataMapper。
 
-接著我们来自己做一个 helper生成器，帮 helper 里，某些实例变量自动加入 reader。
+接著我们来自己做一个 helper 生成器，帮 helper 里，某些实例变量自动加入 reader。
 
 首先创建这个生成器，并放在 `rails` 命名空间下，以便 Rails 查找我们的生成器：
 
@@ -374,7 +374,7 @@ end
 end
 ```
 
-现在调用 helper 生成器时，会试著去调用 `Rails::TestUnitGenerator` 与 `TestUnit::MyHelperGenerator`，由于我们没有定义这两个，所以得告诉 Rails ，用 Rails 自带的 `TestUnit::Generators::HelperGenerator`。
+现在调用 helper 生成器时，会试著去调用 `Rails::TestUnitGenerator` 与 `TestUnit::MyHelperGenerator`，由于我们没有定义这两个，所以得告诉 Rails，用 Rails 自带的 `TestUnit::Generators::HelperGenerator`。
 
 ```ruby
 # Search for :helper instead of :my_helper
@@ -385,9 +385,9 @@ hook_for :test_framework, as: :helper
 
 # 6. 更改生成器的模版来定制工作流程
 
-上例我们不过给 helper生成器新增一行代码，没加别的功能。其实还有更简单的方法，即换掉 Rails helper生成器（`Rails::Generators::HelperGenerator`）自带的模版。
+上例我们不过给 helper 生成器添加一行代码，没加别的功能。其实还有更简单的方法，即换掉 Rails helper 生成器（`Rails::Generators::HelperGenerator`）自带的模版。
 
-Rails 3.0 之后，Generator 不仅会在模版 的 `source_root` 查找，也会在其它路径下，找看看有没有模版。现在让我们来定制 `Rails::Generators::HelperGenerator`，新增所需的目录及文件：
+Rails 3.0 之后，生成器不仅会在模版 的 `source_root` 查找，也会在其它路径下，找看看有没有模版。现在让我们来定制 `Rails::Generators::HelperGenerator`，添加所需的目录及文件：
 
 ```bash
 mkdir -p lib/templates/rails/helper
@@ -420,12 +420,13 @@ end
 
 在 `lib/templates/erb/scaffold/` 目录下创建 `index.html.erb` 与 `edit.html.erb`，填入想生成的内容即可。
 
+可以参考：[自定义 Rails 的 Scaffold 模板提高开发效率 - 李华顺](http://huacnlee.com/blog/how-to-custom-scaffold-templates-in-rails3/)
+
 # 7. 加入生成器替代方案
 
-Generator 最后要加入的功能是替代方案（Fallbacks）。举个例子，假设想在 `TestUnit` 加入像是 [shoulda](https://github.com/thoughtbot/shoulda) 的功能。由于 TestUnit 已实作所有 Rails生成器s 需要的方法，而 Shoulda 不过是覆写某部分功能，不需要为了 Shoulda 重新实作这些生成器s，可以告诉 Rails 在 `Shoulda` 命名空间下没找到生成器时可以用 `TestUnit`
+生成器最后要加入的功能是替代方案（Fallbacks）。举个例子，假设想在 `TestUnit` 加入像是 [shoulda](https://github.com/thoughtbot/shoulda) 的功能。由于 TestUnit 已实现所有 Rails生成器s 需要的方法，而 Shoulda 不过是覆写某部分功能，不需要为了 Shoulda 重新实现这些生成器s，可以告诉 Rails 在 `Shoulda` 命名空间下没找到生成器时可以用 `TestUnit`
 
-
-看看怎么加入 Fallback，打开 `config/application.rb`：
+看看怎么加入替代方案，打开 `config/application.rb`：
 
 ```ruby
 config.generators do |g|
@@ -476,7 +477,7 @@ Fallback 允许生成器各司其职、提高代码重用性、减少代码重�
 
 # 8. 应用程序模版
 
-现在已经会用生成器了，那想定制生出来的应用程序该怎么做？透过应用程序模版来实作。下面是模版 API 的概要，详细资讯请查阅 [Rails Application模版s guide](http://edgeguides.rubyonrails.org/rails_application_templates.html)。
+现在已经会用生成器了，那想定制生出来的应用程序该怎么做？透过应用程序模版来实现。下面是模版 API 的概要，详细资讯请查阅 [Rails Application Templates guide](http://edgeguides.rubyonrails.org/rails_application_templates.html)。
 
 ```ruby
 gem "rspec-rails", group: "test"
@@ -491,7 +492,7 @@ if yes?("Would you like to install Devise?")
 end
 ```
 
-上例中我们为生成的 Rails 应用程序新增了两个 gem（`rspec-rails`、`cucumber-rails`），放在 `test` group，会自动加到 Gemfile。接著问使用者是否要安装 Devise？若使用者回答 `y` 或 `yes`，则会把 `gem "devise"` 加到 Gemfile，并运行 `devise:install` generator，并询问默认的用户 model 名称为？并生出该 model。
+上例中我们为生成的 Rails 应用程序添加了两个 gem（`rspec-rails`、`cucumber-rails`），放在 `test` group，会自动加到 Gemfile。接著问使用者是否要安装 Devise？若使用者回答 `y` 或 `yes`，则会把 `gem "devise"` 加到 Gemfile，并运行 `devise:install` generator，并询问默认的用户 model 名称为？并生出该 model。
 
 现在将上面的代码存成 `template.rb`，便可以在 `rails new` 输入 `-m` 选项来使用这个模版：
 
@@ -575,7 +576,7 @@ end
 
 ### `gsub_file`
 
-文件内替换文字
+文件内替换文字：
 
 ```ruby
 gsub_file 'name_of_file.rb', 'method.to_be_replaced', 'method.the_replacing_code'
@@ -585,7 +586,7 @@ gsub_file 'name_of_file.rb', 'method.to_be_replaced', 'method.the_replacing_code
 
 ### `application`
 
-在 `config/application.rb` application 类别定义后面，新增一行代码。
+在 `config/application.rb` application 类别定义后面，添加一行代码。
 
 ```ruby
 application "config.asset_host = 'http://example.com'"
@@ -721,7 +722,7 @@ capify!
 
 ### `route`
 
-新增一条路由至 `config/routes.rb`：
+添加一条路由至 `config/routes.rb`：
 
 ```ruby
 route "resources :people"

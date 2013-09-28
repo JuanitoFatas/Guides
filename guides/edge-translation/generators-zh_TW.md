@@ -137,7 +137,7 @@ $ rails generate generator initializer
       create  lib/generators/initializer/templates
 ```
 
-這是我們剛產生的 Generator，`initializer`：
+剛產生的 Generator，`initializer`：
 
 ```ruby
 class InitializerGenerator < Rails::Generators::NamedBase
@@ -165,14 +165,14 @@ Usage:
 # Add initialization content here
 ```
 
-接著修改剛剛的 generator，讓它在調用時，複製這個 Template：
+接著修改剛剛的 Generator，讓它在調用時，複製這個 Template：
 
 ```ruby
 class InitializerGenerator < Rails::Generators::NamedBase
   source_root File.expand_path("../templates", __FILE__)
 
   def copy_initializer_file
-    copy_file "initializer.rb", "config/initializers/#{name}.rb"
+    copy_file "initializer.rb", "config/initializers/#{file_name}.rb"
   end
 end
 ```
@@ -201,7 +201,7 @@ copy_file "initializer.rb", "config/initializers/#{file_name}.rb"
 
 目的檔案：`config/initializers/#{name}.rb`
 
-`name` 怎麼來的？`Rails::Generators::NamedBase` [幫你捕捉傳入的參數](https://github.com/rails/rails/blob/master/railties/lib/rails/generators/named_base.rb#L8)。
+`file_name` 方法怎麼來的？從 [`Rails::Generators::NamedBase` 繼承而來](https://github.com/rails/rails/blob/master/railties/lib/rails/generators/named_base.rb)
 
 # 4. Generators 查找順序
 
@@ -289,7 +289,7 @@ config.app_generators do |g|
 end
 ```
 
-現在再次執行
+現在再次執行：
 
 ```bash
 $ rails generate scaffold User name:string
@@ -380,7 +380,7 @@ end
 end
 ```
 
-現在調用 helper Generator 時，會試著去調用 `Rails::TestUnitGenerator` 與 `TestUnit::MyHelperGenerator`，由於我們沒有定義這兩個，所以得告訴 Rails ，用 Rails 原生的 `TestUnit::Generators::HelperGenerator`。
+現在調用 helper Generator 時，會試著去調用 `Rails::TestUnitGenerator` 與 `TestUnit::MyHelperGenerator`，由於我們沒有定義這兩個，所以得告訴 Rails，用 Rails 原生的 `TestUnit::Generators::HelperGenerator`。
 
 ```ruby
 # Search for :helper instead of :my_helper
@@ -426,12 +426,14 @@ end
 
 在 `lib/templates/erb/scaffold/` 目錄下新建 `index.html.erb` 與 `edit.html.erb`，填入想產生的內容即可。
 
+可以參考：[自定義 Rails 的 Scaffold 模版提高開發效率 - 李华顺](http://huacnlee.com/blog/how-to-custom-scaffold-templates-in-rails3/)
+
 # 7. 加入 Generators 替代方案
 
 Generator 最後要加入的功能是替代方案（Fallbacks）。舉個例子，假設想在 `TestUnit` 加入像是 [shoulda](https://github.com/thoughtbot/shoulda) 的功能。由於 TestUnit 已實作所有 Rails Generators 需要的方法，而 Shoulda 不過是覆寫某部分功能，不需要為了 Shoulda 重新實作這些 Generators，可以告訴 Rails 在 `Shoulda` 命名空間下沒找到 Generator 時可以用 `TestUnit`
 
 
-看看怎麼加入 Fallback，打開 `config/application.rb`：
+看看怎麼加入替代方案，打開 `config/application.rb`：
 
 ```ruby
 config.generators do |g|
@@ -581,7 +583,7 @@ end
 
 ### `gsub_file`
 
-檔案內替換文字
+檔案內替換文字：
 
 ```ruby
 gsub_file 'name_of_file.rb', 'method.to_be_replaced', 'method.the_replacing_code'
