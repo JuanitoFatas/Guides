@@ -3,7 +3,9 @@
 
 加入：
 
+```ruby
 resources :pages
+```
 
 輸入 `$ rake routes`：
 
