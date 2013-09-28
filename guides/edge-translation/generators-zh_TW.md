@@ -79,7 +79,7 @@ class InitializerGenerator < Rails::Generators::Base
 end
 ```
 
-注意：`create_file` 是 `Thor::Actions` 提供的方法。`create_file` 及其它 Thor 提供的方法請查閱 [Thor 的 API](http://rdoc.info/github/wycats/thor/master/Thor/Actions.html)
+注意：`create_file` 是 `Thor::Actions` 提供的方法。`create_file` 及其它 Thor 提供的方法請查閱 [Thor 的 API](http://rdoc.info/github/wycats/thor/master/Thor/Actions.html)。
 
 讓我們來分析一下剛剛的 Generator。
 
@@ -93,13 +93,13 @@ class InitializerGenerator < Rails::Generators::Base
 
 ```ruby
 def create_initializer_file
-  create_file "config/initializers/initializer.rb", "Add initialization content here"
+  create_file "config/initializers/initializer.rb", "# Add initialization content here"
 end
 ```
 
-調用 Generator 時，公有的方法會依定義先後執行。最後，呼叫 `create_file` 方法，將 `content` 填入（`"Add initialization content here"`）指定的位置（`"config/initializers/initializer.rb"`）。
+調用 Generator 時，公有的方法會依定義先後執行。最後，呼叫 `create_file` 方法，將 `"Add initialization content here"` 填入指定的檔案（`"config/initializers/initializer.rb"`）。
 
-如何用？
+寫好了，如何使用？
 
 ```bash
 $ rails generate initializer
@@ -111,7 +111,7 @@ $ rails generate initializer
 $ rails generate initializer --help
 ```
 
-如果 Generator 命名適當，比如 `ActiveRecord::Generators::ModelGenerator`，Rails 通常會產生出堪用的指令說明。當然也可自己寫，用 `desc`：
+如果 Generator 命名適當，比如 `ActiveRecord::Generators::ModelGenerator`，Rails 通常會產生出“堪用”的指令說明。當然也可自己寫，用 `desc`：
 
 ```ruby
 class InitializerGenerator < Rails::Generators::Base
@@ -124,7 +124,9 @@ end
 
 <!-- 另一種方式是將敘述寫在 `USAGE` 檔案裡，再讀進來。下節示範。 -->
 
-# 3. 用 `rails generate` 指令來新建 Generator
+# 3. 新建 Generator
+
+新建 Generator：用 `rails generate` 指令。
 
 ```bash
 $ rails generate generator initializer
@@ -142,7 +144,7 @@ class InitializerGenerator < Rails::Generators::NamedBase
 end
 ```
 
-首先注意到我們從 `Rails::Generators::NamedBase` ，而不是前例的 `Rails::Generators::Base` 繼承而來。這表示 Generator 至少接受一個參數， `initializer` 的名字，讀入後存在 `name` 變數。
+首先注意到我們從 `Rails::Generators::NamedBase` ，而不是前例的 `Rails::Generators::Base` 繼承而來。這表示 Generator 至少接受一個參數，來指定 `initializer` 的名字，讀入後存至 `name` 變數。
 
 用 `--help` 看看是不是這樣：
 
@@ -151,6 +153,8 @@ $ rails generate initializer --help
 Usage:
   rails generate initializer NAME [options]
 ```
+
+`NAME` 便是需要傳入的參數。
 
 `source_root` 指向 Generator Template 所在之處，預設指向 `lib/generators/initializer/templates` 目錄。
 
@@ -171,6 +175,8 @@ class InitializerGenerator < Rails::Generators::NamedBase
   end
 end
 ```
+
+> `copy_file source, destination`
 
 執行看看：
 
