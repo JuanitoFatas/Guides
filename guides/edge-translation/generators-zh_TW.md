@@ -590,7 +590,7 @@ gsub_file 'name_of_file.rb', 'method.to_be_replaced', 'method.the_replacing_code
 
 ### `application`
 
-在 `config/application.rb` application 類別定義後面，直接新增一行程式碼。
+在 `config/application.rb` application 類別定義後面，新增一行程式碼。
 
 ```ruby
 application "config.asset_host = 'http://example.com'"
@@ -625,7 +625,7 @@ git commit: "-m First commit!"
 git add: "onefile.rb", rm: "badfile.cxx"
 ```
 
-hash 的數值為傳給 `git` 指令的參數或選項。一次可使用多個 `git` 指令， __但執行的順序不保證與你給入的相同。__
+這裡傳的 hash 為傳給 `git` 指令的選項。一次可使用多個 `git` 指令， __但不保證執行的順序。__
 
 ### `vendor`
 
@@ -660,7 +660,6 @@ end
 ```
 
 ### `rakefile`
-
 
 在應用程式的 `lib/tasks` 新建一個 Rake 檔案：
 
@@ -698,12 +697,11 @@ end
 
 ### `generate`
 
-執行特定的 generator，第一個參數為 generator 的名字，其餘參數直接傳給 generator。
+執行特定的 Generator，第一個參數為 Generator 的名字，其餘參數直接傳給 Generator。
 
 ```ruby
 generate "scaffold", "forums title:string description:text"
 ```
-
 
 ### `rake`
 
@@ -716,7 +714,7 @@ rake "db:migrate"
 可用選項有：
 
 * `:env` - 指定執行此 Rake 任務的環境。
-* `:sudo` - 是否用 `sudo` 執行此任務，預設為 `false`。
+* `:sudo` - 是否用 `sudo` 執行此任務，默認是 `false`。
 
 ### `capify!`
 
@@ -728,7 +726,7 @@ capify!
 
 ### `route`
 
-新增文字至 `config/routes.rb`：
+新增一條路由至 `config/routes.rb`：
 
 ```ruby
 route "resources :people"
@@ -736,7 +734,7 @@ route "resources :people"
 
 ### `readme`
 
-輸出 README 檔案至 template `source_path`。
+在 console 裡印出 `source_root` 下的指定的檔案。
 
 ```ruby
 readme "README"
@@ -747,4 +745,3 @@ readme "README"
 [#218 Making Generators in Rails 3 - RailsCasts](http://railscasts.com/episodes/218-making-generators-in-rails-3)
 
 [#148 Custom App Generators (revised) - RailsCasts](http://railscasts.com/episodes/148-custom-app-generators-revised)
-
