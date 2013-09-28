@@ -518,7 +518,7 @@ $ rails new thud -m https://gist.github.com/radar/722911/raw/
 
 # 9. Generator 方法
 
-下面是 Rails Generator 與 template 內可用的方法：
+以下是 Rails Generator 與 template 內可用的方法（[源碼](https://github.com/rails/rails/blob/master/railties/lib/rails/generators/actions.rb)）
 
 關於 Thor 提供的方法請查閱 [Thor 的 API](http://rdoc.info/github/wycats/thor/master/Thor/Actions.html)。
 
@@ -734,7 +734,7 @@ route "resources :people"
 
 ### `readme`
 
-在 console 裡印出 `source_root` 下的指定的檔案。
+在 console 裡印出 `source_path` 下的指定的檔案。
 
 ```ruby
 readme "README"
