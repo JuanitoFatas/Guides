@@ -46,7 +46,7 @@ __特別要強調的翻譯名詞__
     - [`capify!`](#capify!)
     - [`route`](#route)
     - [`readme`](#readme)
-  - [延伸閱讀](#延伸閱讀)
+- [延伸閱讀](#延伸閱讀)
 
 # 1. 初次接觸
 
@@ -741,7 +741,7 @@ route "resources :people"
 readme "README"
 ```
 
-## 延伸閱讀
+# 延伸閱讀
 
 [#218 Making Generators in Rails 3 - RailsCasts](http://railscasts.com/episodes/218-making-generators-in-rails-3)
 
