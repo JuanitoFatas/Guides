@@ -299,7 +299,7 @@ $ rails generate scaffold User name:string
 
 接著我們來自己做一個 helper Generator，幫 helper 裡，某些 instance variable 自動加入 reader。
 
-首先新建這個 Generator，並放在 rails 命名空間下，以便 Rails 查找我們的 Generator：
+首先新建這個 Generator，並放在 `rails` 命名空間下，以便 Rails 查找我們的 Generator：
 
 ```bash
 $ rails generate generator rails/my_helper
@@ -422,7 +422,7 @@ end
 這與上例的效果相同。想客製化鷹架，
 
 
-改 Template 在只想產生某些檔案的場景下很有用，比如 scaffold 只想產生 `edit.html.erb`、`index.html.erb`。
+改 Template 在只想產生某些檔案的場景下很有用，比如鷹架只想產生 `edit.html.erb`、`index.html.erb`。
 
 在 `lib/templates/erb/scaffold/` 目錄下新建 `index.html.erb` 與 `edit.html.erb`，填入想產生的內容即可。
 
@@ -688,7 +688,7 @@ end
 initializer "begin.rb", "puts 'this is the beginning'"
 ```
 
-接受區塊參數，並回傳字串, expected to return a string:
+接受區塊參數，並回傳字串
 
 ```ruby
 initializer "begin.rb" do
@@ -735,7 +735,7 @@ route "resources :people"
 
 ### `readme`
 
-在 console 裡印出 `source_path` 下的指定的檔案。
+在 console 裡印出 `source_path` 下指定檔案的內容。
 
 ```ruby
 readme "README"
