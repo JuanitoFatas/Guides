@@ -514,9 +514,7 @@ $ rails new thud -m https://gist.github.com/radar/722911/raw/
 
 下一節會帶你走一遍 Template 與 Generator 可用的方法有哪些，這些方法組合起來有無窮的可能性。上吧，孩子！
 
-了解更多關於 Application Template 的內容：
-
-[#148 App Templates in Rails 2.3 - RailsCasts](http://railscasts.com/episodes/148-app-templates-in-rails-2-3)
+了解更多關於 Application Template 的內容：[#148 App Templates in Rails 2.3 - RailsCasts](http://railscasts.com/episodes/148-app-templates-in-rails-2-3)
 
 # 9. Generator 方法
 
