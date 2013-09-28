@@ -1009,9 +1009,9 @@ end
 module Blorgh
   class Engine < ::Rails::Engines
     isolate_namespace Blorgh
-    config.app_generators.orm             :datamapper
-    config.app_generators.template_engine :haml
-    config.app_generators.test_framework  :rspec
+    config.generators.orm             :datamapper
+    config.generators.template_engine :haml
+    config.generators.test_framework  :rspec
   end
 end
 ```
@@ -1032,7 +1032,7 @@ module Blorgh
 end
 ```
 
-__Rails 3.1 以前請使用 `config.app_generators`__
+__Rails 3.1 以前請使用 `config.generators`__
 
 #### 4.4.2.3 變更 Engine 的名稱
 
