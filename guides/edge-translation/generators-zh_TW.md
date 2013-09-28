@@ -23,7 +23,7 @@ __特別要強調的翻譯名詞__
 
 - [1. 初次接觸](#1-初次接觸)
 - [2. 第一個 Generator](#2-第一個-generator)
-- [3. 用 `rails generate` 指令來新建 Generator](#3-用-rails-generate-指令來新建-generator)
+- [3. 新建 Generator](#3-新建-generator)
 - [4. Generators 查找順序](#4-generators-查找順序)
 - [5. 客製化工作流程](#5-客製化工作流程)
 - [6. 更改 Generator 的 Template 來客製化工作流程](#6-更改-generator-的-template-來客製化工作流程)
@@ -46,6 +46,7 @@ __特別要強調的翻譯名詞__
     - [`capify!`](#capify!)
     - [`route`](#route)
     - [`readme`](#readme)
+  - [延伸閱讀](#延伸閱讀)
 
 # 1. 初次接觸
 
