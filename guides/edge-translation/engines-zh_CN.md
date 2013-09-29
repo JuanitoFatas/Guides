@@ -260,8 +260,8 @@ gem 'blorgh', path: "vendor/engines/blorgh"
 
 运行 `bundle install` 安装时，Bundler 会去解析 `blorgh.gemspec`，并安装其他相依的 Gems；同时，Bundler 会 require Engine `lib` 目录下的 `lib/blorgh.rb`，这个文件又 require 了 `lib/blorgh/engine.rb`，达到将 Engine 定义成 Module 的目的：
 
-```
-# Engine 目录下的 lib/blorgh/engine.rb
+```ruby
+# lib/blorgh/engine.rb
 module Blorgh
   class Engine < ::Rails::Engine
     isolate_namespace Blorgh

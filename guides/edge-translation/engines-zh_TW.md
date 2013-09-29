@@ -264,8 +264,8 @@ gem 'blorgh', path: "vendor/engines/blorgh"
 
 執行 `bundle install` 安裝時，Bundler 會去解析 `blorgh.gemspec`，並安裝其他相依的 Gems；同時，Bundler 會 require Engine `lib` 目錄下的 `lib/blorgh.rb`，這個檔案又 require 了 `lib/blorgh/engine.rb`，達到將 Engine 定義成 Module 的目的：
 
-```
-# Engine 目錄下的 lib/blorgh/engine.rb
+```ruby
+# lib/blorgh/engine.rb
 module Blorgh
   class Engine < ::Rails::Engine
     isolate_namespace Blorgh
