@@ -72,7 +72,7 @@ Rails 还有插件功能，插件跟 Engine 很像。两者都有 `lib` 目录�
 
 下面会用一个 `blorgh` Engine 的例子来讲解。这个 `blorgh` 给宿主提供了：新增文章（posts）、新增评论（comments），这两个功能。我们会先开发 Engine，再把 Engine 安装到应用程序。
 
-假设路由里有 `posts_path` 这个 routing helper，宿主会提供这个功能、Engine 也会提供，这两者并不冲突。也就是说 Engine 可从宿主抽离出来。稍后会解释这是如何实作的。
+假设路由里有 `posts_path` 这个 routing helper，宿主会提供这个功能、Engine 也会提供，这两者并不冲突。也就是说 Engine 可从宿主抽离出来。稍后会解释这是如何实现的。
 
 __记住！宿主的优先权最高，Engine 不过给宿主提供新功能。__
 
