@@ -24,7 +24,6 @@
 
 [Gem 挑選指南](/articles/005-gem-selection-guide.md)
 
-
 ## 環境
 
 [Mac OSX 安裝 XCode Command Line Tools](/articles/env/osx-install-xcode.md)
