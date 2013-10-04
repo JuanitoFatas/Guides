@@ -20,7 +20,7 @@
 
 [ERB 轉換成 HAML](/articles/030-erb-to-haml.md)
 
-[CI —— Continuous Integration](/articles-037-ci.md)
+[CI —— Continuous Integration](/articles/037-ci.md)
 
 ## Misc
 
