@@ -1,6 +1,6 @@
 # The Hitchhiker's Guide to Ruby on Rails!
 
-## [點擊此處至目錄](/table-of-contents.md)
+## [目錄 TABLE OF CONTENTS](/table-of-contents.md)
 
 ## [Ruby on Rails Edge Guides 翻譯](/guides/index.md)
 
