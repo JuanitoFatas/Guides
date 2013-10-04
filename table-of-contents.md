@@ -20,6 +20,8 @@
 
 [ERB 轉換成 HAML](/articles/030-erb-to-haml.md)
 
+[CI —— Continuous Integration](/articles-037-ci.md)
+
 ## Misc
 
 [語義版本簡介](/articles/002-sem-ver.md)
