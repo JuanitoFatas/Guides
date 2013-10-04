@@ -14,7 +14,7 @@
 
 ## 工具
 
-[工具箱](/tools/index.md)
+[Web Development 工具箱](/tools/index.md)
 
 [如何撰寫簡單的 Rake 任務](/articles/009-create-a-rake-task.md)
 
