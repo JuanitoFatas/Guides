@@ -73,7 +73,7 @@
 
 | English| Traditional Chinese| Simplified Chinese|
 |:--:|:--:|:--:|
-|[Maintenance Policy](/guides/edge/maintenance_policy.md)|[zh-TW](/guides/edge-translation/maintenance-policy-zh_TW.md)|to be translated|
+|[Maintenance Policy](/guides/edge/maintenance_policy.md)|[zh-TW](/guides/edge-translation/maintenance-policy-zh_TW.md)|[zh-CN](/guides/edge-translation/maintenance-policy-zh_CN.md)|
 
 ## Release Notes
 
