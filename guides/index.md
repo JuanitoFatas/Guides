@@ -1,4 +1,4 @@
-# [官方 Rails Edge Guides][edge] 譯文
+# [官方 Rails Edge Guides][edge] 譯文 (Chinese Translation)
 
 ## Start Here
 
@@ -66,14 +66,12 @@
 |[Contributing to Ruby on Rails](/guides/edge/contributing_to_ruby_on_rails.md)|to be translated|to be translated|
 |[API Documentation Guidelines](/guides/edge/api_documentation_guidelines.md)|to be translated|to be translated|
 |[Ruby on Rails Guides Guidelines](/guides/edge/ruby_on_rails_guides_guidelines.md)|to be translated|to be translated|
-|[](/guides/edge/.md)|to be translated|to be translated|
 
 ## Maintenance Policy
 
 | English| Traditional Chinese| Simplified Chinese|
 |:--:|:--:|:--:|
 |[Maintenance Policy](/guides/edge/maintenance_policy.md)|to be translated|to be translated|
-|[](/guides/edge/.md)|to be translated|to be translated|
 
 ## Release Notes
 
