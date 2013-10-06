@@ -1,4 +1,6 @@
-# [官方 Rails Edge Guides][edge] 譯文 (Chinese Translation)
+# [官方 Rails Edge Guides][edge] 譯文
+
+## Chinese Translation (zh-CN + zh-TW)
 
 ## Start Here
 
