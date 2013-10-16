@@ -6,6 +6,20 @@ __特别要强调的翻译名词__
 
 > mount ＝ 安装
 
+本篇介绍 「Rails Engine」。怎么优雅地把 Engine 挂到应用程序里。
+
+读完本篇可能会学到.....
+
+  * 什么是 Engine。
+
+  * 如何产生 Engine。
+
+  * 怎么给 Engine 加功能。
+
+  * 怎么让 Engine 与应用程序结合。
+
+  * 在应用程序里覆写 Engine 的功能。
+
 ## 目录
 
 - [1. Engine 是什么](#1-engine-是什么)
@@ -49,20 +63,6 @@ __特别要强调的翻译名词__
   - [6.8 宿主用不到的 Assets 与预编译](#68-宿主用不到的-assets-与预编译)
   - [6.9 Engine 依赖的 Gem](#69-engine-依赖的-gem)
 - [延伸阅读](#延伸阅读)
-
-本篇介绍 「Rails Engine」。怎么优雅地把 Engine 挂到应用程序里。
-
-读完本篇可能会学到.....
-
-  * 什么是 Engine。
-
-  * 如何产生 Engine。
-
-  * 怎么给 Engine 加功能。
-
-  * 怎么让 Engine 与应用程序结合。
-
-  * 在应用程序里覆写 Engine 的功能。
 
 # 1. Engine 是什么
 
