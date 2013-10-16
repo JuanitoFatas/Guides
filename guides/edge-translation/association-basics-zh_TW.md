@@ -5,9 +5,6 @@ __特別要強調的翻譯名詞__
 
 > Association ＝ 關聯
 
-
-This guide covers the association features of Active Record.
-
 本篇介紹 「Active Record」的關聯功能。
 
 讀完本篇可能會學到.....
@@ -89,3 +86,4 @@ Rails 支援以下幾種關聯：
 * `has_and_belongs_to_many`
 
 本篇之後細講各種關聯如何使用，首先介紹各種關聯的應用場景。
+
