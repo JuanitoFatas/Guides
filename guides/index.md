@@ -16,7 +16,7 @@
 |[Active Record Migrations](/guides/edge/migrations.md)|[zh-TW](/guides/edge-translation/migrations-zh_TW.md)|[zh-CN](/guides/edge-translation/migrations-zh_CN.md)|
 |[Active Record Validations](/guides/edge/active_record_validations.md)|to be translated|to be translated|
 |[Active Record Callbacks](/guides/edge/active_record_callbacks.md)|to be translated|to be translated|
-|[Active Record Associations](/guides/edge/association_basics.md)|to be translated|to be translated|
+|[Active Record Associations](/guides/edge/association_basics.md)|[Work In Progress](/guides/edge-translation/association-basics-zh_TW.md)|to be translated|
 |[Active Record Query Interface](/guides/edge/active_record_querying.md)|to be translated|to be translated|
 
 ## Views
