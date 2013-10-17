@@ -59,11 +59,15 @@ end
 
 desc "Update edge guides from Rails repo."
 task :update_guide do
-  system "cd #{RAILS_EDGE_REPO_PATH}"
+  system "cd #{RAILS_EDGE_REPO_PATH} && git pull"
     puts "Pulling Latest Changes from rails/rails..."
-  system "git pull"
   system "cp #{RAILS_EDGE_REPO_PATH}/*.md #{DOCGUIDES_REPO_PATH}/guides/edge/"
     puts "All Guides Updated Successfully."
+end
+
+desc "Sync EN guides with upstream"
+task :sync_guide do
+  system 'rake msg "Sync edge guides with upstream." guides/edge/'
 end
 
 def git_action(file, **opts)
