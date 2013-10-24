@@ -405,11 +405,10 @@ JavaScript and stylesheet.
 * `image-url("rails.png")` becomes `url(/assets/rails.png)`
 * `image-path("rails.png")` becomes `"/assets/rails.png"`.
 
-The more generic form can also be used but the asset path and class must both be
-specified:
+The more generic form can also be used:
 
-* `asset-url("rails.png", image)` becomes `url(/assets/rails.png)`
-* `asset-path("rails.png", image)` becomes `"/assets/rails.png"`
+* `asset-url("rails.png")` becomes `url(/assets/rails.png)`
+* `asset-path("rails.png")` becomes `"/assets/rails.png"`
 
 #### JavaScript/CoffeeScript and ERB
 
@@ -1044,17 +1043,22 @@ Making Your Library or Gem a Pre-Processor
 As Sprockets uses [Tilt](https://github.com/rtomayko/tilt) as a generic
 interface to different templating engines, your gem should just implement the
 Tilt template protocol. Normally, you would subclass `Tilt::Template` and
-reimplement `evaluate` method to return final output. Template source is stored
-at `@code`. Have a look at
+reimplement the `prepare` method, which initializes your template, and the
+`evaluate` method, which returns the processed source. The original source is
+stored in `data`. Have a look at
 [`Tilt::Template`](https://github.com/rtomayko/tilt/blob/master/lib/tilt/template.rb)
 sources to learn more.
 
 ```ruby
 module BangBang
   class Template < ::Tilt::Template
+    def prepare
+      # Do any initialization here
+    end
+
     # Adds a "!" to original template.
     def evaluate(scope, locals, &block)
-      "#{@code}!"
+      "#{data}!"
     end
   end
 end
