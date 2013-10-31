@@ -277,7 +277,7 @@ $ rails generate scaffold User name:string
 
 每個 Generator 各司其職，因此達到「重用性高，程式碼重複少」的目標。
 
-假如我們不要產生樣式表及假資料（fixture）。
+假如我們不要產生樣式表、JS 檔案及假資料（fixture）。
 
 ```ruby
 # config/application.rb
@@ -286,6 +286,7 @@ config.app_generators do |g|
   g.template_engine :erb
   g.test_framework  :test_unit, fixture: false
   g.stylesheets     false
+  g.javascripts     false
 end
 ```
 
@@ -295,7 +296,7 @@ end
 $ rails generate scaffold User name:string
 ```
 
-便不會產生假資料、樣式表及單元測試。亦可把測試框架換成 RSpec；ORM 換成 DataMapper。
+便不會產生假資料、樣式表、JS 檔案及單元測試。亦可把測試框架換成 RSpec；ORM 換成 DataMapper。
 
 接著我們來自己做一個 helper Generator，幫 helper 裡，某些 instance variable 自動加入 reader。
 
@@ -349,6 +350,7 @@ config.app_generators do |g|
   g.template_engine :erb
   g.test_framework  :test_unit, fixture: false
   g.stylesheets     false
+  g.javascripts     false
   g.helper          :my_helper
 end
 ```
@@ -416,6 +418,7 @@ config.app_generators do |g|
   g.template_engine :erb
   g.test_framework  :test_unit, fixture: false
   g.stylesheets     false
+  g.javascripts     false
 end
 ```
 
@@ -441,6 +444,7 @@ config.generators do |g|
   g.template_engine :erb
   g.test_framework  :shoulda, fixture: false
   g.stylesheets     false
+  g.javascripts     false
 
   # Add a fallback!
   g.fallbacks[:shoulda] = :test_unit
