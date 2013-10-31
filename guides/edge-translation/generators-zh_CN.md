@@ -271,7 +271,7 @@ $ rails generate scaffold User name:string
 
 每个生成器各司其职，因此达到「重用性高，代码重复少」的目标。
 
-假如我们不要生成样式表及假资料（fixture）。
+假如我们不要生成样式表、JS 文件及假数据（fixture）。
 
 ```ruby
 # config/application.rb
@@ -280,6 +280,7 @@ config.app_generators do |g|
   g.template_engine :erb
   g.test_framework  :test_unit, fixture: false
   g.stylesheets     false
+  g.javascripts     false
 end
 ```
 
@@ -289,7 +290,7 @@ end
 $ rails generate scaffold User name:string
 ```
 
-便不会生成假资料、样式表及单元测试。亦可把测试框架换成 RSpec；ORM 换成 DataMapper。
+便不会生成假数据、样式表、JS 文件及单元测试。亦可把测试框架换成 RSpec；ORM 换成 DataMapper。
 
 接著我们来自己做一个 helper 生成器，帮 helper 里，某些实例变量自动加入 reader。
 
@@ -343,6 +344,7 @@ config.app_generators do |g|
   g.template_engine :erb
   g.test_framework  :test_unit, fixture: false
   g.stylesheets     false
+  g.javascripts     false
   g.helper          :my_helper
 end
 ```
@@ -410,6 +412,7 @@ config.app_generators do |g|
   g.template_engine :erb
   g.test_framework  :test_unit, fixture: false
   g.stylesheets     false
+  g.javascripts     false
 end
 ```
 
@@ -434,6 +437,7 @@ config.generators do |g|
   g.template_engine :erb
   g.test_framework  :shoulda, fixture: false
   g.stylesheets     false
+  g.javascripts     false
 
   # Add a fallback!
   g.fallbacks[:shoulda] = :test_unit
