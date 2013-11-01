@@ -400,7 +400,7 @@ form_tag(search_path, method: "patch")
 
 # 3. 轻松制作下拉式选单
 
-HTML 纯手写下拉式选单（Select box）需要花很多工夫，比如说有 12 个城市的下拉选单：
+HTML 纯手写下拉式选单（Select box）需要花很多功夫，比如说有 12 个城市的下拉选单：
 
 ```html
 <select name="city_id" id="city_id">
