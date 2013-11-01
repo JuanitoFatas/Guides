@@ -401,7 +401,7 @@ form_tag(search_path, method: "patch")
 
 # 3. 輕鬆製作下拉式選單
 
-HTML 純手寫下拉式選單（Select box）需要花很多工夫，比如說有 12 個城市的下拉選單：
+HTML 純手寫下拉式選單（Select box）需要花很多功夫，比如說有 12 個城市的下拉選單：
 
 ```html
 <select name="city_id" id="city_id">
@@ -412,7 +412,7 @@ HTML 純手寫下拉式選單（Select box）需要花很多工夫，比如說�
 </select>
 ```
 
-看看 Rails 是怎麼化繁為簡的。
+瞧 Rails 如何化繁為簡。
 
 ## 3.1 Select 與 Option 標籤
 
