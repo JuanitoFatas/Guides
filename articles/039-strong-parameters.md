@@ -30,6 +30,8 @@ end
 
 Rails 4 推出了 Strong Parameters。
 
+## Strong Parameters 例子
+
 現在所有參數的核定，交由 Controller 處理，由 Controller 決定，哪些參數可以大量賦值：
 
 ```ruby
@@ -56,6 +58,10 @@ end
 
 `book_params` 是個 private 方法，在這寫，需要（`require`）用到那個 model，並允許（`permit`）哪些欄位做大量賦值。
 
+若試圖傳入未允許的欄位，會拋 `ActiveModel::ForbiddenAttributesError` 錯誤。
+
+### Strong Parameters 語法：
+
 __params.需要(:model_name).允許(:欄位_1, :欄位_2)__
 
 ```ruby
@@ -64,6 +70,40 @@ params.require(:person).permit(:name, :age)
 
 基本上就是這樣用，依此類推。
 
+## `params`
+
+平常 Controller 可取用的 `params` 是從 `ActionController::Parameters` 而來：
+
+```ruby
+params = ActionController::Parameters.new(name: 'Juanito Fatas')
+```
+
+## Strong Parameters API 概觀
+
+## require(http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-required)
+
+接受一個參數：`key`
+
+確保參數存在。存在時返回符合 `key` 的 hash，否則拋出 `ActionController::ParameterMissing` 錯誤。
+
+```ruby
+ActionController::Parameters.new(person: { name: 'Juanito' }, car: { owner: 'Juanito' }).require(:person) # => { name: 'Juanito' }
+
+ActionController::Parameters.new(person: { name: 'Juanito' }, car: { owner: 'Juanito' }).require(:car) # => { owner: 'Juanito' }
+```
+
+
+## permit(http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-permit)
+
+###
+
+Returns a new ActionController::Parameters instance that includes only the given filters and sets the permitted attribute for the object to true. This is useful for limiting which attributes should be allowed for mass updating.
+
+
+
+
+
+
 ## 延伸閱讀
 
 [Strong Parameters by Example - sensible.io Blog](http://blog.sensible.io/2013/08/17/strong-parameters-by-example.html)
@@ -71,5 +111,3 @@ params.require(:person).permit(:name, :age)
 [ActionController::StrongParameters](http://edgeapi.rubyonrails.org/classes/ActionController/StrongParameters.html)
 
 [Rails 4: Testing strong parameters - Pivotal Labs](http://pivotallabs.com/rails-4-testing-strong-parameters/)
-
-
