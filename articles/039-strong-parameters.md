@@ -84,14 +84,14 @@ params = ActionController::Parameters.new(name: 'Juanito Fatas')
 
 接受一個參數：`key`
 
-確保參數存在。存在時返回符合 `key` 的 hash，否則拋出 `ActionController::ParameterMissing` 錯誤。
+先檢查 params 是否存在，存在時返回符合 `key` 的 hash；否則拋出 `ActionController::ParameterMissing` 錯誤。
 
 ```ruby
-ActionController::Parameters.new(person: { name: 'Juanito' }, car: { owner: 'Juanito' }).require(:person) # => { name: 'Juanito' }
+# rails console
+ActionController::Parameters.new(person: { name: 'Juanito Fatas', age: 42 }, girlfriend: { name: '蒼井そら', age: 18 }).require(:person) # => { name: 'Juanito Fatas', age: 42 }
 
-ActionController::Parameters.new(person: { name: 'Juanito' }, car: { owner: 'Juanito' }).require(:car) # => { owner: 'Juanito' }
+ActionController::Parameters.new(person: { name: 'Juanito Fatas' }, girlfriend: { name: '蒼井そら', age: 18 }).require(:girlfriend) # => { name: '蒼井そら', age: 18 }
 ```
-
 
 ## permit(http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-permit)
 
