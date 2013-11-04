@@ -93,6 +93,8 @@ params = ActionController::Parameters.new(name: 'Juanito Fatas')
 > params.require(:bride)      # => { name: '蒼井そら', age: 18 }
 ```
 
+> `require` 有 alias: `required`
+
 ## [permit](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-permit)
 
 返回 1 個__新的 ActionController::Parameters__ instance，僅帶有允許的屬性。
@@ -208,9 +210,22 @@ params.require(:user).permit(:username, data: [ :foo ])
 
 ### [permit!](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-permit-21)
 
-這個方法很危險，我不告訴你怎麼用。
+這個方法很危險，我不告訴你怎麼用，哼！
+
+### 來自第三方的 JSON
+
+比如 `raw` 是從第三方 JSON 而來，可以將此資料用 ActionController::Parameters 封裝，
+再進行參數的審批：
+
+```ruby
+raw = { email: "dhh@java.com", name: "DHH", admin: true }
+parameters = ActionController::Parameters.new(raw_parameters)
+user = User.create(parameters.permit(:name, :email))
+```
 
 ## 延伸閱讀
+
+[Strong Parameters — Action Controller Overview — Edge Ruby on Rails Guides](http://edgeguides.rubyonrails.org/action_controller_overview.html#strong-parameters)
 
 [ActionController::StrongParameters](http://edgeapi.rubyonrails.org/classes/ActionController/StrongParameters.html)
 
