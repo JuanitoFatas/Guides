@@ -72,7 +72,7 @@ params.require(:person).permit(:name, :age)
 
 ## `params`
 
-平常 Controller 可取用的 `params` 是從 `ActionController::Parameters` 而來：
+平常 Controller 可取用的 `params` 是從 [ActionController::Parameters](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html) 而來：
 
 ```ruby
 params = ActionController::Parameters.new(name: 'Juanito Fatas')
@@ -80,7 +80,7 @@ params = ActionController::Parameters.new(name: 'Juanito Fatas')
 
 ## Strong Parameters API 概觀
 
-## require(http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-required)
+## [require](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-required)
 
 接受一個參數：`key`
 
@@ -93,7 +93,7 @@ ActionController::Parameters.new(person: { name: 'Juanito Fatas', age: 42 }, gir
 ActionController::Parameters.new(person: { name: 'Juanito Fatas' }, girlfriend: { name: '蒼井そら', age: 18 }).require(:girlfriend) # => { name: '蒼井そら', age: 18 }
 ```
 
-## permit(http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-permit)
+## [permit](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-permit)
 
 ###
 
