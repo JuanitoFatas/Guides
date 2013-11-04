@@ -20,9 +20,7 @@ $ rails g cancan:ability
 
 cancan 主要在 view 與 controller 提供了 `can?`、`cannot?` 幾個簡單的方法。
 
-## controller 檢查使用者有無權限:
-
-`authorize!`:
+## controller 檢查使用者有無權限 `authorize!`:
 
 ```ruby
 def show
@@ -34,6 +32,8 @@ end
 每個方法都要用，很繁瑣，故 CanCan 實作了：`load_and_authorize_resource`
 
 會把以 RESTful style 實作的 controller 的每個 action，檢查有沒有權限，並加載:
+
+> RESTful actions: index, show, edit, new, create, update, destroy
 
 ```ruby
 class ArticlesController < ApplicationController
@@ -57,7 +57,7 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-## 每個 action 都要檢查有無權限 `check_authorization`
+## 檢查每個 action 有無權限 `check_authorization`
 
 ```ruby
 class ApplicationController < ActionController::Base
@@ -69,7 +69,17 @@ end
 
 ## [定義 Ability](https://github.com/ryanb/cancan/wiki/Authorizing-Controller-Actions)
 
+如何撰寫 Ability.rb
+
 ## [檢查 Ability](https://github.com/ryanb/cancan/wiki/Checking-Abilities)
+
+Ability.rb 定義完後，用 `can?`、`cannot?` 檢查 Ability.rb 有無設錯。
+
+## [Ability 優先權](https://github.com/ryanb/cancan/wiki/Ability-Precedence)
+
+## [測試 Ability](https://github.com/ryanb/cancan/wiki/Testing-Abilities)
+
+## [除錯 Ability](https://github.com/ryanb/cancan/wiki/Debugging-Abilities)
 
 ## [授權 Controller Actions](https://github.com/ryanb/cancan/wiki/Authorizing-Controller-Actions)
 
