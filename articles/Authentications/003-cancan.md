@@ -87,9 +87,11 @@ Ability.rb 定義完後，用 `can?`、`cannot?` 檢查 Ability.rb 有無設錯�
 
 ## [授權 Controller Actions](https://github.com/ryanb/cancan/wiki/Authorizing-Controller-Actions)
 
+RSpec、Cucumber、測試 Controller。
+
 ## [處理異常](https://github.com/ryanb/cancan/wiki/Exception-Handling)
 
-`authorize!` 搭配的訊息，自定丟出異常的行為，譬如把 HTTP Status code 改成 403。
+如何自定 `authorize!` 噴的訊息，丟出異常的行為，把 HTTP Status code 改成 403 等。
 
 ## [更改預設值](https://github.com/ryanb/cancan/wiki/Changing-Defaults)
 
