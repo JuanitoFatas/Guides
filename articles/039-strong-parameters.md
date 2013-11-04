@@ -46,21 +46,22 @@ class BookController < ActionController::Base
 
   private
 
-    def person_params
+    def book_params
       params.require(:book).permit(:name, :who)
     end
 end
 ```
 
-原本的
+原本 `create`、`update` 方法直接傳入整個 `params`，現在傳入一個封裝過的 `book_params`
 
-看到 private 方法有一個 `book_params`，需要（`require`）用到那個 `:book` model，並允許（`permit`）哪些欄位做大量賦值。
-
+`book_params` 是個 private 方法，在這寫，需要（`require`）用到那個model，並允許（`permit`）哪些欄位做大量賦值。
 
 __params.需要(:model_name).允許(:欄位_1, :欄位_2)__
 
-```
+```ruby
 params.require(:person).permit(:name, :age)
 ```
 
 基本上就是這樣用，依此類推。
+
+
