@@ -54,7 +54,7 @@ end
 
 原本 `create`、`update` 方法直接傳入整個 `params`，現在傳入一個封裝過的 `book_params`
 
-`book_params` 是個 private 方法，在這寫，需要（`require`）用到那個model，並允許（`permit`）哪些欄位做大量賦值。
+`book_params` 是個 private 方法，在這寫，需要（`require`）用到那個 model，並允許（`permit`）哪些欄位做大量賦值。
 
 __params.需要(:model_name).允許(:欄位_1, :欄位_2)__
 
@@ -63,5 +63,13 @@ params.require(:person).permit(:name, :age)
 ```
 
 基本上就是這樣用，依此類推。
+
+## 延伸閱讀
+
+[Strong Parameters by Example - sensible.io Blog](http://blog.sensible.io/2013/08/17/strong-parameters-by-example.html)
+
+[ActionController::StrongParameters](http://edgeapi.rubyonrails.org/classes/ActionController/StrongParameters.html)
+
+[Rails 4: Testing strong parameters - Pivotal Labs](http://pivotallabs.com/rails-4-testing-strong-parameters/)
 
 
