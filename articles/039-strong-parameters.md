@@ -97,7 +97,7 @@ params = ActionController::Parameters.new(name: 'Juanito Fatas')
 
 ## [permit](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-permit)
 
-返回 1 個__新的 ActionController::Parameters__ instance，僅帶有允許的屬性。
+__返回 1 個新的 `ActionController::Parameters` instance__ ，僅帶有允許的屬性。
 
 ```ruby
 # rails console
@@ -114,7 +114,7 @@ Unpermitted parameters: age
 => true
 ```
 
-由於是 ActionController::Parameters 的 instance，所以 `permit` 可以連鎖使用。
+由於是 `ActionController::Parameters` 的 instance，所以 `permit` 與 `require` 可以連鎖使用。
 
 傳入沒有的參數也沒關係：
 
@@ -130,7 +130,7 @@ Unpermitted parameters: age
 ActionController::ParameterMissing: param not found: cup
 ```
 
-`require` 返回 hash 對應 key 的值，`permit` 返回 ActionController::Parameters 的 instance。
+`require` 返回 hash 對應 key 的值，`permit` 返回 `ActionController::Parameters` 的 instance。
 
 ```ruby
 >  params.require(:bride).require(:name)
@@ -159,16 +159,18 @@ ActionController::ParameterMissing: param not found: cup
 => Unpermitted parameters: newlywed_couple
 ```
 
-原來少了棟房子：
+:scream: 為什麼！為什麼！
+
+原來少了棟房子 :sweat:，哎。。。
 
 ```
 > params.permit(newlywed_couple: [])
 => { "newlywed_couple" => ["Juanito Fatas", "蒼井そら"] }
 ```
 
-__要告訴 Strong Parameters key 是 Array。__
+:point_right: __要告訴 Strong Parameters key 是 Array。__
 
-那要是參數是 nested hash? 平常 Hash 怎麼取值，便怎麼取：
+那要是參數是 nested hash? 該怎麼辦？
 
 ```ruby
 > params = ActionController::Parameters.new(newlywed_couple: { bridegroom: 'Juanito Fatas', bride: '蒼井そら' })
@@ -177,7 +179,9 @@ __要告訴 Strong Parameters key 是 Array。__
 => { "newlywed_couple" => { "bride" => "蒼井そら"} }
 ```
 
-用 `require` ＋ `permit`:
+__平常 Hash 怎麼取值，便怎麼取：__
+
+上例用 `require` ＋ `permit` 的結果：
 
 ```ruby
 > params.require(:newlywed_couple).permit(:bride)
@@ -192,7 +196,7 @@ Unpermitted parameters: bridegroom
 => {"user"=>{"username"=>"john", "data"=>{"foo"=>"bar"}}}
 ```
 
-假設我們不知道 `data` hash 裡有什麼 key，這該怎麼辦？
+假設我們不知道 `data` hash 裡有什麼 key，這該怎麼破？
 
 ```ruby
 > params.require(:user).permit(:username).tap do |whitelisted|
@@ -214,7 +218,7 @@ params.require(:user).permit(:username, data: [ :foo ])
 
 ### 來自第三方的 JSON
 
-比如 `raw` 是從第三方 JSON 而來，可以將此資料用 ActionController::Parameters 封裝，
+比如 `raw` 是從第三方 JSON 而來，可以將此資料用 `ActionController::Parameters` 封裝，
 再進行參數的審批：
 
 ```ruby
