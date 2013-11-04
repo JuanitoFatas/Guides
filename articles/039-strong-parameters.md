@@ -72,7 +72,7 @@ params.require(:person).permit(:name, :age)
 
 ## `params`
 
-平常 Controller 可取用的 `params` 是從 [ActionController::Parameters](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html) 而來：
+平常 Controller 可取用的 `params` 是 [ActionController::Parameters](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html) 的 instance：
 
 ```ruby
 params = ActionController::Parameters.new(name: 'Juanito Fatas')
@@ -84,33 +84,137 @@ params = ActionController::Parameters.new(name: 'Juanito Fatas')
 
 > Ensures that a parameter is present. If it’s present, returns the parameter at the given key, otherwise raises an ActionController::ParameterMissing error.
 
-接受一個參數：`key`
-
-先檢查 params 是否存在，存在時返回符合 `key` 的 hash；否則拋出 `ActionController::ParameterMissing` 錯誤。
+接受一個參數：`key`。先檢查 params 是否存在，存在時返回符合 `key` 的 hash；否則拋出 `ActionController::ParameterMissing` 錯誤。
 
 ```ruby
 # rails console
-ActionController::Parameters.new(bridegroom: { name: 'Juanito Fatas', age: 42 }, bride: { name: '蒼井そら', age: 18 }).require(:bridegroom) # => { name: 'Juanito Fatas', age: 42 }
+> params = ActionController::Parameters.new(bridegroom: { name: 'Juanito Fatas', age: 42 }, bride: { name: '蒼井そら', age: 18 })
 
-ActionController::Parameters.new(bridegroom: { name: 'Juanito Fatas' }, bride: { name: '蒼井そら', age: 18 }).require(:bride) # => { name: '蒼井そら', age: 18 }
+> params.require(:bridegroom) # => { name: 'Juanito Fatas', age: 42 }
+
+> params.require(:bride)      # => { name: '蒼井そら', age: 18 }
 ```
 
 ## [permit](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-permit)
 
 > Returns a new ActionController::Parameters instance that includes only the given filters and sets the permitted attribute for the object to true. This is useful for limiting which attributes should be allowed for mass updating.
 
-###
+返回 1 個__新的 ActionController::Parameters__ instance，僅帶有允許的屬性。
 
-Returns a new ActionController::Parameters instance that includes only the given filters and sets the permitted attribute for the object to true. This is useful for limiting which attributes should be allowed for mass updating.
+```ruby
+# rails console
+> params = ActionController::Parameters.new(bridegroom: { name: 'Juanito Fatas', age: 42 }, bride: { name: '蒼井そら', age: 18 })
 
+> params.require(:bride).permit(:name)
+Unpermitted parameters: age
+=> { 'name' => '蒼井そら' }
 
+> params.require(:bride).permit(:name, :age).is_a? ActionController::Parameters
+=> true
 
+> params.require(:bride).is_a? ActionController::Parameters
+=> true
+```
 
+由於是 ActionController::Parameters 的 instance，所以 `permit` 可以連鎖使用。
 
+傳入沒有的參數也沒關係：
+
+```ruby
+> params.require(:bride).permit(:name, :age, :cup)
+=> { 'name' => '蒼井そら', "age" => 18 }
+```
+
+但若真需要知道某個參數，用 `require`：
+
+```ruby
+> params.require(:bride).permit(:name, :age).require(:cup)
+ActionController::ParameterMissing: param not found: cup
+```
+
+`require` 返回 hash 對應 key 的值，`permit` 返回 ActionController::Parameters 的 instance。
+
+```ruby
+>  params.require(:bride).require(:name)
+=> '蒼井そら'
+>  params.require(:bride).permit(:name)
+=> { 'name' => '蒼井そら' }
+```
+
+## [permitted?](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-permitted-3F)
+
+> Returns true if the parameter is permitted, false otherwise.
+
+檢查 `params` 是否允許大量賦值，允許返回真，否則假。
+
+```ruby
+> params.require(:bride).permitted?
+=> false
+> params.require(:bride).permit(:name).permitted?
+=> true
+```
+
+看另外一個例子，我跟蒼井小姐是否可結婚？
+
+```ruby
+> params = ActionController::Parameters.new(newlywed_couple: ['Juanito Fatas', '蒼井そら'])
+=> { "newlywed_couple" => ["Juanito Fatas", "蒼井そら"] }
+> params.permit(:newlywed_couple)
+=> Unpermitted parameters: newlywed_couple
+```
+
+原來少了棟房子：
+
+```
+> params.permit(newlywed_couple: [])
+=> { "newlywed_couple" => ["Juanito Fatas", "蒼井そら"] }
+```
+
+__要告訴 Strong Parameters key 是 Array。__
+
+那要是參數是 nested hash? 平常 Hash 怎麼取值，便怎麼取：
+
+```ruby
+> params = ActionController::Parameters.new(newlywed_couple: { bridegroom: 'Juanito Fatas', bride: '蒼井そら' })
+=> { "newlywed_couple" => { "bridegroom" => "Juanito Fatas", "bride"=>"蒼井そら"} }
+> params.permit(newlywed_couple: [:bride])
+=> { "newlywed_couple" => { "bride" => "蒼井そら"} }
+```
+
+用 `require` ＋ `permit`:
+
+```ruby
+> params.require(:newlywed_couple).permit(:bride)
+Unpermitted parameters: bridegroom
+=> { "bride" => "蒼井そら" }
+```
+
+更複雜的例子：
+
+```ruby
+> params = ActionController::Parameters.new(user: { username: "john", data: { foo: "bar" } })
+=> {"user"=>{"username"=>"john", "data"=>{"foo"=>"bar"}}}
+```
+
+假設我們不知道 `data` hash 裡有什麼 key，這該怎麼辦？
+
+```ruby
+> params.require(:user).permit(:username).tap do |whitelisted|
+    whitelisted[:data] = params[:user][:data]
+  end
+Unpermitted parameters: data
+=> { "username" => "john", "data" => {"foo"=>"bar"}}
+```
+
+要是知道有什麼 key:
+
+```ruby
+params.require(:user).permit(:username, data: [ :foo ])
+```
+
+### [permit!]()
 
 ## 延伸閱讀
-
-[Strong Parameters by Example - sensible.io Blog](http://blog.sensible.io/2013/08/17/strong-parameters-by-example.html)
 
 [ActionController::StrongParameters](http://edgeapi.rubyonrails.org/classes/ActionController/StrongParameters.html)
 
