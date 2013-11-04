@@ -2,7 +2,7 @@
 
 Rails 4 引進了一個新的保護機制：Strong Parameters，譯作健壯參數、強壯參數等。
 
-但我認為譯作“安全參數”、“允許參數”較好。
+但我認為譯作“合法參數”、“核可參數”較好。
 
 ## 什麼是 Strong Parameters?
 
@@ -80,9 +80,7 @@ params = ActionController::Parameters.new(name: 'Juanito Fatas')
 
 ## [Strong Parameters API](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html) 概觀
 
-## [require(key)](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-required)
-
-> Ensures that a parameter is present. If it’s present, returns the parameter at the given key, otherwise raises an ActionController::ParameterMissing error.
+## [require(key)](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-require)
 
 接受一個參數：`key`。先檢查 params 是否存在，存在時返回符合 `key` 的 hash；否則拋出 `ActionController::ParameterMissing` 錯誤。
 
@@ -96,8 +94,6 @@ params = ActionController::Parameters.new(name: 'Juanito Fatas')
 ```
 
 ## [permit](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-permit)
-
-> Returns a new ActionController::Parameters instance that includes only the given filters and sets the permitted attribute for the object to true. This is useful for limiting which attributes should be allowed for mass updating.
 
 返回 1 個__新的 ActionController::Parameters__ instance，僅帶有允許的屬性。
 
@@ -142,8 +138,6 @@ ActionController::ParameterMissing: param not found: cup
 ```
 
 ## [permitted?](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-permitted-3F)
-
-> Returns true if the parameter is permitted, false otherwise.
 
 檢查 `params` 是否允許大量賦值，允許返回真，否則假。
 
@@ -212,7 +206,9 @@ Unpermitted parameters: data
 params.require(:user).permit(:username, data: [ :foo ])
 ```
 
-### [permit!]()
+### [permit!](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-permit-21)
+
+這個方法很危險，我不告訴你怎麼用。
 
 ## 延伸閱讀
 
