@@ -78,9 +78,11 @@ params.require(:person).permit(:name, :age)
 params = ActionController::Parameters.new(name: 'Juanito Fatas')
 ```
 
-## Strong Parameters API 概觀
+## [Strong Parameters API](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html) 概觀
 
-## [require](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-required)
+## [require(key)](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-required)
+
+> Ensures that a parameter is present. If it’s present, returns the parameter at the given key, otherwise raises an ActionController::ParameterMissing error.
 
 接受一個參數：`key`
 
@@ -88,12 +90,14 @@ params = ActionController::Parameters.new(name: 'Juanito Fatas')
 
 ```ruby
 # rails console
-ActionController::Parameters.new(person: { name: 'Juanito Fatas', age: 42 }, girlfriend: { name: '蒼井そら', age: 18 }).require(:person) # => { name: 'Juanito Fatas', age: 42 }
+ActionController::Parameters.new(bridegroom: { name: 'Juanito Fatas', age: 42 }, bride: { name: '蒼井そら', age: 18 }).require(:bridegroom) # => { name: 'Juanito Fatas', age: 42 }
 
-ActionController::Parameters.new(person: { name: 'Juanito Fatas' }, girlfriend: { name: '蒼井そら', age: 18 }).require(:girlfriend) # => { name: '蒼井そら', age: 18 }
+ActionController::Parameters.new(bridegroom: { name: 'Juanito Fatas' }, bride: { name: '蒼井そら', age: 18 }).require(:bride) # => { name: '蒼井そら', age: 18 }
 ```
 
 ## [permit](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-permit)
+
+> Returns a new ActionController::Parameters instance that includes only the given filters and sets the permitted attribute for the object to true. This is useful for limiting which attributes should be allowed for mass updating.
 
 ###
 
