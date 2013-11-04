@@ -2,13 +2,13 @@
 
 Rails 4 引進了一個新的保護機制：Strong Parameters，譯作健壯參數、強壯參數等。
 
-但我認為譯作“合法參數”、“核可參數”較好。
+吾以為譯作“合法參數”、“核可參數”較好。
 
 ## 什麼是 Strong Parameters?
 
-在建模或更新 Active Record 物件時，會有 Mass assignment 的問題。
+在建模或更新 Active Record 物件時，會有 Mass assignment （大量賦值）的問題。
 
-Mass assignment 就是建模或更新時，傳入 hash 參數，一次給多個欄位賦值：
+Mass assignment 是建模或更新時，傳入 hash 參數，一次給多個欄位賦值：
 
 ```ruby
 # params[:book] => { name: 'Ruby on Rails 4', who: 'Juanito Fatas', role: :reviewer }
@@ -159,7 +159,7 @@ ActionController::ParameterMissing: param not found: cup
 => Unpermitted parameters: newlywed_couple
 ```
 
-:scream: 為什麼！為什麼！
+為什麼！為什麼！:scream:
 
 原來少了棟房子 :sweat:，哎。。。
 
@@ -168,7 +168,7 @@ ActionController::ParameterMissing: param not found: cup
 => { "newlywed_couple" => ["Juanito Fatas", "蒼井そら"] }
 ```
 
-:point_right: __要告訴 Strong Parameters key 是 Array。__
+:point_right: __要告訴 Strong Parameters，key 是 Array。__
 
 那要是參數是 nested hash? 該怎麼辦？
 
@@ -179,7 +179,7 @@ ActionController::ParameterMissing: param not found: cup
 => { "newlywed_couple" => { "bride" => "蒼井そら"} }
 ```
 
-__平常 Hash 怎麼取值，便怎麼取：__
+:point_right: __平常 Hash 怎麼取值，便怎麼取。__
 
 上例用 `require` ＋ `permit` 的結果：
 
@@ -189,14 +189,14 @@ Unpermitted parameters: bridegroom
 => { "bride" => "蒼井そら" }
 ```
 
-更複雜的例子：
+## 不知道 key 怎麼取？
 
 ```ruby
-> params = ActionController::Parameters.new(user: { username: "john", data: { foo: "bar" } })
+> params = ActionController::Parameters.new(user: { username: "john", data: { foo: "bar" }})
 => {"user"=>{"username"=>"john", "data"=>{"foo"=>"bar"}}}
 ```
 
-假設我們不知道 `data` hash 裡有什麼 key，這該怎麼破？
+假設我們不知道 `data` hash 裡有什麼 key，該怎麼破？
 
 ```ruby
 > params.require(:user).permit(:username).tap do |whitelisted|
@@ -206,7 +206,7 @@ Unpermitted parameters: data
 => { "username" => "john", "data" => {"foo"=>"bar"}}
 ```
 
-要是知道有什麼 key:
+要是知道有什麼 key：
 
 ```ruby
 params.require(:user).permit(:username, data: [ :foo ])
@@ -215,6 +215,8 @@ params.require(:user).permit(:username, data: [ :foo ])
 ### [permit!](http://edgeapi.rubyonrails.org/classes/ActionController/Parameters.html#method-i-permit-21)
 
 這個方法很危險，我不告訴你怎麼用，哼！
+
+> 允許所有參數！
 
 ### 來自第三方的 JSON
 
@@ -226,6 +228,16 @@ raw = { email: "dhh@java.com", name: "DHH", admin: true }
 parameters = ActionController::Parameters.new(raw_parameters)
 user = User.create(parameters.permit(:name, :email))
 ```
+
+:smirk: DHH 想當 java.com 的管理員，沒戲...
+
+到這裡你一定看得懂，[嵌套 Strong Parameters](https://github.com/rails/strong_parameters#nested-parameters) 怎麼用：
+
+```ruby
+params.permit(:name, {age: []}, girlfriends: [ :name, { family: [ :name ], hobbies: [] }])
+```
+
+不會用到 [Ruby-China](http://ruby-china.org/) 提問唄！
 
 ## 延伸閱讀
 
