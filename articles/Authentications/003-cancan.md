@@ -10,9 +10,13 @@ Rails 4+ CanCan 目前提供了 2.0 這個 branch。(尚未修正完畢）
 
 ## CanCan 快速導覽
 
-權限管控定義在 `Ability.rb` (`/app/model`)。
+CanCan 兩個重點：
 
-CanCan 1.5+ 有實作 generator，用來產生 `Ability.rb`:
+* （一）權限管控定義在 `Ability.rb` (`/app/model`)
+
+* （二）Controller 裡有 `current_user` 方法
+
+CanCan 1.5+ 實作了 Rails generator，用來產生 `Ability.rb`:
 
 ```bash
 $ rails g cancan:ability
@@ -84,6 +88,8 @@ Ability.rb 定義完後，用 `can?`、`cannot?` 檢查 Ability.rb 有無設錯�
 ## [授權 Controller Actions](https://github.com/ryanb/cancan/wiki/Authorizing-Controller-Actions)
 
 ## [處理異常](https://github.com/ryanb/cancan/wiki/Exception-Handling)
+
+`authorize!` 搭配的訊息，自定丟出異常的行為，譬如把 HTTP Status code 改成 403。
 
 ## [更改預設值](https://github.com/ryanb/cancan/wiki/Changing-Defaults)
 
