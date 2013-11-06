@@ -1,6 +1,6 @@
 # [Form Helpers][fh]
 
-表单（Form）是给使用者输入的介面，web 应用里面最基础的元素之一。表单写起来很繁琐，Rails 提供很多有用的 helper 让你快速制造出符合不同需求的表单。
+表单（Form）是给使用者输入的界面，web 应用里面最基础的元素之一。表单写起来很繁琐，Rails 提供很多有用的 helper 让你快速制造出符合不同需求的表单。
 
 ## 目录
 
@@ -68,15 +68,15 @@
 </form>
 ```
 
-注意到 HTML 里有个额外的 `div` 元素，里面有两个 input。第一个 input 让浏览器使用 `utf8`。第二个 input 是 Rails 内建用来防止 __CSRF (cross-site request forgery protection)__ 攻击的安全机制，每个非 GET 的表单，Rails 都会帮你生成一个这样的 `authenticity_token`。
+注意到 HTML 里有个额外的 `div` 元素，里面有两个 `input`。第一个 `input` 让浏览器使用 `UTF-8`。第二个 `input` 是 Rails 内建用来防止 __CSRF (cross-site request forgery protection)__ 攻击的安全机制，每个非 GET 的表单，Rails 都会帮你生成一个这样的 `authenticity_token`。
 
 ## 1.1 通用搜索表单
 
 最简单的表单就是搜索表单了，通常有：
 
 * 一个有 GET 动词的表单。
-* 可输入文字的 input。
-* input 有 label。
+* 可输入文字的 `input`。
+* `input` 有 `label`。
 * 送出元素
 
 ```erb

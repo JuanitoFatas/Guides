@@ -68,15 +68,15 @@
 </form>
 ```
 
-注意到 HTML 裡有個額外的 `div` 元素，裡面有兩個 input。第一個 input 讓瀏覽器使用 `utf8`。第二個 input 是 Rails 內建用來防止 __CSRF (cross-site request forgery protection)__ 攻擊的安全機制，每個非 GET 的表單，Rails 都會幫你產生一個這樣的 `authenticity_token`。
+注意到 HTML 裡有個額外的 `div` 元素，裡面有兩個 `input`。第一個 `input` 讓瀏覽器使用 `UTF-8`。第二個 `input` 是 Rails 內建用來防止 __CSRF (cross-site request forgery protection)__ 攻擊的安全機制，每個非 GET 的表單，Rails 都會幫你產生一個這樣的 `authenticity_token`。
 
 ## 1.1 通用搜索表單
 
 最簡單的表單就是搜索表單了，通常有：
 
 * 一個有 GET 動詞的表單。
-* 可輸入文字的 input。
-* input 有 label。
+* 可輸入文字的 `input`。
+* `input` 有 `label`。
 * 送出元素
 
 ```erb
