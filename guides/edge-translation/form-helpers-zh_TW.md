@@ -87,7 +87,7 @@
 <% end %>
 ```
 
-用到這四個 helper：`form_tag`、`label_tag`、`text_field_tag`、`submit_tag`。
+用到這四個 Helper：`form_tag`、`label_tag`、`text_field_tag`、`submit_tag`。
 
 會產生如下 HTML：
 
