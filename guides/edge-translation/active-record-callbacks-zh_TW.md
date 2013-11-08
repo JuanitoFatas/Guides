@@ -1,18 +1,18 @@
 # Active Record Callbacks
 
-本篇講解 Active Record 物件的生命週期，如何添加 hook、callbacks。
+本篇講解 Active Record 物件的生命週期，如何添加 hook、Callbacks。
 
 讀完可能會學到...
 
 * Active Record 物件的生命週期。
-* 在生命週期裡加入 callback 方法。
-* 將 callback 常見行為包裝成類別。
+* 在生命週期裡加入 Callback 方法。
+* 將 Callback 常見行為包裝成類別。
 
 --------------------------------------------------------------------------------
 
 # 1. 物件的生命週期
 
-常見的 Rails app 流程裡，我們新建、更新、毀滅物件。
+常見的 Active Record 物件操作流程裡，我們新建、更新、毀滅物件。
 
 在這個生命週期裡，可以 加入 hook 來控制應用程式的流程與資料。
 
@@ -26,7 +26,7 @@ Callback 在生命週期某個時間點會呼叫的方法。有了 callback，�
 
 ### 註冊 Callback
 
-要使用 callback 要先註冊。可用普通方法或是 macro 風格的類別方法來註冊：
+要使用 Callback 要先註冊。可用普通方法或是 macro 風格的類別方法來註冊：
 
 ```ruby
 class User < ActiveRecord::Base
@@ -43,7 +43,7 @@ class User < ActiveRecord::Base
 end
 ```
 
-macro 風格的類別方法允許接受區塊，如果邏輯很短只有一行：
+如果 Callback 邏輯很短只有一行，macro 風格的類別方法允許使用區塊
 
 ```ruby
 class User < ActiveRecord::Base
@@ -55,7 +55,7 @@ class User < ActiveRecord::Base
 end
 ```
 
-也可針對特定方法註冊 callback，如 `create`：
+也可針對特定方法註冊 Callback，如 `create`：
 
 ```ruby
 class User < ActiveRecord::Base
@@ -75,11 +75,11 @@ class User < ActiveRecord::Base
 end
 ```
 
-通常我們將 callback 方法聲明為 `protected` 或 `private` 方法。聲明成 `public` 方法有可能會在 Model 外被呼叫，違反了物件封裝的精神。
+通常 Callback 方法會聲明為 `protected` 或 `private` 方法。聲明成 `public` 方法有可能會在 Model 外被呼叫，違反了封裝物件的精神。
 
 # 3. 可用的 Callbacks
 
-以下是 Active Record 可用的 callbacks，依照 __呼叫順序排序__：
+以下是 Active Record 可用的 Callbacks，依照__呼叫順序排序__：
 
 ### 新建物件
 
