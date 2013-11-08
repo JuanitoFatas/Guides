@@ -140,9 +140,8 @@ Bundler.require(:default, Rails.env)
 
 ### vendor/plugins
 
-Rails 4.0 不再支援從 `vendor/plugins` 載入 plugins。 __必須__將任何 plugins 包成 Gems ，再加入至 Gemfile。
+Rails 4.0 不再支援從 `vendor/plugins` 載入 plugins。 __必須__將任何 plugins 包成 Gems ，再加入至 Gemfile。若你不想包成 Gem，則可將 plugin 移到 `lib/my_plugin/*`，並使用適當的 initializer：`config/initializer/my_plugin.rb`。
 
-Rails 4.0 no longer supports loading plugins from `vendor/plugins`. You must replace any plugins by extracting them to gems and adding them to your Gemfile. If you choose not to make them gems, you can move them into, say, `lib/my_plugin/*` and add an appropriate initializer in `config/initializers/my_plugin.rb`.
 
 ### Active Record
 
