@@ -22,14 +22,16 @@ Rails 通常與最新的 Ruby 一起前進：
 
 定案：
 
-* Ruby 2.0.0-p247（__推薦使用__）
+* Ruby 2.0.0-p247（__強烈推薦使用__）
 * Ruby 1.9.3-p448
 
 > [Ruby 1.8.7（官方已經不維護了）](https://www.ruby-lang.org/zh_tw/news/2013/06/30/we-retire-1-8-7/)
 
 ## 1.3 HTTP PATCH
 
-Rails 4 使用 `PATCH` 作為更新操作的主要 HTTP 動詞。當你以 RESTful 形式宣告某個 resource 時，`PUT` 仍會路由到 `update`，只是多了 `PATCH` 也路由到 `update`。
+Rails 4 更新操作的主要 HTTP 動詞換成了 `PATCH`。當你在 `config/routes.rb` 以 _RESTful_ 形式宣告某個 resource 時，`PUT` 仍會路由到 `update` action，只是多了個 `PATCH` ，同樣路由到 `update` action。
+
+> 這裡的路由作動詞解。
 
 ```ruby
 resources :users
@@ -47,7 +49,7 @@ class UsersController < ApplicationController
 end
 ```
 
-但當使用 `form_for` 來更新自定路由（使用 `PUT` HTTP 動詞）的 resource 時，
+但是，當使用 `form_for` 來更新自定路由（使用 `PUT` HTTP 動詞）的 resource 時，
 
 ```ruby
 resources :users, do
@@ -67,12 +69,9 @@ class UsersController < ApplicationController
 end
 ```
 
-若不是公有的 API，把它改成 `PATCH` 吧。
+若不是公有的 API，你可換 HTTP 動詞，那就把它從 `PUT` 改成 `PATCH` 吧。
 
-If the action is not being used in a public API and you are free to change the
-HTTP method, you can update your route to use `patch` instead of `put`:
-
-在 Rails 4 對 `/users/:id` 做 `PUT` 請求，會被導向 `update`。所以要是你的 API 接受 `PUT` 請求，那沒問題。Router 同時也將來自 `/users/:id` 的 `PATCH` 請求導向 `update` action。
+在 Rails 4 對 `/users/:id` 做 `PUT` 請求，會被導向 `update`。所以要是 API 接受 `PUT` 請求，那沒問題。Router 同時也會將來自 `/users/:id` 的 `PATCH` 請求導向 `update` action。
 
 ```ruby
 resources :users do
@@ -86,7 +85,7 @@ end
 <%= form_for [ :update_name, @user ], method: :put do |f| %>
 ```
 
-為什麼要改成 `PATCH`，參考[這篇文章](http://weblog.rubyonrails.org/2012/2/25/edge-rails-patch-is-the-new-primary-http-method-for-updates/)。
+至於為什麼要改成 `PATCH`，參考[這篇文章](http://weblog.rubyonrails.org/2012/2/25/edge-rails-patch-is-the-new-primary-http-method-for-updates/)。
 
 #### 關於 media types 的說明
 
@@ -96,7 +95,7 @@ such format is [JSON Patch](http://tools.ietf.org/html/rfc6902). While Rails
 does not support JSON Patch natively, it's easy enough to add support:
  -->
 
-[RFC 5789 的勘誤](http://www.rfc-editor.org/errata_search.php?rfc=5789)表示某些 media type 要用 `PATCH` 動詞才是，比如 JSON Patch。
+[RFC 5789 的勘誤](http://www.rfc-editor.org/errata_search.php?rfc=5789)表示某些 media type 要用 `PATCH` 動詞才正確，比如 JSON Patch。
 
 Rails 沒有原生支持 JSON Patch，但添加 JSON Patch 的支持非常簡單：
 
@@ -119,21 +118,19 @@ end
 Mime::Type.register 'application/json-patch+json', :json_patch
 ```
 
-由於 JSON Patch 最近才有 RFC，仍未有好的 Ruby 函式庫出現。Aaron Patterson 的 [hana](https://github.com/tenderlove/hana) 是一個實作 JSON Patch 的 gem，但仍未完整支援 Spec 裡所有的變動。
+由於 JSON Patch 最近才有 RFC，仍未有好的 Ruby 函式庫出現。Aaron Patterson 的 [hana](https://github.com/tenderlove/hana) 是一個實作 JSON Patch 的 gem，但仍未完整支援 Spec 裡所有最近更新的內容。
 
 # 2. 從 Rails 3.2 升級到 Rails 4.0
 
-NOTE: This section is a work in progress.
+__注意：本小節仍在施工當中。__
 
-If your application is currently on any version of Rails older than 3.2.x, you should upgrade to Rails 3.2 before attempting one to Rails 4.0.
+若你是 3.2 先前的版本，先升到 3.2 再試著升到 Rails 4.0。
 
-The following changes are meant for upgrading your application to Rails 4.0.
+以下是針對升級至 Rails 4.0 的說明。
 
 ### Gemfile
 
-Rails 4.0 removed the `assets` group from Gemfile. You'd need to remove that
-line from your Gemfile when upgrading. You should also update your application
-file (in `config/application.rb`):
+Rails 4.0 移除了 Gemfile 裡的 `assets` group。升級至 4.0 時要移除這個 group，同時需要更新 `config/application.rb`：
 
 ```ruby
 # Require the gems listed in Gemfile, including any gems
@@ -142,6 +139,8 @@ Bundler.require(:default, Rails.env)
 ```
 
 ### vendor/plugins
+
+Rails 4.0 不再支援從 `vendor/plugins` 載入 plugins。 __必須__將任何 plugins 包成 Gems ，再加入至 Gemfile。
 
 Rails 4.0 no longer supports loading plugins from `vendor/plugins`. You must replace any plugins by extracting them to gems and adding them to your Gemfile. If you choose not to make them gems, you can move them into, say, `lib/my_plugin/*` and add an appropriate initializer in `config/initializers/my_plugin.rb`.
 
