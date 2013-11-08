@@ -79,7 +79,7 @@
 
 | English| Traditional Chinese| Simplified Chinese|
 |:--:|:--:|:--:|
-|[Upgrading Ruby on Rails](/guides/edge/.md)|to be translated|to be translated|
+|[Upgrading Ruby on Rails](/guides/edge/upgrading_ruby_on_rails.md)|[zh-TW](/guides/edge/upgrading_ruby_on_rails.md)]|to be translated|
 |[Ruby on Rails 4.0 Release Notes](/guides/edge/4_0_release_notes.md)|to be translated|to be translated|
 |[Ruby on Rails 3.2 Release Notes](/guides/edge/3_2_release_notes.md)|to be translated|to be translated|
 |[Ruby on Rails 3.1 Release Notes](/guides/edge/3_1_release_notes.md)|to be translated|to be translated|
