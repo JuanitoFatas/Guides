@@ -1,5 +1,9 @@
 # Active Record Callbacks
 
+__特別要強調的翻譯名詞__
+
+> Transactional 事務
+
 本篇講解 Active Record 物件的生命週期，如何添加 hook、Callbacks。
 
 讀完可能會學到...
@@ -142,7 +146,7 @@ You have initialized an object!
 
 # 4. 執行 Callbacks
 
-The following methods trigger callbacks:
+以下方法會觸發 Callbakcs：
 
 * `create`
 * `create!`
@@ -160,7 +164,7 @@ The following methods trigger callbacks:
 * `update!`
 * `valid?`
 
-Additionally, the `after_find` callback is triggered by the following finder methods:
+另外 `after_find` 由下列 Finder 方法觸發：
 
 * `all`
 * `first`
@@ -171,11 +175,12 @@ Additionally, the `after_find` callback is triggered by the following finder met
 * `find_by_sql`
 * `last`
 
-The `after_initialize` callback is triggered every time a new object of the class is initialized.
+`after_initialize` Callback 在每次新物件 initialized 時觸發。
 
-NOTE: The `find_by_*` and `find_by_*!` methods are dynamic finders generated automatically for every attribute. Learn more about them at the [Dynamic finders section](active_record_querying.html#dynamic-finders)
 
-# 5. Skipping Callbacks
+這些 Finder 方法是 Active Record 給每個 attribute 動態產生的，參見 [Dynamic finders section](/active_record_querying.md#dynamic-finders) 一節。
+
+# 5. 略過 Callbacks
 
 Just as with validations, it is also possible to skip callbacks by using the following methods:
 
@@ -194,7 +199,7 @@ Just as with validations, it is also possible to skip callbacks by using the fol
 
 These methods should be used with caution, however, because important business rules and application logic may be kept in callbacks. Bypassing them without understanding the potential implications may lead to invalid data.
 
-# 6. Halting Execution
+# 6. 終止執行
 
 As you start registering new callbacks for your models, they will be queued for execution. This queue will include all your model's validations, the registered callbacks, and the database operation to be executed.
 
@@ -228,7 +233,7 @@ Post destroyed
 => #<User id: 1>
 ```
 
-# 8. Conditional Callbacks
+# 8. 條件式 Callbacks
 
 As with validations, we can also make the calling of a callback method conditional on the satisfaction of a given predicate. We can do this using the `:if` and `:unless` options, which can take a symbol, a string, a `Proc` or an `Array`. You may use the `:if` option when you want to specify under which conditions the callback **should** be called. If you want to specify the conditions under which the callback **should not** be called, then you may use the `:unless` option.
 
@@ -274,7 +279,7 @@ class Comment < ActiveRecord::Base
 end
 ```
 
-# 9. Callback Classes
+# 9. Callback 類別
 
 Sometimes the callback methods that you'll write will be useful enough to be reused by other models. Active Record makes it possible to create classes that encapsulate the callback methods, so it becomes very easy to reuse them.
 
@@ -320,7 +325,7 @@ end
 
 You can declare as many callbacks as you want inside your callback classes.
 
-# 10. Transaction Callbacks
+# 10. 事務 Callbacks
 
 There are two additional callbacks that are triggered by the completion of a database transaction: `after_commit` and `after_rollback`. These callbacks are very similar to the `after_save` callback except that they don't execute until after database changes have either been committed or rolled back. They are most useful when your active record models need to interact with external systems which are not part of the database transaction.
 
