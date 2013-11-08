@@ -178,7 +178,7 @@ You have initialized an object!
 `after_initialize` Callback 在每次新物件 initialized 時觸發。
 
 
-這些 Finder 方法是 Active Record 給每個 attribute 動態產生的，參見 [Dynamic finders section](/guides/edge-translation/active_record_querying.md#dynamic-finders) 一節。
+這些 Finder 方法是 Active Record 給每個 attribute 動態產生的，參見 [Dynamic finders section](/guides/edge-translation/active_record_querying-zh_TW.md#dynamic-finders) 一節。
 
 # 5. 略過 Callbacks
 
