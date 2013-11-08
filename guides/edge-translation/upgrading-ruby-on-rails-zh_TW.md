@@ -22,7 +22,7 @@ Rails 通常與最新的 Ruby 一起前進：
 
 定案：
 
-* Ruby 2.0.0-p247
+* Ruby 2.0.0-p247（__推薦使用__）
 * Ruby 1.9.3-p448
 
 > [Ruby 1.8.7（官方已經不維護了）](https://www.ruby-lang.org/zh_tw/news/2013/06/30/we-retire-1-8-7/)
