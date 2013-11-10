@@ -32,7 +32,7 @@ Rails 通常與最新的 Ruby 一起前進：
 * __強烈推薦使用 Ruby 2.0.0-p247__
 * Ruby 1.9.3-p448
 
-> _[Ruby 1.8.7（官方已經不維護了）](https://www.ruby-lang.org/zh_tw/news/2013/06/30/we-retire-1-8-7/)_
+> [Ruby 1.8.7（官方已經不維護了）](https://www.ruby-lang.org/zh_tw/news/2013/06/30/we-retire-1-8-7/)
 
 ## 1.3 HTTP PATCH
 
