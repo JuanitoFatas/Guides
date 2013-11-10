@@ -50,7 +50,7 @@ $ ruby /path/to/rails/railties/bin/rails new myapp --dev
 Major Features
 --------------
 
-[![Rails 4.0](images/rails4_features.png)](https://raw.github.com/JuanitoFatas/Foto/master/rails4/rails4_features.png)
+![Rails 4.0 Major Features](https://raw.github.com/JuanitoFatas/Foto/master/rails4/rails4_features.png)
 
 ### Upgrade
 
