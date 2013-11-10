@@ -47,6 +47,22 @@ task :update do
 end
 
 ##
+# rake bupdate xxxxx-zh_CN.md
+# will also update xxxxx-zh_TW counterpart.
+desc "Bilingual Update a existing file to GitHub."
+task :bupdate do
+  file_name = ARGV.last
+  if file_name.scan(/zh_CN/).empty?
+    git_action(file_name)
+    git_action(file_name.gsub('zh_TW', 'zh_CN'))
+  else
+    git_action(file_name)
+    git_action(file_name.gsub('zh_CN', 'zh_TW'))
+  end
+  task file_name.to_sym do ; end
+end
+
+##
 # rake msg "Update Guides." README.md
 desc "Write a custom commit message then push to GitHub."
 task :msg do
