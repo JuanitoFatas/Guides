@@ -12,7 +12,27 @@ __特別要強調的翻譯名詞__
 * 在生命週期裡加入 Callback 方法。
 * 將 Callback 常見行為包裝成類別。
 
---------------------------------------------------------------------------------
+## 目錄
+
+- [1. 物件的生命週期](#1-物件的生命週期)
+  - [1.1 Callbacks 概觀](#11-callbacks-概觀)
+    - [註冊 Callback](#註冊-callback)
+- [3. 可用的 Callbacks](#3-可用的-callbacks)
+  - [3.1 新建物件](#31-新建物件)
+  - [3.2 更新物件](#32-更新物件)
+  - [3.3 摧毀物件](#33-摧毀物件)
+  - [3.4 `after_initialize` and `after_find`](#34-after_initialize-and-after_find)
+- [4. 執行 Callbacks](#4-執行-callbacks)
+- [5. 略過 Callbacks](#5-略過-callbacks)
+- [6. 終止執行](#6-終止執行)
+- [7. Relational Callbacks](#7-relational-callbacks)
+- [8. 條件式 Callbacks](#8-條件式-callbacks)
+  - [8.1 `Symbol`](#81-symbol)
+  - [8.2 `String`](#82-string)
+  - [8.3 `Proc`](#83-proc)
+  - [8.4 Multiple Conditions for Callbacks](#84-multiple-conditions-for-callbacks)
+- [9. Callback 類別](#9-callback-類別)
+- [10. 事務 Callbacks](#10-事務-callbacks)
 
 # 1. 物件的生命週期
 
@@ -85,7 +105,7 @@ end
 
 以下是 Active Record 可用的 Callbacks，依照__呼叫順序排序__：
 
-### 新建物件
+## 3.1 新建物件
 
 * `before_validation`
 * `after_validation`
@@ -96,7 +116,7 @@ end
 * `after_create`
 * `after_save`
 
-### 更新物件
+## 3.2 更新物件
 
 * `before_validation`
 * `after_validation`
@@ -107,7 +127,7 @@ end
 * `after_update`
 * `after_save`
 
-### 摧毀物件
+## 3.3 摧毀物件
 
 * `before_destroy`
 * `around_destroy`
@@ -115,7 +135,7 @@ end
 
 __警告！__ `after_save` 在 `create` 與 `update` 都會執行，並總是在更為具體的 `after_create` 與 `after_update` 之後執行！
 
-### `after_initialize` and `after_find`
+## 3.4 `after_initialize` and `after_find`
 
 不管是 `new` 一個 Active Record 物件，還是從資料庫裡取出 record 時都會呼叫 `after_initialize`，當你想覆寫 Active Record 的 `initialize` 方法時，可以用 `after_initialize` 來取代。
 
