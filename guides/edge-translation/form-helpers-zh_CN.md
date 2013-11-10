@@ -107,7 +107,7 @@ __切记：搜索表单用正确的 HTTP 动词：GET。__
 
 `form_tag` 接受 2 个参数： __动作发生的路径（path）与选项（以 hash 形式传入）__。可指定送出时要用的方法，及更改表单元素的 class 等。
 
-和 `link_to` 相似，路径可以不是字串。可以是 Rails router 看的懂的 URL hash，比如：
+和 `link_to` 相似，路径可以不是字串。可以是 Rails Router 看的懂的 URL hash，比如：
 
 ```ruby
 { controller: "people", action: "search" }
