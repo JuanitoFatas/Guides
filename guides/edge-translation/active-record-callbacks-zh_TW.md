@@ -38,7 +38,7 @@ __特別要強調的翻譯名詞__
 
 常見的 Active Record 物件操作流程裡，我們新建、更新、毀滅物件。
 
-在這個生命週期裡，可以 加入 hook 來控制應用程式的流程與資料。
+在這個生命週期裡，可以 加入 hook （Callback）來控制應用程式的流程與資料。
 
 Callbacks 則可以在物件操作前後添加邏輯。
 
@@ -99,7 +99,7 @@ class User < ActiveRecord::Base
 end
 ```
 
-通常 Callback 方法會聲明為 `protected` 或 `private` 方法。聲明成 `public` 方法有可能會在 Model 外被呼叫，違反了封裝物件的精神。
+通常 Callback 方法會聲明為 `protected` 或 `private` 方法。聲明成 `public` 方法有可能會在 Model 外被呼叫，違反了物件封裝的精神。
 
 # 3. 可用的 Callbacks
 
@@ -137,7 +137,7 @@ __警告！__ `after_save` 在 `create` 與 `update` 都會執行，並總是在
 
 ## 3.4 `after_initialize` and `after_find`
 
-不管是 `new` 一個 Active Record 物件，還是從資料庫裡取出 record 時都會呼叫 `after_initialize`，當你想覆寫 Active Record 的 `initialize` 方法時，可以用 `after_initialize` 來取代。
+不管是 `new` 一個 Active Record 物件，還是從資料庫裡取出 record 時，都會呼叫 `after_initialize`，當你想覆寫 Active Record 的 `initialize` 方法時，可以用 `after_initialize` 來取代。
 
 從資料庫取出 Active Record 物件時會呼叫 `after_find`，`after_find` 呼叫完才會呼叫 `after_initialize`。
 
@@ -200,11 +200,11 @@ You have initialized an object!
 
 `after_initialize` Callback 在每次 Active Record 物件 initialized 時觸發。
 
-這些 Finder 方法是 Active Record 給每個 attribute 動態產生的，參見 [Dynamic finders section](/guides/edge-translation/active-record-querying-zh_TW.md#dynamic-finders) 一節。
+這些 Finder 方法是 Active Record 給每個 attribute 動態產生的，參見 [Dynamic finders](/guides/edge-translation/active-record-querying-zh_TW.md#dynamic-finders) 一節。
 
 # 5. 略過 Callbacks
 
-可用下列方法來忽略 Callback。
+可用下列方法來略過 Callback。
 
 * `decrement`
 * `decrement_counter`
@@ -244,7 +244,7 @@ class Post < ActiveRecord::Base
   after_destroy :log_destroy_action
 
   def log_destroy_action
-    puts 'Post destroyed'
+    puts 'Posts also destroyed'
   end
 end
 
@@ -350,7 +350,7 @@ class PictureFile < ActiveRecord::Base
 end
 ```
 
-Callback 類別裡可宣告多個 callback 方法。
+Callback 類別裡可宣告多個 Callback 方法。
 
 # 10. 事務 Callbacks
 
