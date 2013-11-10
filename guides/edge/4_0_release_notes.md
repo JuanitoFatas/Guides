@@ -50,7 +50,7 @@ $ ruby /path/to/rails/railties/bin/rails new myapp --dev
 Major Features
 --------------
 
-![Rails 4.0 Major Features](rails4/rails4_features.png)
+[![Rails 4.0](images/rails4_features.png)](http://guides.rubyonrails.org/images/rails4_features.png)
 
 ### Upgrade
 
@@ -90,7 +90,7 @@ Major Features
  * **match do not catch all** ([commit](https://github.com/rails/rails/commit/90d2802b71a6e89aedfe40564a37bd35f777e541)) - In the routing DSL, match requires the HTTP verb or verbs to be specified.
  * **html entities escaped by default** ([commit](https://github.com/rails/rails/commit/5f189f41258b83d49012ec5a0678d827327e7543)) - Strings rendered in erb are escaped unless wrapped with `raw` or `html_safe` is called.
  * **New security headers** ([commit](https://github.com/rails/rails/commit/6794e92b204572d75a07bd6413bdae6ae22d5a82)) - Rails sends the following headers with every HTTP request: `X-Frame-Options` (prevents clickjacking by forbidding the browser from embedding the page in a frame), `X-XSS-Protection` (asks the browser to halt script injection) and `X-Content-Type-Options` (prevents the browser from opening a jpeg as an exe).
-
+ 
 Extraction of features to gems
 ---------------------------
 
@@ -268,7 +268,7 @@ Please refer to the [Changelog](https://github.com/rails/rails/blob/4-0-stable/a
       * `scoped_by_...` can be rewritten using `where(...)`.
       * `find_or_initialize_by_...` can be rewritten using `find_or_initialize_by(...)`.
       * `find_or_create_by_...` can be rewritten using `find_or_create_by(...)`.
-      * `find_or_create_by_...!` can be rewritten using `find_or_create_by!(...)`.
+      * `find_or_create_by_...!` can be rewritten using `find_or_create_by!(...)`. 
 
 Credits
 -------
