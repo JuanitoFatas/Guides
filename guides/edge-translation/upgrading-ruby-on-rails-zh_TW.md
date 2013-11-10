@@ -36,9 +36,9 @@ Rails 通常與最新的 Ruby 一起前進：
 
 ## 1.3 HTTP PATCH
 
-Rails 4 更新操作的主要 HTTP 動詞換成了 `PATCH`。當你在 `config/routes.rb` 以 _RESTful_ 形式宣告某個 resource 時，`PUT` 仍會路由到 `update` action，只是多了個 `PATCH` ，同樣路由到 `update` action。
-
 > 這裡的路由作動詞解。
+
+Rails 4 更新操作的主要 HTTP 動詞換成了 `PATCH`。當你在 `config/routes.rb` 以 _RESTful_ 形式宣告某個 resource 時，`PUT` 仍會路由到 `update` action，只是多了個 `PATCH` ，同樣路由到 `update` action。
 
 ```ruby
 resources :users
@@ -76,7 +76,7 @@ class UsersController < ApplicationController
 end
 ```
 
-若不是公有的 API，你可換 HTTP 動詞，那就把它從 `PUT` 改成 `PATCH` 吧。
+若不是公有的 API，你有權換 HTTP 動詞，那就把它從 `PUT` 改成 `PATCH` 吧。
 
 在 Rails 4 對 `/users/:id` 做 `PUT` 請求，會被導向 `update`。所以要是 API 接受 `PUT` 請求，那沒問題。Router 同時也會將來自 `/users/:id` 的 `PATCH` 請求導向 `update` action。
 
@@ -129,11 +129,11 @@ Mime::Type.register 'application/json-patch+json', :json_patch
 
 # 2. 從 Rails 3.2 升級到 Rails 4.0
 
-__注意：本小節仍在施工當中。__
+__注意：本小節仍在完善當中。__
 
-若你是 3.2 先前的版本，先升到 3.2 再試著升到 Rails 4.0。
+若你是 3.2 以前的版本，先升到 3.2 再試著升到 Rails 4.0。
 
-以下是針對升級至 Rails 4.0 的說明。
+以下是針對從 Rails 3.2 升級至 Rails 4.0 的說明。
 
 ### Gemfile
 
@@ -152,15 +152,15 @@ Rails 4.0 不再支援從 `vendor/plugins` 載入 plugins。__必須__將任何 
 
 ### Active Record
 
-* Rails 4.0 移除了 Active Record 的 identity map，由於會產生[某些關聯的不一致性](https://github.com/rails/rails/commit/302c912bf6bcd0fa200d964ec2dc4a44abe328a6)。也就是 `config.active_record.identity_map` 設置不再有作用。
+* Rails 4.0 移除了 Active Record 的 identity map，因為這會產生[某些關聯的不一致性](https://github.com/rails/rails/commit/302c912bf6bcd0fa200d964ec2dc4a44abe328a6)。也就是說 `config.active_record.identity_map` ，這個設定不再有作用。
 
-* Collection association 裡的 `delete` 方法現在可接受 `Fixnum` 或 `String` 參數作為 record id。跟 `destroy` 類似。先前會拋出 `ActiveRecord::AssociationTypeMismatch`。從 Rails 4.0 起，`delete` 會自動在刪除前，找到匹配的 `id`。
+* Collection association 裡的 `delete` 方法現在可接受 `Fixnum` 或 `String` 參數作為 record id，跟 `destroy` 類似。先前會拋出 `ActiveRecord::AssociationTypeMismatch`。從 Rails 4.0 起，`delete` 會自動在刪除前，找到匹配的 `id`。
 
 * Rails 4.0 當 column 或 table 重命名時，相關的 index 也會重新命名。也就是不用寫 rename index 的 migration 了。
 
-* Rails 4.0 將 `serialized_attributes` 及 `attr_readonly` 改為類別方法。`self.serialized_attributes` 改為 `self.class.serialized_attributes`。
+* Rails 4.0 將 `serialized_attributes` 及 `attr_readonly` 改為類別方法。即先前 `self.serialized_attributes` 改為 `self.class.serialized_attributes`。
 
-* Rails 4.0 引入 Strong Parameters 機制，故移除了 `attr_accessible` 與 `attr_protected` （被抽離成 [Protected Attributes gem](https://github.com/rails/protected_attributes)）。
+* Rails 4.0 引入 Strong Parameters 機制，故移除了 `attr_accessible` 與 `attr_protected` （抽離成 [Protected Attributes gem](https://github.com/rails/protected_attributes)）。
 
 * 若你沒有使用 Protected Attributes，可以把任何與 `whitelist_attributes` 或 `mass_assignment_sanitizer` 有關的選項移除。
 
@@ -180,11 +180,14 @@ Rails 4.0 不再支援從 `vendor/plugins` 載入 plugins。__必須__將任何 
 * Rails 4.0 棄用了舊式，以 hash 為基礎的 Finder API。這表示新的 Finder API 不再接受 "finder options"。
 
 * 棄用了除了 `find_by_...`、`find_by_...!` 這兩個以外的動態 Finder 方法，以下是如何修正：
-  * `find_all_by_...`           改成 `where(...)`.
-  * `find_last_by_...`          改成 `where(...).last`.
-  * `scoped_by_...`             改成 `where(...)`.
-  * `find_or_initialize_by_...` 改成 `find_or_initialize_by(...)`.
-  * `find_or_create_by_...`     改成 `find_or_create_by(...)`.
+
+  | Rails 3 | Rails 4 |
+  |-----|-----|
+  | `find_all_by_...` | 改成 `where(...)`. |
+  | `find_last_by_...`          | 改成 `where(...).last`. |
+  | `scoped_by_...`             | 改成 `where(...)`. |
+  | `find_or_initialize_by_...` | 改成 `find_or_initialize_by(...)`. |
+  | `find_or_create_by_...`     | 改成 `find_or_create_by(...)`. |
 
 * 注意！ `where(...)` 返回 relation，而不像舊式 Finder 方法會返回陣列，需要返回陣列請用 `to_a`。
 
