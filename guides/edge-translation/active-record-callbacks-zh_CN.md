@@ -20,7 +20,7 @@ __特别要强调的翻译名词__
 - [3. 可用的 Callbacks](#3-可用的-callbacks)
   - [3.1 创建对象](#31-创建对象)
   - [3.2 更新对象](#32-更新对象)
-  - [3.3 摧毁对象](#33-摧毁对象)
+  - [3.3 销毁对象](#33-销毁对象)
   - [3.4 `after_initialize` and `after_find`](#34-after_initialize-and-after_find)
 - [4. 执行 Callbacks](#4-执行-callbacks)
 - [5. 略过 Callbacks](#5-略过-callbacks)
@@ -36,7 +36,7 @@ __特别要强调的翻译名词__
 
 # 1. 对象的生命周期
 
-常见的 Active Record 对象操作流程里，我们创建、更新、毁灭对象。
+常见的 Active Record 对象操作流程里，我们创建、更新、销毁对象。
 
 在这个生命周期里，可以 加入 hook （Callback）来控制应用程式的流程与数据。
 
@@ -127,7 +127,7 @@ end
 * `after_update`
 * `after_save`
 
-## 3.3 摧毁对象
+## 3.3 销毁对象
 
 * `before_destroy`
 * `around_destroy`
@@ -356,7 +356,7 @@ Callback 类别里可宣告多个 Callback 方法。
 
 在数据库事务完成操作时，有两个 Callback 会被触发，分别是 `after_commit` 与 `after_rollback`。这俩与 `after_save` 类似，只是他们在数据库完成操作，比如 commit 或 roll back 后才触发，这在 Active Record Model 需要与外部系统交互时很有用。
 
-举例来说，前面 `PictureFile` 的例子，需要在某个对应的 record 摧毁后再删除图片。如果 `after_destroy` Callback 之后有抛出异常，则会 roll back（因为 Model 操作都包在事务里，），但此时图片却被删掉了。比如 `picture_file_2` `save!` 时抛出异常：
+举例来说，前面 `PictureFile` 的例子，需要在某个对应的 record 销毁后再删除图片。如果 `after_destroy` Callback 之后有抛出异常，则会 roll back（因为 Model 操作都包在事务里，），但此时图片却被删掉了。比如 `picture_file_2` `save!` 时抛出异常：
 
 ```ruby
 PictureFile.transaction do
@@ -381,4 +381,4 @@ end
 
 注意 `:on` 选项指定何时触发这个 Callback。没指定时对所有 action 都会触发。
 
-`after_commit` 与 `after_rollback` 在创建、更新、摧毁 Model 时一定会执行。如果 `after_commit` 或 `after_rollback` Callback 其中一个抛出异常时，异常会被忽略，来确保彼此不会互相干扰。也是因为如此，如果你的 Callback 会抛出异常，记得 `rescue` 并在 Callback 里处理好。
+`after_commit` 与 `after_rollback` 在创建、更新、销毁 Model 时一定会执行。如果 `after_commit` 或 `after_rollback` Callback 其中一个抛出异常时，异常会被忽略，来确保彼此不会互相干扰。也是因为如此，如果你的 Callback 会抛出异常，记得 `rescue` 并在 Callback 里处理好。
