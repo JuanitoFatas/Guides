@@ -1,5 +1,12 @@
 # A Guide for Upgrading Ruby on Rails
 
+__特別要強調的翻譯名詞__
+
+> deprecated 棄用的、不宜使用的、過時的：即將在下一版移除的功能。
+> middleware 中間件
+> raise 拋出
+> exception 異常
+
 本篇講升級至新版 Rails 所需的步驟。同時也提供各版本的升級指導。
 
 # 1. 一般建議
@@ -145,49 +152,45 @@ Rails 4.0 不再支援從 `vendor/plugins` 載入 plugins。__必須__將任何 
 
 ### Active Record
 
-* Rails 4.0 has removed the identity map from Active Record, due to [some inconsistencies with associations](https://github.com/rails/rails/commit/302c912bf6bcd0fa200d964ec2dc4a44abe328a6). If you have manually enabled it in your application, you will have to remove the following config that has no effect anymore: `config.active_record.identity_map`.
+* Rails 4.0 移除了 Active Record 的 identity map，由於會產生[某些關聯的不一致性](https://github.com/rails/rails/commit/302c912bf6bcd0fa200d964ec2dc4a44abe328a6)。也就是 `config.active_record.identity_map` 設置不再有作用。
 
-* The `delete` method in collection associations can now receive `Fixnum` or `String` arguments as record ids, besides records, pretty much like the `destroy` method does. Previously it raised `ActiveRecord::AssociationTypeMismatch` for such arguments. From Rails 4.0 on `delete` automatically tries to find the records matching the given ids before deleting them.
+* Collection association 裡的 `delete` 方法現在可接受 `Fixnum` 或 `String` 參數作為 record id。跟 `destroy` 類似。先前會拋出 `ActiveRecord::AssociationTypeMismatch`。從 Rails 4.0 起，`delete` 會自動在刪除前，找到匹配的 `id`。
 
-* In Rails 4.0 when a column or a table is renamed the related indexes are also renamed. If you have migrations which rename the indexes, they are no longer needed.
+* Rails 4.0 當 column 或 table 重命名時，相關的 index 也會重新命名。也就是不用寫 rename index 的 migration 了。
 
-* Rails 4.0 has changed `serialized_attributes` and `attr_readonly` to class methods only. You shouldn't use instance methods since it's now deprecated. You should change them to use class methods, e.g. `self.serialized_attributes` to `self.class.serialized_attributes`.
+* Rails 4.0 將 `serialized_attributes` 及 `attr_readonly` 改為類別方法。`self.serialized_attributes` 改為 `self.class.serialized_attributes`。
 
-* Rails 4.0 has removed `attr_accessible` and `attr_protected` feature in favor of Strong Parameters. You can use the [Protected Attributes gem](https://github.com/rails/protected_attributes) for a smooth upgrade path.
+* Rails 4.0 引入 Strong Parameters 機制，故移除了 `attr_accessible` 與 `attr_protected` （被抽離成 [Protected Attributes gem](https://github.com/rails/protected_attributes)）。
 
-* If you are not using Protected Attributes, you can remove any options related to
-this gem such as `whitelist_attributes` or `mass_assignment_sanitizer` options.
+* 若你沒有使用 Protected Attributes，可以把任何與 `whitelist_attributes` 或 `mass_assignment_sanitizer` 有關的選項移除。
 
-* Rails 4.0 requires that scopes use a callable object such as a Proc or lambda:
+* Rails 4.0 要求 scope 必須是可呼叫的物件（Proc 或 lambda）：
 
 ```ruby
   scope :active, where(active: true)
 
-  # becomes
+  # 變成
   scope :active, -> { where active: true }
 ```
 
-* Rails 4.0 has deprecated `ActiveRecord::Fixtures` in favor of `ActiveRecord::FixtureSet`.
+* Rails 4.0 棄用了 `ActiveRecord::Fixtures`，請使用 `ActiveRecord::FixtureSet`。
 
-* Rails 4.0 has deprecated `ActiveRecord::TestCase` in favor of `ActiveSupport::TestCase`.
+* Rails 4.0 棄用了 `ActiveRecord::TestCase`，請使用 `ActiveSupport::TestCase`。
 
-* Rails 4.0 has deprecated the old-style hash based finder API. This means that
-  methods which previously accepted "finder options" no longer do.
+* Rails 4.0 棄用了舊式，以 hash 為基礎的 Finder API。這表示新的 Finder API 不再接受 "finder options"。
 
-* All dynamic methods except for `find_by_...` and `find_by_...!` are deprecated.
-  Here's how you can handle the changes:
+* 棄用了除了 `find_by_...`、`find_by_...!` 這兩個以外的動態 Finder 方法，以下是如何修正：
+  * `find_all_by_...`           改成 `where(...)`.
+  * `find_last_by_...`          改成 `where(...).last`.
+  * `scoped_by_...`             改成 `where(...)`.
+  * `find_or_initialize_by_...` 改成 `find_or_initialize_by(...)`.
+  * `find_or_create_by_...`     改成 `find_or_create_by(...)`.
 
-      * `find_all_by_...`           becomes `where(...)`.
-      * `find_last_by_...`          becomes `where(...).last`.
-      * `scoped_by_...`             becomes `where(...)`.
-      * `find_or_initialize_by_...` becomes `find_or_initialize_by(...)`.
-      * `find_or_create_by_...`     becomes `find_or_create_by(...)`.
+* 注意！ `where(...)` 返回 relation，而不像舊式 Finder 方法會返回陣列，需要返回陣列請用 `to_a`。
 
-* Note that `where(...)` returns a relation, not an array like the old finders. If you require an `Array`, use `where(...).to_a`.
+* 注意！這些對應的方法，不會與先前的 Finder 方法產生相同的 SQL 語句。
 
-* These equivalent methods may not execute the same SQL as the previous implementation.
-
-* To re-enable the old finders, you can use the [activerecord-deprecated_finders gem](https://github.com/rails/activerecord-deprecated_finders).
+* 要重新啟用舊式的 Finder 方法，可以使用 [activerecord-deprecated_finders gem](https://github.com/rails/activerecord-deprecated_finders)。
 
 ### Active Resource
 
@@ -195,9 +198,9 @@ Rails 4.0 將 Active Resource 抽成獨立的 Gem。若你仍需要此功能，�
 
 ### Active Model
 
-* Rails 4.0 has changed how errors attach with the `ActiveModel::Validations::ConfirmationValidator`. Now when confirmation validations fail, the error will be attached to `:#{attribute}_confirmation` instead of `attribute`.
+* Rails 4.0 更改了 `ActiveModel::Validations::ConfirmationValidator` 錯誤附加的方式。以前 confirmation 驗證錯誤發生時，錯誤會加到 `attribute` 上，現在則會附加到 `:#{attribute}_confirmation`。Active Model Serializers 與 Active Record 物件預設有著相同的行為。這表示你可以移除或註解掉這一行：
 
-* Rails 4.0 has changed `ActiveModel::Serializers::JSON.include_root_in_json` default value to `false`. Now, Active Model Serializers and Active Record objects have the same default behaviour. This means that you can comment or remove the following option in the `config/initializers/wrap_parameters.rb` file:
+`config/initializers/wrap_parameters.rb`:
 
 ```ruby
 # Disable root element in JSON by default.
@@ -208,7 +211,9 @@ Rails 4.0 將 Active Resource 抽成獨立的 Gem。若你仍需要此功能，�
 
 ### Action Pack
 
-* Rails 4.0 introduces `ActiveSupport::KeyGenerator` and uses this as a base from which to generate and verify signed cookies (among other things). Existing signed cookies generated with Rails 3.x will be transparently upgraded if you leave your existing `secret_token` in place and add the new `secret_key_base`.
+* Rails 4.0 引入了 `ActiveSupport::KeyGenerator` 並使用
+
+* Rails 4.0 引入了 `ActiveSupport::KeyGenerator`，用來產生及檢查已簽署的 cookie。請在 `config/initializers/secret_token.rb` 加入新的 `secret_key_base`：
 
 ```ruby
   # config/initializers/secret_token.rb
@@ -260,76 +265,74 @@ routes. In the second, you can use the `only` or `except` options provided by
 the `resources` method to restrict the routes created as detailed in the
 [Routing Guide](routing.html#restricting-the-routes-created).
 
-* Rails 4.0 also changed the way unicode character routes are drawn. Now you can draw unicode character routes directly. If you already draw such routes, you must change them, for example:
+* Rails 4.0 更改了 route 有 unicode 字元的產生方式。現在 route 裡可直接使用 unicode 字元，先前需要 `escape` 的作法不再需要了：
 
 ```ruby
 get Rack::Utils.escape('こんにちは'), controller: 'welcome', action: 'index'
 ```
 
-becomes
+改為
 
 ```ruby
 get 'こんにちは', controller: 'welcome', action: 'index'
 ```
 
-* Rails 4.0 requires that routes using `match` must specify the request method. For example:
+* Rails 4.0 要求使用 `match` 的 route 必須指定 HTTP 動詞:
 
 ```ruby
   # Rails 3.x
   match "/" => "root#index"
 
-  # becomes
+  # 改成
   match "/" => "root#index", via: :get
 
-  # or
+  # 或
   get "/" => "root#index"
 ```
 
-* Rails 4.0 has removed `ActionDispatch::BestStandardsSupport` middleware, `<!DOCTYPE html>` already triggers standards mode per http://msdn.microsoft.com/en-us/library/jj676915(v=vs.85).aspx and ChromeFrame header has been moved to `config.action_dispatch.default_headers`.
+* Rails 4.0 移除了 `ActionDispatch::BestStandardsSupport` 中間件。因為 `<!DOCTYPE html>` 如[此文](http://msdn.microsoft.com/en-us/library/jj676915(v=vs.85).aspx)所述，已觸發了標準模式。而 ChromeFrame header 被移到 `config.action_dispatch.default_headers` 了。
 
-Remember you must also remove any references to the middleware from your application code, for example:
+記得移除所有使用到 `ActionDispatch::BestStandardsSupport` middleware 的參照：
 
 ```ruby
-# Raise exception
+# 會拋出異常
 config.middleware.insert_before(Rack::Lock, ActionDispatch::BestStandardsSupport)
 ```
 
-Also check your environment settings for `config.action_dispatch.best_standards_support` and remove it if present.
+並移除環境設定中的 `config.action_dispatch.best_standards_support`。
 
-* In Rails 4.0, precompiling assets no longer automatically copies non-JS/CSS assets from `vendor/assets` and `lib/assets`. Rails application and engine developers should put these assets in `app/assets` or configure `config.assets.precompile`.
+* Rails 4.0 預編譯不再自動從 `vendor/assets` 與 `lib/assets` 拷貝非 JS 或 CSS 的  assets。Rails 應用程式與 Engine 的開發者應將這些 assets 移到 `app/assets` 或設定 `config.assets.precompile`。
 
-* In Rails 4.0, `ActionController::UnknownFormat` is raised when the action doesn't handle the request format. By default, the exception is handled by responding with 406 Not Acceptable, but you can override that now. In Rails 3, 406 Not Acceptable was always returned. No overrides.
+* Rails 4.0 當 action 不知道如何處理 request 格式時會拋出 `ActionController::UnknownFormat` 異常。預設是 406 Not Acceptable，但你可以改成別的 status code，在 Rails 3 只能是 406。
 
-* In Rails 4.0, a generic `ActionDispatch::ParamsParser::ParseError` exception is raised when `ParamsParser` fails to parse request params. You will want to rescue this exception instead of the low-level `MultiJson::DecodeError`, for example.
+* Rails 4.0 當 `ParamsParser` 無法解析 request params 時，會拋出 通用的 `ActionDispatch::ParamsParser::ParseError` 異常。你可以 `rescue` 這個異常，而不是較為低階的 `MultiJson::DecodeError`。
 
-* In Rails 4.0, `SCRIPT_NAME` is properly nested when engines are mounted on an app that's served from a URL prefix. You no longer have to set `default_url_options[:script_name]` to work around overwritten URL prefixes.
+* Rails 4.0，當 Engine 安裝到有 URL 前綴的宿主（hosting application）時，`SCRIPT_NAME` 已經將 URL 前綴適當地設定好了。不再需要設定 `default_url_options[:script_name]` 來覆寫 URL 前綴。
 
-* Rails 4.0 deprecated `ActionController::Integration` in favor of `ActionDispatch::Integration`.
-* Rails 4.0 deprecated `ActionController::IntegrationTest` in favor of `ActionDispatch::IntegrationTest`.
-* Rails 4.0 deprecated `ActionController::PerformanceTest` in favor of `ActionDispatch::PerformanceTest`.
-* Rails 4.0 deprecated `ActionController::AbstractRequest` in favor of `ActionDispatch::Request`.
-* Rails 4.0 deprecated `ActionController::Request` in favor of `ActionDispatch::Request`.
-* Rails 4.0 deprecated `ActionController::AbstractResponse` in favor of `ActionDispatch::Response`.
-* Rails 4.0 deprecated `ActionController::Response` in favor of `ActionDispatch::Response`.
-* Rails 4.0 deprecated `ActionController::Routing` in favor of `ActionDispatch::Routing`.
+* Rails 4.0 棄用了 `ActionController::Integration` 請使用 `ActionDispatch::Integration`。
+* Rails 4.0 棄用了 `ActionController::IntegrationTest` 請使用 `ActionDispatch::IntegrationTest`。
+* Rails 4.0 棄用了 `ActionController::PerformanceTest` 請使用 `ActionDispatch::PerformanceTest`。
+* Rails 4.0 棄用了 `ActionController::AbstractRequest` 請使用 `ActionDispatch::Request`。
+* Rails 4.0 棄用了 `ActionController::Request` 請使用 `ActionDispatch::Request`。
+* Rails 4.0 棄用了 `ActionController::AbstractResponse` 請使用 `ActionDispatch::Response`。
+* Rails 4.0 棄用了 `ActionController::Response` 請使用 `ActionDispatch::Response`。
+* Rails 4.0 棄用了 `ActionController::Routing` 請使用 `ActionDispatch::Routing`。
 
 ### Active Support
 
-Rails 4.0 removes the `j` alias for `ERB::Util#json_escape` since `j` is already used for `ActionView::Helpers::JavaScriptHelper#escape_javascript`.
+Rails 4.0 移除了 `ERB::Util#json_escape` 的 `j` 別名。因為 `j` 已經被 `ActionView::Helpers::JavaScriptHelper#escape_javascript` 所使用。
 
-### Helpers Loading Order
+### Helpers 加載順序
 
 The order in which helpers from more than one directory are loaded has changed in Rails 4.0. Previously, they were gathered and then sorted alphabetically. After upgrading to Rails 4.0, helpers will preserve the order of loaded directories and will be sorted alphabetically only within each directory. Unless you explicitly use the `helpers_path` parameter, this change will only impact the way of loading helpers from engines. If you rely on the ordering, you should check if correct methods are available after upgrade. If you would like to change the order in which engines are loaded, you can use `config.railties_order=` method.
 
 ### Active Record Observer and Action Controller Sweeper
 
-Active Record Observer and Action Controller Sweeper have been extracted to the `rails-observers` gem. You will need to add the `rails-observers` gem if you require these features.
-
+Active Record Observer 與 Action Controller Sweeper 被抽成獨立的 Gem：[rails-observers](https://github.com/rails/rails-observers)。
 ### sprockets-rails
 
-* `assets:precompile:primary` has been removed. Use `assets:precompile` instead.
-* The `config.assets.compress` option should be changed to
-`config.assets.js_compressor` like so for instance:
+* `assets:precompile:primary` 被移除了。請改用 `assets:precompile`。
+* `config.assets.compress` 選項應改成 `config.assets.js_compressor`：
 
 ```ruby
 config.assets.js_compressor = :uglifier
@@ -337,7 +340,7 @@ config.assets.js_compressor = :uglifier
 
 ### sass-rails
 
-* `asset-url` with two arguments is deprecated. For example: `asset-url("rails.png", image)` becomes `asset-url("rails.png")`
+* `asset-url("rails.png", image)` 改成 `asset-url("rails.png")`
 
 # 3. 從 Rails 3.1 升級到 Rails 3.2
 
