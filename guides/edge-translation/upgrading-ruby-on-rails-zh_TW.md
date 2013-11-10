@@ -2,10 +2,10 @@
 
 __特別要強調的翻譯名詞__
 
-> deprecated 棄用的、不宜使用的、過時的：即將在下一版移除的功能。
-> middleware 中間件
-> raise 拋出
-> exception 異常
+> deprecated 棄用的、不宜使用的、過時的：即將在下一版移除的功能。<br>
+> middleware 中間件 <br>
+> raise 拋出 <br>
+> exception 異常 <br>
 
 本篇講升級至新版 Rails 所需的步驟。同時也提供各版本的升級指導。
 
