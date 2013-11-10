@@ -153,10 +153,10 @@ ActionController::ParameterMissing: param not found: cup
 看另外一個例子，我跟蒼井小姐是否可結婚？
 
 ```ruby
-> params = ActionController::Parameters.new(newlywed_couple: ['Juanito Fatas', '蒼井そら'])
-=> { "newlywed_couple" => ["Juanito Fatas", "蒼井そら"] }
-> params.permit(:newlywed_couple)
-=> Unpermitted parameters: newlywed_couple
+> params = ActionController::Parameters.new(marriage: ['Juanito Fatas', '蒼井そら'])
+=> { "marriage" => ["Juanito Fatas", "蒼井そら"] }
+> params.permit(:marriage)
+=> Unpermitted parameters: marriage
 ```
 
 為什麼！為什麼！:scream:
@@ -164,8 +164,8 @@ ActionController::ParameterMissing: param not found: cup
 原來少了棟房子 :sweat:，哎。。。
 
 ```
-> params.permit(newlywed_couple: [])
-=> { "newlywed_couple" => ["Juanito Fatas", "蒼井そら"] }
+> params.permit(marriage: [])
+=> { "marriage" => ["Juanito Fatas", "蒼井そら"] }
 ```
 
 :point_right: __要告訴 Strong Parameters，key 是 Array。__
