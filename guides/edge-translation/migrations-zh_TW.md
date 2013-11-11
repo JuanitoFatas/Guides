@@ -425,7 +425,7 @@ end
 Active Record 提供的 Helper 無法完成你想做的事情時，可以使用 `execute` 方法來執行任何 SQL 語句：
 
 ```ruby
-Products.connection.execute('UPDATE `products` SET `price`=`free` WHERE 1')
+Product.connection.execute('UPDATE `products` SET `price`=`free` WHERE 1')
 ```
 
 每個方法的更多細節與範例，請查閱 API 文件，特別是：
