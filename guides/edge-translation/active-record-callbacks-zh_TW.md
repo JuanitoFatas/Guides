@@ -182,6 +182,7 @@ You have initialized an object!
 * `save!`
 * `save(validate: false)`
 * `toggle!`
+* `touch`
 * `update_attribute`
 * `update`
 * `update!`
@@ -213,7 +214,6 @@ You have initialized an object!
 * `increment`
 * `increment_counter`
 * `toggle`
-* `touch`
 * `update_column`
 * `update_columns`
 * `update_all`
