@@ -12,6 +12,7 @@
 
 | English| Traditional Chinese| Simplified Chinese|
 |:--:|:--:|:--:|
+|[Active Model Basics](/guides/edge/active_model_basics.md)|to be translated|to be translated|
 |[Active Record Basics](/guides/edge/active_record_basics.md)|to be translated|to be translated|
 |[Active Record Migrations](/guides/edge/migrations.md)|[zh-TW](/guides/edge-translation/migrations-zh_TW.md)|[zh-CN](/guides/edge-translation/migrations-zh_CN.md)|
 |[Active Record Validations](/guides/edge/active_record_validations.md)|to be translated|to be translated|
