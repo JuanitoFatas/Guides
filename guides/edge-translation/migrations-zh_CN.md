@@ -206,7 +206,7 @@ $ rails generate migration RemovePartNumberFromProducts part_number:string
 ```ruby
 class RemovePartNumberFromProducts < ActiveRecord::Migration
   def change
-    remove_column :products, :part_number
+    remove_column :products, :part_number, :string
   end
 end
 ```
