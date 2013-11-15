@@ -8,6 +8,17 @@ __特别要强调的翻译名词__
 
 本篇教你如何开始使用 Model。 Active Model 允许 Action Pack Helpers 与不是 Active Record 的 Model 类别来做交互。Active Model 也允许你在 Rails 框架之外自己造 ORM。
 
+## 目录
+
+- [1. 简介](#1-简介)
+  - [1.1 AttributeMethods 模块](#11-attributemethods-模块)
+  - [1.2 Callbacks 模块](#12-callbacks-模块)
+  - [1.3 Conversion 模块](#13-conversion-模块)
+  - [1.4 Dirty 模块](#14-dirty-模块)
+    - [1.4.1 查询对象的变化](#141-查询对象的变化)
+    - [1.4.2 基于属性的 accessor 方法](#142-基于属性的-accessor-方法)
+  - [1.5 Validations 模块](#15-validations-模块)
+
 # 1. 简介
 
 Active Model 是一个函式库，由许多用来与 Action Pack 互动的模块组成。以下简单介绍几个 Active Model 的模块。
