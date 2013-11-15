@@ -1,19 +1,17 @@
-Active Record Basics
-====================
+# Active Record 基礎
 
-This guide is an introduction to Active Record.
+__特別要強調的翻譯名詞__
 
-After reading this guide, you will know:
+>
 
-* What Object Relational Mapping and Active Record are and how they are used in
-  Rails.
-* How Active Record fits into the Model-View-Controller paradigm.
-* How to use Active Record models to manipulate data stored in a relational
-  database.
-* Active Record schema naming conventions.
-* The concepts of database migrations, validations and callbacks.
+本篇介紹 Active Record。
 
---------------------------------------------------------------------------------
+讀完本篇可能會學到.....
+
+* 什麼是 Object Relational Mapping (ORM) 跟 Active Record，以及他們在 Rails 是如何被使用的。
+* Active Record 在 Model-View-Controller (MVC)架構裡所扮演的角色。
+* 如何用 Active Record Model 來操作關聯式資料庫的資料。
+* 資料庫的 Migrations、Validations、Callbacks 分別是什麼。
 
 What is Active Record?
 ----------------------
