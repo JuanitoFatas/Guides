@@ -325,7 +325,7 @@ Rails 4.0 移除了 `ERB::Util#json_escape` 的 `j` 別名。因為 `j` 已經�
 
 Rails 4.0 更改了 Helpers 的加載順序。之前是將各目錄的 Helpers 集合起來，並按字母排序加載。Rails 4.0 之後，Helpers 會按照目錄原本加載的順序，並在各自的目錄裡按字母依序加載。除非你特別使用了 `helpers_path` 參數，否則這個改動只會影響到從 Engine 加載 Helpers 的順序。如果你正依賴加載的順序，可以檢查升級後這些 Helper 是否正常工作。如果想更改 Engine 加載的順序，可以使用 `config.railties_order=` 方法。
 
-## 2.9 Active Record Observer and Action Controller Sweeper
+## 2.9 Active Record Observer 與 Action Controller Sweeper
 
 Active Record Observer 與 Action Controller Sweeper 被抽成獨立的 Gem：[rails-observers](https://github.com/rails/rails-observers)。
 
