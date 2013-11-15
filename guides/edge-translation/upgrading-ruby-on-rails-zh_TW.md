@@ -1,14 +1,16 @@
-# A Guide for Upgrading Ruby on Rails
+# Ruby on Rails 升級指南
 
 __特別要強調的翻譯名詞__
 
+> application 應用程式 <br>
 > deprecated 棄用的、不宜使用的、過時的：即將在下一版移除的功能。<br>
 > middleware 中間件 <br>
 > route 路由 <br>
 > raise 拋出 <br>
 > exception 異常 <br>
+> association 關聯 <br>
 
-本篇講升級至新版 Rails 所需的步驟。同時也提供各版本的升級指導。
+本篇講解升級至新版 Rails 所需的步驟。同時也提供各版本的升級指導。
 
 # 1. 一般建議
 
@@ -39,7 +41,7 @@ Rails 通常與最新的 Ruby 一起前進：
 
 > 這裡的路由作動詞解。
 
-Rails 4 更新操作的主要 HTTP 動詞換成了 `PATCH`。當你在 `config/routes.rb` 以 _RESTful_ 形式宣告某個 resource 時，`PUT` 仍會路由到 `update` action，只是多了個 `PATCH` ，同樣路由到 `update` action。
+Rails 4 更新操作的主要 HTTP 動詞換成了 `PATCH`。當你在 `config/routes.rb` 以 _RESTful_ 形式宣告某個 resource 時，`PUT` 仍會路由到 `update` action，只是多了個 `PATCH`，同樣路由到 `update` action。
 
 ```ruby
 resources :users
@@ -95,7 +97,7 @@ end
 
 至於為什麼要改成 `PATCH`，參考[這篇文章](http://weblog.rubyonrails.org/2012/2/25/edge-rails-patch-is-the-new-primary-http-method-for-updates/)。
 
-#### 關於 media types 的說明
+### 1.3.1 關於 media types 的說明
 
 <!-- The errata for the `PATCH` verb [specifies that a 'diff' media type should be
 used with `PATCH`](http://www.rfc-editor.org/errata_search.php?rfc=5789). One
@@ -136,7 +138,7 @@ __注意：本小節仍在完善當中。__
 
 以下是針對從 Rails 3.2 升級至 Rails 4.0 的說明。
 
-### Gemfile
+## 2.1 Gemfile
 
 Rails 4.0 移除了 Gemfile 裡的 `assets` group。升級至 4.0 時要移除這個 group，同時需要更新 `config/application.rb`：
 
@@ -146,12 +148,11 @@ Rails 4.0 移除了 Gemfile 裡的 `assets` group。升級至 4.0 時要移除�
 Bundler.require(:default, Rails.env)
 ```
 
-### vendor/plugins
+## 2.2 vendor/plugins
 
 Rails 4.0 不再支援從 `vendor/plugins` 載入 plugins。__必須__將任何 plugins 包成 Gems ，再加入至 Gemfile。若你不想包成 Gem，則可將 plugin 移到 `lib/my_plugin/*`，並使用適當的 initializer：`config/initializer/my_plugin.rb`。
 
-
-### Active Record
+## 2.3 Active Record
 
 * Rails 4.0 移除了 Active Record 的 identity map，因為這會產生[某些關聯的不一致性](https://github.com/rails/rails/commit/302c912bf6bcd0fa200d964ec2dc4a44abe328a6)。也就是說 `config.active_record.identity_map` ，這個設定不再有作用。
 
@@ -168,23 +169,23 @@ Rails 4.0 不再支援從 `vendor/plugins` 載入 plugins。__必須__將任何 
 * Rails 4.0 要求 scope 必須是可呼叫的物件（Proc 或 lambda）：
 
 ```ruby
-  scope :active, where(active: true)
+scope :active, where(active: true)
 
-  # 變成
-  scope :active, -> { where active: true }
+# 變成
+scope :active, -> { where active: true }
 ```
 
 * Rails 4.0 棄用了 `ActiveRecord::Fixtures`，請使用 `ActiveRecord::FixtureSet`。
 
 * Rails 4.0 棄用了 `ActiveRecord::TestCase`，請使用 `ActiveSupport::TestCase`。
 
-* Rails 4.0 棄用了舊式，以 hash 為基礎的 Finder API。這表示新的 Finder API 不再接受 "finder options"。
+* Rails 4.0 棄用了舊式，以 hash 為基礎的 Finder API。這表示新的 Finder API 不再接受 “finder options”。
 
 * 棄用了除了 `find_by_...`、`find_by_...!` 這兩個以外的動態 Finder 方法，以下是如何修正：
 
   | Rails 3 | Rails 4 |
   |-----|-----|
-  | `find_all_by_...` | 改成 `where(...)`. |
+  | `find_all_by_...` | 改成 `where(...)` |
   | `find_last_by_...`          | 改成 `where(...).last` |
   | `scoped_by_...`             | 改成 `where(...)` |
   | `find_or_initialize_by_...` | 改成 `find_or_initialize_by(...)` |
@@ -196,11 +197,11 @@ Rails 4.0 不再支援從 `vendor/plugins` 載入 plugins。__必須__將任何 
 
 * 要重新啟用舊式的 Finder 方法，可以使用 [activerecord-deprecated_finders gem](https://github.com/rails/activerecord-deprecated_finders)。
 
-### Active Resource
+## 2.4 Active Resource
 
 Rails 4.0 將 Active Resource 抽成獨立的 Gem。若你仍需要此功能，將 [Active Resource gem](https://github.com/rails/activeresource) 加到 Gemfile。
 
-### Active Model
+## 2.5 Active Model
 
 * Rails 4.0 更改了 `ActiveModel::Validations::ConfirmationValidator` 錯誤附加的方式。以前 confirmation 驗證錯誤發生時，錯誤會加到 `attribute` 上，現在則會附加到 `:#{attribute}_confirmation`。
 
@@ -215,7 +216,7 @@ Rails 4.0 將 Active Resource 抽成獨立的 Gem。若你仍需要此功能，�
 # end
 ```
 
-### Action Pack
+## 2.6 Action Pack
 
 * Rails 4.0 引入了 `ActiveSupport::KeyGenerator`，用來產生及檢查已簽署的 cookie。請在 `config/initializers/secret_token.rb` 加入新的 `secret_key_base`：
 
@@ -227,9 +228,9 @@ Myapp::Application.config.secret_key_base = 'new secret key base'
 
 請注意！要等到使用者都使用你的 Rails 4.x app，並確保你不會降級到 Rails 3.x，才設定 `secret_key_base`。因為 cookie 簽署的算法並不向下相容。忽略 deprecation warning 使用 `secret_token` 也是沒問題的，只要你知道你自己在做什麼就好。
 
-如果有外部應用程式或是 JavaScript，需要能夠讀 Rails app 簽署的 session cookies，不要設定 `secret_key_base`，直到你將這些疑慮排除。
+如果有外部應用程式或是 JavaScript，需要能夠讀 Rails app 簽署的 session cookies，在你還沒有解決這些問題之前，不要設定 `secret_key_base`。
 
-* 有設定 `secret_key_base` 的話，Rails 4.0 會加密以 cookie-based session 的內容。Rails 3.x 有簽署，但未加密。簽署的 cookie 是安全的，因為他們是經由你的 app 產生與簽署。然而 cookie 的內容仍可被使用者看到，因此加密內容排除了此風險，並沒有降低多少的效能。
+* 有設定 `secret_key_base` 的話，Rails 4.0 會加密以 cookie-based session 的內容。Rails 3.x 有簽署，但未加密。簽署的 cookie 是安全的，因為他們是經由你的 app 產生與簽署。然而 cookie 的內容仍可被使用者看到，因此加密內容排除了此風險，且沒有降低多少的效能。
 
 請閱讀 [Pull Request #9978](https://github.com/rails/rails/pull/9978) 來了解更多有關 session cookie 加密的細節。
 
@@ -243,7 +244,7 @@ Myapp::Application.config.secret_key_base = 'new secret key base'
 
 * Rails 4.0 更改了預設 memcached client，從 [memcache-client](https://github.com/mperham/memcache-client) 換成了 [dalli](https://github.com/mperham/dalli)，升級只需加入 `gem 'dalli'` 至 `Gemfile`。
 
-* Rails 4.0 棄用了 Controller 的 `dom_id` 與 `dom_class` 方法（View 依然能用）。要用的話請在 Controller include `ActionView::RecordIdentifier`。
+* Rails 4.0 棄用了 Controller 的 `dom_id` 與 `dom_class` 方法（View 依然能用）。要用的話請在 Controller `include` `ActionView::RecordIdentifier`。
 
 * Rails 4.0 棄用了 `link_to` 的 `:confirm` 選項，應改寫為 `data: { confirm: 'Are you sure?' }`，`link_to_if`、`link_to_unless` 同樣受影響。
 
@@ -303,7 +304,7 @@ config.middleware.insert_before(Rack::Lock, ActionDispatch::BestStandardsSupport
 
 * Rails 4.0 當 action 不知道如何處理 request 格式時會拋出 `ActionController::UnknownFormat` 異常。預設是 406 Not Acceptable，但你可以改成別的 status code，在 Rails 3 只能是 406。
 
-* Rails 4.0 當 `ParamsParser` 無法解析 request params 時，會拋出 通用的 `ActionDispatch::ParamsParser::ParseError` 異常。你可以 `rescue` 這個異常，而不是較為低階的 `MultiJson::DecodeError`。
+* Rails 4.0 當 `ParamsParser` 無法解析 request params 時，會拋出通用的 `ActionDispatch::ParamsParser::ParseError` 異常。你可以 `rescue` 這個異常，而不是較為底層的 `MultiJson::DecodeError`。
 
 * Rails 4.0，當 Engine 安裝到有 URL 前綴的宿主（hosting application）時，`SCRIPT_NAME` 已經將 URL 前綴適當地設定好了。不再需要設定 `default_url_options[:script_name]` 來覆寫 URL 前綴。
 
@@ -316,18 +317,19 @@ config.middleware.insert_before(Rack::Lock, ActionDispatch::BestStandardsSupport
 * Rails 4.0 棄用了 `ActionController::Response` 請使用 `ActionDispatch::Response`。
 * Rails 4.0 棄用了 `ActionController::Routing` 請使用 `ActionDispatch::Routing`。
 
-### Active Support
+## 2.7 Active Support
 
 Rails 4.0 移除了 `ERB::Util#json_escape` 的 `j` 別名。因為 `j` 已經被 `ActionView::Helpers::JavaScriptHelper#escape_javascript` 所使用。
 
-### Helpers 加載順序
+## 2.8 Helpers 加載順序
 
-Rails 4.0 更改了 Helpers 的加載順序。之前是將各目錄的 Helpers 集合起來，並按字母排序加載。Rails 4.0 之後，Helpers 會按照目錄原本加載的順序，並在各自的目錄裡按字母順序加載。除非你特別使用了 `helpers_path` 參數，否則這個改動只會影響到從 Engine 加載 Helpers 的順序。如果你正依賴加載的順序，可以檢查升級後這些 Helper 是否正常工作。如果想更改 Engine 加載的順序，可以使用 `config.railties_order=` 方法。
+Rails 4.0 更改了 Helpers 的加載順序。之前是將各目錄的 Helpers 集合起來，並按字母排序加載。Rails 4.0 之後，Helpers 會按照目錄原本加載的順序，並在各自的目錄裡按字母依序加載。除非你特別使用了 `helpers_path` 參數，否則這個改動只會影響到從 Engine 加載 Helpers 的順序。如果你正依賴加載的順序，可以檢查升級後這些 Helper 是否正常工作。如果想更改 Engine 加載的順序，可以使用 `config.railties_order=` 方法。
 
-### Active Record Observer and Action Controller Sweeper
+## 2.9 Active Record Observer and Action Controller Sweeper
 
 Active Record Observer 與 Action Controller Sweeper 被抽成獨立的 Gem：[rails-observers](https://github.com/rails/rails-observers)。
-### sprockets-rails
+
+## 2.10 sprockets-rails
 
 * `assets:precompile:primary` 被移除了。請改用 `assets:precompile`。
 * `config.assets.compress` 選項應改成 `config.assets.js_compressor`：
@@ -336,7 +338,7 @@ Active Record Observer 與 Action Controller Sweeper 被抽成獨立的 Gem：[r
 config.assets.js_compressor = :uglifier
 ```
 
-### sass-rails
+## 2.11 sass-rails
 
 * `asset-url("rails.png", image)` 改成 `asset-url("rails.png")`
 
