@@ -1,6 +1,19 @@
 # Rails I18n 指南
 
-__語言轉換，多語支援。YAML 格式，方便容易。__
+__特別要強調的翻譯名詞__
+
+> application 應用程式
+
+> locale 語系
+
+Rails 內建 Ruby I18n 供你翻譯應用程式，提供多語支援服務。多語轉換的資料格式採用方便的 YAML 格式，非常容易使用。
+
+讀完本篇可能會學到...
+
+  * 如何在 Rails 使用 I18n
+  * 多種在 RESTful 應用程式裡正確使用 I18n 的方式
+  * 用 I18n 翻譯 Active Record 的錯誤訊息或 Action Mailer Email 主旨。
+  * 其他幫助你翻譯的工具
 
 ## I18n?
 
@@ -18,17 +31,17 @@ __語言轉換，多語支援。YAML 格式，方便容易。__
 
 分為兩部分：
 
-1. public API
+1. Public API
 
 2. default backend（實作這些方法）
 
-## Public I18n API
+## Public `I18n` API
 
 最重要的兩個方法
 
 ```ruby
-translate # 翻譯文字
-localize # 轉換時間
+I18n.translate # 翻譯文字
+I18n.localize # 轉換時間
 ```
 
 縮寫為：
@@ -36,16 +49,19 @@ localize # 轉換時間
 ```ruby
 I18n.t 'store.title'
 I18n.l Time.now
+
+t 'store.title'
+l Time.now
 ```
 
 另提供下列 attributes：
 
 ```ruby
-load_path         # Announce your custom translation files
-locale            # Get and set the current locale
-default_locale    # Get and set the default locale
-exception_handler # Use a different exception_handler
-backend           # Use a different backend
+I18n.load_path         # 查看所有的語系檔案
+I18n.locale            # 取得或設定當前的 locale
+I18n.default_locale    # 取得或設定 default_locale
+I18n.exception_handler # 用別的 exception_handler
+I18n.backend           # 用別的後端Use a different backend
 ```
 
 ## config/application.rb
@@ -65,10 +81,10 @@ locale 設定檔存放處。
 ```ruby
 # in config/initializers/locale.rb
 
-# tell the I18n library where to find your translations
+# 告訴 I18n 去哪找翻譯文件
 I18n.load_path += Dir[Rails.root.join('lib', 'locale', '*.{rb,yml}')]
 
-# set default locale to something other than :en
+# 設定預設語系
 I18n.default_locale = :pt
 ```
 
@@ -76,13 +92,11 @@ I18n.default_locale = :pt
 
 `config/locales` 目錄下的 `.rb` 或 `.yml` 都會自動被加到 translation load path (`I18n.load_path`)。
 
-## 千萬不要
-
-__把 locale 存在 session 或 cookie 裡。__
+## 千萬不要把 locale 存在 session 或 cookie 裡
 
 ## 設定/傳遞 locale 參數
 
-### 設定
+### 設定語系
 
 _ApplicationController_
 
@@ -373,7 +387,7 @@ es:
 
 ```ruby
 <%= t '.title' %>
-``
+```
 
 __注意有個點__
 
