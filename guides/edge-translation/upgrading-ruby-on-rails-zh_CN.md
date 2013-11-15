@@ -1,33 +1,47 @@
-A Guide for Upgrading Ruby on Rails
-===================================
+# Ruby on Rails 升级指南
 
-This guide provides steps to be followed when you upgrade your applications to a newer version of Ruby on Rails. These steps are also available in individual release guides.
+__特别要强调的翻译名词__
 
-General Advice
---------------
+> application 应用程序
+> deprecated 弃用的、不宜使用的、过时的：即将在下一版移除的功能。<br>
+> middleware 中间件 <br>
+> route 路由 <br>
+> raise 抛出 <br>
+> exception 异常 <br>
+> associations 关联 <br>
 
-Before attempting to upgrade an existing application, you should be sure you have a good reason to upgrade. You need to balance out several factors: the need for new features, the increasing difficulty of finding support for old code, and your available time and skills, to name a few.
+本篇讲解升级至新版 Rails 所需的步骤。同时也提供各版本的升级指导。
 
-### Test Coverage
+# 1. 一般建议
 
-The best way to be sure that your application still works after upgrading is to have good test coverage before you start the process. If you don't have automated tests that exercise the bulk of your application, you'll need to spend time manually exercising all the parts that have changed. In the case of a Rails upgrade, that will mean every single piece of functionality in the application. Do yourself a favor and make sure your test coverage is good _before_ you start an upgrade.
+升级前先想好为何要升级：需要新功能？旧代码越来越难维护？有多少时间？有能力解决升级的兼容问题吗？等等。
 
-### Ruby Versions
+## 1.1 测试覆盖度
 
-Rails generally stays close to the latest released Ruby version when it's released:
+最好的方式来确保应用程序升级后仍然正常工作，便是有全面的测试覆盖度。若没有撰写测试，将会花上许多时间，来处理升级带来的新变化。在升级前，先确保测试覆盖得够广吧！
 
-* Rails 3 and above require Ruby 1.8.7 or higher. Support for all of the previous Ruby versions has been dropped officially. You should upgrade as early as possible.
-* Rails 3.2.x is the last branch to support Ruby 1.8.7.
-* Rails 4 prefers Ruby 2.0 and requires 1.9.3 or newer.
+## 1.2 Ruby 版本
 
-TIP: Ruby 1.8.7 p248 and p249 have marshaling bugs that crash Rails. Ruby Enterprise Edition has these fixed since the release of 1.8.7-2010.02. On the 1.9 front, Ruby 1.9.1 is not usable because it outright segfaults, so if you want to use 1.9.x, jump straight to 1.9.3 for smooth sailing.
+Rails 通常与最新的 Ruby 一起前进：
 
-### HTTP PATCH
+* Rails 3 以上需要高于 1.8.7 版本的 Ruby。
+* Rails 3.2.x 是最后支持 Ruby 1.8.7 的版本。
+* Rails 4 推荐使用 Ruby 2.0。
 
-Rails 4 now uses `PATCH` as the primary HTTP verb for updates when a RESTful
-resource is declared in `config/routes.rb`. The `update` action is still used,
-and `PUT` requests will continue to be routed to the `update` action as well.
-So, if you're using only the standard RESTful routes, no changes need to be made:
+小贴士：Ruby 1.8.7 p248 与 p249 有 marshaling bugs，会让 Rails 无预警的 crash。REE 从 1.8.7-2010.02 之后的版本已经修正了这个问题。关于 Ruby 1.9，不要使用 1.9.1，有 segfaults 的问题，1.9 就用 1.9.3 吧。
+
+定案：
+
+* __强烈推荐使用 Ruby 2.0.0-p247__
+* Ruby 1.9.3-p448
+
+> [Ruby 1.8.7 退出历史舞台](https://www.ruby-lang.org/zh_cn/news/2013/06/30/we-retire-1-8-7/)
+
+## 1.3 HTTP PATCH
+
+> 这里的路由作动词解。
+
+Rails 4 更新操作的主要 HTTP 动词换成了 `PATCH`。当你在 `config/routes.rb` 以 _RESTful_ 形式宣告某个 resource 时，`PUT` 仍会路由到 `update` action，只是多了个 `PATCH`，同样路由到 `update` action。
 
 ```ruby
 resources :users
@@ -40,13 +54,12 @@ resources :users
 ```ruby
 class UsersController < ApplicationController
   def update
-    # No change needed; PATCH will be preferred, and PUT will still work.
+    # 代码不用改；偏好使用 PATCH，PUT 仍然可用。
   end
 end
 ```
 
-However, you will need to make a change if you are using `form_for` to update
-a resource in conjunction with a custom route using the `PUT` HTTP method:
+但是，当使用 `form_for` 来更新自定路由（使用 `PUT` HTTP 动词）的 resource 时，
 
 ```ruby
 resources :users, do
@@ -61,17 +74,14 @@ end
 ```ruby
 class UsersController < ApplicationController
   def update_name
-    # Change needed; form_for will try to use a non-existent PATCH route.
+    # 要修改代码；form_for 会试著使用不存在的 PATCH 路由。
   end
 end
 ```
 
-If the action is not being used in a public API and you are free to change the
-HTTP method, you can update your route to use `patch` instead of `put`:
+若不是公有的 API，并且你有决定权换 HTTP 动词，那就把它从 `PUT` 改成 `PATCH` 吧。
 
-`PUT` requests to `/users/:id` in Rails 4 get routed to `update` as they are
-today. So, if you have an API that gets real PUT requests it is going to work.
-The router also routes `PATCH` requests to `/users/:id` to the `update` action.
+在 Rails 4 对 `/users/:id` 做 `PUT` 请求，会被导向 `update`。所以要是 API 接受 `PUT` 请求，那没问题。Router 同时也会将来自 `/users/:id` 的 `PATCH` 请求导向 `update` action。
 
 ```ruby
 resources :users do
@@ -79,25 +89,28 @@ resources :users do
 end
 ```
 
-If the action is being used in a public API and you can't change to HTTP method
-being used, you can update your form to use the `PUT` method instead:
+若此 action 正被公有的 API 使用，且你无权更改 HTTP 动词时，可更新 form，使用 `PUT` 动词：
 
 ```erb
 <%= form_for [ :update_name, @user ], method: :put do |f| %>
 ```
 
-For more on PATCH and why this change was made, see [this post](http://weblog.rubyonrails.org/2012/2/25/edge-rails-patch-is-the-new-primary-http-method-for-updates/)
-on the Rails blog.
+至于为什么要改成 `PATCH`，参考[这篇文章](http://weblog.rubyonrails.org/2012/2/25/edge-rails-patch-is-the-new-primary-http-method-for-updates/)。
 
-#### A note about media types
+### 1.3.1 关于 media types 的说明
 
-The errata for the `PATCH` verb [specifies that a 'diff' media type should be
+<!-- The errata for the `PATCH` verb [specifies that a 'diff' media type should be
 used with `PATCH`](http://www.rfc-editor.org/errata_search.php?rfc=5789). One
 such format is [JSON Patch](http://tools.ietf.org/html/rfc6902). While Rails
 does not support JSON Patch natively, it's easy enough to add support:
+ -->
+
+[RFC 5789 的勘误](http://www.rfc-editor.org/errata_search.php?rfc=5789)表示某些 media type 要用 `PATCH` 动词才正确，比如 JSON Patch。
+
+Rails 没有原生支持 JSON Patch，但添加 JSON Patch 的支持非常简单：
 
 ```
-# in your controller
+# 在 controller
 def update
   respond_to do |format|
     format.json do
@@ -111,29 +124,23 @@ def update
   end
 end
 
-# In config/initializers/json_patch.rb:
+# 在 config/initializers/json_patch.rb:
 Mime::Type.register 'application/json-patch+json', :json_patch
 ```
 
-As JSON Patch was only recently made into an RFC, there aren't a lot of great
-Ruby libraries yet. Aaron Patterson's
-[hana](https://github.com/tenderlove/hana) is one such gem, but doesn't have
-full support for the last few changes in the specification.
+由于 JSON Patch 最近才有 RFC，仍未有好的 Ruby 函式库出现。Aaron Patterson 的 [hana](https://github.com/tenderlove/hana) 是一个实作 JSON Patch 的 gem，但仍未完整支援 Spec 里所有最近更新的内容。
 
-Upgrading from Rails 3.2 to Rails 4.0
--------------------------------------
+# 2. 从 Rails 3.2 升级到 Rails 4.0
 
-NOTE: This section is a work in progress.
+__注意：本小节仍在完善当中。__
 
-If your application is currently on any version of Rails older than 3.2.x, you should upgrade to Rails 3.2 before attempting one to Rails 4.0.
+若你是 3.2 以前的版本，先升到 3.2 再试著升到 Rails 4.0。
 
-The following changes are meant for upgrading your application to Rails 4.0.
+以下是针对从 Rails 3.2 升级至 Rails 4.0 的说明。
 
-### Gemfile
+## 2.1 Gemfile
 
-Rails 4.0 removed the `assets` group from Gemfile. You'd need to remove that
-line from your Gemfile when upgrading. You should also update your application
-file (in `config/application.rb`):
+Rails 4.0 移除了 Gemfile 里的 `assets` group。升级至 4.0 时要移除这个 group，同时需要更新 `config/application.rb`：
 
 ```ruby
 # Require the gems listed in Gemfile, including any gems
@@ -141,65 +148,66 @@ file (in `config/application.rb`):
 Bundler.require(:default, Rails.env)
 ```
 
-### vendor/plugins
+## 2.2 vendor/plugins
 
-Rails 4.0 no longer supports loading plugins from `vendor/plugins`. You must replace any plugins by extracting them to gems and adding them to your Gemfile. If you choose not to make them gems, you can move them into, say, `lib/my_plugin/*` and add an appropriate initializer in `config/initializers/my_plugin.rb`.
+Rails 4.0 不再支援从 `vendor/plugins` 载入 plugins。__必须__将任何 plugins 包成 Gems ，再加入至 Gemfile。若你不想包成 Gem，则可将 plugin 移到 `lib/my_plugin/*`，并使用适当的 initializer：`config/initializer/my_plugin.rb`。
 
-### Active Record
+## 2.3 Active Record
 
-* Rails 4.0 has removed the identity map from Active Record, due to [some inconsistencies with associations](https://github.com/rails/rails/commit/302c912bf6bcd0fa200d964ec2dc4a44abe328a6). If you have manually enabled it in your application, you will have to remove the following config that has no effect anymore: `config.active_record.identity_map`.
+* Rails 4.0 移除了 Active Record 的 identity map，因为这会导致[某些关联的不一致性](https://github.com/rails/rails/commit/302c912bf6bcd0fa200d964ec2dc4a44abe328a6)。也就是说 `config.active_record.identity_map` ，这个设置不再有作用。
 
-* The `delete` method in collection associations can now receive `Fixnum` or `String` arguments as record ids, besides records, pretty much like the `destroy` method does. Previously it raised `ActiveRecord::AssociationTypeMismatch` for such arguments. From Rails 4.0 on `delete` automatically tries to find the records matching the given ids before deleting them.
+* Collection association 里的 `delete` 方法现在可接受 `Fixnum` 或 `String` 参数作为 record id，跟 `destroy` 类似。先前会抛出 `ActiveRecord::AssociationTypeMismatch`。从 Rails 4.0 起，`delete` 会自动在删除前，找到匹配的 `id`。
 
-* In Rails 4.0 when a column or a table is renamed the related indexes are also renamed. If you have migrations which rename the indexes, they are no longer needed.
+* Rails 4.0 当 column 或 table 重命名时，相关的 index 也会重新命名。也就是不用写 rename index 的 migration 了。
 
-* Rails 4.0 has changed `serialized_attributes` and `attr_readonly` to class methods only. You shouldn't use instance methods since it's now deprecated. You should change them to use class methods, e.g. `self.serialized_attributes` to `self.class.serialized_attributes`.
+* Rails 4.0 将 `serialized_attributes` 及 `attr_readonly` 改为类别方法。即先前 `self.serialized_attributes` 改为 `self.class.serialized_attributes`。
 
-* Rails 4.0 has removed `attr_accessible` and `attr_protected` feature in favor of Strong Parameters. You can use the [Protected Attributes gem](https://github.com/rails/protected_attributes) for a smooth upgrade path.
+* Rails 4.0 引入 Strong Parameters 机制，故移除了 `attr_accessible` 与 `attr_protected` （抽离成 [Protected Attributes gem](https://github.com/rails/protected_attributes)）。
 
-* If you are not using Protected Attributes, you can remove any options related to
-this gem such as `whitelist_attributes` or `mass_assignment_sanitizer` options.
+* 若你没有使用 Protected Attributes，可以把任何与 `whitelist_attributes` 或 `mass_assignment_sanitizer` 有关的选项移除。
 
-* Rails 4.0 requires that scopes use a callable object such as a Proc or lambda:
+* Rails 4.0 要求 scope 必须是可调用的对象（Proc 或 lambda）：
 
 ```ruby
-  scope :active, where(active: true)
+scope :active, where(active: true)
 
-  # becomes
-  scope :active, -> { where active: true }
+# 变成
+scope :active, -> { where active: true }
 ```
 
-* Rails 4.0 has deprecated `ActiveRecord::Fixtures` in favor of `ActiveRecord::FixtureSet`.
+* Rails 4.0 弃用了 `ActiveRecord::Fixtures`，请使用 `ActiveRecord::FixtureSet`。
 
-* Rails 4.0 has deprecated `ActiveRecord::TestCase` in favor of `ActiveSupport::TestCase`.
+* Rails 4.0 弃用了 `ActiveRecord::TestCase`，请使用 `ActiveSupport::TestCase`。
 
-* Rails 4.0 has deprecated the old-style hash based finder API. This means that
-  methods which previously accepted "finder options" no longer do.
+* Rails 4.0 弃用了旧式，以 hash 为基础的 Finder API。这表示新的 Finder API 不再接受 “finder options”。
 
-* All dynamic methods except for `find_by_...` and `find_by_...!` are deprecated.
-  Here's how you can handle the changes:
+* 弃用了除了 `find_by_...`、`find_by_...!` 这两个以外的动态 Finder 方法，以下是如何修正：
 
-      * `find_all_by_...`           becomes `where(...)`.
-      * `find_last_by_...`          becomes `where(...).last`.
-      * `scoped_by_...`             becomes `where(...)`.
-      * `find_or_initialize_by_...` becomes `find_or_initialize_by(...)`.
-      * `find_or_create_by_...`     becomes `find_or_create_by(...)`.
+  | Rails 3 | Rails 4 |
+  |-----|-----|
+  | `find_all_by_...` | 改成 `where(...)` |
+  | `find_last_by_...`          | 改成 `where(...).last` |
+  | `scoped_by_...`             | 改成 `where(...)` |
+  | `find_or_initialize_by_...` | 改成 `find_or_initialize_by(...)` |
+  | `find_or_create_by_...`     | 改成 `find_or_create_by(...)` |
 
-* Note that `where(...)` returns a relation, not an array like the old finders. If you require an `Array`, use `where(...).to_a`.
+* 注意！ `where(...)` 返回 relation，而不像旧式 Finder 方法会返回阵列，需要返回阵列请用 `to_a`。
 
-* These equivalent methods may not execute the same SQL as the previous implementation.
+* 注意！这些对应的方法，不会与先前的 Finder 方法，生成出相同的 SQL 语句。
 
-* To re-enable the old finders, you can use the [activerecord-deprecated_finders gem](https://github.com/rails/activerecord-deprecated_finders).
+* 要重新启用旧式的 Finder 方法，可以使用 [activerecord-deprecated_finders gem](https://github.com/rails/activerecord-deprecated_finders)。
 
-### Active Resource
+## 2.4 Active Resource
 
-Rails 4.0 extracted Active Resource to its own gem. If you still need the feature you can add the [Active Resource gem](https://github.com/rails/activeresource) in your Gemfile.
+Rails 4.0 将 Active Resource 抽成独立的 Gem。若你仍需要此功能，将 [Active Resource gem](https://github.com/rails/activeresource) 加到 Gemfile。
 
-### Active Model
+## 2.5 Active Model
 
-* Rails 4.0 has changed how errors attach with the `ActiveModel::Validations::ConfirmationValidator`. Now when confirmation validations fail, the error will be attached to `:#{attribute}_confirmation` instead of `attribute`.
+* Rails 4.0 更改了 `ActiveModel::Validations::ConfirmationValidator` 错误附加的方式。以前 confirmation 验证错误发生时，错误会加到 `attribute` 上，现在则会附加到 `:#{attribute}_confirmation`。
 
-* Rails 4.0 has changed `ActiveModel::Serializers::JSON.include_root_in_json` default value to `false`. Now, Active Model Serializers and Active Record objects have the same default behaviour. This means that you can comment or remove the following option in the `config/initializers/wrap_parameters.rb` file:
+* Rails 4.0 将 `ActiveModel::Serializers::JSON.include_root_in_json` 的缺省值改为 `false`，现在 Active Model Serializers 与 Active Record 对象缺省有著相同的行为。这表示你可以移除或注解掉这一行：
+
+`config/initializers/wrap_parameters.rb`:
 
 ```ruby
 # Disable root element in JSON by default.
@@ -208,44 +216,41 @@ Rails 4.0 extracted Active Resource to its own gem. If you still need the featur
 # end
 ```
 
-### Action Pack
+## 2.6 Action Pack
 
-* Rails 4.0 introduces `ActiveSupport::KeyGenerator` and uses this as a base from which to generate and verify signed cookies (among other things). Existing signed cookies generated with Rails 3.x will be transparently upgraded if you leave your existing `secret_token` in place and add the new `secret_key_base`.
+* Rails 4.0 引入了 `ActiveSupport::KeyGenerator`，用来生成及检查已签署的 cookie。请在 `config/initializers/secret_token.rb` 加入新的 `secret_key_base`：
 
 ```ruby
-  # config/initializers/secret_token.rb
-  Myapp::Application.config.secret_token = 'existing secret token'
-  Myapp::Application.config.secret_key_base = 'new secret key base'
+# config/initializers/secret_token.rb
+Myapp::Application.config.secret_token = 'existing secret token'
+Myapp::Application.config.secret_key_base = 'new secret key base'
 ```
 
-Please note that you should wait to set `secret_key_base` until you have 100% of your userbase on Rails 4.x and are reasonably sure you will not need to rollback to Rails 3.x. This is because cookies signed based on the new `secret_key_base` in Rails 4.x are not backwards compatible with Rails 3.x. You are free to leave your existing `secret_token` in place, not set the new `secret_key_base`, and ignore the deprecation warnings until you are reasonably sure that your upgrade is otherwise complete.
+请注意！要等到使用者都使用你的 Rails 4.x app，并确保你不会降级到 Rails 3.x，才设置 `secret_key_base`。因为 cookie 签署的算法并不向下相容。忽略 deprecation warning 使用 `secret_token` 也是没问题的，只要你知道你自己在做什么就好。
 
-If you are relying on the ability for external applications or Javascript to be able to read your Rails app's signed session cookies (or signed cookies in general) you should not set `secret_key_base` until you have decoupled these concerns.
+如果有外部应用程序或是 JavaScript，需要能够读 Rails app 签署的 session cookies，在你还没有解决这些问题之前，不要设置 `secret_key_base`。
 
-* Rails 4.0 encrypts the contents of cookie-based sessions if `secret_key_base` has been set. Rails 3.x signed, but did not encrypt, the contents of cookie-based session. Signed cookies are "secure" in that they are verified to have been generated by your app and are tamper-proof. However, the contents can be viewed by end users, and encrypting the contents eliminates this caveat/concern without a significant performance penalty.
+* 有设置 `secret_key_base` 的话，Rails 4.0 会加密以 cookie-based session 的内容。Rails 3.x 有签署，但未加密。签署的 cookie 是安全的，因为他们是经由你的 app 生成与签署。然而 cookie 的内容仍可被使用者看到，因此加密内容排除了此风险，且没有降低多少的效能。
 
-Please read [Pull Request #9978](https://github.com/rails/rails/pull/9978) for details on the move to encrypted session cookies.
+请阅读 [Pull Request #9978](https://github.com/rails/rails/pull/9978) 来了解更多有关 session cookie 加密的细节。
 
-* Rails 4.0 removed the `ActionController::Base.asset_path` option. Use the assets pipeline feature.
+* Rails 4.0 移除了 `ActionController::Base.asset_path` 选项。请使用 Assets Pipeline。
 
-* Rails 4.0 has deprecated `ActionController::Base.page_cache_extension` option. Use `ActionController::Base.default_static_extension` instead.
+* Rails 4.0 弃用了 `ActionController::Base.page_cache_extension` 选项。请使用 `ActionController::Base.default_static_extension` 来取代。
 
-* Rails 4.0 has removed Action and Page caching from Action Pack. You will need to add the `actionpack-action_caching` gem in order to use `caches_action` and the `actionpack-page_caching` to use `caches_pages` in your controllers.
+* Rails 4.0 从 Action Pack 移除了 Action 与 Page 的 Cache。若要使用 `caches_action`、`caches_pages` 请加入 [actionpack-action_caching](https://github.com/rails/actionpack-action_caching) gem。
 
-* Rails 4.0 has removed the XML parameters parser. You will need to add the `actionpack-xml_parser` gem if you require this feature.
+* Rails 4.0 移除了 XML 参数解析器。若要使用请加入 [actionpack-xml_parser](https://github.com/rails/actionpack-xml_parser)。
 
-* Rails 4.0 changes the default memcached client from `memcache-client` to `dalli`. To upgrade, simply add `gem 'dalli'` to your `Gemfile`.
+* Rails 4.0 更改了缺省的 memcached 用户端，从 [memcache-client](https://github.com/mperham/memcache-client) 换成了 [dalli](https://github.com/mperham/dalli)，升级只需加入 `gem 'dalli'` 至 `Gemfile`。
 
-* Rails 4.0 deprecates the `dom_id` and `dom_class` methods in controllers (they are fine in views). You will need to include the `ActionView::RecordIdentifier` module in controllers requiring this feature.
+* Rails 4.0 弃用了 Controller 的 `dom_id` 与 `dom_class` 方法（View 依然能用）。要用的话请在 Controller `include` `ActionView::RecordIdentifier`。
 
-* Rails 4.0 deprecates the `:confirm` option for the `link_to` helper. You should
-instead rely on a data attribute (e.g. `data: { confirm: 'Are you sure?' }`).
-This deprecation also concerns the helpers based on this one (such as `link_to_if`
-or `link_to_unless`).
+* Rails 4.0 弃用了 `link_to` 的 `:confirm` 选项，应改写为 `data: { confirm: 'Are you sure?' }`，`link_to_if`、`link_to_unless` 同样受影响。
 
-* Rails 4.0 changed how `assert_generates`, `assert_recognizes`, and `assert_routing` work. Now all these assertions raise `Assertion` instead of `ActionController::RoutingError`.
+* Rails 4.0 修改了 `assert_generates`、`assert_recognizes` 以及 `assert_routing 的工作方式。这些 assertions 会抛出 `Assertion` 而不是 `ActionController::RoutingError` 错误。
 
-* Rails 4.0 raises an `ArgumentError` if clashing named routes are defined. This can be triggered by explicitly defined named routes or by the `resources` method. Here are two examples that clash with routes named `example_path`:
+* 在 Rails 4.0，如果定义了重复名称的路由时，会抛出 `ArgumentError`。请见下面两例（重复的 `example_path`）：
 
 ```ruby
   get 'one' => 'test#example', as: :example
@@ -257,262 +262,82 @@ or `link_to_unless`).
   get 'clashing/:id' => 'test#example', as: :example
 ```
 
-In the first case, you can simply avoid using the same name for multiple
-routes. In the second, you can use the `only` or `except` options provided by
-the `resources` method to restrict the routes created as detailed in the
-[Routing Guide](routing.html#restricting-the-routes-created).
+第一个例子可直接换名字来解决。第二个例子可使用 `resources` 方法提供的 `only` 与 `except` 选项来限制生成出的路由，详见 [Routing Guide](/guides/edge-translation/routing-zh_TW.md#restricting-the-routes-created)
 
-* Rails 4.0 also changed the way unicode character routes are drawn. Now you can draw unicode character routes directly. If you already draw such routes, you must change them, for example:
+* Rails 4.0 更改了 route 有 unicode 字符的生成方式。现在 route 里可直接使用 unicode 字符，先前需要 `escape` 的作法不再需要了：
 
 ```ruby
 get Rack::Utils.escape('こんにちは'), controller: 'welcome', action: 'index'
 ```
 
-becomes
+改为
 
 ```ruby
 get 'こんにちは', controller: 'welcome', action: 'index'
 ```
 
-* Rails 4.0 requires that routes using `match` must specify the request method. For example:
+* Rails 4.0 要求使用 `match` 的 route 必须指定 HTTP 动词:
 
 ```ruby
   # Rails 3.x
   match "/" => "root#index"
 
-  # becomes
+  # 改成
   match "/" => "root#index", via: :get
 
-  # or
+  # 或
   get "/" => "root#index"
 ```
 
-* Rails 4.0 has removed `ActionDispatch::BestStandardsSupport` middleware, `<!DOCTYPE html>` already triggers standards mode per http://msdn.microsoft.com/en-us/library/jj676915(v=vs.85).aspx and ChromeFrame header has been moved to `config.action_dispatch.default_headers`.
+* Rails 4.0 移除了 `ActionDispatch::BestStandardsSupport` 中间件。因为 `<!DOCTYPE html>` 如[此文](http://msdn.microsoft.com/en-us/library/jj676915(v=vs.85).aspx)所述，已触发了标准模式。而 ChromeFrame header 被移到 `config.action_dispatch.default_headers` 了。
 
-Remember you must also remove any references to the middleware from your application code, for example:
+记得移除所有使用到 `ActionDispatch::BestStandardsSupport` middleware 的参照：
 
 ```ruby
-# Raise exception
+# 会抛出异常
 config.middleware.insert_before(Rack::Lock, ActionDispatch::BestStandardsSupport)
 ```
 
-Also check your environment settings for `config.action_dispatch.best_standards_support` and remove it if present.
+并移除环境设置中的 `config.action_dispatch.best_standards_support`。
 
-* In Rails 4.0, precompiling assets no longer automatically copies non-JS/CSS assets from `vendor/assets` and `lib/assets`. Rails application and engine developers should put these assets in `app/assets` or configure `config.assets.precompile`.
+* Rails 4.0 预编译不再自动从 `vendor/assets` 与 `lib/assets` 拷贝非 JS 或 CSS 的  assets。Rails 应用程序与 Engine 的开发者应将这些 assets 移到 `app/assets` 或设置 `config.assets.precompile`。
 
-* In Rails 4.0, `ActionController::UnknownFormat` is raised when the action doesn't handle the request format. By default, the exception is handled by responding with 406 Not Acceptable, but you can override that now. In Rails 3, 406 Not Acceptable was always returned. No overrides.
+* Rails 4.0 当 action 不知道如何处理 request 格式时会抛出 `ActionController::UnknownFormat` 异常。缺省是 406 Not Acceptable，但你可以改成别的 status code，在 Rails 3 只能是 406。
 
-* In Rails 4.0, a generic `ActionDispatch::ParamsParser::ParseError` exception is raised when `ParamsParser` fails to parse request params. You will want to rescue this exception instead of the low-level `MultiJson::DecodeError`, for example.
+* Rails 4.0 当 `ParamsParser` 无法解析 request params 时，会抛出通用的 `ActionDispatch::ParamsParser::ParseError` 异常。你可以 `rescue` 这个异常，而不是较为底层的 `MultiJson::DecodeError`。
 
-* In Rails 4.0, `SCRIPT_NAME` is properly nested when engines are mounted on an app that's served from a URL prefix. You no longer have to set `default_url_options[:script_name]` to work around overwritten URL prefixes.
+* Rails 4.0，当 Engine 安装到有 URL 前缀的宿主（hosting application）时，`SCRIPT_NAME` 已经将 URL 前缀适当地设置好了。不再需要设置 `default_url_options[:script_name]` 来覆写 URL 前缀。
 
-* Rails 4.0 deprecated `ActionController::Integration` in favor of `ActionDispatch::Integration`.
-* Rails 4.0 deprecated `ActionController::IntegrationTest` in favor of `ActionDispatch::IntegrationTest`.
-* Rails 4.0 deprecated `ActionController::PerformanceTest` in favor of `ActionDispatch::PerformanceTest`.
-* Rails 4.0 deprecated `ActionController::AbstractRequest` in favor of `ActionDispatch::Request`.
-* Rails 4.0 deprecated `ActionController::Request` in favor of `ActionDispatch::Request`.
-* Rails 4.0 deprecated `ActionController::AbstractResponse` in favor of `ActionDispatch::Response`.
-* Rails 4.0 deprecated `ActionController::Response` in favor of `ActionDispatch::Response`.
-* Rails 4.0 deprecated `ActionController::Routing` in favor of `ActionDispatch::Routing`.
+* Rails 4.0 弃用了 `ActionController::Integration` 请使用 `ActionDispatch::Integration`。
+* Rails 4.0 弃用了 `ActionController::IntegrationTest` 请使用 `ActionDispatch::IntegrationTest`。
+* Rails 4.0 弃用了 `ActionController::PerformanceTest` 请使用 `ActionDispatch::PerformanceTest`。
+* Rails 4.0 弃用了 `ActionController::AbstractRequest` 请使用 `ActionDispatch::Request`。
+* Rails 4.0 弃用了 `ActionController::Request` 请使用 `ActionDispatch::Request`。
+* Rails 4.0 弃用了 `ActionController::AbstractResponse` 请使用 `ActionDispatch::Response`。
+* Rails 4.0 弃用了 `ActionController::Response` 请使用 `ActionDispatch::Response`。
+* Rails 4.0 弃用了 `ActionController::Routing` 请使用 `ActionDispatch::Routing`。
 
-### Active Support
+## 2.7 Active Support
 
-Rails 4.0 removes the `j` alias for `ERB::Util#json_escape` since `j` is already used for `ActionView::Helpers::JavaScriptHelper#escape_javascript`.
+Rails 4.0 移除了 `ERB::Util#json_escape` 的 `j` 别名。因为 `j` 已经被 `ActionView::Helpers::JavaScriptHelper#escape_javascript` 所使用。
 
-### Helpers Loading Order
+## 2.8 Helpers 加载顺序
 
-The order in which helpers from more than one directory are loaded has changed in Rails 4.0. Previously, they were gathered and then sorted alphabetically. After upgrading to Rails 4.0, helpers will preserve the order of loaded directories and will be sorted alphabetically only within each directory. Unless you explicitly use the `helpers_path` parameter, this change will only impact the way of loading helpers from engines. If you rely on the ordering, you should check if correct methods are available after upgrade. If you would like to change the order in which engines are loaded, you can use `config.railties_order=` method.
+Rails 4.0 更改了 Helpers 的加载顺序。之前是将各目录的 Helpers 集合起来，并按字母排序加载。Rails 4.0 之后，Helpers 会按照目录原本加载的顺序，并在各自的目录里按字母依序加载。除非你特别使用了 `helpers_path` 参数，否则这个改动只会影响到从 Engine 加载 Helpers 的顺序。如果你正依赖加载的顺序，可以检查升级后这些 Helper 是否正常工作。如果想更改 Engine 加载的顺序，可以使用 `config.railties_order=` 方法。
 
-### Active Record Observer and Action Controller Sweeper
+## 2.9 Active Record Observer and Action Controller Sweeper
 
-Active Record Observer and Action Controller Sweeper have been extracted to the `rails-observers` gem. You will need to add the `rails-observers` gem if you require these features.
+Active Record Observer 与 Action Controller Sweeper 被抽成独立的 Gem：[rails-observers](https://github.com/rails/rails-observers)。
 
-### sprockets-rails
+## 2.10 sprockets-rails
 
-* `assets:precompile:primary` has been removed. Use `assets:precompile` instead.
-* The `config.assets.compress` option should be changed to
-`config.assets.js_compressor` like so for instance:
+* `assets:precompile:primary` 被移除了。请改用 `assets:precompile`。
+* `config.assets.compress` 选项应改成 `config.assets.js_compressor`：
 
 ```ruby
 config.assets.js_compressor = :uglifier
 ```
 
-### sass-rails
+## 2.11 sass-rails
 
-* `asset-url` with two arguments is deprecated. For example: `asset-url("rails.png", image)` becomes `asset-url("rails.png")`
-
-Upgrading from Rails 3.1 to Rails 3.2
--------------------------------------
-
-If your application is currently on any version of Rails older than 3.1.x, you should upgrade to Rails 3.1 before attempting an update to Rails 3.2.
-
-The following changes are meant for upgrading your application to Rails 3.2.12, the latest 3.2.x version of Rails.
-
-### Gemfile
-
-Make the following changes to your `Gemfile`.
-
-```ruby
-gem 'rails', '= 3.2.12'
-
-group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
-  gem 'uglifier',     '>= 1.0.3'
-end
-```
-
-### config/environments/development.rb
-
-There are a couple of new configuration settings that you should add to your development environment:
-
-```ruby
-# Raise exception on mass assignment protection for Active Record models
-config.active_record.mass_assignment_sanitizer = :strict
-
-# Log the query plan for queries taking more than this (works
-# with SQLite, MySQL, and PostgreSQL)
-config.active_record.auto_explain_threshold_in_seconds = 0.5
-```
-
-### config/environments/test.rb
-
-The `mass_assignment_sanitizer` configuration setting should also be be added to `config/environments/test.rb`:
-
-```ruby
-# Raise exception on mass assignment protection for Active Record models
-config.active_record.mass_assignment_sanitizer = :strict
-```
-
-### vendor/plugins
-
-Rails 3.2 deprecates `vendor/plugins` and Rails 4.0 will remove them completely. While it's not strictly necessary as part of a Rails 3.2 upgrade, you can start replacing any plugins by extracting them to gems and adding them to your Gemfile. If you choose not to make them gems, you can move them into, say, `lib/my_plugin/*` and add an appropriate initializer in `config/initializers/my_plugin.rb`.
-
-Upgrading from Rails 3.0 to Rails 3.1
--------------------------------------
-
-If your application is currently on any version of Rails older than 3.0.x, you should upgrade to Rails 3.0 before attempting an update to Rails 3.1.
-
-The following changes are meant for upgrading your application to Rails 3.1.11, the latest 3.1.x version of Rails.
-
-### Gemfile
-
-Make the following changes to your `Gemfile`.
-
-```ruby
-gem 'rails', '= 3.1.11'
-gem 'mysql2'
-
-# Needed for the new asset pipeline
-group :assets do
-  gem 'sass-rails',   "~> 3.1.5"
-  gem 'coffee-rails', "~> 3.1.1"
-  gem 'uglifier',     ">= 1.0.3"
-end
-
-# jQuery is the default JavaScript library in Rails 3.1
-gem 'jquery-rails'
-```
-
-### config/application.rb
-
-The asset pipeline requires the following additions:
-
-```ruby
-config.assets.enabled = true
-config.assets.version = '1.0'
-```
-
-If your application is using an "/assets" route for a resource you may want change the prefix used for assets to avoid conflicts:
-
-```ruby
-# Defaults to '/assets'
-config.assets.prefix = '/asset-files'
-```
-
-### config/environments/development.rb
-
-Remove the RJS setting `config.action_view.debug_rjs = true`.
-
-Add these settings if you enable the asset pipeline:
-
-```ruby
-# Do not compress assets
-config.assets.compress = false
-
-# Expands the lines which load the assets
-config.assets.debug = true
-```
-
-### config/environments/production.rb
-
-Again, most of the changes below are for the asset pipeline. You can read more about these in the [Asset Pipeline](asset_pipeline.html) guide.
-
-```ruby
-# Compress JavaScripts and CSS
-config.assets.compress = true
-
-# Don't fallback to assets pipeline if a precompiled asset is missed
-config.assets.compile = false
-
-# Generate digests for assets URLs
-config.assets.digest = true
-
-# Defaults to Rails.root.join("public/assets")
-# config.assets.manifest = YOUR_PATH
-
-# Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-# config.assets.precompile += %w( search.js )
-
-# Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-# config.force_ssl = true
-```
-
-### config/environments/test.rb
-
-You can help test performance with these additions to your test environment:
-
-```ruby
-# Configure static asset server for tests with Cache-Control for performance
-config.serve_static_assets = true
-config.static_cache_control = "public, max-age=3600"
-```
-
-### config/initializers/wrap_parameters.rb
-
-Add this file with the following contents, if you wish to wrap parameters into a nested hash. This is on by default in new applications.
-
-```ruby
-# Be sure to restart your server when you modify this file.
-# This file contains settings for ActionController::ParamsWrapper which
-# is enabled by default.
-
-# Enable parameter wrapping for JSON. You can disable this by setting :format to an empty array.
-ActiveSupport.on_load(:action_controller) do
-  wrap_parameters format: [:json]
-end
-
-# Disable root element in JSON by default.
-ActiveSupport.on_load(:active_record) do
-  self.include_root_in_json = false
-end
-```
-
-### config/initializers/session_store.rb
-
-You need to change your session key to something new, or remove all sessions:
-
-```ruby
-# in config/initializers/session_store.rb
-AppName::Application.config.session_store :cookie_store, key: 'SOMETHINGNEW'
-```
-
-or
-
-```bash
-$ rake db:sessions:clear
-```
-
-### Remove :cache and :concat options in asset helpers references in views
-
-* With the Asset Pipeline the :cache and :concat options aren't used anymore, delete these options from your views.
+* `asset-url("rails.png", image)` 改成 `asset-url("rails.png")`
