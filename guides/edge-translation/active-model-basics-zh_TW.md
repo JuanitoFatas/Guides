@@ -6,7 +6,18 @@ __特別要強調的翻譯名詞__
 
 > Attribute 屬性
 
-本篇教你如何開始使用 Model。 Active Model 允許 Action Pack Helpers 與非 Active Record Model 互動。Active Model 也允許你在 Rails 框架之外自己造 ORM。
+本篇教你如何開始使用 Model。 Active Model 允許 Action Pack Helpers 與不是 Active Record 的 Model 類別來做互動。Active Model 也允許你在 Rails 框架之外自己造 ORM。
+
+## 目錄
+
+- [1. 簡介](#1-簡介)
+  - [1.1 AttributeMethods 模組](#11-attributemethods-模組)
+  - [1.2 Callbacks 模組](#12-callbacks-模組)
+  - [1.3 Conversion 模組](#13-conversion-模組)
+  - [1.4 Dirty 模組](#14-dirty-模組)
+    - [1.4.1 查詢物件的變化](#141-查詢物件的變化)
+    - [1.4.2 基於屬性的 accessor 方法](#142-基於屬性的-accessor-方法)
+  - [1.5 Validations 模組](#15-validations-模組)
 
 # 1. 簡介
 
@@ -92,7 +103,7 @@ person.to_param            # => nil
 
 ## 1.4 Dirty 模組
 
-物件有一個或多個改動，卻未儲存，則稱物件變 dirty 了。這讓我們可以檢查物件是否有無變更。以下有 `Person` 類別，類別有 `first_name` 與 `last_name` 這兩個屬性：
+物件有一個或多個改動，卻未儲存，則稱物件變 dirty 了。這讓我們可以檢查物件是否有變動。以下是 `Person` 類別，有 `first_name` 與 `last_name` 這兩個屬性：
 
 ```ruby
 require 'active_model'
