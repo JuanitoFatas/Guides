@@ -2,7 +2,7 @@
 
 __特别要强调的翻译名词__
 
-> application 应用程序
+> application 应用程序 <br>
 > deprecated 弃用的、不宜使用的、过时的：即将在下一版移除的功能。<br>
 > middleware 中间件 <br>
 > route 路由 <br>
@@ -325,7 +325,7 @@ Rails 4.0 移除了 `ERB::Util#json_escape` 的 `j` 别名。因为 `j` 已经�
 
 Rails 4.0 更改了 Helpers 的加载顺序。之前是将各目录的 Helpers 集合起来，并按字母排序加载。Rails 4.0 之后，Helpers 会按照目录原本加载的顺序，并在各自的目录里按字母依序加载。除非你特别使用了 `helpers_path` 参数，否则这个改动只会影响到从 Engine 加载 Helpers 的顺序。如果你正依赖加载的顺序，可以检查升级后这些 Helper 是否正常工作。如果想更改 Engine 加载的顺序，可以使用 `config.railties_order=` 方法。
 
-## 2.9 Active Record Observer and Action Controller Sweeper
+## 2.9 Active Record Observer 与 Action Controller Sweeper
 
 Active Record Observer 与 Action Controller Sweeper 被抽成独立的 Gem：[rails-observers](https://github.com/rails/rails-observers)。
 
