@@ -1,15 +1,18 @@
-Action View Overview
-====================
+# Action View Overview
 
-After reading this guide, you will know:
+__特別要強調的翻譯名詞__
 
-* What Action View is and how to use it with Rails.
-* How best to use templates, partials, and layouts.
-* What helpers are provided by Action View and how to make your own.
-* How to use localized views.
-* How to use Action View outside of Rails.
+>
 
---------------------------------------------------------------------------------
+讀完本篇可能會學到.....
+
+* 什麼是 Action View 及如何使用。
+* 使用 templates、partials 及 layouts 的最佳時機。
+* Action View 提供的 Helpers，如何自己撰寫 Helpers。
+* 如何 localized view。
+* 如何在 Rails 以外的場合使用 Action View。
+
+## 目錄
 
 What is Action View?
 --------------------
@@ -1550,7 +1553,7 @@ end
 
 Sanitizes a block of CSS code.
 
-#### strip_links(html) 
+#### strip_links(html)
 Strips all link tags from text leaving just the link text.
 
 ```ruby
@@ -1568,9 +1571,9 @@ strip_links('Blog: <a href="http://myblog.com/">Visit</a>.')
 # => Blog: Visit.
 ```
 
-#### strip_tags(html) 
+#### strip_tags(html)
 
-Strips all HTML tags from the html, including comments. 
+Strips all HTML tags from the html, including comments.
 This uses the html-scanner tokenizer and so its HTML parsing ability is limited by that of html-scanner.
 
 ```ruby

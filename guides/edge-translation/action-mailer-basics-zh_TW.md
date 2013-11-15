@@ -1,18 +1,19 @@
-Action Mailer Basics
-====================
+# Action Mailer Basics
 
-This guide provides you with all you need to get started in sending and
-receiving emails from and to your application, and many internals of Action
-Mailer. It also covers how to test your mailers.
+__特別要強調的翻譯名詞__
 
-After reading this guide, you will know:
+>
 
-* How to send and receive email within a Rails application.
-* How to generate and edit an Action Mailer class and mailer view.
-* How to configure Action Mailer for your environment.
-* How to test your Action Mailer classes.
+本篇講解寄信與收信的基礎知識、Action Mailer 的內部運作，如何測試 Mailer。
 
---------------------------------------------------------------------------------
+讀完本篇可能會學到.....
+
+* 如何寄信收信。
+* 如何產生、編輯 Action Mailer class 與 View。
+* 如何設定 Action Mailer。
+* 如何測試 Action Mailer。
+
+## 目錄
 
 Introduction
 ------------
