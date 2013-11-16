@@ -353,10 +353,10 @@ config.assets.js_compressor = :uglifier
 修改 `Gemfile`。
 
 ```ruby
-gem 'rails', '= 3.2.15'
+gem 'rails', '3.2.15'
 
 group :assets do
-  gem 'sass-rails',   '~> 3.2.5'
+  gem 'sass-rails',   '~> 3.2.6'
   gem 'coffee-rails', '~> 3.2.2'
   gem 'uglifier',     '>= 1.2.3'
 end
@@ -399,12 +399,12 @@ The following changes are meant for upgrading your application to Rails 3.1.11, 
 Make the following changes to your `Gemfile`.
 
 ```ruby
-gem 'rails', '= 3.1.12'
+gem 'rails', '3.1.12'
 gem 'mysql2'
 
 # Needed for the new asset pipeline
 group :assets do
-  gem 'sass-rails',   "~> 3.1.5"
+  gem 'sass-rails',   "~> 3.1.7"
   gem 'coffee-rails', "~> 3.1.1"
   gem 'uglifier',     ">= 1.0.3"
 end
