@@ -257,25 +257,6 @@ Action Controller 多数的功能皆以 middleware 的方式实现，下面这�
 
 以上的 middleware 都可以在自己的 Rack stack 里使用。
 
-## 3.4 使用 Rack Builder
-
-下面示范如何使用 Rack Builder 换掉 Rails 提供的 Middleware stack。
-
-__先清除 Rails 的 Middleware stack__
-
-```ruby
-# config/application.rb
-config.middleware.clear
-```
-
-修改 Rails.root 目录下的 `config.ru`：
-
-```ruby
-# config.ru
-use MyOwnStackFromScratch
-run Rails.application
-```
-
 # 4. 学习资源
 
 ## 4.1 学习 Rack
