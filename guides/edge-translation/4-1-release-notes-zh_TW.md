@@ -5,16 +5,14 @@ Rails 4.1 精華摘要：
 
 * Action View 從 Action Pack 抽離出來。
 
-本篇僅涵蓋主要的變動。要了解更多關於已修復的 bug、變動等，請參考 Rails GitHub 主頁上的
-CHANGELOG 或是 Rails 的 [Commits 清單](https://github.com/rails/rails/commits/master)。
+本篇僅涵蓋主要的變動。要了解關於已修復的 bug、變動等，請參考 Rails GitHub 主頁上的 CHANGELOG 或是 Rails 所有的 [Commits](https://github.com/rails/rails/commits/master)。
 
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 升級至 Rails 4.1
 ----------------------
 
-若是升級現有的應用程式，最好有好的測試覆蓋度。首先應先升級至 4.0，再升上 4.1。升級需要注意的事項在此篇
-[升級 Rails]() 可以找到。
+若是升級現有的應用程式，最好有好的測試覆蓋度。首先應先升級至 4.0，再升上 4.1。升級需要注意的事項在此篇[升級 Rails](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md) 可以找到。
 
 主要功能
 --------------
@@ -27,8 +25,7 @@ CHANGELOG 或是 Rails 的 [Commits 清單](https://github.com/rails/rails/commi
 Railties
 --------
 
-請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/railties/CHANGELOG.md)
-來了解更多細節。
+請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/railties/CHANGELOG.md) 來了解更多細節。
 
 ### 移除
 
@@ -57,8 +54,7 @@ Railties
 Action Mailer
 -------------
 
-請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/actionmailer/CHANGELOG.md)
-來了解更多細節。
+請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/actionmailer/CHANGELOG.md) 來了解更多細節。
 
 ### 值得一提的變動
 
@@ -69,8 +65,7 @@ Action Mailer
 Active Model
 ------------
 
-請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/activemodel/CHANGELOG.md)
-來了解更多細節。
+請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/activemodel/CHANGELOG.md) 來了解更多細節。
 
 ### 棄用
 
@@ -82,12 +77,10 @@ Active Model
 * Added new API methods `reset_changes` and `changes_applied` to
   `ActiveModel::Dirty` that control changes state.
 
-
 Active Support
 --------------
 
-請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/activesupport/CHANGELOG.md)
-來了解更多細節。
+請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/activesupport/CHANGELOG.md) 來了解更多細節。
 
 ### 移除
 
@@ -150,8 +143,7 @@ methods change current time to the given time or time difference by stubbing
 Action Pack
 -----------
 
-請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/actionpack/CHANGELOG.md)
-來了解更多細節。
+請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/actionpack/CHANGELOG.md) 來了解更多細節。
 
 ### 移除
 
@@ -187,8 +179,7 @@ Action Pack
 Active Record
 -------------
 
-請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/activerecord/CHANGELOG.md)
-來了解更多細節。
+請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/activerecord/CHANGELOG.md) 來了解更多細節。
 
 ### 移除
 
@@ -336,4 +327,4 @@ Active Record
 致謝
 -------
 
-許多人花了寶貴的時間貢獻至 Rails 專案，使 Rails 成為更穩定、更強韌的網路框架，參見 [完整的 Rails 貢獻者清單](http://contributors.rubyonrails.org/)，感謝所有的人！
+許多人花了寶貴的時間貢獻至 Rails 專案，使 Rails 成為更穩定、更強韌的網路框架，參見[完整的 Rails 貢獻者清單](http://contributors.rubyonrails.org/)，並感謝所有的貢獻者！
