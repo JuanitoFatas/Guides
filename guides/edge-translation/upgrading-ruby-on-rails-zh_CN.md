@@ -37,7 +37,7 @@ Rails 通常与最新的 Ruby 一起前进：
 
 > [Ruby 1.8.7 退出历史舞台](https://www.ruby-lang.org/zh_cn/news/2013/06/30/we-retire-1-8-7/)
 
-# 2.
+# 2. 从 Rails 4.0 升级到 Rails 4.1
 
 # 3. 从 Rails 3.2 升级到 Rails 4.0
 
