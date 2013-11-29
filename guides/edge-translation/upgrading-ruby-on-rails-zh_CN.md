@@ -32,12 +32,20 @@ Rails 通常与最新的 Ruby 一起前进：
 
 定案：
 
-* __强烈推荐使用 Ruby 2.0.0-p247__
-* Ruby 1.9.3-p448
+* __强烈推荐使用 Ruby 2.0.0-p353__
+* Ruby 1.9.3-p484
 
 > [Ruby 1.8.7 退出历史舞台](https://www.ruby-lang.org/zh_cn/news/2013/06/30/we-retire-1-8-7/)
 
-## 1.3 HTTP PATCH
+# 2.
+
+# 3. 从 Rails 3.2 升级到 Rails 4.0
+
+若你是 3.2 以前的版本，先升到 3.2 再试著升到 Rails 4.0。
+
+以下是针对从 Rails 3.2 升级至 Rails 4.0 的说明。
+
+## 3.1 HTTP PATCH
 
 > 这里的路由作动词解。
 
@@ -97,7 +105,7 @@ end
 
 至于为什么要改成 `PATCH`，参考[这篇文章](http://weblog.rubyonrails.org/2012/2/25/edge-rails-patch-is-the-new-primary-http-method-for-updates/)。
 
-### 1.3.1 关于 media types 的说明
+### 3.1.1 关于 media types 的说明
 
 <!-- The errata for the `PATCH` verb [specifies that a 'diff' media type should be
 used with `PATCH`](http://www.rfc-editor.org/errata_search.php?rfc=5789). One
@@ -130,15 +138,7 @@ Mime::Type.register 'application/json-patch+json', :json_patch
 
 由于 JSON Patch 最近才有 RFC，仍未有好的 Ruby 函式库出现。Aaron Patterson 的 [hana](https://github.com/tenderlove/hana) 是一个实作 JSON Patch 的 gem，但仍未完整支援 Spec 里所有最近更新的内容。
 
-# 2. 从 Rails 3.2 升级到 Rails 4.0
-
-__注意：本小节仍在完善当中。__
-
-若你是 3.2 以前的版本，先升到 3.2 再试著升到 Rails 4.0。
-
-以下是针对从 Rails 3.2 升级至 Rails 4.0 的说明。
-
-## 2.1 Gemfile
+## 3.2 Gemfile
 
 Rails 4.0 移除了 Gemfile 里的 `assets` group。升级至 4.0 时要移除这个 group，同时需要更新 `config/application.rb`：
 
@@ -148,11 +148,11 @@ Rails 4.0 移除了 Gemfile 里的 `assets` group。升级至 4.0 时要移除�
 Bundler.require(:default, Rails.env)
 ```
 
-## 2.2 vendor/plugins
+## 3.3 vendor/plugins
 
 Rails 4.0 不再支援从 `vendor/plugins` 载入 plugins。__必须__将任何 plugins 包成 Gems ，再加入至 Gemfile。若你不想包成 Gem，则可将 plugin 移到 `lib/my_plugin/*`，并使用适当的 initializer：`config/initializer/my_plugin.rb`。
 
-## 2.3 Active Record
+## 3.4 Active Record
 
 * Rails 4.0 移除了 Active Record 的 identity map，因为这会导致[某些关联的不一致性](https://github.com/rails/rails/commit/302c912bf6bcd0fa200d964ec2dc4a44abe328a6)。也就是说 `config.active_record.identity_map` ，这个设置不再有作用。
 
@@ -197,11 +197,11 @@ scope :active, -> { where active: true }
 
 * 要重新启用旧式的 Finder 方法，可以使用 [activerecord-deprecated_finders gem](https://github.com/rails/activerecord-deprecated_finders)。
 
-## 2.4 Active Resource
+## 3.5 Active Resource
 
 Rails 4.0 将 Active Resource 抽成独立的 Gem。若你仍需要此功能，将 [Active Resource gem](https://github.com/rails/activeresource) 加到 Gemfile。
 
-## 2.5 Active Model
+## 3.6 Active Model
 
 * Rails 4.0 更改了 `ActiveModel::Validations::ConfirmationValidator` 错误附加的方式。以前 confirmation 验证错误发生时，错误会加到 `attribute` 上，现在则会附加到 `:#{attribute}_confirmation`。
 
@@ -216,7 +216,7 @@ Rails 4.0 将 Active Resource 抽成独立的 Gem。若你仍需要此功能，�
 # end
 ```
 
-## 2.6 Action Pack
+## 3.7 Action Pack
 
 * Rails 4.0 引入了 `ActiveSupport::KeyGenerator`，用来生成及检查已签署的 cookie。请在 `config/initializers/secret_token.rb` 加入新的 `secret_key_base`：
 
@@ -317,19 +317,19 @@ config.middleware.insert_before(Rack::Lock, ActionDispatch::BestStandardsSupport
 * Rails 4.0 弃用了 `ActionController::Response` 请使用 `ActionDispatch::Response`。
 * Rails 4.0 弃用了 `ActionController::Routing` 请使用 `ActionDispatch::Routing`。
 
-## 2.7 Active Support
+## 3.8 Active Support
 
 Rails 4.0 移除了 `ERB::Util#json_escape` 的 `j` 别名。因为 `j` 已经被 `ActionView::Helpers::JavaScriptHelper#escape_javascript` 所使用。
 
-## 2.8 Helpers 加载顺序
+## 3.9 Helpers 加载顺序
 
 Rails 4.0 更改了 Helpers 的加载顺序。之前是将各目录的 Helpers 集合起来，并按字母排序加载。Rails 4.0 之后，Helpers 会按照目录原本加载的顺序，并在各自的目录里按字母依序加载。除非你特别使用了 `helpers_path` 参数，否则这个改动只会影响到从 Engine 加载 Helpers 的顺序。如果你正依赖加载的顺序，可以检查升级后这些 Helper 是否正常工作。如果想更改 Engine 加载的顺序，可以使用 `config.railties_order=` 方法。
 
-## 2.9 Active Record Observer 与 Action Controller Sweeper
+## 3.10 Active Record Observer 与 Action Controller Sweeper
 
 Active Record Observer 与 Action Controller Sweeper 被抽成独立的 Gem：[rails-observers](https://github.com/rails/rails-observers)。
 
-## 2.10 sprockets-rails
+## 3.11 sprockets-rails
 
 * `assets:precompile:primary` 被移除了。请改用 `assets:precompile`。
 * `config.assets.compress` 选项应改成 `config.assets.js_compressor`：
@@ -338,6 +338,6 @@ Active Record Observer 与 Action Controller Sweeper 被抽成独立的 Gem：[r
 config.assets.js_compressor = :uglifier
 ```
 
-## 2.11 sass-rails
+## 3.12 sass-rails
 
 * `asset-url("rails.png", image)` 改成 `asset-url("rails.png")`
