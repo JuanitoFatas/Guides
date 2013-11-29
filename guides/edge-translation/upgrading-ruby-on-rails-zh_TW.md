@@ -32,12 +32,22 @@ Rails 通常與最新的 Ruby 一起前進：
 
 定案：
 
-* __強烈推薦使用 Ruby 2.0.0-p247__
-* Ruby 1.9.3-p448
+* __強烈推薦使用 Ruby 2.0.0-p353__
+* Ruby 1.9.3-p484
 
 > [Ruby 1.8.7（官方已經不維護了）](https://www.ruby-lang.org/zh_tw/news/2013/06/30/we-retire-1-8-7/)
 
-## 1.3 HTTP PATCH
+# 2. 從 Rails 4.0 升級到 Rails 4.1
+
+**本小節正在施工中**
+
+# 3. 從 Rails 3.2 升級到 Rails 4.0
+
+若你是 3.2 以前的版本，先升到 3.2 再試著升到 Rails 4.0。
+
+以下是針對從 Rails 3.2 升級至 Rails 4.0 的說明。
+
+## 3.1 HTTP PATCH
 
 > 這裡的路由作動詞解。
 
@@ -97,7 +107,7 @@ end
 
 至於為什麼要改成 `PATCH`，參考[這篇文章](http://weblog.rubyonrails.org/2012/2/25/edge-rails-patch-is-the-new-primary-http-method-for-updates/)。
 
-### 1.3.1 關於 media types 的說明
+### 3.1.1 關於 media types 的說明
 
 <!-- The errata for the `PATCH` verb [specifies that a 'diff' media type should be
 used with `PATCH`](http://www.rfc-editor.org/errata_search.php?rfc=5789). One
@@ -130,15 +140,7 @@ Mime::Type.register 'application/json-patch+json', :json_patch
 
 由於 JSON Patch 最近才有 RFC，仍未有好的 Ruby 函式庫出現。Aaron Patterson 的 [hana](https://github.com/tenderlove/hana) 是一個實作 JSON Patch 的 gem，但仍未完整支援 Spec 裡所有最近更新的內容。
 
-# 2. 從 Rails 3.2 升級到 Rails 4.0
-
-__注意：本小節仍在完善當中。__
-
-若你是 3.2 以前的版本，先升到 3.2 再試著升到 Rails 4.0。
-
-以下是針對從 Rails 3.2 升級至 Rails 4.0 的說明。
-
-## 2.1 Gemfile
+## 3.2 Gemfile
 
 Rails 4.0 移除了 Gemfile 裡的 `assets` group。升級至 4.0 時要移除這個 group，同時需要更新 `config/application.rb`：
 
@@ -148,11 +150,11 @@ Rails 4.0 移除了 Gemfile 裡的 `assets` group。升級至 4.0 時要移除�
 Bundler.require(:default, Rails.env)
 ```
 
-## 2.2 vendor/plugins
+## 3.3 vendor/plugins
 
 Rails 4.0 不再支援從 `vendor/plugins` 載入 plugins。__必須__將任何 plugins 包成 Gems ，再加入至 Gemfile。若你不想包成 Gem，則可將 plugin 移到 `lib/my_plugin/*`，並使用適當的 initializer：`config/initializer/my_plugin.rb`。
 
-## 2.3 Active Record
+## 3.4 Active Record
 
 * Rails 4.0 移除了 Active Record 的 identity map，因為這會產生[某些關聯的不一致性](https://github.com/rails/rails/commit/302c912bf6bcd0fa200d964ec2dc4a44abe328a6)。也就是說 `config.active_record.identity_map` ，這個設定不再有作用。
 
@@ -197,11 +199,11 @@ scope :active, -> { where active: true }
 
 * 要重新啟用舊式的 Finder 方法，可以使用 [activerecord-deprecated_finders gem](https://github.com/rails/activerecord-deprecated_finders)。
 
-## 2.4 Active Resource
+## 3.5 Active Resource
 
 Rails 4.0 將 Active Resource 抽成獨立的 Gem。若你仍需要此功能，將 [Active Resource gem](https://github.com/rails/activeresource) 加到 Gemfile。
 
-## 2.5 Active Model
+## 3.6 Active Model
 
 * Rails 4.0 更改了 `ActiveModel::Validations::ConfirmationValidator` 錯誤附加的方式。以前 confirmation 驗證錯誤發生時，錯誤會加到 `attribute` 上，現在則會附加到 `:#{attribute}_confirmation`。
 
@@ -216,7 +218,7 @@ Rails 4.0 將 Active Resource 抽成獨立的 Gem。若你仍需要此功能，�
 # end
 ```
 
-## 2.6 Action Pack
+## 3.7 Action Pack
 
 * Rails 4.0 引入了 `ActiveSupport::KeyGenerator`，用來產生及檢查已簽署的 cookie。請在 `config/initializers/secret_token.rb` 加入新的 `secret_key_base`：
 
@@ -317,19 +319,19 @@ config.middleware.insert_before(Rack::Lock, ActionDispatch::BestStandardsSupport
 * Rails 4.0 棄用了 `ActionController::Response` 請使用 `ActionDispatch::Response`。
 * Rails 4.0 棄用了 `ActionController::Routing` 請使用 `ActionDispatch::Routing`。
 
-## 2.7 Active Support
+## 3.8 Active Support
 
 Rails 4.0 移除了 `ERB::Util#json_escape` 的 `j` 別名。因為 `j` 已經被 `ActionView::Helpers::JavaScriptHelper#escape_javascript` 所使用。
 
-## 2.8 Helpers 加載順序
+## 3.9 Helpers 加載順序
 
 Rails 4.0 更改了 Helpers 的加載順序。之前是將各目錄的 Helpers 集合起來，並按字母排序加載。Rails 4.0 之後，Helpers 會按照目錄原本加載的順序，並在各自的目錄裡按字母依序加載。除非你特別使用了 `helpers_path` 參數，否則這個改動只會影響到從 Engine 加載 Helpers 的順序。如果你正依賴加載的順序，可以檢查升級後這些 Helper 是否正常工作。如果想更改 Engine 加載的順序，可以使用 `config.railties_order=` 方法。
 
-## 2.9 Active Record Observer 與 Action Controller Sweeper
+## 3.10 Active Record Observer 與 Action Controller Sweeper
 
 Active Record Observer 與 Action Controller Sweeper 被抽成獨立的 Gem：[rails-observers](https://github.com/rails/rails-observers)。
 
-## 2.10 sprockets-rails
+## 3.11 sprockets-rails
 
 * `assets:precompile:primary` 被移除了。請改用 `assets:precompile`。
 * `config.assets.compress` 選項應改成 `config.assets.js_compressor`：
@@ -338,17 +340,17 @@ Active Record Observer 與 Action Controller Sweeper 被抽成獨立的 Gem：[r
 config.assets.js_compressor = :uglifier
 ```
 
-## 2.11 sass-rails
+## 3.12 sass-rails
 
 * `asset-url("rails.png", image)` 改成 `asset-url("rails.png")`
 
-# 3. 從 Rails 3.1 升級到 Rails 3.2
+# 4. 從 Rails 3.1 升級到 Rails 3.2
 
 若你的應用程式為 3.1.x 之前的版本，先升級至 3.1，再試著升級至 3.2。
 
 下面幫助你從 Rails 3.1 升級至 Rails 3.2.15（Rails 3.2.x 的最後版本）。
 
-### Gemfile
+## 4.1 Gemfile
 
 修改 `Gemfile`。
 
@@ -362,7 +364,7 @@ group :assets do
 end
 ```
 
-### config/environments/development.rb
+## 4.2 config/environments/development.rb
 
 There are a couple of new configuration settings that you should add to your development environment:
 
@@ -375,7 +377,7 @@ config.active_record.mass_assignment_sanitizer = :strict
 config.active_record.auto_explain_threshold_in_seconds = 0.5
 ```
 
-### config/environments/test.rb
+## 4.3 config/environments/test.rb
 
 The `mass_assignment_sanitizer` configuration setting should also be be added to `config/environments/test.rb`:
 
@@ -384,17 +386,17 @@ The `mass_assignment_sanitizer` configuration setting should also be be added to
 config.active_record.mass_assignment_sanitizer = :strict
 ```
 
-### vendor/plugins
+## 4.4 vendor/plugins
 
 Rails 3.2 deprecates `vendor/plugins` and Rails 4.0 will remove them completely. While it's not strictly necessary as part of a Rails 3.2 upgrade, you can start replacing any plugins by extracting them to gems and adding them to your Gemfile. If you choose not to make them gems, you can move them into, say, `lib/my_plugin/*` and add an appropriate initializer in `config/initializers/my_plugin.rb`.
 
-# 4. 從 Rails 3.0 升級到 Rails 3.1
+# 5. 從 Rails 3.0 升級到 Rails 3.1
 
 If your application is currently on any version of Rails older than 3.0.x, you should upgrade to Rails 3.0 before attempting an update to Rails 3.1.
 
 The following changes are meant for upgrading your application to Rails 3.1.11, the latest 3.1.x version of Rails.
 
-### Gemfile
+## 5.1 Gemfile
 
 Make the following changes to your `Gemfile`.
 
@@ -413,7 +415,7 @@ end
 gem 'jquery-rails'
 ```
 
-### config/application.rb
+## 5.2 config/application.rb
 
 The asset pipeline requires the following additions:
 
@@ -429,7 +431,7 @@ If your application is using an "/assets" route for a resource you may want chan
 config.assets.prefix = '/asset-files'
 ```
 
-### config/environments/development.rb
+## 5.3 config/environments/development.rb
 
 Remove the RJS setting `config.action_view.debug_rjs = true`.
 
@@ -443,7 +445,7 @@ config.assets.compress = false
 config.assets.debug = true
 ```
 
-### config/environments/production.rb
+## 5.4 config/environments/production.rb
 
 Again, most of the changes below are for the asset pipeline. You can read more about these in the [Asset Pipeline](asset_pipeline.html) guide.
 
@@ -467,7 +469,7 @@ config.assets.digest = true
 # config.force_ssl = true
 ```
 
-### config/environments/test.rb
+## 5.5 config/environments/test.rb
 
 You can help test performance with these additions to your test environment:
 
@@ -477,7 +479,7 @@ config.serve_static_assets = true
 config.static_cache_control = "public, max-age=3600"
 ```
 
-### config/initializers/wrap_parameters.rb
+## 5.6 config/initializers/wrap_parameters.rb
 
 Add this file with the following contents, if you wish to wrap parameters into a nested hash. This is on by default in new applications.
 
@@ -497,7 +499,7 @@ ActiveSupport.on_load(:active_record) do
 end
 ```
 
-### config/initializers/session_store.rb
+## 5.7 config/initializers/session_store.rb
 
 You need to change your session key to something new, or remove all sessions:
 
@@ -512,6 +514,6 @@ or
 $ rake db:sessions:clear
 ```
 
-### Remove :cache and :concat options in asset helpers references in views
+## 5.8 Remove :cache and :concat options in asset helpers references in views
 
 * With the Asset Pipeline the :cache and :concat options aren't used anymore, delete these options from your views.
