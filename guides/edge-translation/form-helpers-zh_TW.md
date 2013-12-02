@@ -105,7 +105,7 @@ __切記：搜索表單用正確的 HTTP 動詞：GET。__
 
 ### 1.2 Form Helper 呼叫裡傳多個 Hash
 
-`form_tag` 接受 2 個參數： __動作發生的路徑（path）與選項（以 hash 形式傳入）__。可指定送出時要用的方法，及更改表單元素的 class 等。
+`form_tag` 接受 2 個參數： __動作發生的路徑（path）與選項（以 hash 形式傳入）__。可指定送出時要用的方法、更改表單元素的 `class` 等。
 
 跟 `link_to` 類似，路徑可以不是字串。可以是 Rails Router 看的懂的 URL hash，比如：
 
@@ -113,7 +113,7 @@ __切記：搜索表單用正確的 HTTP 動詞：GET。__
 { controller: "people", action: "search" }
 ```
 
-路徑跟選項都是以 hash 傳入，很容易把兩者混在一起，看這個例子：
+路徑和選項都是以 hash 傳入，很容易把兩者混在一起，看這個例子：
 
 ```ruby
 form_tag(controller: "people", action: "search", method: "get", class: "nifty_form")
@@ -129,7 +129,7 @@ form_tag({controller: "people", action: "search"}, method: "get", class: "nifty_
 
 ### 1.3 生成表單的 Helpers
 
-Rails 提供一系列的 Helpers，可以產生 checkbox、text field、radio buttons。
+Rails 提供一系列的 Helpers，可以產生 checkbox、text field、radio buttons 等。
 
 __`_tag` 結尾的 helper 會生成一個 `<input>`__ ：
 
@@ -145,7 +145,7 @@ __`_tag` 結尾的 helper 會生成一個 `<input>`__ ：
 
 #### 1.3.1 Checkbox
 
-Checkbox? 使用者有一系列的選項，可多選：
+Checkbox 是多選框，讓使用者有一系列可多選的選項：
 
 ```erb
 <%= check_box_tag(:pet_dog) %>
@@ -191,7 +191,7 @@ __記得要給 checkbox 與 radio button 加上 `label`，這樣讓可按的區�
 
 ### 1.4 其它相關的 helpers
 
-textareas, password fields, hidden fields, search fields, telephone fields, date fields, time fields, color fields, datetime fields, datetime-local fields, month fields, week fields, URL fields and email fields， __其中 search、telephone、date、time、color、datetime、datetime-local、month、week、URL、以及 email 是 HTML5 才有的 input__。
+textareas、password fields、hidden fields、search fields、telephone fields、date fields、time fields、color fields、datetime fields、datetime-local fields、month fields、week fields、url fields、email fields、number fields、range fields，__其中 search、telephone、date、time、color、datetime、datetime-local、month、week、url、email、number 以及 range 是 HTML5 才有的 input type__。
 
 ```erb
 <%= text_area_tag(:message, "Hi, nice site", size: "24x6") %>
@@ -208,6 +208,8 @@ textareas, password fields, hidden fields, search fields, telephone fields, date
 <%= email_field(:user, :address) %>
 <%= color_field(:user, :favorite_color) %>
 <%= time_field(:task, :started_at) %>
+<%= number_field(:price, nil, in: 1.0..20.0, step: 0.5) %>
+<%= range_field(:percent, nil, in: 1..100) %>
 ```
 
 會生成：
