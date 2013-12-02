@@ -229,6 +229,8 @@ textareas、password fields、hidden fields、search fields、telephone fields�
 <input id="user_address" name="user[address]" type="email" />
 <input id="user_favorite_color" name="user[favorite_color]" type="color" value="#000000" />
 <input id="task_started_at" name="task[started_at]" type="time" />
+<input id="price_" max="20.0" min="1.0" name="price[]" step="0.5" type="number" />
+<input id="percent_" max="100" min="1" name="percent[]" type="range" />
 ```
 
 # 2. 處理 Model Object 的 Helpers
