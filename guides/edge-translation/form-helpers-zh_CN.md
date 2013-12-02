@@ -77,7 +77,7 @@
 * 一个有 GET 动词的表单。
 * 可输入文字的 `input`。
 * `input` 有 `label`。
-* 送出元素
+* 送出元素。
 
 ```erb
 <%= form_tag("/search", method: "get") do %>
