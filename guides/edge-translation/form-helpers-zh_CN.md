@@ -427,7 +427,7 @@ HTML 纯手写下拉式选单（Select box）需要花很多功夫，比如说�
 <%= select_tag(:city_id, '<option value="1">Lisbon</option>...') %>
 ```
 
-这只是刚开始而已，封装字串在 `select_tag` 里面无法动态生成 option 标签，于是有了 `options_for_select`：
+这只是刚开始而已，上面把字串封装在 `select_tag` 里面，无法动态生成 `option` 标签，于是有了 `options_for_select`：
 
 ```html+erb
 <%= options_for_select([['Lisbon', 1], ['Madrid', 2], ...]) %>
@@ -441,7 +441,7 @@ HTML 纯手写下拉式选单（Select box）需要花很多功夫，比如说�
 ...
 ```
 
-`options_for_select` 的第一个参数是嵌套的 array，每个元素有两个元素，城市名称（option text）与数值（option value）。 option value 是会传给 controller 的数值。通常会是数据库对象里对应的 id。
+`options_for_select` 的第一个参数是嵌套的 array，每个元素有两个元素，城市名称（option text）与数值（option value）。 option value 是会传给 controller 的数值。通常会是数据库里，对象对应的 `id`。
 
 现在把 `select_tag` 与 `options_for_select` 结合起来：
 
@@ -465,7 +465,7 @@ HTML 纯手写下拉式选单（Select box）需要花很多功夫，比如说�
 
 预设值会加上 `selected` attribute。
 
-__注意__ `options_for_select` 的第二个参数的类型必须与你想要的数值类型一样，整数就整数、字串就字串。从 `params` 取出的数值为字串，这点要注意一下。
+__注意__ `options_for_select` 的第二个参数的类型，必须与你想要的数值类型一样，整数就整数、字串就字串。从 `params` 取出的数值为字串，这点要注意一下。
 
 可以用 hash 给每个 option 加上任意的属性：
 
@@ -483,7 +483,11 @@ __注意__ `options_for_select` 的第二个参数的类型必须与你想要的
 
 ## 3.2 处理 Models 的下拉选单
 
-表单与 model 结合，下拉选单也是。处理 model 时，去掉 `_tag` 字尾，用 `select` 即可：
+多数情况下，表单控件会与特定数据库模型绑在一起，而由于你预期 Rails 会提供定制好的 Helper 给你用。
+
+Rails 已经帮你想好了！有的，表单处理 Model 对象把 `_tag` 去掉；
+
+下拉选单也一样，`select_tag` 去掉 `_tag`，用 `select` 即可：
 
 ```ruby
 # controller:
@@ -508,7 +512,7 @@ __注意__ `options_for_select` 的第二个参数的类型必须与你想要的
 
 ## 3.3 从任意对象集合来的 option 标签
 
-`options_for_select` 需要给一个 array 参数，包含了 option 的 `text` 与 `value`。但要是已经有了 City model，想要直接从 model 里生成这些选项该怎么做？
+`options_for_select` 需要给一个 array 参数，包含了 option 的 `text` 与 `value`。但要是已经有了 City Model，想要直接从 Model 里生成这些选项该怎么做？
 
 ```erb
 <% cities_array = City.all.map { |city| [city.name, city.id] } %>
@@ -517,7 +521,7 @@ __注意__ `options_for_select` 的第二个参数的类型必须与你想要的
 
 这完全是个完美又可行的解决方案，但 Rails 提供一个更方便的方法：`options_from_collection_for_select`
 
-这个 helper 接受一个随意对象的集合（collection of arbitrary objects）及两个额外的参数：读取 `option` 的 **value** 与 **text** 的名称。
+这个 helper 接受一个任意对象的集合（collection of arbitrary objects）及两个额外的参数：读取 `option` 的 **value** 与 **text** 的名称。
 
 __注意 `options_from_collection_for_select` 参数 `value` 与 `text` 的顺序与 `options_for_select` 颠倒__。
 
@@ -532,7 +536,6 @@ __注意 `options_from_collection_for_select` 参数 `value` 与 `text` 的顺�
 `select` = `select_tag` + `options_for_select`
 
 `collection_select` = `select_tag` + `options_from_collection_for_select`
-
 
 ## 3.4 Time Zone 与 Country
 
