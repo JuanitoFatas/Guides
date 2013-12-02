@@ -187,7 +187,7 @@ Checkbox 是多選框，讓使用者有一系列可多選的選項：
 
 `radio_button_tag` 第二個參數同樣是 `input` 的 `value`，上例中 `name` 都是 `age`，若使用者有按其中一個 radio button 的話，可以用 `params[:age]` 取出。可能的值是 `"child"` 或 `"adult"`。
 
-__記得要給 checkbox 與 radio button 加上 `label`，這樣讓可按的區域變得較廣。__
+__記得要給 checkbox 與 radio button 加上 `label`，這樣可按的區域更廣。__
 
 ### 1.4 其它相關的 helpers
 
