@@ -237,9 +237,9 @@ textareas、password fields、hidden fields、search fields、telephone fields�
 
 ## 2.1 Model 对象的 Helpers
 
-表单通常是拿来编辑或新建一个 model 对象。带有 `_tag` 字尾的 Helpers 可以解决这件事，但是太繁琐了。 Rails 提供更多方便的 Helpers（没有 `_tag` 字尾），像是 `text_field`、`text_area` 等，用来处理 Model 对象。
+表单通常拿来编辑或新建 model 对象。带有 `_tag` 字尾的 Helpers 可以办到这件事，但太繁琐了。 Rails 提供更多方便的 Helpers（没有 `_tag` 字尾），像是 `text_field`、`text_area` 等，用来处理 Model 对象。
 
-这些 Helpers 的第一个参数是实例变量的 `name`，第二个参数是要对实例对象调用的方法名（通常是 attr​​ibute）。 Rails 会将调用的结果存成 `input` 的 `value`，并帮你给 `input` 的 `name` 取个好名字。
+这些 Helpers 的第一个参数是实例变量的名字 `name`，第二个参数是要对实例对象调用的方法名称（通常是 `attr​​ibute`）。 Rails 会将调用的结果存成 `input` 的 `value`，并帮你给 `input` 的 `name` 取个好名字。
 
 假设 controller 定义了 `@person`，这 `@person` 的 `name` 叫 `Henry`，则
 
@@ -261,11 +261,11 @@ textareas、password fields、hidden fields、search fields、telephone fields�
 
 只要 `Person` 对象 有 `name` 与 `name=` 就可以了。
 
-__警告：第一个参数必须是实例变量的名称，如：`:person` 或 `"person"`，而不是传实际的实例进去。__
+__警告：第一个参数必须是实例变量的“名称”，如：`:person` 或 `"person"`，而不是传实际的实例进去。__
 
 ## 2.2 将表单绑定至对象
 
-当 `Person` 有很多属性时，我们得一直重复传入 `:person` 来生成对应的表单。 Rails 提供了 `form_for` 让你把表单绑定至 model 的对象。
+当 `Person` 有很多属性时，得重复传入 `:person` 来生成对应的表单时。Rails 提供了 `form_for` 让你把表单绑定至 model 的对象。
 
 假设我们有个处理文章的 controller：`app/controllers/articles_controller.rb`：
 
@@ -288,7 +288,7 @@ end
 几件事情要说明一下：
 
 * `@article` 是实际被编辑的对象。
-* 有两个 options (hash）：`:url` 与 `:html`。还可传入 `:namespace`，用来生成独一无二的 ID。
+* 传入了两个选项 (hash）：`:url` 与 `:html`。还可传入 `:namespace`，用来生成独一无二的 ID。
 * `|f|` 为 form builder。
 * 本来写成 `text_field(:article)` 改为 `f.text_filed`。
 
@@ -324,7 +324,7 @@ end
 
 ## 2.3 Record Identification
 
-假设你是用 RESTful 风格：
+假设你依循 RESTful 风格：
 
 ```ruby
 resources :articles
@@ -358,6 +358,8 @@ form_for(@article)
 
 但若使用了 STI（Single Table Inheritance，单表继承）则得明确指定 `:url` 与 `:method`。
 
+__写 `form_for` 最好指定 `:url`，这是一个常见的新手错误。__
+
 ### 2.3.1 处理 namespace
 
 如果你有 namespace 的 route，`form_for` 也有个简便的缩写：
@@ -366,7 +368,7 @@ form_for(@article)
 form_for [:admin, @article]
 ```
 
-会新建一个表单，在 `admin` namespace 下将表单送给 `articles` controller。
+会新建一个表单，在 `admin` namespace 下，将表单送给 `articles` Controller。
 
 上面这种写法等价于：
 
@@ -374,7 +376,7 @@ form_for [:admin, @article]
 form_for admin_article_path(@article)
 ```
 
-如果有更多层的命名空间，依样画葫芦就是了：
+如果有更多层的命名空间，依样画葫芦便是：
 
 ```ruby
 form_for [:admin, :management, @article]
@@ -382,7 +384,7 @@ form_for [:admin, :management, @article]
 
 ## 2.4 PATCH、PUT、DELETE 表单是怎么工作的？
 
-Rails 框架提倡使用 _RESTful_ 风格来设计 web 应用。这表示会有很多 “PATCH” 以及 “DELETE” 请求（request），而不是 “GET” 与 “POST”，但多数浏览器在送出表单时，不支援非 `GET` 或 `POST` 的请求。 Rails 透过一个 `name` 为 `_method` 的隐藏 `input` 来模拟 POST。
+Rails 框架提倡使用 _RESTful_ 风格来设计 web 应用。这表示会有很多 “PATCH” 以及 “DELETE” 请求（request），而不是 “GET” 与 “POST”，但多数浏览器在送出表单时，不支援非 `GET` 或 `POST` 的请求。 Rails 透过一个 `name` 为 `_method` 的 hidden `input` 来将 PATCH 请求，模拟成 POST。
 
 ```ruby
 form_tag(search_path, method: "patch")
