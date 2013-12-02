@@ -191,7 +191,7 @@ __记得要给 checkbox 与 radio button 加上 `label`，这样让可按的区�
 
 ### 1.4 其它相关的 helpers
 
-textareas、password fields、hidden fields、search fields、telephone fields、date fields、time fields、color fields、datetime fields、datetime-local fields、month fields、week fields、url fields、email fields 及 number fields， __其中 search、telephone、 date、time、color、datetime、datetime-local、month、week、url、email、number 以及 range 是 HTML5 才有的 input type__。
+textareas、password fields、hidden fields、search fields、telephone fields、date fields、time fields、color fields、datetime fields、datetime-local fields、month fields、week fields、url fields、email fields、number fields 及 range fields， __其中 search、telephone、date、time、color、datetime、datetime-local、month、week、url、email、number 以及 range 是 HTML5 才有的 input type__。
 
 ```erb
 <%= text_area_tag(:message, "Hi, nice site", size: "24x6") %>
