@@ -261,7 +261,7 @@ Active Record
 
 * 移除了 scope 沒傳 callable object 的用法。
 
-* 移除了 `transaction_joinable=`，請改用 `begin_transaction 加 `:joinable` 選項的組合。
+* 移除了 `transaction_joinable=`，請改用 `begin_transaction` 加 `:joinable` 選項的組合。
 
 * 移除了 `decrement_open_transactions`。
 
@@ -279,8 +279,7 @@ Active Record
 
 * 移除有 `:dependent` 選項的關聯傳入 `:restrict` 選項。
 
-* 移除了 association 這幾個選項 `:delete_sql`, `:insert_sql`, `:finder_sql`
-  and `:counter_sql`。
+* 移除了 association 這幾個選項 `:delete_sql`、`:insert_sql`、`:finder_sql` 及 `:counter_sql`。
 
 * 從 Column 移除了 `type_cast_code` 方法。
 
@@ -288,7 +287,7 @@ Active Record
 
 * 移除了 `auto_explain_threshold_in_seconds` 的警告。
 
-* 移除了 `Relation#count` 的 `:distinct` 選項
+* 移除了 `Relation#count` 的 `:distinct` 選項。
 
 * 移除了 `partial_updates`、`partial_updates?` 與 `partial_updates=`。
 
@@ -306,43 +305,43 @@ Active Record
 
 * 棄用了任何地方都沒用到的 `quoted_locking_column` 方法。
 
-* 棄用了 association 從 Array 獲得的 bang 方法。要使用請先將 association 轉成陣列（`#to_a`），再對元素做處理。([Pull Request](https://github.com/rails/rails/pull/12129))
+* 棄用了 association 從 Array 獲得的 bang 方法。要使用請先將 association 轉成陣列（`#to_a`），再對元素做處理。 [PR#12129](https://github.com/rails/rails/pull/12129)。
 
 * Rails 內部棄用了 `ConnectionAdapters::SchemaStatements#distinct`。 [PR#10556](https://github.com/rails/rails/pull/10556)。
 
 ### 值得一提的變化
 
-* 新增 `ActiveRecord::Base.to_param` 來顯示漂亮的 URL。 [PR#12891](https://github.com/rails/rails/pull/12891)。
+* 新增 `ActiveRecord::Base.to_param` 來顯示漂亮的 URL。 [PR#12891](https://github.com/rails/rails/pull/12891)
 
-* 新增 `ActiveRecord::Base.no_touching`，可允許忽略對 Model 的 touch。 [PR#12772](https://github.com/rails/rails/pull/12772)。
+* 新增 `ActiveRecord::Base.no_touching`，可允許忽略對 Model 的 touch。 [PR#12772](https://github.com/rails/rails/pull/12772)
 
 * 統一了 `MysqlAdapter` 與 `Mysql2Adapter` 的布林轉換，`true` 會返回 `1`，`false` 返回 `0`。 [PR#12425](https://github.com/rails/rails/pull/12425)。
 
 * `unscope` 現在移除了 `default_scope` 規範的 conditions。[Commit](https://github.com/rails/rails/commit/94924dc32baf78f13e289172534c2e71c9c8cade)
 
-* 新增 `ActiveRecord::QueryMethods#rewhere`，會覆寫已存在的 where 條件。[Commit](https://github.com/rails/rails/commit/f950b2699f97749ef706c6939a84dfc85f0b05f2))
+* 新增 `ActiveRecord::QueryMethods#rewhere`，會覆寫已存在的 where 條件。[Commit](https://github.com/rails/rails/commit/f950b2699f97749ef706c6939a84dfc85f0b05f2)
 
-* 擴充了 `ActiveRecord::Base#cache_key`，可接受多個 timestamp，會使用數值最大的 timestamp。[Commit](https://github.com/rails/rails/commit/e94e97ca796c0759d8fcb8f946a3bbc60252d329))
+* 擴充了 `ActiveRecord::Base#cache_key`，可接受多個 timestamp，會使用數值最大的 timestamp。[Commit](https://github.com/rails/rails/commit/e94e97ca796c0759d8fcb8f946a3bbc60252d329)
 
 * 新增 `ActiveRecord::Base#enum`，用來枚舉 attributes。數值會對應到資料庫理的整數，但可用名字取出。[Commit](https://github.com/rails/rails/commit/db41eb8a6ea88b854bf5cd11070ea4245e1639c5))
 
-* 寫入資料庫時，JSON 會做類型轉換。這樣子讀寫才會一致。 [PR#12643](https://github.com/rails/rails/pull/12643)。
+* 寫入資料庫時，JSON 會做類型轉換。這樣子讀寫才會一致。 [PR#12643](https://github.com/rails/rails/pull/12643)
 
 * 寫入資料庫時，hstore 會做類型轉換，這樣子讀寫才會一致。[Commit](https://github.com/rails/rails/commit/5ac2341fab689344991b2a4817bd2bc8b3edac9d)
 
-* `next_migration_number` 可供第三方函式庫存取。 [PR#12407](https://github.com/rails/rails/pull/12407)。
+* `next_migration_number` 可供第三方函式庫存取。 [PR#12407](https://github.com/rails/rails/pull/12407)
 
-* 若是呼叫 `update_attributes` 的參數有 `nil`，則會拋出 `ArgumentError`。更精準的說，傳進來的參數，沒有回應(`respond_to`) `stringify_keys` 會拋出錯誤。[PR#9860](https://github.com/rails/rails/pull/9860)。
+* 若是呼叫 `update_attributes` 的參數有 `nil`，則會拋出 `ArgumentError`。更精準的說，傳進來的參數，沒有回應(`respond_to`) `stringify_keys` 會拋出錯誤。[PR#9860](https://github.com/rails/rails/pull/9860)
 
-* `CollectionAssociation#first`/`#last` (`has_many`) ，Query 會使用 `LIMIT` 來限制提取的數量，而不是將整個 collection 載入出來。 [PR#12137](https://github.com/rails/rails/pull/12137)。
+* `CollectionAssociation#first`/`#last` (`has_many`) ，Query 會使用 `LIMIT` 來限制提取的數量，而不是將整個 collection 載入出來。 [PR#12137](https://github.com/rails/rails/pull/12137)
 
-* 對 Active Record Model 的類別做 `inspect` 不會去連資料庫。這樣當資料庫不存在時，`inspect` 才不會噴錯誤。[PR#11014](https://github.com/rails/rails/pull/11014)。
+* 對 Active Record Model 的類別做 `inspect` 不會去連資料庫。這樣當資料庫不存在時，`inspect` 才不會噴錯誤。[PR#11014](https://github.com/rails/rails/pull/11014)
 
-* 移除了 `count` 的欄位限制，SQL 不正確時，讓資料庫自己丟出錯誤。 [PR#10710](https://github.com/rails/rails/pull/10710)。
+* 移除了 `count` 的欄位限制，SQL 不正確時，讓資料庫自己丟出錯誤。 [PR#10710](https://github.com/rails/rails/pull/10710)
 
-* Rails 現在會自動偵測 inverse associations。如果 association 沒有設定 `:inverse_of`，則 Active Record 會自己猜出對應的 associaiton。[PR#10886](https://github.com/rails/rails/pull/10886)。
+* Rails 現在會自動偵測 inverse associations。如果 association 沒有設定 `:inverse_of`，則 Active Record 會自己猜出對應的 associaiton。[PR#10886](https://github.com/rails/rails/pull/10886)
 
-* `ActiveRecord::Relation` 會處理有別名的 attributes。當使用符號作為 key 時，Active Record 現在也會一起翻譯別名的屬性了，將其轉成資料庫內所使用的欄位名。[PR#7839](https://github.com/rails/rails/pull/7839)。
+* `ActiveRecord::Relation` 會處理有別名的 attributes。當使用符號作為 key 時，Active Record 現在也會一起翻譯別名的屬性了，將其轉成資料庫內所使用的欄位名。[PR#7839](https://github.com/rails/rails/pull/7839)
 
 致謝
 -------
