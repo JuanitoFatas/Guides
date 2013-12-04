@@ -70,8 +70,9 @@ end
 
 ### Spring
 
-新版 Rails 4.1 應用程式出廠內建 Spring 化的 binstubs。
-這表示 `bin/rails`、`bin/rake` 會自動預載 Spring 的環境。
+> Spring is a Rails application preloader. It speeds up development by keeping your application running in the background so you don't need to boot it every time you run a test, rake task or migration.
+
+新版 Rails 4.1 應用程式出廠內建 Spring 化的 binstubs（aka，執行檔，如 `rails`、`rake`）。這表示 `bin/rails`、`bin/rake` 會自動預載 Spring 的環境。
 
 **執行 rake 任務：**
 
