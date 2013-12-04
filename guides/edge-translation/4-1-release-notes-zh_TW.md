@@ -136,7 +136,7 @@ Railties
 
 * `BACKTRACE` 環境變數可看（unfiltered）測試的 backtrace。[Commit](https://github.com/rails/rails/commit/84eac5dab8b0fe9ee20b51250e52ad7bfea36553)
 
-* 可以在環境設定檔設定 `MiddlewareStack#unshift`。 [PR#12749](https://github.com/rails/rails/pull/12749)。
+* 可以在環境設定檔設定 `MiddlewareStack#unshift`。 [PR#12749](https://github.com/rails/rails/pull/12749)
 
 Action Mailer
 -------------
@@ -145,7 +145,7 @@ Action Mailer
 
 ### 值得一提的變化
 
-*  Action Mailer 產生 mail 的時間會寫到 log 裡。 [PR#12556](https://github.com/rails/rails/pull/12556)。
+*  Action Mailer 產生 mail 的時間會寫到 log 裡。 [PR#12556](https://github.com/rails/rails/pull/12556)
 
 Active Model
 ------------
@@ -154,8 +154,7 @@ Active Model
 
 ### 棄用
 
-* 棄用了 `Validator#setup`. This should be done manually now in the
-  validator's constructor. ([Commit](https://github.com/rails/rails/commit/7d84c3a2f7ede0e8d04540e9c0640de7378e9b3a))
+* 棄用了 `Validator#setup`。現在要手動在 Validator 的 constructor 裡自己處理。[Commit](https://github.com/rails/rails/commit/7d84c3a2f7ede0e8d04540e9c0640de7378e9b3a)
 
 ### 值得一提的變化
 
