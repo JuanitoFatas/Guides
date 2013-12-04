@@ -158,7 +158,7 @@ Active Model
 
 ### 值得一提的變化
 
-* `ActiveModel::Dirty` 加入新的 API：`reset_changes` and `changes_applied`，來控制改變的狀態。
+* `ActiveModel::Dirty` 加入新的 API：`reset_changes` 與 `changes_applied`，來控制改變的狀態。
 
 Active Support
 --------------
@@ -169,9 +169,9 @@ Active Support
 
 * 移除對 `MultiJSON` Gem 的依賴。也就是說 `ActiveSupport::JSON.decode` 不再接受給 `MultiJSON` 的 hash 參數。[PR#10576](https://github.com/rails/rails/pull/10576)
 
-* 移除了 `encode_json` hook，本來可以用來把 object 轉成 JSON。這個功能被抽成了 [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder) Gem，請參考 [PR#12183](https://github.com/rails/rails/pull/12183) 與 [這裡](upgrading_ruby_on_rails.html#changes-in-json-handling))。
+* 移除了 `encode_json` hook，本來可以用來把 object 轉成 JSON。這個功能被抽成了 [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder) Gem，請參考 [PR#12183](https://github.com/rails/rails/pull/12183) 與 [這裡](upgrading_ruby_on_rails.html#changes-in-json-handling)。
 
-* 移除了 `String#encoding_aware?`（`core_ext/string/encoding`）.
+* 移除了 `String#encoding_aware?`（`core_ext/string/encoding.rb`）.
 
 * 移除了 `Module#local_constant_names` 請改用 `Module#local_constants`。
 
@@ -180,7 +180,7 @@ Active Support
 * 移除了 `Logger` （`core_ext/logger.rb`）。
 
 * 移除了 `Time#time_with_datetime_fallback`、`Time#utc_time` 與
-  `Time#local_time`，請改用 `Time#utc` and `Time#local`。
+  `Time#local_time`，請改用 `Time#utc` 與 `Time#local`。
 
 * 移除了 `Hash#diff`。
 
@@ -204,9 +204,9 @@ Active Support
 
 ### 值得一提的變化
 
-* 新增 `ActiveSupport::Testing::TimeHelpers#travel` 與 `#travel_to`。這兩個方法透過 stubbing `Time.now` 與 `Date.today`，可做時光旅行。參考 [PR#12824](https://github.com/rails/rails/pull/12824)。
+* 新增 `ActiveSupport::Testing::TimeHelpers#travel` 與 `#travel_to`。這兩個方法透過 stubbing `Time.now` 與 `Date.today`，可做時光旅行。參考 [PR#12824](https://github.com/rails/rails/pull/12824)
 
-* 新增 `Numeric#in_milliseconds`，像是 1 小時有幾毫秒：`1.hour.in_milliseconds`。可以將時間轉成毫秒，再餵給 JavaScript 的 `getTime()` 函數。[Commit](https://github.com/rails/rails/commit/423249504a2b468d7a273cbe6accf4f21cb0e643)。
+* 新增 `Numeric#in_milliseconds`，像是 1 小時有幾毫秒：`1.hour.in_milliseconds`。可以將時間轉成毫秒，再餵給 JavaScript 的 `getTime()` 函數。[Commit](https://github.com/rails/rails/commit/423249504a2b468d7a273cbe6accf4f21cb0e643)
 
 * 新增了 `Date#middle_of_day`, `DateTime#middle_of_day` and `Time#middle_of_day`
   方法。同時添加了 `midday`、`noon`、`at_midday`、`at_noon`、`at_middle_of_day` 作為別名。[PR#10879](https://github.com/rails/rails/pull/10879)
@@ -314,7 +314,7 @@ Active Record
 
 * 新增 `ActiveRecord::Base.no_touching`，可允許忽略對 Model 的 touch。 [PR#12772](https://github.com/rails/rails/pull/12772)
 
-* 統一了 `MysqlAdapter` 與 `Mysql2Adapter` 的布林轉換，`true` 會返回 `1`，`false` 返回 `0`。 [PR#12425](https://github.com/rails/rails/pull/12425)。
+* 統一了 `MysqlAdapter` 與 `Mysql2Adapter` 的布林轉換，`true` 會返回 `1`，`false` 返回 `0`。 [PR#12425](https://github.com/rails/rails/pull/12425)
 
 * `unscope` 現在移除了 `default_scope` 規範的 conditions。[Commit](https://github.com/rails/rails/commit/94924dc32baf78f13e289172534c2e71c9c8cade)
 
