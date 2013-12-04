@@ -196,7 +196,7 @@ Active Support
 
 * 移除了 `BufferedLogger`, 請改用 `ActiveSupport::Logger`。
 
-* 移除了 `assert_present` 與 `assert_blank` methods，請改用 `assert
+* 移除了 `assert_present` 與 `assert_blank`，請改用 `assert
   object.blank?` 與 `assert object.present?`。
 
 ### 棄用
@@ -207,13 +207,13 @@ Active Support
 
 * 新增 `ActiveSupport::Testing::TimeHelpers#travel` 與 `#travel_to`。這兩個方法透過 stubbing `Time.now` 與 `Date.today`，可做時光旅行。參考 [PR#12824](https://github.com/rails/rails/pull/12824)。
 
-* 新增 `Numeric#in_milliseconds`，像是 1 小時有幾毫秒：`1.hour.in_milliseconds`。可以將時間轉成毫秒餵給 JavaScript 的 `getTime()` 函數。參考 [Commit](https://github.com/rails/rails/commit/423249504a2b468d7a273cbe6accf4f21cb0e643)。
+* 新增 `Numeric#in_milliseconds`，像是 1 小時有幾毫秒：`1.hour.in_milliseconds`。可以將時間轉成毫秒，再餵給 JavaScript 的 `getTime()` 函數。[Commit](https://github.com/rails/rails/commit/423249504a2b468d7a273cbe6accf4f21cb0e643)。
 
 * 新增了 `Date#middle_of_day`, `DateTime#middle_of_day` and `Time#middle_of_day`
-  方法。同時添加了 `midday`、`noon`、`at_midday`、`at_noon`、`at_middle_of_day` 作為別名。[PR#10879](https://github.com/rails/rails/pull/10879)。
+  方法。同時添加了 `midday`、`noon`、`at_midday`、`at_noon`、`at_middle_of_day` 作為別名。[PR#10879](https://github.com/rails/rails/pull/10879)
 
 * Add `String#remove(pattern)` as a short-hand for the common pattern of
-  `String#gsub(pattern,'')`. ([Commit](https://github.com/rails/rails/commit/5da23a3f921f0a4a3139495d2779ab0d3bd4cb5f))
+  `String#gsub(pattern,'')`。[Commit](https://github.com/rails/rails/commit/5da23a3f921f0a4a3139495d2779ab0d3bd4cb5f)
 
 * 移除了 'cow' => 'kine' 這個不規則的轉換。[Commit](https://github.com/rails/rails/commit/c300dca9963bda78b8f358dbcb59cabcdc5e1dc9)
 
@@ -224,11 +224,11 @@ Action Pack
 
 ### 移除
 
-*   移除了 Rails 針對整合測試的補救方案，請設定 `ActionDispatch.test_app`。
+* 移除了 Rails 針對整合測試的補救方案（fallback），請設定 `ActionDispatch.test_app`。
 
-*   移除了 `config.page_cache_extension` 設定。
+* 移除了 `config.page_cache_extension` 設定。
 
-*   更改 Action Controller 下列常數的名稱
+* 更改 Action Controller 下列常數的名稱：
 
         ActionController::AbstractRequest  => ActionDispatch::Request
         ActionController::Request          => ActionDispatch::Request
@@ -240,7 +240,7 @@ Action Pack
 
 ### 值得一提的變化
 
-* `#url_for` 接受額外的 options，可將選項打包成 hash，放在 陣列傳入。[PR#9599](https://github.com/rails/rails/pull/9599)。
+* `#url_for` 接受額外的 options，可將選項打包成 hash，放在陣列傳入。[PR#9599](https://github.com/rails/rails/pull/9599)。
 
 * 新增 `session#fetch` 方法，行為與 [Hash#fetch](http://www.ruby-doc.org/core-2.0.0/Hash.html#method-i-fetch) 類似，差別在返回值永遠會存回 session。 [PR#12692](https://github.com/rails/rails/pull/12692)。
 
@@ -253,8 +253,7 @@ Active Record
 
 ### 移除
 
-* 移除了 nil-passing to the following `SchemaCache` methods。
-  `primary_keys`, `tables`, `columns` and `columns_hash`.
+* 移除了傳入 nil 至右列 `SchemaCache` 的方法：`primary_keys`、`tables`、`columns` 及 `columns_hash`。
 
 * 從 `ActiveRecord::Migrator#migrate` 移除了 block filter。
 
