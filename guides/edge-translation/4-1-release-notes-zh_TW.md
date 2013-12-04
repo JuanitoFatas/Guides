@@ -39,7 +39,9 @@ PR#12389 代表 Rails Repository 上 12389 號 Pull Request。
 
 ### Variants
 
-針對手機、平板、桌上型電腦及瀏覽器，常需要 render 不同格式的模版：html、json、xml。Variant 簡化了這件事。
+針對手機、平板、桌上型電腦及瀏覽器，常需要 render 不同格式的模版：html、json、xml。
+
+__Variant 簡化了這件事。__
 
 Request variant 是一種特殊的 request 格式，像是 `:tablet`、`:phone` 或 `:desktop`。
 
@@ -348,7 +350,7 @@ Active Record
 許多人花了寶貴的時間貢獻至 Rails 專案，使 Rails 成為更穩定、更強韌的網路框架，參考[完整的 Rails 貢獻者清單](http://contributors.rubyonrails.org/)，並感謝所有的貢獻者！
 
 [rails]: https://github.com/rails/rails
-[Railties-CHANGELOG]]: https://github.com/rails/rails/blob/4-1-stable/railties/CHANGELOG.md
+[Railties-CHANGELOG]: https://github.com/rails/rails/blob/4-1-stable/railties/CHANGELOG.md
 [AR-CHANGELOG]: https://github.com/rails/rails/blob/4-1-stable/activerecord/CHANGELOG.md
 [AP-CHANGELOG]: https://github.com/rails/rails/blob/4-1-stable/actionpack/CHANGELOG.md
 [AM-CHANGELOG]: https://github.com/rails/rails/blob/4-1-stable/activemodel/CHANGELOG.md
