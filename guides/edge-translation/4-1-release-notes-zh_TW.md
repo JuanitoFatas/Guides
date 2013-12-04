@@ -111,7 +111,7 @@ Spring is running:
 
 ### Active Record enums
 
-宣告一個 `enum` 屬性，將值對應到資料庫的整數，但可用名字查詢。
+宣告一個 `enum` 屬性，將 attributes 映射到資料庫的整數，並可透過名字查詢出來。
 
 ```ruby
 class Conversation < ActiveRecord::Base
@@ -343,7 +343,7 @@ Active Record
 
 * 擴充了 `ActiveRecord::Base#cache_key`，可接受多個 timestamp，會使用數值最大的 timestamp。[Commit](https://github.com/rails/rails/commit/e94e97ca796c0759d8fcb8f946a3bbc60252d329)
 
-* 新增 `ActiveRecord::Base#enum`，用來枚舉 attributes。數值會對應到資料庫理的整數，但可用名字取出。[Commit](https://github.com/rails/rails/commit/db41eb8a6ea88b854bf5cd11070ea4245e1639c5)
+* 新增 `ActiveRecord::Base#enum`，用來枚舉 attributes。將 attributes 映射到資料庫的整數，並可透過名字查詢出來。[Commit](https://github.com/rails/rails/commit/db41eb8a6ea88b854bf5cd11070ea4245e1639c5)
 
 * 寫入資料庫時，JSON 會做類型轉換。這樣子讀寫才會一致。 [PR#12643](https://github.com/rails/rails/pull/12643)
 
