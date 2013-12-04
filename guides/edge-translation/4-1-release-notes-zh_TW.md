@@ -32,7 +32,7 @@ PR#12389 代表 Rails Repository 上 12389 號 Pull Request。
 升級至 Rails 4.1
 ----------------------
 
-若是升級現有的應用程式，最好有好的測試覆蓋度。首先應先升級至 4.0，再升上 4.1。升級需要注意的事項在此篇[升級 Rails](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md) 可以找到。
+如果你正試著升級現有的應用程式至 Rails 4.1，最好有好的測試覆蓋度。首先應先升級至 4.0，再升上 4.1。升級需要注意的事項在此篇[升級 Rails](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md) 可以找到。
 
 主要功能
 --------------
@@ -351,7 +351,7 @@ Active Record
 許多人花了寶貴的時間貢獻至 Rails 專案，使 Rails 成為更穩定、更強韌的網路框架，參考[完整的 Rails 貢獻者清單](http://contributors.rubyonrails.org/)，並感謝所有的貢獻者！
 
 [rails]: https://github.com/rails/rails
-[Railtiles-CHANGELOG]: https://github.com/rails/rails/blob/4-1-stable/railties/CHANGELOG.md
+[Railties-CHANGELOG]]: https://github.com/rails/rails/blob/4-1-stable/railties/CHANGELOG.md
 [AR-CHANGELOG]: https://github.com/rails/rails/blob/4-1-stable/activerecord/CHANGELOG.md
 [AP-CHANGELOG]: https://github.com/rails/rails/blob/4-1-stable/actionpack/CHANGELOG.md
 [AM-CHANGELOG]: https://github.com/rails/rails/blob/4-1-stable/activemodel/CHANGELOG.md
