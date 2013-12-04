@@ -43,24 +43,24 @@ PR#12389 代表 Rails Repository 上 12389 號 Pull Request。
 
 Request variant 是一種特殊的 request 格式，像是 `:tablet`、`:phone` 或 `:desktop`。
 
-可在 `before_action` 裡設定 Variant
+可在 `before_action` 裡設定 Variant：
 
-  ```ruby
-  request.variant = :tablet if request.user_agent =~ /iPad/
-  ```
+```ruby
+request.variant = :tablet if request.user_agent =~ /iPad/
+```
 
 在 Controller `action` 裡，回應特殊格式跟處理別的格式相同：
 
-  ```ruby
-  respond_to do |format|
-    format.html do |html|
-      html.tablet # 會 render app/views/projects/show.html+tablet.erb
-      html.phone { extra_setup; render ... }
-    end
+```ruby
+respond_to do |format|
+  format.html do |html|
+    html.tablet # 會 render app/views/projects/show.html+tablet.erb
+    html.phone { extra_setup; render ... }
   end
-  ```
+end
+```
 
-給每個 format 與 variant 提供模版：
+再給每個 format 與 variant 提供模版就搞定了：
 
   ```
   app/views/projects/show.html.erb
