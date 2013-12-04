@@ -109,6 +109,25 @@ Spring is running:
 
 請查閱 [Spring README](https://github.com/jonleighton/spring/blob/master/README.md) 了解所有功能。
 
+### Active Record enums
+
+宣告一個 `enum` 屬性，將值對應到資料庫的整數，但可用名字查詢。
+
+```ruby
+class Conversation < ActiveRecord::Base
+  enum status: [ :active, :archived ]
+end
+
+conversation.archive!
+conversation.active? # => false
+conversation.status  # => "archived"
+
+Conversation.archived # => Relation for all archived Conversations
+```
+
+參見
+[active_record/enum.rb](https://github.com/rails/rails/blob/4-1-stable/activerecord/lib/active_record/enum.rb#L2-L42) 更詳細的內容。
+
 文件
 -------------
 
