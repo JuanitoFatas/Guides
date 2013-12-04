@@ -136,7 +136,7 @@ Railties
 
 * `BACKTRACE` 環境變數可看（unfiltered）測試的 backtrace。[Commit](https://github.com/rails/rails/commit/84eac5dab8b0fe9ee20b51250e52ad7bfea36553)
 
-* 可以在環境設定檔設定 `MiddlewareStack#unshift`。 ([Pull Request #12479](https://github.com/rails/rails/pull/12479))
+* 可以在環境設定檔設定 `MiddlewareStack#unshift`。 [PR#12749](https://github.com/rails/rails/pull/12749)。
 
 Action Mailer
 -------------
@@ -145,7 +145,7 @@ Action Mailer
 
 ### 值得一提的變化
 
-*  Action Mailer 產生 mail 的時間會寫到 log 裡。參見 [Pull Request #12556](https://github.com/rails/rails/pull/12556)。
+*  Action Mailer 產生 mail 的時間會寫到 log 裡。 [PR#12556](https://github.com/rails/rails/pull/12556)。
 
 Active Model
 ------------
