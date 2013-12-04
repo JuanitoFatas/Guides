@@ -173,7 +173,7 @@ Active Support
 
 * 移除了 `encode_json` hook，本來可以用來把 object 轉成 JSON。這個功能被抽成了 [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder) Gem，請參考 [PR#12183](https://github.com/rails/rails/pull/12183) 與 [這裡](upgrading_ruby_on_rails.html#changes-in-json-handling)。
 
-* 移除了 `String#encoding_aware?`（`core_ext/string/encoding.rb`）.
+* 移除了 `String#encoding_aware?`（`core_ext/string/encoding.rb`）。
 
 * 移除了 `Module#local_constant_names` 請改用 `Module#local_constants`。
 
@@ -308,7 +308,7 @@ Active Record
 
 * 棄用了 association 從 Array 獲得的 bang 方法。要使用請先將 association 轉成陣列（`#to_a`），再對元素做處理。 [PR#12129](https://github.com/rails/rails/pull/12129)。
 
-* Rails 內部棄用了 `ConnectionAdapters::SchemaStatements#distinct`。 [PR#10556](https://github.com/rails/rails/pull/10556)。
+* Rails 內部棄用了 `ConnectionAdapters::SchemaStatements#distinct`。 [PR#10556](https://github.com/rails/rails/pull/10556)
 
 ### 值得一提的變化
 
@@ -324,7 +324,7 @@ Active Record
 
 * 擴充了 `ActiveRecord::Base#cache_key`，可接受多個 timestamp，會使用數值最大的 timestamp。[Commit](https://github.com/rails/rails/commit/e94e97ca796c0759d8fcb8f946a3bbc60252d329)
 
-* 新增 `ActiveRecord::Base#enum`，用來枚舉 attributes。數值會對應到資料庫理的整數，但可用名字取出。[Commit](https://github.com/rails/rails/commit/db41eb8a6ea88b854bf5cd11070ea4245e1639c5))
+* 新增 `ActiveRecord::Base#enum`，用來枚舉 attributes。數值會對應到資料庫理的整數，但可用名字取出。[Commit](https://github.com/rails/rails/commit/db41eb8a6ea88b854bf5cd11070ea4245e1639c5)
 
 * 寫入資料庫時，JSON 會做類型轉換。這樣子讀寫才會一致。 [PR#12643](https://github.com/rails/rails/pull/12643)
 
@@ -348,6 +348,11 @@ Active Record
 -------
 
 許多人花了寶貴的時間貢獻至 Rails 專案，使 Rails 成為更穩定、更強韌的網路框架，參考[完整的 Rails 貢獻者清單](http://contributors.rubyonrails.org/)，並感謝所有的貢獻者！
+
+譯者
+-------
+
+_Juanito Fatas_
 
 [rails]: https://github.com/rails/rails
 [Railties-CHANGELOG]: https://github.com/rails/rails/blob/4-1-stable/railties/CHANGELOG.md
