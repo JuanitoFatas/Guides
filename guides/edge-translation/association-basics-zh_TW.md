@@ -128,11 +128,9 @@ class Order < ActiveRecord::Base
 end
 ```
 
-則會導致 `uninitialized constant Order::Customers` 錯誤。
+則會導致 `uninitialized constant Order::Customers` 錯誤。這是因為 Rails 會自動從關聯類型推斷出 Class 名稱的緣故。
 
-這是因為 Rails 自動從關聯類型推斷出 Class 名稱的緣故。
-
-對應的 Migration：
+上例對應的 Migration：
 
 ```ruby
 class CreateOrders < ActiveRecord::Migration
@@ -153,7 +151,7 @@ end
 
 ### `has_one` 關聯
 
-`has_one` 關聯同樣建立一對一關係，但語義上與結果上和 `belongs_to` 不太一樣。`has_one` 關聯是說 Model 裡的每個 instance，都包含或擁有另個 Model 的 instance。舉例來說每個供應商只有一個帳戶：
+`has_one` 關聯同樣建立一對一關係，但語義上與結果上和 `belongs_to` 不太一樣。`has_one` 關聯是說，Model 裡的每個 instance，都包含或擁有另個 Model 的 instance。舉例來說每個供應商只有一個帳戶：
 
 ```ruby
 class Supplier < ActiveRecord::Base
@@ -161,9 +159,9 @@ class Supplier < ActiveRecord::Base
 end
 ```
 
-![has_one Association Diagram](images/has_one.png)
+![has_one Association Diagram](../images/has_one.png)
 
-對應的 Migration：
+上例對應的 Migration：
 
 ```ruby
 class CreateSuppliers < ActiveRecord::Migration
@@ -182,7 +180,7 @@ class CreateSuppliers < ActiveRecord::Migration
 end
 ```
 
-### The `has_many` Association
+### `has_many` 關聯
 
 A `has_many` association indicates a one-to-many connection with another model. You'll often find this association on the "other side" of a `belongs_to` association. This association indicates that each instance of the model has zero or more instances of another model. For example, in an application containing customers and orders, the customer model could be declared like this:
 
