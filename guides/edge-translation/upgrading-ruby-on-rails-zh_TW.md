@@ -41,7 +41,7 @@ Rails 通常與最新的 Ruby 一起前進：
 
 **本小節正在施工中**
 
-### [Spring](https://github.com/jonleighton/spring)
+## 2.1 [Spring](https://github.com/jonleighton/spring)
 
 If you want to use Spring as your application preloader you need to:
 
@@ -53,11 +53,11 @@ NOTE: User defined rake tasks will run in the `development` environment by
 default. If you want them to run in other environments consult the
 [Spring README](https://github.com/jonleighton/spring#rake).
 
-### Changes in JSON handling
+## 2.2 處理 JSON 的變化
 
-The are a few major changes related to JSON handling in Rails 4.1.
+Rails 4.1 有些關於 JSON 處理的重要變化。
 
-#### MultiJSON removal
+### 2.2.1 移除 MultiJSON
 
 MultiJSON has reached its [end-of-life](https://github.com/rails/rails/pull/10576)
 and has been removed from Rails.
@@ -72,7 +72,7 @@ WARNING: Do not simply replace `MultiJson.dump` and `MultiJson.load` with
 `JSON.dump` and `JSON.load`. These JSON gem APIs are meant for serializing and
 deserializing arbitrary Ruby objects and are generally [unsafe](http://www.ruby-doc.org/stdlib-2.0.0/libdoc/json/rdoc/JSON.html#method-i-load).
 
-#### JSON gem compatibility
+### 2.2.2 JSON gem compatibility
 
 Historically, Rails had some compatibility issues with the JSON gem. Using
 `JSON.generate` and `JSON.dump` inside a Rails application could produce
@@ -93,7 +93,7 @@ end
 >> JSON.generate(FooBar.new, quirks_mode: true) # => "\"#<FooBar:0x007fa80a481610>\""
 ```
 
-#### New JSON encoder
+### 2.2.3 New JSON encoder
 
 The JSON encoder in Rails 4.1 has been rewritten to take advantage of the JSON
 gem. For most applications, this should be a transparent change. However, as
@@ -107,7 +107,7 @@ If you application depends on one of these features, you can get them back by
 adding the [`activesupport-json_encoder`](https://github.com/rails/activesupport-json_encoder)
 gem to your Gemfile.
 
-### Methods defined in Active Record fixtures
+## 2.3 Methods defined in Active Record fixtures
 
 Rails 4.1 evaluates each fixture's ERB in a separate context, so helper methods
 defined in a fixture will not be available in other fixtures.
