@@ -66,6 +66,9 @@ These configuration methods are to be called on a `Rails::Railtie` object, such 
 
 * `config.action_view.cache_template_loading` controls whether or not templates should be reloaded on each request. Defaults to whatever is set for `config.cache_classes`.
 
+* `config.beginning_of_week` sets the default beginning of week for the
+application. Accepts a valid week day symbol (e.g. `:monday`).
+
 * `config.cache_store` configures which cache store to use for Rails caching. Options include one of the symbols `:memory_store`, `:file_store`, `:mem_cache_store`, `:null_store`, or an object that implements the cache API. Defaults to `:file_store` if the directory `tmp/cache` exists, and to `:memory_store` otherwise.
 
 * `config.colorize_logging` specifies whether or not to use ANSI color codes when logging information. Defaults to true.
@@ -128,8 +131,6 @@ numbers. New applications filter out passwords by adding the following `config.f
     This custom store must be defined as `ActionDispatch::Session::MyCustomStore`.
 
 * `config.time_zone` sets the default time zone for the application and enables time zone awareness for Active Record.
-
-* `config.beginning_of_week` sets the default beginning of week for the application. Accepts a valid week day symbol (e.g. `:monday`).
 
 ### Configuring Assets
 
@@ -328,6 +329,18 @@ The schema dumper adds one additional configuration option:
     ```
 
 * `config.action_dispatch.tld_length` sets the TLD (top-level domain) length for the application. Defaults to `1`.
+
+* `config.action_dispatch.http_auth_salt` sets the HTTP Auth salt value. Defaults
+to `'http authentication'`.
+
+* `config.action_dispatch.signed_cookie_salt` sets the signed cookies salt value.
+Defaults to `'signed cookie'`.
+
+* `config.action_dispatch.encrypted_cookie_salt` sets the encrypted cookies salt
+value. Defaults to `'encrypted cookie'`.
+
+* `config.action_dispatch.encrypted_signed_cookie_salt` sets the signed
+encrypted cookies salt value. Defaults to `'signed encrypted cookie'`.
 
 * `ActionDispatch::Callbacks.before` takes a block of code to run before the request.
 
@@ -775,7 +788,7 @@ error similar to given below will be thrown.
 ActiveRecord::ConnectionTimeoutError - could not obtain a database connection within 5 seconds. The max pool size is currently 5; consider increasing it:
 ```
 
-If you get the above error, you might want to increase the size of connection 
+If you get the above error, you might want to increase the size of connection
 pool by incrementing the `pool` option in `database.yml`
 
 NOTE. If you have enabled `Rails.threadsafe!` mode then there could be a chance that several threads may be accessing multiple connections simultaneously. So depending on your current request load, you could very well have multiple threads contending for a limited amount of connections.

@@ -174,8 +174,8 @@ URL fields, email fields, number fields and range fields:
 <%= email_field(:user, :address) %>
 <%= color_field(:user, :favorite_color) %>
 <%= time_field(:task, :started_at) %>
-<%= number_field(:price, nil, in: 1.0..20.0, step: 0.5) %>
-<%= range_field(:percent, nil, in: 1..100) %>
+<%= number_field(:product, :price, in: 1.0..20.0, step: 0.5) %>
+<%= range_field(:product, :discount, in: 1..100) %>
 ```
 
 Output:
@@ -195,8 +195,8 @@ Output:
 <input id="user_address" name="user[address]" type="email" />
 <input id="user_favorite_color" name="user[favorite_color]" type="color" value="#000000" />
 <input id="task_started_at" name="task[started_at]" type="time" />
-<input id="price_" max="20.0" min="1.0" name="price[]" step="0.5" type="number" />
-<input id="percent_" max="100" min="1" name="percent[]" type="range" />
+<input id="product_price" max="20.0" min="1.0" name="product[price]" step="0.5" type="number" />
+<input id="product_discount" max="100" min="1" name="product[discount]" type="range" />
 ```
 
 Hidden inputs are not shown to the user but instead hold data like any textual input. Values inside them can be changed with JavaScript.
