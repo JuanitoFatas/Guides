@@ -120,6 +120,8 @@ end
 
 ![belongs_to Association Diagram](../images/belongs_to.png)
 
+__注意！__ `belongs_to` 要用__單數__。
+
 NOTE: `belongs_to` associations _must_ use the singular term. If you used the pluralized form in the above example for the `customer` association in the `Order` model, you would be told that there was an "uninitialized constant Order::Customers". This is because Rails automatically infers the class name from the association name. If the association name is wrongly pluralized, then the inferred class will be wrongly pluralized too.
 
 The corresponding migration might look like this:
