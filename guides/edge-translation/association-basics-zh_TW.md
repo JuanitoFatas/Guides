@@ -98,6 +98,26 @@ class Order < ActiveRecord::Base
 end
 ```
 
+```
+ ________________________
+|                        |
+|     Orders             |
+|------------------------|
+|                        |
+| Model: Order           |
+|                        |
+|                        |
+|                        |
+|                        |
+|________________________|
+| id          | integer  |
+--------------------------
+| customer_id | integer  |
+--------------------------
+| order_date  | datetime |
+--------------------------
+```
+
 ![belongs_to Association Diagram](../images/belongs_to.png)
 
 NOTE: `belongs_to` associations _must_ use the singular term. If you used the pluralized form in the above example for the `customer` association in the `Order` model, you would be told that there was an "uninitialized constant Order::Customers". This is because Rails automatically infers the class name from the association name. If the association name is wrongly pluralized, then the inferred class will be wrongly pluralized too.
@@ -2218,3 +2238,5 @@ Extensions can refer to the internals of the association proxy using these three
 * `proxy_association.owner` returns the object that the association is a part of.
 * `proxy_association.reflection` returns the reflection object that describes the association.
 * `proxy_association.target` returns the associated object for `belongs_to` or `has_one`, or the collection of associated objects for `has_many` or `has_and_belongs_to_many`.
+
+_圖片版權為 Ruby on Rails 官方所有。_
