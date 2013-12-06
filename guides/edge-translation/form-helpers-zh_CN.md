@@ -1,5 +1,9 @@
 # [Form Helpers][fh]
 
+__特别要强调的翻译名词__
+
+> render 渲染
+
 表单（Form）是给使用者输入的界面，web 应用里面最基础的元素之一。表单写起来很繁琐，Rails 提供很多有用的 helper 让你快速制造出符合不同需求的表单。
 
 ## 目录
@@ -384,7 +388,7 @@ form_for [:admin, :management, @article]
 
 ## 2.4 PATCH、PUT、DELETE 表单是怎么工作的？
 
-Rails 框架提倡使用 _RESTful_ 风格来设计 web 应用。这表示会有很多 “PATCH” 以及 “DELETE” 请求（request），而不是 “GET” 与 “POST”，但多数浏览器在送出表单时，不支援非 `GET` 或 `POST` 的请求。 Rails 透过一个 `name` 为 `_method` 的 hidden `input` 来将 PATCH 请求，模拟成 POST。
+Rails 框架提倡使用 _RESTful_ 风格来设计 web 应用。这表示会有很多 “PATCH” 以及 “DELETE” 请求（request），而不是 “GET” 与 “POST”，但多数浏览器在送出表单时，不支援非 `GET` 或 `POST` 的请求。 Rails 通过一个 `name` 为 `_method` 的 hidden `input` 来将 PATCH 请求，模拟成 POST。
 
 ```ruby
 form_tag(search_path, method: "patch")
@@ -648,7 +652,7 @@ __经验法则：跟 model 用 `date_select`、其它情况用 `select_date`。_
 
 `params[:date][:year]` 可取出使用者选择的年份。
 
-可以进一步透过 `:prefix` 或是 `field_name` 选项来订制 `select` 标签。
+可以进一步通过 `:prefix` 或是 `field_name` 选项来订制 `select` 标签。
 
 用 `field_name` 选项：
 
@@ -817,12 +821,10 @@ Hash 可以嵌套：
 
 hash 里可以有数组，或是数组里可以有 hash。举例来说，表单可以让你填入任何地址：
 
-We can mix and match these two concepts. For example, one element of a hash might be an array as in the previous example, or you can have an array of hashes. For example a form might let you create any number of addresses by repeating the following form fragment
-
 ```html
 <input name="addresses[][line1]" type="text"/>
 <input name="addresses[][line2]" type="text"/>
-<input name="addresses[][city]" type="text"/>
+<input name="addresses[][city]"  type="text"/>
 ```
 
 则 `params[:address]` 会是个里面有数组的 hash，。 hash 的键为 `line1`、`line2`、`city`。 Rails 在碰到已经存在的名称时才会新建一个 hash。
@@ -937,7 +939,7 @@ __`fields_for` 或 `form_for` 传入的名字 ＋ index 的值 ＋ 属性名称_
 
 # 9. 打造复杂的表单
 
-许多 app 需要复杂的表单。举例来说，创造一个 Person，你可能想让使用者，再同一个表单填多个地址（home、work... 等）而之后 Person 编辑个人数据的时候要可以新增、修改或取消已输入的地址。
+许多应用程序需要复杂的表单。举例来说，创造一个 `Person`，你可能想让使用者，使用者可填地址，用同个表单填多个地址的栏位（家里地址、单位地址、老家地址...等）而之后 `Person` 编辑个人数据的时候要可以新增、修改或取消已输入的地址。
 
 ## 9.1 设​​定 Model
 
@@ -954,7 +956,7 @@ class Address < ActiveRecord::Base
 end
 ```
 
-这给 `Person` 创建了一个 `addresses_attributes=` 方法，让你可 `create`、`update` 及（选择性） `destroy` 地址。
+这给 `Person` 创建了一个 `addresses_attributes=` 方法，让你可 `create`、`update` 及（选择性） `destroy` 地址。也就是通过 `Person` 来操纵 `Address` Model。
 
 ## 9.2 制作表单
 
@@ -978,16 +980,18 @@ end
 <% end %>
 ```
 
-渲染出三组地址表单：
+当 `Person` 声明了 `accepts_nested_attributes_for`，`fields_for` 会给关联 Model 里的每个元素都渲染一次；也就是说，假设 `Person` 有 2 组地址：
 
 ```ruby
 def new
   @person = Person.new
-  3.times { @person.addresses.build}
+  2.times { @person.addresses.build}
 end
 ```
 
-有两组地址的使用者，传出去的参数看起来会像是：
+`fields_for` 会为 2 组地址的每个栏位都渲染一次。
+
+有两组地址的使用者，表单送出的参数看起来会像是：
 
 ```ruby
 {
@@ -1029,7 +1033,7 @@ private
 
 ### 9.4 移除对象
 
-可以允许使用者删除地址，透过传入 `allow_destroy: true` 给 `accepts_nested_attributes_for`
+可以允许 `Person` 删除 `Address`，通过传入 `allow_destroy: true` 选项给 `accepts_nested_attributes_for`：
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -1038,7 +1042,9 @@ class Person < ActiveRecord::Base
 end
 ```
 
-当 `_destroy` 为 `'1'` 或 `'true'` 时，对象会被销毁。用来移除地址的表单：
+当 `_destroy` 为 `1` 或 `true` 时，对象会被销毁。
+
+用来移除地址的表单这么写：
 
 ```erb
 <%= form_for @person do |f| %>
@@ -1056,7 +1062,7 @@ end
 <% end %>
 ```
 
-别忘了给 controller 的白名单加上 `_destroy`：
+别忘了给 controller 的 Strong Parameter 加上 `_destroy`：
 
 ```ruby
 def person_params
@@ -1099,5 +1105,7 @@ end
 * [Form Helpers — Ruby on Rails Guides][fh]
 
 * [Ruby on Rails 实战圣经| ActionView Helpers 辅助方法](http://ihower.tw/rails3/actionview-helpers.html)
+
+关于嵌套表单可參考 [Railscasts #196 (Pro)](http://railscasts.com/episodes/196-nested-model-form-revised)。
 
 [fh]: http://edgeguides.rubyonrails.org/form_helpers.html
