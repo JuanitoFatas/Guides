@@ -7,12 +7,7 @@
 | English| Traditional Chinese| Simplified Chinese|
 |:--:|:--:|:--:|
 |[Getting Started with Rails](/guides/edge/getting_started.md)|to be translated|to be translated|
-|[Action Mailer Baiscs]()|||
-|[Action Pack Baiscs]()|||
-|[Action View Baiscs]()|||
 |[Active Model Basics](/guides/edge/active_model_basics.md)|[zh-TW](/guides/edge-translation/active-model-basics-zh_TW.md)|[zh-CN](/guides/edge-translation/active-model-basics-zh_CN.md)|
-|Active Record Basics|||
-|Active Support Basics|||
 
 ## Models
 
