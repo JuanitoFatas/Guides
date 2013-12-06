@@ -1,5 +1,10 @@
 # [Form Helpers][fh]
 
+__特別要強調的翻譯名詞__
+
+> render 渲染。
+
+
 表單（Form）是給使用者輸入的介面，web application 裡面最基礎的元素之一。表單寫起來很繁瑣，Rails 提供很多有用的 helper 讓你快速製造出符合不同需求的表單。
 
 ## 目錄
@@ -818,12 +823,10 @@ Hash 可以嵌套：
 
 hash 裡可以有 array，或是 array 裡可以有 hash。舉例來說，表單可以讓你填入任何地址：
 
-We can mix and match these two concepts. For example, one element of a hash might be an array as in the previous example, or you can have an array of hashes. For example a form might let you create any number of addresses by repeating the following form fragment
-
 ```html
 <input name="addresses[][line1]" type="text"/>
 <input name="addresses[][line2]" type="text"/>
-<input name="addresses[][city]" type="text"/>
+<input name="addresses[][city]"  type="text"/>
 ```
 
 則 `params[:address]` 會是個 hash，裡面有 array。hash 的 key 為 `line1`、`line2`、`city`。Rails 在碰到已經存在的名稱時才會新建一個 hash。
@@ -938,7 +941,7 @@ __`fields_for` 或 `form_for` 傳入的名字 ＋ index 的值 ＋ 屬性名稱_
 
 # 9. 打造複雜的表單
 
-許多 app 需要複雜的表單。舉例來說，創造一個 Person，你可能想讓使用者，再同一個表單填多個地址（home、work...等）而之後 Person 編輯個人資料的時候要可以新增、修改或取消已輸入的地址。
+許多 app 需要複雜的表單。舉例來說，創造一個 Person，你可能想讓使用者，使用者有地址，用同個表單填地址的欄位（home、work...等）而之後 Person 編輯個人資料的時候要可以新增、修改或取消已輸入的地址。
 
 ## 9.1 設定 Model
 
@@ -955,7 +958,7 @@ class Address < ActiveRecord::Base
 end
 ```
 
-這給 `Person` 創建了一個 `addresses_attributes=` 方法，讓你可 `create`、`update` 及（選擇性） `destroy` 地址。
+這給 `Person` 創建了一個 `addresses_attributes=` 方法，讓你可 `create`、`update` 及（選擇性） `destroy` 地址。也就是說透過 `Person` 這個父類別，來操縱 `Address`。
 
 ## 9.2 製作表單
 
@@ -979,16 +982,18 @@ end
 <% end %>
 ```
 
-渲染出三組地址表單：
+當 `Person` 聲明了 `accepts_nested_attributes_for`，`fields_for` 會給關聯的 Model 的每個元素都渲染一次；也就是說，假設 `Person` （人有 2 組地址）：
 
 ```ruby
 def new
   @person = Person.new
-  3.times { @person.addresses.build}
+  2.times { @person.addresses.build}
 end
 ```
 
-有兩組地址的使用者，傳出去的參數看起來會像是：
+`fields_for` 會為 2 個地址的每個欄位都渲染一次。
+
+有兩組地址的使用者，表單送去的參數看起來會像是：
 
 ```ruby
 {
@@ -1030,7 +1035,7 @@ private
 
 ### 9.4 移除 Objects
 
-可以允許使用者刪除地址，透過傳入 `allow_destroy: true` 給 `accepts_nested_attributes_for`
+可以允許 `Person` 刪除 `Address`，透過傳入 `allow_destroy: true` 選項給 `accepts_nested_attributes_for`：
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -1039,7 +1044,9 @@ class Person < ActiveRecord::Base
 end
 ```
 
-當 `_destroy` 為 `'1'` 或 `'true'` 時，object 會被銷毀。用來移除地址的表單：
+當 `_destroy` 為 `1` 或 `true` 時，object 會被銷毀。
+
+用來移除地址的表單這麼寫：
 
 ```erb
 <%= form_for @person do |f| %>
@@ -1057,7 +1064,7 @@ end
 <% end %>
 ```
 
-別忘了給 controller 的白名單加上 `_destroy`：
+別忘了給 controller 的 Strong Parameter 加上 `_destroy`：
 
 ```ruby
 def person_params
@@ -1100,5 +1107,7 @@ end
 * [Form Helpers — Ruby on Rails Guides][fh]
 
 * [Ruby on Rails 實戰聖經 | ActionView Helpers 輔助方法](http://ihower.tw/rails3/actionview-helpers.html)
+
+第九章關於 Nested Forms 可參考 [Railscasts #196 (Pro)](http://railscasts.com/episodes/196-nested-model-form-revised)。
 
 [fh]: http://edgeguides.rubyonrails.org/form_helpers.html
