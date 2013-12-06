@@ -118,7 +118,7 @@ end
 --------------------------
 ```
 
-![belongs_to Association Diagram](../../images/belongs_to.png)
+![belongs_to Association Diagram](../images/belongs_to.png)
 
 __注意！__ `belongs_to` 要用__單數__。要是 `Order` Model 寫成：
 
@@ -159,7 +159,7 @@ class Supplier < ActiveRecord::Base
 end
 ```
 
-![has_one Association Diagram](../../images/has_one.png)
+![has_one Association Diagram](../images/has_one.png)
 
 上例對應的 Migration：
 
@@ -526,18 +526,18 @@ end
 
 With this setup, you can retrieve `@employee.subordinates` and `@employee.manager`.
 
-Tips, Tricks, and Warnings
+秘訣、技巧與警告
 --------------------------
 
-Here are a few things you should know to make efficient use of Active Record associations in your Rails applications:
+以下是使用 Active Record 關聯時，需要注意的事項：
 
-* Controlling caching
-* Avoiding name collisions
-* Updating the schema
-* Controlling association scope
-* Bi-directional associations
+* 控制快取(Caching)
+* 避免命名衝突
+* 更新 schema
+* 控制關聯的存取範圍 (scope)
+* 雙向關聯
 
-### Controlling Caching
+### 控制快取
 
 All of the association methods are built around caching, which keeps the result of the most recent query available for further operations. The cache is even shared across methods. For example:
 
