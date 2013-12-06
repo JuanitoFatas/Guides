@@ -120,11 +120,19 @@ end
 
 ![belongs_to Association Diagram](../images/belongs_to.png)
 
-__注意！__ `belongs_to` 要用__單數__。
+__注意！__ `belongs_to` 要用__單數__。要是 `Order` Model 寫成：
 
-NOTE: `belongs_to` associations _must_ use the singular term. If you used the pluralized form in the above example for the `customer` association in the `Order` model, you would be told that there was an "uninitialized constant Order::Customers". This is because Rails automatically infers the class name from the association name. If the association name is wrongly pluralized, then the inferred class will be wrongly pluralized too.
+```ruby
+class Order < ActiveRecord::Base
+  belongs_to :customers
+end
+```
 
-The corresponding migration might look like this:
+則會導致 `uninitialized constant Order::Customers` 錯誤。
+
+這是因為 Rails 自動從關聯類型推斷出 Class 名稱的緣故。
+
+對應的 Migration：
 
 ```ruby
 class CreateOrders < ActiveRecord::Migration
@@ -143,9 +151,9 @@ class CreateOrders < ActiveRecord::Migration
 end
 ```
 
-### The `has_one` Association
+### `has_one` 關聯
 
-A `has_one` association also sets up a one-to-one connection with another model, but with somewhat different semantics (and consequences). This association indicates that each instance of a model contains or possesses one instance of another model. For example, if each supplier in your application has only one account, you'd declare the supplier model like this:
+`has_one` 關聯同樣建立一對一關係，但語義上與結果上和 `belongs_to` 不太一樣。`has_one` 關聯是說 Model 裡的每個 instance，都包含或擁有另個 Model 的 instance。舉例來說每個供應商只有一個帳戶：
 
 ```ruby
 class Supplier < ActiveRecord::Base
@@ -155,7 +163,7 @@ end
 
 ![has_one Association Diagram](images/has_one.png)
 
-The corresponding migration might look like this:
+對應的 Migration：
 
 ```ruby
 class CreateSuppliers < ActiveRecord::Migration
