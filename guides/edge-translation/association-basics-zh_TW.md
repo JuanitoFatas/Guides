@@ -118,7 +118,7 @@ end
 --------------------------
 ```
 
-![belongs_to Association Diagram](../images/belongs_to.png)
+![belongs_to Association Diagram](../../images/belongs_to.png)
 
 __注意！__ `belongs_to` 要用__單數__。要是 `Order` Model 寫成：
 
@@ -159,7 +159,7 @@ class Supplier < ActiveRecord::Base
 end
 ```
 
-![has_one Association Diagram](../images/has_one.png)
+![has_one Association Diagram](../../images/has_one.png)
 
 上例對應的 Migration：
 
@@ -190,9 +190,9 @@ class Customer < ActiveRecord::Base
 end
 ```
 
-NOTE: The name of the other model is pluralized when declaring a `has_many` association.
+__注意: `has_many` 聲明的 Model 名稱要用複數。__
 
-![has_many Association Diagram](images/has_many.png)
+![has_many Association Diagram](../images/has_many.png)
 
 The corresponding migration might look like this:
 
@@ -234,7 +234,7 @@ class Patient < ActiveRecord::Base
 end
 ```
 
-![has_many :through Association Diagram](images/has_many_through.png)
+![has_many :through Association Diagram](../images/has_many_through.png)
 
 The corresponding migration might look like this:
 
@@ -318,7 +318,7 @@ class AccountHistory < ActiveRecord::Base
 end
 ```
 
-![has_one :through Association Diagram](images/has_one_through.png)
+![has_one :through Association Diagram](../images/has_one_through.png)
 
 The corresponding migration might look like this:
 
@@ -359,7 +359,7 @@ class Part < ActiveRecord::Base
 end
 ```
 
-![has_and_belongs_to_many Association Diagram](images/habtm.png)
+![has_and_belongs_to_many Association Diagram](../images/habtm.png)
 
 The corresponding migration might look like this:
 
@@ -509,7 +509,7 @@ class CreatePictures < ActiveRecord::Migration
 end
 ```
 
-![Polymorphic Association Diagram](images/polymorphic.png)
+![Polymorphic Association Diagram](../images/polymorphic.png)
 
 ### Self Joins
 
