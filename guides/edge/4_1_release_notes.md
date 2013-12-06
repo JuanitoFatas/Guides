@@ -31,36 +31,36 @@ Major Features
 
 ### Variants
 
-  We often want to render different html/json/xml templates for phones,
-  tablets, and desktop browsers. Variants makes it easy.
+We often want to render different html/json/xml templates for phones,
+tablets, and desktop browsers. Variants makes it easy.
 
-  The request variant is a specialization of the request format, like `:tablet`,
-  `:phone`, or `:desktop`.
+The request variant is a specialization of the request format, like `:tablet`,
+`:phone`, or `:desktop`.
 
-  You can set the variant in a before_action:
+You can set the variant in a before_action:
 
-  ```ruby
-    request.variant = :tablet if request.user_agent =~ /iPad/
-  ```
+```ruby
+request.variant = :tablet if request.user_agent =~ /iPad/
+```
 
-  Respond to variants in the action just like you respond to formats:
+Respond to variants in the action just like you respond to formats:
 
-  ```ruby
-    respond_to do |format|
-      format.html do |html|
-        html.tablet # renders app/views/projects/show.html+tablet.erb
-        html.phone { extra_setup; render ... }
-      end
-    end
-  ```
+```ruby
+respond_to do |format|
+  format.html do |html|
+    html.tablet # renders app/views/projects/show.html+tablet.erb
+    html.phone { extra_setup; render ... }
+  end
+end
+```
 
-  Provide separate templates for each format and variant:
+Provide separate templates for each format and variant:
 
-  ```
-    app/views/projects/show.html.erb
-    app/views/projects/show.html+tablet.erb
-    app/views/projects/show.html+phone.erb
-  ```
+```
+app/views/projects/show.html.erb
+app/views/projects/show.html+tablet.erb
+app/views/projects/show.html+phone.erb
+```
 
 ### Spring
 
@@ -69,11 +69,13 @@ that `bin/rails` and `bin/rake` will automatically take advantage preloaded
 spring environments.
 
 **running rake tasks:**
+
 ```
 bin/rake routes
 ```
 
 **running tests:**
+
 ```
 bin/rake test
 bin/rake test test/models
@@ -81,11 +83,13 @@ bin/rake test test/models/user_test.rb
 ```
 
 **running a console:**
+
 ```
 bin/rails console
 ```
 
 **spring introspection:**
+
 ```
 $ bundle exec spring status
 Spring is running:
@@ -99,6 +103,37 @@ Have a look at the
 [Spring README](https://github.com/jonleighton/spring/blob/master/README.md) to
 see a all available features.
 
+### Active Record enums
+
+Declare an enum attribute where the values map to integers in the database, but
+can be queried by name.
+
+```ruby
+class Conversation < ActiveRecord::Base
+  enum status: [ :active, :archived ]
+end
+
+conversation.archive!
+conversation.active? # => false
+conversation.status  # => "archived"
+
+Conversation.archived # => Relation for all archived Conversations
+```
+
+See
+[active_record/enum.rb](https://github.com/rails/rails/blob/4-1-stable/activerecord/lib/active_record/enum.rb#L2-L42)
+for a detailed write up.
+
+### Application message verifier.
+
+Create a message verifier that can be used to generate and verify signed
+messages in the application.
+
+```ruby
+message = Rails.application.message_verifier('salt').generate('my sensible data')
+Rails.application.message_verifier('salt').verify(message)
+# => 'my sensible data'
+```
 
 Documentation
 -------------
@@ -120,9 +155,9 @@ for detailed changes.
 * Removed deprecated `threadsafe!` from Rails Config.
 
 * Removed deprecated `ActiveRecord::Generators::ActiveModel#update_attributes` in
-  favor of `ActiveRecord::Generators::ActiveModel#update`
+  favor of `ActiveRecord::Generators::ActiveModel#update`.
 
-* Removed deprecated `config.whiny_nils` option
+* Removed deprecated `config.whiny_nils` option.
 
 * Removed deprecated rake tasks for running tests: `rake test:uncommitted` and
   `rake test:recent`.
@@ -138,8 +173,11 @@ for detailed changes.
 * `BACKTRACE` environment variable to show unfiltered backtraces for test
   failures. ([Commit](https://github.com/rails/rails/commit/84eac5dab8b0fe9ee20b51250e52ad7bfea36553))
 
-* Exposed `MiddlewareStack#unshift` to environment configuration. ([Pull Request](https://github.com/rails/rails/pull/12479))
+* Exposed `MiddlewareStack#unshift` to environment
+  configuration. ([Pull Request](https://github.com/rails/rails/pull/12479))
 
+* Add `Application#message_verifier` method to return a message
+  verifier. ([Pull Request](https://github.com/rails/rails/pull/12995))
 
 Action Mailer
 -------------
@@ -287,6 +325,9 @@ for detailed changes.
 
 * Removed deprecated `page_cache_extension` config.
 
+* Removed deprecated `ActionController::RecordIdentifier`, use
+  `ActionView::RecordIdentifier` instead.
+
 * Removed deprecated constants from Action Controller:
 
       ActionController::AbstractRequest  => ActionDispatch::Request
@@ -368,13 +409,13 @@ for detailed changes.
 * Removed deprecated methods `partial_updates`, `partial_updates?` and
   `partial_updates=`.
 
-* Removed deprecated method `scoped`
+* Removed deprecated method `scoped`.
 
-* Removed deprecated method `default_scopes?`
+* Removed deprecated method `default_scopes?`.
 
 * Remove implicit join references that were deprecated in 4.0.
 
-* Removed `activerecord-deprecated_finders` as a dependency
+* Removed `activerecord-deprecated_finders` as a dependency.
 
 * Removed usage of `implicit_readonly`. Please use `readonly` method
   explicitly to mark records as
