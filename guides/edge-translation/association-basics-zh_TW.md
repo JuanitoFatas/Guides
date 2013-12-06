@@ -5,20 +5,20 @@ __特別要強調的翻譯名詞__
 
 > Association ＝ 關聯
 
-本篇介紹 「Active Record」的關聯功能。
+本篇介紹 「Active Record」的關聯。
 
 讀完本篇可能會學到.....
 
 * Active Record Model 之間的關聯。
 * 理解各種不同的 Active Record 關聯。
-* 如何透過新建關聯，來給 Model 新增方法。
+* 如何透過建立關聯，來給 Model 新增方法。
 
 ------------------------------------------------------------------------------
 
 為什麼要用關聯？
 -----------------
 
-關聯簡化了常見的資料庫操作，讓程式碼更精簡。舉個例子，有 2 個 Model，客戶與訂單，每個客戶可有多個訂單：
+關聯簡化了常見的資料庫操作，讓程式碼更精簡。舉個例子，有 2 個 Model，客戶與訂單，每個客戶可有多筆訂單：
 
 ```ruby
 class Customer < ActiveRecord::Base
@@ -28,13 +28,13 @@ class Order < ActiveRecord::Base
 end
 ```
 
-給已存在的顧客，新增訂單：
+給客戶新增訂單：
 
 ```ruby
 @order = Order.create(order_date: Time.now, customer_id: @customer.id)
 ```
 
-刪除客戶順便刪除訂單：
+刪除客戶同時刪除訂單：
 
 
 ```ruby
@@ -45,7 +45,7 @@ end
 @customer.destroy
 ```
 
-這真是繁瑣啊！現在看看關聯如何簡化程式。首先你得告訴 Rails，客戶與訂單之間的關係為何：
+這真是繁瑣啊！現在看看關聯如何簡化。首先得告訴 Rails，客戶與訂單之間的關係為何：
 
 ```ruby
 class Customer < ActiveRecord::Base
@@ -69,12 +69,12 @@ end
 @customer.destroy
 ```
 
-下節介紹更多種類的關聯，最後附有一個關聯所有方法與選項的參考手冊。
+下節介紹更多種類的關聯，最後一節附有每種關聯可用的所有方法與選項的參考手冊。
 
 關聯的種類
 -------------------------
 
-Rails 的世界裡，關聯是兩個 Active Record Model 的連結。用簡潔的語法聲明。比如某個 Model 屬於另一個，只消聲明是哪個 Model `belongs_to` 那個，Rails 便幫你維護好兩個 Model 之間的主外鍵關係，並幫你新增了許多實用的方法。
+Rails 的世界裡，關聯是兩個 Active Record Model 的連結。用簡潔的語法聲明。比如某個 Model 屬於另一個，只需告訴 Rails，哪個 Model `belongs_to` 那個 Model，Rails 便幫你維護好兩個 Model 之間的主外鍵關係，並幫你新增了許多實用的方法。
 
 Rails 支援以下幾種關聯：
 
@@ -90,7 +90,7 @@ Rails 支援以下幾種關聯：
 
 ### `belongs_to` 關聯
 
-A `belongs_to` association sets up a one-to-one connection with another model, such that each instance of the declaring model "belongs to" one instance of the other model. For example, if your application includes customers and orders, and each order can be assigned to exactly one customer, you'd declare the order model this way:
+`belongs_to` 關聯建立 Model 之間的“一對一關係”。比如說客戶與訂單，每筆訂單屬於“單一”客戶：
 
 ```ruby
 class Order < ActiveRecord::Base
@@ -98,7 +98,7 @@ class Order < ActiveRecord::Base
 end
 ```
 
-![belongs_to Association Diagram](images/belongs_to.png)
+![belongs_to Association Diagram](/guides/images/belongs_to.png)
 
 NOTE: `belongs_to` associations _must_ use the singular term. If you used the pluralized form in the above example for the `customer` association in the `Order` model, you would be told that there was an "uninitialized constant Order::Customers". This is because Rails automatically infers the class name from the association name. If the association name is wrongly pluralized, then the inferred class will be wrongly pluralized too.
 
