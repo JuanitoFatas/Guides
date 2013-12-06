@@ -182,7 +182,7 @@ end
 
 ### `has_many` 關聯
 
-A `has_many` association indicates a one-to-many connection with another model. You'll often find this association on the "other side" of a `belongs_to` association. This association indicates that each instance of the model has zero or more instances of another model. For example, in an application containing customers and orders, the customer model could be declared like this:
+`has_many` 關聯建立 Model 之間的“一對多”關係，通常宣告 `has_many` 的另一邊會是 `belongs_to`。`has_many` 關係是說，Model 裡的每個 instance，都擁有 0 個或更多另個 Model 的 instance。舉例來說，客戶有許多訂單：
 
 ```ruby
 class Customer < ActiveRecord::Base
@@ -194,7 +194,7 @@ __注意: `has_many` 聲明的 Model 名稱要用複數。__
 
 ![has_many Association Diagram](../images/has_many.png)
 
-The corresponding migration might look like this:
+上例對應的 Migration：
 
 ```ruby
 class CreateCustomers < ActiveRecord::Migration
@@ -213,7 +213,7 @@ class CreateCustomers < ActiveRecord::Migration
 end
 ```
 
-### The `has_many :through` Association
+### `has_many :through` 關聯
 
 A `has_many :through` association is often used to set up a many-to-many connection with another model. This association indicates that the declaring model can be matched with zero or more instances of another model by proceeding _through_ a third model. For example, consider a medical practice where patients make appointments to see physicians. The relevant association declarations could look like this:
 
