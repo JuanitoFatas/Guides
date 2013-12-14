@@ -2,13 +2,13 @@
 
 __特别要强调的翻译名词__
 
-> application 应用程序 <br>
-> deprecated 弃用的、不宜使用的、过时的：即将在下一版移除的功能。<br>
-> middleware 中间件 <br>
-> route 路由 <br>
-> raise 抛出 <br>
-> exception 异常 <br>
-> associations 关联 <br>
+> application 应用程序
+> deprecated 弃用的、不宜使用的、过时的：即将在下一版移除的功能。
+> middleware 中间件
+> route 路由
+> raise 抛出
+> exception 异常
+> associations 关联
 
 本篇讲解升级至新版 Rails 所需的步骤。同时也提供各版本的升级指导。
 

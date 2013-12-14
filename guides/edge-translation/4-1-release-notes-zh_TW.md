@@ -62,13 +62,25 @@ respond_to do |format|
 end
 ```
 
+Variant 定義可以用 inline 寫法：
+
+```ruby
+respond_to do |format|
+  format.js         { render "trash" }
+  format.html.phone { redirect_to progress_path }
+  format.html.none  { render "trash" }
+end
+```
+
 再給每個 format 與 variant 提供模版就搞定了：
 
-  ```
-  app/views/projects/show.html.erb
-  app/views/projects/show.html+tablet.erb
-  app/views/projects/show.html+phone.erb
-  ```
+```
+app/views/projects/show.html.erb
+app/views/projects/show.html+tablet.erb
+app/views/projects/show.html+phone.erb
+```
+
+
 
 ### Spring
 
