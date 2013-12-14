@@ -1,4 +1,4 @@
-# Active Record 查詢介面
+# Active Record Query Interface
 
 __特別要強調的翻譯名詞__
 
@@ -7,13 +7,13 @@ __特別要強調的翻譯名詞__
 |Query|查詢語句|Interface|介面|
 |attributes|屬性||record|記錄|
 |Primary Key|主鍵|Object|物件|
+|raise|拋出|exception|異常|
 
 ----
 
 本篇詳細介紹各種用 Active Record 從資料庫取出資料的方法。
 
 讀完本篇可能會學到.....
-
 
 * 如何使用各式各樣的方法與條件來取出資料庫記錄。
 * 如何排序、取出某幾個屬性、分組、其它用來找出記錄的方法。
@@ -31,7 +31,7 @@ __特別要強調的翻譯名詞__
 
 ```ruby
 class Client < ActiveRecord::Base
-  has_one :address
+  has_one  :address
   has_many :orders
   has_and_belongs_to_many :roles
 end
@@ -89,33 +89,34 @@ Active Record 提供了下列方法，供你從資料庫裡取出資料，這些
 
 __上列方法皆會回傳一個 `ActiveRecord::Relation` 實例。__
 
-The primary operation of `Model.find(options)` can be summarized as:
+`Model.find(options)` 的主要功能可以總結為：
 
-* Convert the supplied options to an equivalent SQL query.
-* Fire the SQL query and retrieve the corresponding results from the database.
-* Instantiate the equivalent Ruby object of the appropriate model for every resulting row.
-* Run `after_find` callbacks, if any.
+* 將傳入的參數轉換成對應的 sql 語句。
+* 執行 SQL 語句，取回對應的結果。
+* 給結果實例化出對應的 Ruby 物件。
+* 執行 `after_find` Callbacks。
 
-### Retrieving a Single Object
+### 取出單一物件
 
-Active Record provides several different ways of retrieving a single object.
+Active Record 提供數種方式來取出一個物件。
 
-#### Using a Primary Key
+#### 透過主鍵
 
-Using `Model.find(primary_key)`, you can retrieve the object corresponding to the specified _primary key_ that matches any supplied options. For example:
+使用 `Model.find(primary_key)`，可以取出與傳入主鍵對應的物件：
 
 ```ruby
-# Find the client with primary key (id) 10.
+# 找出主鍵為 10 的 client。
 client = Client.find(10)
 # => #<Client id: 10, first_name: "Ryan">
 ```
 
-The SQL equivalent of the above is:
+對應的 SQL：
 
 ```sql
 SELECT * FROM clients WHERE (clients.id = 10) LIMIT 1
 ```
 
+沒找到會拋出 `ActiveRecord::RecordNotFound` 異常。
 `Model.find(primary_key)` will raise an `ActiveRecord::RecordNotFound` exception if no matching record is found.
 
 #### `take`
