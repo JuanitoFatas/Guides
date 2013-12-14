@@ -5,9 +5,9 @@ __特別要強調的翻譯名詞__
 |原文|翻譯|原文|翻譯|
 |:--|:--|:--|:--|
 |Query|查詢語句|Interface|介面|
-|attributes|屬性|record|記錄|
+|Attributes|屬性|Record|記錄|
 |Primary Key|主鍵|Object|物件|
-|raise|拋出|exception|異常|
+|Raise|拋出|Exception|異常|
 
 ----
 
@@ -117,18 +117,17 @@ SELECT * FROM clients WHERE (clients.id = 10) LIMIT 1
 ```
 
 沒找到會拋出 `ActiveRecord::RecordNotFound` 異常。
-`Model.find(primary_key)` will raise an `ActiveRecord::RecordNotFound` exception if no matching record is found.
 
 #### `take`
 
-`Model.take` retrieves a record without any implicit ordering. For example:
+`Model.take` 取出資料庫裡的一筆記錄，但不排序。舉例：
 
 ```ruby
 client = Client.take
 # => #<Client id: 1, first_name: "Lifo">
 ```
 
-The SQL equivalent of the above is:
+對應的 SQL：
 
 ```sql
 SELECT * FROM clients LIMIT 1
@@ -147,7 +146,7 @@ client = Client.first
 # => #<Client id: 1, first_name: "Lifo">
 ```
 
-The SQL equivalent of the above is:
+對應的 SQL：
 
 ```sql
 SELECT * FROM clients ORDER BY clients.id ASC LIMIT 1
@@ -164,7 +163,7 @@ client = Client.last
 # => #<Client id: 221, first_name: "Russel">
 ```
 
-The SQL equivalent of the above is:
+對應的 SQL：
 
 ```sql
 SELECT * FROM clients ORDER BY clients.id DESC LIMIT 1
@@ -199,7 +198,7 @@ client = Client.take!
 # => #<Client id: 1, first_name: "Lifo">
 ```
 
-The SQL equivalent of the above is:
+對應的 SQL：
 
 ```sql
 SELECT * FROM clients LIMIT 1
@@ -216,7 +215,7 @@ client = Client.first!
 # => #<Client id: 1, first_name: "Lifo">
 ```
 
-The SQL equivalent of the above is:
+對應的 SQL：
 
 ```sql
 SELECT * FROM clients ORDER BY clients.id ASC LIMIT 1
@@ -233,7 +232,7 @@ client = Client.last!
 # => #<Client id: 221, first_name: "Russel">
 ```
 
-The SQL equivalent of the above is:
+對應的 SQL：
 
 ```sql
 SELECT * FROM clients ORDER BY clients.id DESC LIMIT 1
@@ -271,7 +270,7 @@ client = Client.find([1, 10]) # Or even Client.find(1, 10)
 # => [#<Client id: 1, first_name: "Lifo">, #<Client id: 10, first_name: "Ryan">]
 ```
 
-The SQL equivalent of the above is:
+對應的 SQL：
 
 ```sql
 SELECT * FROM clients WHERE (clients.id IN (1,10))
@@ -289,7 +288,7 @@ Client.take(2)
       #<Client id: 2, first_name: "Raf">]
 ```
 
-The SQL equivalent of the above is:
+對應的 SQL：
 
 ```sql
 SELECT * FROM clients LIMIT 2
@@ -305,7 +304,7 @@ Client.first(2)
       #<Client id: 2, first_name: "Raf">]
 ```
 
-The SQL equivalent of the above is:
+對應的 SQL：
 
 ```sql
 SELECT * FROM clients ORDER BY id ASC LIMIT 2
@@ -321,7 +320,7 @@ Client.last(2)
       #<Client id: 9, first_name: "John">]
 ```
 
-The SQL equivalent of the above is:
+對應的 SQL：
 
 ```sql
 SELECT * FROM clients ORDER BY id DESC LIMIT 2
