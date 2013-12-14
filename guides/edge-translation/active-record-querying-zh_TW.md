@@ -5,7 +5,7 @@ __特別要強調的翻譯名詞__
 |原文|翻譯|原文|翻譯|
 |:--|:--|:--|:--|
 |Query|查詢語句|Interface|介面|
-|attributes|屬性||record|記錄|
+|attributes|屬性|record|記錄|
 |Primary Key|主鍵|Object|物件|
 |raise|拋出|exception|異常|
 
