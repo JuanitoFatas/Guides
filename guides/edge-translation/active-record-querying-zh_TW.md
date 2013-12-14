@@ -116,11 +116,11 @@ client = Client.find(10)
 SELECT * FROM clients WHERE (clients.id = 10) LIMIT 1
 ```
 
-沒找到會拋出 `ActiveRecord::RecordNotFound` 異常。
+如果沒找到符合條件的 record，會拋出 `ActiveRecord::RecordNotFound` 異常。
 
 #### `take`
 
-`Model.take` 取出資料庫裡的一筆記錄，但不排序。舉例：
+`Model.take` 從資料庫取出一筆記錄，但不排序：
 
 ```ruby
 client = Client.take
@@ -133,13 +133,11 @@ client = Client.take
 SELECT * FROM clients LIMIT 1
 ```
 
-`Model.take` returns `nil` if no record is found and no exception will be raised.
-
-TIP: The retrieved record may vary depending on the database engine.
+資料庫如果沒 record，`Model.take` 會回傳 `nil`。
 
 #### `first`
 
-`Model.first` finds the first record ordered by the primary key. For example:
+`Model.first` 用主鍵取出第一筆資料：
 
 ```ruby
 client = Client.first
@@ -152,11 +150,11 @@ client = Client.first
 SELECT * FROM clients ORDER BY clients.id ASC LIMIT 1
 ```
 
-`Model.first` returns `nil` if no matching record is found and no exception will be raised.
+如果沒找到符合條件的 record，`Model.first` 會回傳 `nil`。
 
 #### `last`
 
-`Model.last` finds the last record ordered by the primary key. For example:
+`Model.last` 用主鍵取出最後一筆資料：
 
 ```ruby
 client = Client.last
@@ -169,11 +167,11 @@ client = Client.last
 SELECT * FROM clients ORDER BY clients.id DESC LIMIT 1
 ```
 
-`Model.last` returns `nil` if no matching record is found and no exception will be raised.
+如果沒找到符合條件的 record，`Model.last` 會回傳 `nil`。
 
 #### `find_by`
 
-`Model.find_by` finds the first record matching some conditions. For example:
+`Model.find_by` 找第一筆符合條件的記錄：
 
 ```ruby
 Client.find_by first_name: 'Lifo'
@@ -183,7 +181,7 @@ Client.find_by first_name: 'Jon'
 # => nil
 ```
 
-It is equivalent to writing:
+等同於：
 
 ```ruby
 Client.where(first_name: 'Lifo').take
@@ -191,7 +189,7 @@ Client.where(first_name: 'Lifo').take
 
 #### `take!`
 
-`Model.take!` retrieves a record without any implicit ordering. For example:
+`Model.take!` 從資料庫取出一筆記錄，但不排序：
 
 ```ruby
 client = Client.take!
@@ -204,11 +202,11 @@ client = Client.take!
 SELECT * FROM clients LIMIT 1
 ```
 
-`Model.take!` raises `ActiveRecord::RecordNotFound` if no matching record is found.
+資料庫如果沒 record，`Model.take!` 會拋出 `ActiveRecord::RecordNotFound`。
 
 #### `first!`
 
-`Model.first!` finds the first record ordered by the primary key. For example:
+`Model.first!` 用主鍵取出第一筆資料：
 
 ```ruby
 client = Client.first!
@@ -221,11 +219,11 @@ client = Client.first!
 SELECT * FROM clients ORDER BY clients.id ASC LIMIT 1
 ```
 
-`Model.first!` raises `ActiveRecord::RecordNotFound` if no matching record is found.
+如果沒找到符合條件的 record，`Model.first!` 會拋出 `ActiveRecord::RecordNotFound`。
 
 #### `last!`
 
-`Model.last!` finds the last record ordered by the primary key. For example:
+`Model.last` 用主鍵取出最後一筆資料：
 
 ```ruby
 client = Client.last!
@@ -238,11 +236,11 @@ client = Client.last!
 SELECT * FROM clients ORDER BY clients.id DESC LIMIT 1
 ```
 
-`Model.last!` raises `ActiveRecord::RecordNotFound` if no matching record is found.
+如果沒找到符合條件的 record，`Model.last!` 會拋出 `ActiveRecord::RecordNotFound`。
 
 #### `find_by!`
 
-`Model.find_by!` finds the first record matching some conditions. It raises `ActiveRecord::RecordNotFound` if no matching record is found. For example:
+`Model.find_by!` 找到第一筆符合條件的紀錄。如果沒找到符合條件的 record，會拋出 `ActiveRecord::RecordNotFound`。
 
 ```ruby
 Client.find_by! first_name: 'Lifo'
@@ -252,15 +250,15 @@ Client.find_by! first_name: 'Jon'
 # => ActiveRecord::RecordNotFound
 ```
 
-It is equivalent to writing:
+等同於：
 
 ```ruby
 Client.where(first_name: 'Lifo').take!
 ```
 
-### Retrieving Multiple Objects
+### 取出多個物件
 
-#### Using Multiple Primary Keys
+#### 用多個主鍵
 
 `Model.find(array_of_primary_key)` accepts an array of _primary keys_, returning an array containing all of the matching records for the supplied _primary keys_. For example:
 
