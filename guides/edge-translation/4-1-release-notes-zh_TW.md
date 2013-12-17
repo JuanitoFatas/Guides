@@ -111,7 +111,7 @@ bin/rails console
 **查看 Spring**
 
 ```
-$ spring status
+$ bin/spring status
 Spring is running:
 
  1182 spring server | my_app | started 29 mins ago
@@ -138,7 +138,7 @@ Conversation.archived # => Relation for all archived Conversations
 ```
 
 參見
-[active_record/enum.rb](https://github.com/rails/rails/blob/4-1-stable/activerecord/lib/active_record/enum.rb#L2-L42) 更詳細的內容。
+[active_record/enum.rb](http://api.rubyonrails.org/v4.1.0/classes/ActiveRecord/Enum.html) 更詳細的內容。
 
 文件
 -------------
