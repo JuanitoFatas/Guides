@@ -607,6 +607,7 @@ Validation 關係對照表：
 | confirmation | -                         | :confirmation             | -             |
 | acceptance   | -                         | :accepted                 | -             |
 | presence     | -                         | :blank                    | -             |
+| absence      | -                         | :present                  | -             |
 | length       | :within, :in              | :too_short                | count         |
 | length       | :within, :in              | :too_long                 | count         |
 | length       | :is                       | :wrong_length             | count         |
