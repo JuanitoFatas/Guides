@@ -41,7 +41,32 @@ Rails 通常與最新的 Ruby 一起前進：
 
 **本小節正在施工中**
 
-## 2.1 [Spring](https://github.com/jonleighton/spring)
+### CSRF protection from remote `<script>` tags
+
+Or, "whaaat my tests are failing!!!?"
+
+Cross-site request forgery (CSRF) protection now covers GET requests with
+JavaScript responses, too. That prevents a third-party site from referencing
+your JavaScript URL and attempting to run it to extract sensitive data.
+
+This means that your functional and integration tests that use
+
+```ruby
+get :index, format: :js
+```
+
+will now trigger CSRF protection. Switch to
+
+```ruby
+xhr :get, :index, format: :js
+```
+
+to explicitly test an XmlHttpRequest.
+
+If you really mean to load JavaScript from remote `<script>` tags, skip CSRF
+protection on that action.
+
+### Spring
 
 If you want to use Spring as your application preloader you need to:
 
@@ -52,6 +77,33 @@ If you want to use Spring as your application preloader you need to:
 NOTE: User defined rake tasks will run in the `development` environment by
 default. If you want them to run in other environments consult the
 [Spring README](https://github.com/jonleighton/spring#rake).
+
+### `config/secrets.yml`
+
+If you want to use the new `secrets.yml` convention to store your application's
+secrets, you need to:
+
+1. Create a `secrets.yml` file in your `config` folder with the following content:
+
+    ```yaml
+    development:
+      secret_key_base:
+
+    test:
+      secret_key_base:
+
+    production:
+      secret_key_base:
+    ```
+
+2. Copy the existing `secret_key_base` from the `secret_token.rb` initializer to
+   `secrets.yml` under the `production` section.
+
+3. Remove the `secret_token.rb` initializer.
+
+4. Use `rake secret` to generate new keys for the `development` and `test` sections.
+
+5. Restart your server.
 
 ## 2.2 處理 JSON 的變化
 
