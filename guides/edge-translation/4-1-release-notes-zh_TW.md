@@ -108,7 +108,7 @@ development:
 
 ### Action Pack Variants
 
-針對手機、平板、桌上型電腦及瀏覽器，常需要 `render` 不同格式的模版：`html、`json`、`xml`。
+針對手機、平板、桌上型電腦及瀏覽器，常需要 `render` 不同格式的模版：`html`、`json`、`xml`。
 
 __Variant 簡化了這件事。__
 
