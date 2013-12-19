@@ -37,7 +37,7 @@ PR#12389 代表 Rails Repository 上 12389 號 Pull Request。
 升級至 Rails 4.1
 ----------------------
 
-如果你正試著升級現有的應用程式至 Rails 4.1，最好有好的測試覆蓋度。首先應先升級至 4.0，再升上 4.1。升級需要注意的事項在此篇[Ruby on Rails 升級指南](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md#2-從-rails-40-升級到-rails-41)可以找到。
+如果你正試著升級現有的應用程式至 Rails 4.1，最好有好的測試覆蓋度。首先應先升級至 4.0，再升上 4.1。升級需要注意的事項在此篇 [Ruby on Rails 升級指南](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md#2-從-rails-40-升級到-rails-41)可以找到。
 
 主要功能
 --------------
