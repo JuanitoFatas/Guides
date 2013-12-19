@@ -22,7 +22,7 @@ PR#12389 代表 Rails Repository 上 12389 號 Pull Request。
 ## Rails 4.1 精華摘要：
 
 * [採用 Spring 來預載應用程式](#spring-預加載應用程式)
-* [新的 `config/secrets.yml`](#configsecretsyml)。
+* [`config/secrets.yml`](#configsecretsyml)。
 * [Action Pack Variants](#action-pack-variants)
 * [Action Mailer Preview](#action-mailer-預覽)
 * [Active Record enums](#active-record-enums)
@@ -281,84 +281,6 @@ Railties
 * Add `Application#message_verifier` method to return a message
   verifier. [PR#12995](https://github.com/rails/rails/pull/12995)。
 
-Action Mailer
--------------
-
-請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/actionmailer/CHANGELOG.md) 來了解更多細節。
-
-### 值得一提的變化
-
-*  Action Mailer 產生 mail 的時間會寫到 log 裡。 [PR#12556](https://github.com/rails/rails/pull/12556)
-
-Active Model
-------------
-
-請參考 [Changelog][AM-CHANGELOG] 來了解更多細節。
-
-### 棄用
-
-* 棄用了 `Validator#setup`。現在要手動在 Validator 的 constructor 裡自己處理。[Commit](https://github.com/rails/rails/commit/7d84c3a2f7ede0e8d04540e9c0640de7378e9b3a)
-
-### 值得一提的變化
-
-* `ActiveModel::Dirty` 加入新的 API：`reset_changes` 與 `changes_applied`，來控制改變的狀態。
-
-Active Support
---------------
-
-請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/activesupport/CHANGELOG.md) 來了解更多細節。
-
-### 移除
-
-* 移除對 `MultiJSON` Gem 的依賴。也就是說 `ActiveSupport::JSON.decode` 不再接受給 `MultiJSON` 的 hash 參數。[PR#10576](https://github.com/rails/rails/pull/10576)
-
-* 移除了 `encode_json` hook，本來可以用來把 object 轉成 JSON。這個功能被抽成了 [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder) Gem，請參考 [PR#12183](https://github.com/rails/rails/pull/12183) 與 [這裡](upgrading_ruby_on_rails.html#changes-in-json-handling)。
-
-* 移除了 `String#encoding_aware?`（`core_ext/string/encoding.rb`）。
-
-* 移除了 `Module#local_constant_names` 請改用 `Module#local_constants`。
-
-* 移除了 `DateTime.local_offset` 請改用 `DateTime.civil_from_format`。
-
-* 移除了 `Logger` （`core_ext/logger.rb`）。
-
-* 移除了 `Time#time_with_datetime_fallback`、`Time#utc_time` 與
-  `Time#local_time`，請改用 `Time#utc` 與 `Time#local`。
-
-* 移除了 `Hash#diff`。
-
-* 移除了 `Date#to_time_in_current_zone` 請改用 `Date#in_time_zone`。
-
-* 移除了 `Proc#bind`。
-
-* 移除了 `Array#uniq_by` 與 `Array#uniq_by!` 請改用 Ruby 原生的
-  `Array#uniq` 與 `Array#uniq!`。
-
-* 移除了 `ActiveSupport::BasicObject` 請改用 `ActiveSupport::ProxyObject`。
-
-* 移除了 `BufferedLogger`, 請改用 `ActiveSupport::Logger`。
-
-* 移除了 `assert_present` 與 `assert_blank`，請改用 `assert
-  object.blank?` 與 `assert object.present?`。
-
-### 棄用
-
-* 棄用了 `Numeric#{ago,until,since,from_now}`，要明確的將數值轉成 `AS::Duration`。比如 `5.ago` 請改成 `5.seconds.ago`。 [PR#12389](https://github.com/rails/rails/pull/12389)
-
-### 值得一提的變化
-
-* 新增 `ActiveSupport::Testing::TimeHelpers#travel` 與 `#travel_to`。這兩個方法透過 stubbing `Time.now` 與 `Date.today`，可做時光旅行。參考 [PR#12824](https://github.com/rails/rails/pull/12824)
-
-* 新增 `Numeric#in_milliseconds`，像是 1 小時有幾毫秒：`1.hour.in_milliseconds`。可以將時間轉成毫秒，再餵給 JavaScript 的 `getTime()` 函數。[Commit](https://github.com/rails/rails/commit/423249504a2b468d7a273cbe6accf4f21cb0e643)
-
-* 新增了 `Date#middle_of_day`, `DateTime#middle_of_day` and `Time#middle_of_day`
-  方法。同時添加了 `midday`、`noon`、`at_midday`、`at_noon`、`at_middle_of_day` 作為別名。[PR#10879](https://github.com/rails/rails/pull/10879)
-
-* Add `String#remove(pattern)` as a short-hand for the common pattern of
-  `String#gsub(pattern,'')`。[Commit](https://github.com/rails/rails/commit/5da23a3f921f0a4a3139495d2779ab0d3bd4cb5f)
-
-* 移除了 'cow' => 'kine' 這個不規則的轉換。[Commit](https://github.com/rails/rails/commit/c300dca9963bda78b8f358dbcb59cabcdc5e1dc9)
-
 Action Pack
 -----------
 
@@ -385,11 +307,24 @@ Action Pack
 
 ### 值得一提的變化
 
-* `#url_for` 接受額外的 options，可將選項打包成 hash，放在陣列傳入。[PR#9599](https://github.com/rails/rails/pull/9599)。
+* `protect_from_forgery` also prevents cross-origin `<script>` tags.
+  Update your tests to use `xhr :get, :foo, format: :js` instead of
+  `get :foo, format: :js`. [PR#13345](https://github.com/rails/rails/pull/13345)
 
-* 新增 `session#fetch` 方法，行為與 [Hash#fetch](http://www.ruby-doc.org/core-2.0.0/Hash.html#method-i-fetch) 類似，差別在返回值永遠會存回 session。 [PR#12692](https://github.com/rails/rails/pull/12692)。
+* `#url_for` 接受額外的 options，可將選項打包成 hash，放在陣列傳入。[PR#9599](https://github.com/rails/rails/pull/9599)
 
-* 將 Action View 從 Action Pack 裡整個拿掉。 [PR#11032](https://github.com/rails/rails/pull/11032)。
+* 新增 `session#fetch` 方法，行為與 [Hash#fetch](http://www.ruby-doc.org/core-2.0.0/Hash.html#method-i-fetch) 類似，差別在返回值永遠會存回 session。 [PR#12692](https://github.com/rails/rails/pull/12692)
+
+* 將 Action View 從 Action Pack 裡整個拿掉。 [PR#11032](https://github.com/rails/rails/pull/11032)
+
+Action Mailer
+-------------
+
+請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/actionmailer/CHANGELOG.md) 來了解更多細節。
+
+### 值得一提的變化
+
+*  Action Mailer 產生 mail 的時間會寫到 log 裡。 [PR#12556](https://github.com/rails/rails/pull/12556)
 
 Active Record
 -------------
@@ -488,15 +423,79 @@ Active Record
 
 * `ActiveRecord::Relation` 會處理有別名的 attributes。當使用符號作為 key 時，Active Record 現在也會一起翻譯別名的屬性了，將其轉成資料庫內所使用的欄位名。[PR#7839](https://github.com/rails/rails/pull/7839)
 
+Active Model
+------------
+
+請參考 [Changelog][AM-CHANGELOG] 來了解更多細節。
+
+### 棄用
+
+* 棄用了 `Validator#setup`。現在要手動在 Validator 的 constructor 裡自己處理。[Commit](https://github.com/rails/rails/commit/7d84c3a2f7ede0e8d04540e9c0640de7378e9b3a)
+
+### 值得一提的變化
+
+* `ActiveModel::Dirty` 加入新的 API：`reset_changes` 與 `changes_applied`，來控制改變的狀態。
+
+Active Support
+--------------
+
+請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/activesupport/CHANGELOG.md) 來了解更多細節。
+
+### 移除
+
+* 移除對 `MultiJSON` Gem 的依賴。也就是說 `ActiveSupport::JSON.decode` 不再接受給 `MultiJSON` 的 hash 參數。[PR#10576](https://github.com/rails/rails/pull/10576)
+
+* 移除了 `encode_json` hook，本來可以用來把 object 轉成 JSON。這個功能被抽成了 [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder) Gem，請參考 [PR#12183](https://github.com/rails/rails/pull/12183) 與 [這裡](upgrading_ruby_on_rails.html#changes-in-json-handling)。
+
+* 移除了 `String#encoding_aware?`（`core_ext/string/encoding.rb`）。
+
+* 移除了 `Module#local_constant_names` 請改用 `Module#local_constants`。
+
+* 移除了 `DateTime.local_offset` 請改用 `DateTime.civil_from_format`。
+
+* 移除了 `Logger` （`core_ext/logger.rb`）。
+
+* 移除了 `Time#time_with_datetime_fallback`、`Time#utc_time` 與
+  `Time#local_time`，請改用 `Time#utc` 與 `Time#local`。
+
+* 移除了 `Hash#diff`。
+
+* 移除了 `Date#to_time_in_current_zone` 請改用 `Date#in_time_zone`。
+
+* 移除了 `Proc#bind`。
+
+* 移除了 `Array#uniq_by` 與 `Array#uniq_by!` 請改用 Ruby 原生的
+  `Array#uniq` 與 `Array#uniq!`。
+
+* 移除了 `ActiveSupport::BasicObject` 請改用 `ActiveSupport::ProxyObject`。
+
+* 移除了 `BufferedLogger`, 請改用 `ActiveSupport::Logger`。
+
+* 移除了 `assert_present` 與 `assert_blank`，請改用 `assert
+  object.blank?` 與 `assert object.present?`。
+
+### 棄用
+
+* 棄用了 `Numeric#{ago,until,since,from_now}`，要明確的將數值轉成 `AS::Duration`。比如 `5.ago` 請改成 `5.seconds.ago`。 [PR#12389](https://github.com/rails/rails/pull/12389)
+
+### 值得一提的變化
+
+* 新增 `ActiveSupport::Testing::TimeHelpers#travel` 與 `#travel_to`。這兩個方法透過 stubbing `Time.now` 與 `Date.today`，可做時光旅行。參考 [PR#12824](https://github.com/rails/rails/pull/12824)
+
+* 新增 `Numeric#in_milliseconds`，像是 1 小時有幾毫秒：`1.hour.in_milliseconds`。可以將時間轉成毫秒，再餵給 JavaScript 的 `getTime()` 函數。[Commit](https://github.com/rails/rails/commit/423249504a2b468d7a273cbe6accf4f21cb0e643)
+
+* 新增了 `Date#middle_of_day`, `DateTime#middle_of_day` and `Time#middle_of_day`
+  方法。同時添加了 `midday`、`noon`、`at_midday`、`at_noon`、`at_middle_of_day` 作為別名。[PR#10879](https://github.com/rails/rails/pull/10879)
+
+* Add `String#remove(pattern)` as a short-hand for the common pattern of
+  `String#gsub(pattern,'')`。[Commit](https://github.com/rails/rails/commit/5da23a3f921f0a4a3139495d2779ab0d3bd4cb5f)
+
+* 移除了 `'cow'` => `'kine'` 這個不規則的轉換。[Commit](https://github.com/rails/rails/commit/c300dca9963bda78b8f358dbcb59cabcdc5e1dc9)
+
 致謝
 -------
 
 許多人花了寶貴的時間貢獻至 Rails 專案，使 Rails 成為更穩定、更強韌的網路框架，參考[完整的 Rails 貢獻者清單](http://contributors.rubyonrails.org/)，並感謝所有的貢獻者！
-
-譯者
--------
-
-_Juanito Fatas_
 
 [rails]: https://github.com/rails/rails
 [Railties-CHANGELOG]: https://github.com/rails/rails/blob/4-1-stable/railties/CHANGELOG.md
