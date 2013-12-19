@@ -181,14 +181,13 @@ Conversation.archived # => Relation for all archived Conversations
 
 ### Application message verifier
 
-建立一个讯息验证器，可以用来产生与验证应用程序所签署的讯息（`message`）。
+建立一个讯息验证器，可以用来产生与验证应用程序所签署的讯息（`message`）。可以用来实现像是记住我的功能：
 
 ```ruby
-signed_message = Rails.application.message_verifier('salt').generate('我的开房记录')
-Rails.application.message_verifier('salt').verify(signed_message)
-# => '我的开房记录'
+signed_token = Rails.application.message_verifier(:remember_me).generate(token)
+Rails.application.message_verifier(:remember_me).verify(signed_token) # => token
 
-Rails.application.message_verifier('salt').verify(tampered_message)
+Rails.application.message_verifier(:remember_me).verify(tampered_token)
 # raises ActiveSupport::MessageVerifier::InvalidSignature
 ```
 
