@@ -143,7 +143,7 @@ end
 
 ### Action Mailer 预览
 
-Action Mailer Preview 提供你访问特定 URL 来预览 Email 的功能，首先实现个预览用的类：
+Action Mailer Preview 提供你访问特定 URL 来预览 Email 的功能，假设你有个 `Notifier` Mailer，首先实现预览 `Notifier` 用的类：
 
 ```ruby
 class NotifierPreview < ActionMailer::Preview
