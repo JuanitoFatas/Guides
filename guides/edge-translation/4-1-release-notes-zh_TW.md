@@ -21,14 +21,14 @@ PR#12389 代表 Rails Repository 上 12389 號 Pull Request。
 
 ## Rails 4.1 精華摘要：
 
-* 採用 Spring 來預載應用程式。[Commit][spring]
-* 新的 `config/secrets.yml`。
-* Action Pack Variants。[Commit][variants]
-* Action Mailer Preview。
-* Active Record enums。
-* Application message verifier。
-* Module#concerning。
-* CSRF 防護機制加強
+* [採用 Spring 來預載應用程式](#spring-預加載應用程式)
+* [新的 `config/secrets.yml`](#configsecretsyml)。
+* [Action Pack Variants](#action-pack-variants)
+* [Action Mailer Preview](#action-mailer-預覽)
+* [Active Record enums](#active-record-enums)
+* [Application message verifier](#application-message-verifier)
+* [Module#concerning](#moduleconcerning)
+* [加強 CSRF 防護機制（防護來自第三方的 `<script>`）](#csrf-protection-from-remote-script-tags)
 
 本篇僅涵蓋主要的變化。要了解關於已修復的 bug、功能變更等，請參考 [Rails GitHub 主頁][rails]上各個 Gem 的 CHANGELOG 或是 [Rails 的 Commits 清單](https://github.com/rails/rails/commits/master)。
 
