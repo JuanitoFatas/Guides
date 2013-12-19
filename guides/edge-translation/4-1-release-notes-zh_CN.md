@@ -3,15 +3,15 @@ Ruby on Rails 4.1 发布记
 
 __特别要强调的翻译名词__
 
-> application 应用程式
+> application 应用程序
 
 > removed 移除（4.1 已经拿掉，不能用了）
 
 > deprecated 弃用的、不宜使用的、过时的：即将在下一版移除的功能
 
-> Config 设定
+> Config 配置
 
-> Configuration 设定档
+> Configuration 配置文件
 
 > option 选项
 
@@ -21,7 +21,7 @@ PR#12389 代表 Rails Repository 上 12389 号 Pull Request。
 
 ## Rails 4.1 精华摘要：
 
-* [采用 Spring 来预载应用程式](#spring-预加载应用程式)
+* [采用 Spring 来预载应用程序](#spring-预加载应用程序)
 * [`config/secrets.yml`](#configsecretsyml)
 * [Action Pack Variants](#action-pack-variants)
 * [Action Mailer Preview](#action-mailer-预览)
@@ -30,23 +30,23 @@ PR#12389 代表 Rails Repository 上 12389 号 Pull Request。
 * [Module#concerning](#moduleconcerning)
 * [加强 CSRF 防护机制（防护来自第三方的 `<script>`）](#csrf-protection-from-remote-script-tags)
 
-本篇仅涵盖主要的变化。要了解关于已修复的 bug、功能变更等，请参考 [Rails GitHub 主页][rails]上各个 Gem 的 CHANGELOG 或是 [Rails 的 Commits 历史](https://github.com/rails/rails/commits/master)。
+本篇仅涵盖主要的变化。要了解关于已修复的 bug、功能变更等，请参考 [Rails GitHub 主页][rails]上各个 Gem 的 CHANGELOG 或是 [Rails 的提交历史](https://github.com/rails/rails/commits/master)。
 
 -------------------------------------------------------------------------------
 
 升级至 Rails 4.1
 ----------------------
 
-如果你正试著升级现有的应用程式至 Rails 4.1，最好有好的测试覆盖度。首先应先升级至 4.0，再升上 4.1。升级需要注意的事项在此篇 [Ruby on Rails 升级指南](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md#2-从-rails-40-升级到-rails-41)可以找到。
+如果你正试著升级现有的应用程序至 Rails 4.1，最好有广的测试覆盖度。首先应先升级至 4.0，再升上 4.1。升级需要注意的事项在此篇 [Ruby on Rails 升级指南](/guides/edge-translation/upgrading-ruby-on-rails-zh_CN.md#)可以找到。
 
 主要功能
 --------------
 
-### Spring 预加载应用程式
+### Spring 预加载应用程序
 
-Spring 预加载你的 Rails 应用程式。保持应用程式在背景执行，如此一来执行 Rails 命令时：如测试、`rake`、`migrate` 不用每次都重启 Rails 应用程式，加速你的开发流程。
+Spring 预加载你的 Rails 应用程序。保持应用程序在背景执行，如此一来执行 Rails 命令时：如测试、`rake`、`migrate` 不用每次都重启 Rails 应用程序，加速你的开发流程。
 
-新版 Rails 4.1 应用程式出厂内建 “Spring 化” 的 binstubs（aka，执行档，如 `rails`、`rake`）。这表示 `bin/rails`、`bin/rake` 会自动采用 Spring 预载的环境。
+新版 Rails 4.1 应用程序出厂内建 “Spring 化” 的 binstubs（aka，执行档，如 `rails`、`rake`）。这表示 `bin/rails`、`bin/rake` 会自动采用 Spring 预载的环境。
 
 **执行 rake 任务：**
 
@@ -85,7 +85,7 @@ Spring is running:
 
 ### `config/secrets.yml`
 
-Rails 4.1 会在 `config/` 目录下产生新的 `secrets.yml`。这个档案预设存有应用程式的 `secret_key_base`，也可以用来存放其它像是存取外部 API 需要用的 access keys。例子：
+Rails 4.1 会在 `config/` 目录下产生新的 `secrets.yml`。这个文件预设存有应用程序的 `secret_key_base`，也可以用来存放其它像是存取外部 API 需要用的 access keys。例子：
 
 `secrets.yml`:
 
@@ -108,13 +108,13 @@ development:
 
 ### Action Pack Variants
 
-针对手机、平板、桌上型电脑及浏览器，常需要 render 不同格式的模版：html、json、xml。
+针对手机、平板、桌上型电脑及浏览器，常需要 `render` 不同格式的模版：`html、`json`、`xml`。
 
 __Variant 简化了这件事。__
 
 Request variant 是一种特殊的 request 格式，像是 `:tablet`、`:phone` 或 `:desktop`。
 
-可在 `before_action` 里设定 Variant：
+可在 `before_action` 里配置 Variant：
 
 ```ruby
 request.variant = :tablet if request.user_agent =~ /iPad/
@@ -162,13 +162,13 @@ class NotifierPreview < ActionMailer::Preview
 end
 ```
 
-预设 preview 档案产生在 `test/mailers/previews`、可以透过 `preview_path` 选项来调整存放的位置。
+预设 preview 文件产生在 `test/mailers/previews`、可以透过 `preview_path` 选项来调整存放的位置。
 
 参见 [Action Mailer 的文件](api.rubyonrails.org/v4.1.0/classes/ActionMailer/Base.html)来了解更多细节。
 
 ### Active Record enums
 
-宣告一个 `enum` 属性，将属性映射到资料库的整数，并可透过名字查询出来。
+宣告一个 `enum` 属性，将属性映射到数据库的整数，并可透过名字查询出来：
 
 ```ruby
 class Conversation < ActiveRecord::Base
@@ -187,7 +187,7 @@ Conversation.archived # => Relation for all archived Conversations
 
 ### Application message verifier
 
-建立一个讯息验证器，可以用来产生与确定应用程式所签署的讯息（`message`）。
+建立一个讯息验证器，可以用来产生与验证应用程序所签署的讯息（`message`）。
 
 ```ruby
 message = Rails.application.message_verifier('salt').generate('my sensible data')
@@ -218,7 +218,7 @@ class Todo < ActiveRecord::Base
 end
 ```
 
-等同于以前要定义 `EventTracking` Module，`extend ActiveSupport::Concern`，再混入 (mixin) `Todo` Class。
+等同于以前要定义 `EventTracking` Module，`extend ActiveSupport::Concern`，再混入 (mixin) `Todo` 类。
 
 参见
 [Module#concerning](api.rubyonrails.org/v4.1.0/classes/Module/Concerning.html) 来了解更多细节。
@@ -251,16 +251,16 @@ Railties
 
 ### 移除
 
-* 移除了 `update:application_controller` rake task。
+* 移除了 `update:application_controller` rake 任务。
 
 * 移除了 `Rails.application.railties.engines`。
 
-* Rails 移除了 `config.threadsafe!` 设定。
+* Rails 移除了 `config.threadsafe!` 配置。
 
 * 移除了 `ActiveRecord::Generators::ActiveModel#update_attributes`，
     请改用 `ActiveRecord::Generators::ActiveModel#update`。
 
-* 移除了 `config.whiny_nils` 设定。
+* 移除了 `config.whiny_nils` 配置。
 
 * 移除了用来跑测试的两个 task：`rake test:uncommitted` 与 `rake test:recent`。
 
@@ -271,9 +271,9 @@ Railties
 
 * `BACKTRACE` 环境变数可看（unfiltered）测试的 backtrace。[Commit](https://github.com/rails/rails/commit/84eac5dab8b0fe9ee20b51250e52ad7bfea36553)
 
-* 可以在环境设定档设定 `MiddlewareStack#unshift`。 [PR#12749](https://github.com/rails/rails/pull/12749)
+* 可以在环境配置文件配置 `MiddlewareStack#unshift`。 [PR#12749](https://github.com/rails/rails/pull/12749)
 
-* 新增 `Application#message_verifier` 方法来回传讯息验证器。[PR#12995](https://github.com/rails/rails/pull/12995)
+* 新增 `Application#message_verifier` 方法来返回讯息验证器。[PR#12995](https://github.com/rails/rails/pull/12995)
 
 Action Pack
 -----------
@@ -282,27 +282,29 @@ Action Pack
 
 ### 移除
 
-* 移除了 Rails 针对整合测试的补救方案（fallback），请设定 `ActionDispatch.test_app`。
+* 移除了 Rails 针对整合测试的补救方案（fallback），请配置 `ActionDispatch.test_app`。
 
-* 移除了 `config.page_cache_extension` 设定。
+* 移除了 `config.page_cache_extension` 配置。
 
 * 移除了 `ActionController::RecordIdentifier`，请改用 `ActionView::RecordIdentifier`。
 
-* 更改 Action Controller 下列常数的名称：
+* 更改 Action Controller 下列常量的名称：
 
-        ActionController::AbstractRequest  => ActionDispatch::Request
-        ActionController::Request          => ActionDispatch::Request
-        ActionController::AbstractResponse => ActionDispatch::Response
-        ActionController::Response         => ActionDispatch::Response
-        ActionController::Routing          => ActionDispatch::Routing
-        ActionController::Integration      => ActionDispatch::Integration
-        ActionController::IntegrationTest  => ActionDispatch::IntegrationTest
+  | Removed                            | Successor                       |
+  |:-----------------------------------|:--------------------------------|
+  | ActionController::AbstractRequest  | ActionDispatch::Request         |
+  | ActionController::Request          | ActionDispatch::Request         |
+  | ActionController::AbstractResponse | ActionDispatch::Response        |
+  | ActionController::Response         | ActionDispatch::Response        |
+  | ActionController::Routing          | ActionDispatch::Routing         |
+  | ActionController::Integration      | ActionDispatch::Integration     |
+  | ActionController::IntegrationTest  | ActionDispatch::IntegrationTest |
 
 ### 值得一提的变化
 
-* `protect_from_forgery` 现在也会预防跨站的 `<script>` 标籤。请更新测试，使用 `xhr :get, :foo, format: :js` 来取代 `get :foo, format: :js`。[PR#13345](https://github.com/rails/rails/pull/13345)
+* `protect_from_forgery` 现在也会预防跨站的 `<script>`。请更新测试，使用 `xhr :get, :foo, format: :js` 来取代 `get :foo, format: :js`。[PR#13345](https://github.com/rails/rails/pull/13345)
 
-* `#url_for` 接受额外的 options，可将选项打包成 hash，放在阵列传入。[PR#9599](https://github.com/rails/rails/pull/9599)
+* `#url_for` 接受额外的 options，可将选项打包成 hash，放在数组传入。[PR#9599](https://github.com/rails/rails/pull/9599)
 
 * 新增 `session#fetch` 方法，行为与 [Hash#fetch](http://www.ruby-doc.org/core-2.0.0/Hash.html#method-i-fetch) 类似，差别在返回值永远会存回 session。 [PR#12692](https://github.com/rails/rails/pull/12692)
 
@@ -376,7 +378,7 @@ Active Record
 
 * 弃用了任何地方都没用到的 `quoted_locking_column` 方法。
 
-* 弃用了 association 从 Array 获得的 bang 方法。要使用请先将 association 转成阵列（`#to_a`），再对元素做处理。 [PR#12129](https://github.com/rails/rails/pull/12129)。
+* 弃用了 association 从 Array 获得的 bang 方法。要使用请先将 association 转成数组（`#to_a`），再对元素做处理。 [PR#12129](https://github.com/rails/rails/pull/12129)。
 
 * Rails 内部弃用了 `ConnectionAdapters::SchemaStatements#distinct`。 [PR#10556](https://github.com/rails/rails/pull/10556)
 
@@ -386,7 +388,7 @@ Active Record
 
 * 新增 `ActiveRecord::Base.no_touching`，可允许忽略对 Model 的 touch。 [PR#12772](https://github.com/rails/rails/pull/12772)
 
-* 统一了 `MysqlAdapter` 与 `Mysql2Adapter` 的布林转换，`true` 会返回 `1`，`false` 返回 `0`。 [PR#12425](https://github.com/rails/rails/pull/12425)
+* 统一了 `MysqlAdapter` 与 `Mysql2Adapter` 的布尔转换，`true` 会返回 `1`，`false` 返回 `0`。 [PR#12425](https://github.com/rails/rails/pull/12425)
 
 * `unscope` 现在移除了 `default_scope` 规范的 conditions。[Commit](https://github.com/rails/rails/commit/94924dc32baf78f13e289172534c2e71c9c8cade)
 
@@ -394,25 +396,25 @@ Active Record
 
 * 扩充了 `ActiveRecord::Base#cache_key`，可接受多个 timestamp，会使用数值最大的 timestamp。[Commit](https://github.com/rails/rails/commit/e94e97ca796c0759d8fcb8f946a3bbc60252d329)
 
-* 新增 `ActiveRecord::Base#enum`，用来枚举 attributes。将 attributes 映射到资料库的整数，并可透过名字查询出来。[Commit](https://github.com/rails/rails/commit/db41eb8a6ea88b854bf5cd11070ea4245e1639c5)
+* 新增 `ActiveRecord::Base#enum`，用来枚举 attributes。将 attributes 映射到数据库的整数，并可透过名字查询出来。[Commit](https://github.com/rails/rails/commit/db41eb8a6ea88b854bf5cd11070ea4245e1639c5)
 
-* 写入资料库时，JSON 会做类型转换。这样子读写才会一致。 [PR#12643](https://github.com/rails/rails/pull/12643)
+* 写入数据库时，JSON 会做类型转换。这样子读写才会一致。 [PR#12643](https://github.com/rails/rails/pull/12643)
 
-* 写入资料库时，hstore 会做类型转换，这样子读写才会一致。[Commit](https://github.com/rails/rails/commit/5ac2341fab689344991b2a4817bd2bc8b3edac9d)
+* 写入数据库时，hstore 会做类型转换，这样子读写才会一致。[Commit](https://github.com/rails/rails/commit/5ac2341fab689344991b2a4817bd2bc8b3edac9d)
 
 * `next_migration_number` 可供第三方函式库存取。 [PR#12407](https://github.com/rails/rails/pull/12407)
 
-* 若是呼叫 `update_attributes` 的参数有 `nil`，则会抛出 `ArgumentError`。更精准的说，传进来的参数，没有回应(`respond_to`) `stringify_keys` 会抛出错误。[PR#9860](https://github.com/rails/rails/pull/9860)
+* 若是调用 `update_attributes` 的参数有 `nil`，则会抛出 `ArgumentError`。更精准的说，传进来的参数，没有回应(`respond_to`) `stringify_keys` 的话，会抛出错误。[PR#9860](https://github.com/rails/rails/pull/9860)
 
 * `CollectionAssociation#first`/`#last` (`has_many`) ，Query 会使用 `LIMIT` 来限制提取的数量，而不是将整个 collection 载入出来。 [PR#12137](https://github.com/rails/rails/pull/12137)
 
-* 对 Active Record Model 的类别做 `inspect` 不会去连资料库。这样当资料库不存在时，`inspect` 才不会喷错误。[PR#11014](https://github.com/rails/rails/pull/11014)
+* 对 Active Record Model 的类别做 `inspect` 不会去连数据库。这样当数据库不存在时，`inspect` 才不会喷错误。[PR#11014](https://github.com/rails/rails/pull/11014)
 
-* 移除了 `count` 的栏位限制，SQL 不正确时，让资料库自己丢出错误。 [PR#10710](https://github.com/rails/rails/pull/10710)
+* 移除了 `count` 的栏位限制，SQL 不正确时，让数据库自己丢出错误。 [PR#10710](https://github.com/rails/rails/pull/10710)
 
-* Rails 现在会自动侦测 inverse associations。如果 association 没有设定 `:inverse_of`，则 Active Record 会自己猜出对应的 associaiton。[PR#10886](https://github.com/rails/rails/pull/10886)
+* Rails 现在会自动侦测 inverse associations。如果 association 没有配置 `:inverse_of`，则 Active Record 会自己猜出对应的 associaiton。[PR#10886](https://github.com/rails/rails/pull/10886)
 
-* `ActiveRecord::Relation` 会处理有别名的 attributes。当使用符号作为 key 时，Active Record 现在也会一起翻译别名的属性了，将其转成资料库内所使用的栏位名。[PR#7839](https://github.com/rails/rails/pull/7839)
+* `ActiveRecord::Relation` 会处理有别名的 attributes。当使用符号作为 key 时，Active Record 现在也会一起翻译别名的属性了，将其转成数据库内所使用的栏位名。[PR#7839](https://github.com/rails/rails/pull/7839)
 
 Active Model
 ------------
@@ -486,7 +488,7 @@ Active Support
 致谢
 -------
 
-许多人花了宝贵的时间贡献至 Rails 专案，使 Rails 成为更稳定、更强韧的网路框架，参考[完整的 Rails 贡献者清单](http://contributors.rubyonrails.org/)，并感谢所有的贡献者！
+许多人花了宝贵的时间贡献至 Rails 项目，使 Rails 成为更稳定、更强韧的网络框架，参考[完整的 Rails 贡献者清单](http://contributors.rubyonrails.org/)，感谢所有的贡献者！
 
 [rails]: https://github.com/rails/rails
 [Railties-CHANGELOG]: https://github.com/rails/rails/blob/4-1-stable/railties/CHANGELOG.md
