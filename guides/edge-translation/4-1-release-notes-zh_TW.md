@@ -175,7 +175,7 @@ class Conversation < ActiveRecord::Base
   enum status: [ :active, :archived ]
 end
 
-conversation.archive!
+conversation.archived!
 conversation.active? # => false
 conversation.status  # => "archived"
 
@@ -268,9 +268,18 @@ Railties
 
 ### 值得一提的變化
 
+* The [Spring application
+  preloader](https://github.com/jonleighton/spring) is now installed
+  by default for new applications. It uses the development group of
+  the Gemfile, so will not be installed in
+  production. [PR#12958](https://github.com/rails/rails/pull/12958)。
+
 * `BACKTRACE` 環境變數可看（unfiltered）測試的 backtrace。[Commit](https://github.com/rails/rails/commit/84eac5dab8b0fe9ee20b51250e52ad7bfea36553)
 
 * 可以在環境設定檔設定 `MiddlewareStack#unshift`。 [PR#12749](https://github.com/rails/rails/pull/12749)
+
+* Add `Application#message_verifier` method to return a message
+  verifier. [PR#12995](https://github.com/rails/rails/pull/12995)。
 
 Action Mailer
 -------------
@@ -309,7 +318,7 @@ Active Support
 
 * 移除了 `Module#local_constant_names` 請改用 `Module#local_constants`。
 
-* 移除了 `DateTime.local_offset` 請改用 `DateTime.civil_from_fromat`。
+* 移除了 `DateTime.local_offset` 請改用 `DateTime.civil_from_format`。
 
 * 移除了 `Logger` （`core_ext/logger.rb`）。
 
@@ -360,6 +369,9 @@ Action Pack
 * 移除了 Rails 針對整合測試的補救方案（fallback），請設定 `ActionDispatch.test_app`。
 
 * 移除了 `config.page_cache_extension` 設定。
+
+* Removed deprecated `ActionController::RecordIdentifier`, use
+  `ActionView::RecordIdentifier` instead.
 
 * 更改 Action Controller 下列常數的名稱：
 
