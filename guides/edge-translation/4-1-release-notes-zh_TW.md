@@ -302,7 +302,7 @@ Action Pack
 
 ### 值得一提的變化
 
-* `protect_from_forgery` 現在也會預防跨站的 `<script>` 標籤。請更新測試，使用 `xhr :get, :foo, format: :js` 來取代 `get :foo, format: :js`。[PR#13345](https://github.com/rails/rails/pull/13345)
+* `protect_from_forgery` 現在也會預防跨站的 `<script>`。請更新測試，使用 `xhr :get, :foo, format: :js` 來取代 `get :foo, format: :js`。[PR#13345](https://github.com/rails/rails/pull/13345)
 
 * `#url_for` 接受額外的 options，可將選項打包成 hash，放在陣列傳入。[PR#9599](https://github.com/rails/rails/pull/9599)
 
