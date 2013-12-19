@@ -143,7 +143,7 @@ end
 
 ### Action Mailer 預覽
 
-Action Mailer Preview 提供你訪問特定 URL 來預覽 Email 的功能。首先實現一個預覽用的 Class：
+Action Mailer Preview 提供你訪問特定 URL 來預覽 Email 的功能。假設你有個 `Notifier` Mailer，實現預覽 `Notifier` 用的 Class：
 
 ```ruby
 class NotifierPreview < ActionMailer::Preview
@@ -153,7 +153,7 @@ class NotifierPreview < ActionMailer::Preview
 end
 ```
 
-便可以訪問 http://localhost:3000/rails/mailers/notifier/welcome 來預覽 Email。
+如此一來便可以訪問 http://localhost:3000/rails/mailers/notifier/welcome 來預覽 Email。
 
 所有可預覽的 Email 可在此找到： http://localhost:3000/rails/mailers
 
