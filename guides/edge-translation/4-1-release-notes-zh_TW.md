@@ -51,7 +51,7 @@ Spring 預加載你的 Rails 應用程式。保持應用程式在背景執行，
 **執行 rake 任務：**
 
 ```
-bin/rake test:units
+bin/rake test:models
 ```
 
 **執行 console：**
@@ -177,7 +177,7 @@ conversation.status  # => "archived"
 Conversation.archived # => Relation for all archived Conversations
 ```
 
-參見 [active_record/enum.rb](http://http://api.rubyonrails.org/v4.1.0/classes/ActiveRecord/Enum.html) 來了解更多細節。
+參見 [active_record/enum.rb](http://api.rubyonrails.org/v4.1.0/classes/ActiveRecord/Enum.html) 來了解更多細節。
 
 ### Application message verifier
 
