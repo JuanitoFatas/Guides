@@ -22,7 +22,7 @@ PR#12389 代表 Rails Repository 上 12389 號 Pull Request。
 ## Rails 4.1 精華摘要：
 
 * [採用 Spring 來預載應用程式](#spring-預加載應用程式)
-* [`config/secrets.yml`](#configsecretsyml)。
+* [`config/secrets.yml`](#configsecretsyml)
 * [Action Pack Variants](#action-pack-variants)
 * [Action Mailer Preview](#action-mailer-預覽)
 * [Active Record enums](#active-record-enums)
@@ -30,14 +30,14 @@ PR#12389 代表 Rails Repository 上 12389 號 Pull Request。
 * [Module#concerning](#moduleconcerning)
 * [加強 CSRF 防護機制（防護來自第三方的 `<script>`）](#csrf-protection-from-remote-script-tags)
 
-本篇僅涵蓋主要的變化。要了解關於已修復的 bug、功能變更等，請參考 [Rails GitHub 主頁][rails]上各個 Gem 的 CHANGELOG 或是 [Rails 的 Commits 清單](https://github.com/rails/rails/commits/master)。
+本篇僅涵蓋主要的變化。要了解關於已修復的 bug、功能變更等，請參考 [Rails GitHub 主頁][rails]上各個 Gem 的 CHANGELOG 或是 [Rails 的 Commits 歷史](https://github.com/rails/rails/commits/master)。
 
 -------------------------------------------------------------------------------
 
 升級至 Rails 4.1
 ----------------------
 
-如果你正試著升級現有的應用程式至 Rails 4.1，最好有好的測試覆蓋度。首先應先升級至 4.0，再升上 4.1。升級需要注意的事項在此篇[升級 Rails](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md#2-從-rails-40-升級到-rails-41) 可以找到。
+如果你正試著升級現有的應用程式至 Rails 4.1，最好有好的測試覆蓋度。首先應先升級至 4.0，再升上 4.1。升級需要注意的事項在此篇[Ruby on Rails 升級指南](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md#2-從-rails-40-升級到-rails-41)可以找到。
 
 主要功能
 --------------
@@ -46,7 +46,7 @@ PR#12389 代表 Rails Repository 上 12389 號 Pull Request。
 
 Spring 預加載你的 Rails 應用程式。保持應用程式在背景執行，如此一來執行 Rails 命令時：如測試、`rake`、`migrate` 不用每次都重啟 Rails 應用程式，加速你的開發流程。
 
-新版 Rails 4.1 應用程式出廠內建 “Spring 化”的 binstubs（aka，執行檔，如 `rails`、`rake`）。這表示 `bin/rails`、`bin/rake` 會自動採用 Spring 預載的環境。
+新版 Rails 4.1 應用程式出廠內建 “Spring 化” 的 binstubs（aka，執行檔，如 `rails`、`rake`）。這表示 `bin/rails`、`bin/rake` 會自動採用 Spring 預載的環境。
 
 **執行 rake 任務：**
 
@@ -81,13 +81,11 @@ Spring is running:
 
 請查閱 [Spring README](https://github.com/jonleighton/spring/blob/master/README.md) 了解所有功能。
 
-參考[Ruby on Rails 升級指南](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md#spring) 來了解如何在 Rails 4.1 以下使用此功能。
+參考 [Ruby on Rails 升級指南](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md#spring) 來了解如何在 Rails 4.1 以下使用此功能。
 
 ### `config/secrets.yml`
 
-Rails 4.1 會在 `config/` 目錄下產生新的 `secrets.yml`。這個檔案預設存有應用程式的 `secret_key_base`，也可以用來存放其它像是存取外部 API 需要用的 access keys。
-
-怎麼用：
+Rails 4.1 會在 `config/` 目錄下產生新的 `secrets.yml`。這個檔案預設存有應用程式的 `secret_key_base`，也可以用來存放其它像是存取外部 API 需要用的 access keys。例子：
 
 `secrets.yml`:
 
@@ -97,6 +95,8 @@ development:
   some_api_key: "b2c299a4a7b2fe41b6b7ddf517604a1c34"
 ```
 
+取出：
+
 ```ruby
 > Rails.application.secrets
 => "3b7cd727ee24e8444053437c36cc66c3"
@@ -104,7 +104,7 @@ development:
 => "SOMEKEY"
 ```
 
-參考[Ruby on Rails 升級指南](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md#config-secrets-yml) 來了解如何在 Rails 4.1 以下使用此功能。
+參考 [Ruby on Rails 升級指南](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md#config-secrets-yml) 來了解如何在 Rails 4.1 以下使用此功能。
 
 ### Action Pack Variants
 
@@ -164,7 +164,7 @@ end
 
 預設 preview 檔案產生在 `test/mailers/previews`、可以透過 `preview_path` 選項來調整存放的位置。
 
-參見 [Action Mailer 的文件](api.rubyonrails.org/v4.1.0/classes/ActionMailer/Base.html) 來了解更多。
+參見 [Action Mailer 的文件](api.rubyonrails.org/v4.1.0/classes/ActionMailer/Base.html)來了解更多細節。
 
 ### Active Record enums
 
@@ -183,7 +183,7 @@ Conversation.archived # => Relation for all archived Conversations
 ```
 
 參見
-[active_record/enum.rb](http://api.rubyonrails.org/v4.1.0/classes/ActiveRecord/Enum.html) 來了解更詳細的內容。
+[active_record/enum.rb](http://api.rubyonrails.org/v4.1.0/classes/ActiveRecord/Enum.html) 來了解更多細節。
 
 ### Application message verifier
 
@@ -197,9 +197,7 @@ Rails.application.message_verifier('salt').verify(message)
 
 ### Module#concerning
 
-將類別裡功能拆分的方式：
-
-A natural, low-ceremony way to separate responsibilities within a class:
+拆分類別功能的方式：
 
 ```ruby
 class Todo < ActiveRecord::Base
@@ -220,16 +218,16 @@ class Todo < ActiveRecord::Base
 end
 ```
 
-上例等同於在檔案裡定義 `EventTracking` Module，`extend ActiveSupport::Concern`，再混入 (mixin) `Todo` Class。
+等同於以前要定義 `EventTracking` Module，`extend ActiveSupport::Concern`，再混入 (mixin) `Todo` Class。
 
 參見
-[Module#concerning](api.rubyonrails.org/v4.1.0/classes/Module/Concerning.html) 來了解更詳細的內容。
+[Module#concerning](api.rubyonrails.org/v4.1.0/classes/Module/Concerning.html) 來了解更多細節。
 
 ### CSRF protection from remote `<script>` tags
 
-Rails 的跨站偽造請求（CSRF）防護機制現在也會保護 JavaScript 來的 GET 請求了！這預防第三方網站執行你的 JavaScript，試圖竊取敏感資料。
+Rails 的跨站偽造請求（CSRF）防護機制現在也會保護從第三方 JavaScript 來的 GET 請求了！這預防第三方網站執行你的 JavaScript，試圖竊取敏感資料。
 
-這代表任何訪問 `.js` URL 的測試會失敗，除非你明確指定使用 `xhr` （XmlHttpRequests）。
+這代表任何訪問 `.js` URL 的測試會失敗，除非你明確指定使用 `xhr` （`XmlHttpRequests`）。
 
 ```ruby
 post :create, format: :js
