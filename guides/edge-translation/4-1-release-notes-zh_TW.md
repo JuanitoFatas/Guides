@@ -404,7 +404,7 @@ Active Record
 
 * `next_migration_number` 可供第三方函式庫存取。 [PR#12407](https://github.com/rails/rails/pull/12407)
 
-* 若是呼叫 `update_attributes` 的參數有 `nil`，則會拋出 `ArgumentError`。更精準的說，傳進來的參數，沒有回應(`respond_to`) `stringify_keys` 會拋出錯誤。[PR#9860](https://github.com/rails/rails/pull/9860)
+* 若是呼叫 `update_attributes` 的參數有 `nil`，則會拋出 `ArgumentError`。更精準的說，傳進來的參數，沒有回應(`respond_to`) `stringify_keys` 的話，會拋出錯誤。[PR#9860](https://github.com/rails/rails/pull/9860)
 
 * `CollectionAssociation#first`/`#last` (`has_many`) ，Query 會使用 `LIMIT` 來限制提取的數量，而不是將整個 collection 載入出來。 [PR#12137](https://github.com/rails/rails/pull/12137)
 
@@ -488,7 +488,7 @@ Active Support
 致謝
 -------
 
-許多人花了寶貴的時間貢獻至 Rails 專案，使 Rails 成為更穩定、更強韌的網路框架，參考[完整的 Rails 貢獻者清單](http://contributors.rubyonrails.org/)，並感謝所有的貢獻者！
+許多人花了寶貴的時間貢獻至 Rails 專案，使 Rails 成為更穩定、更強韌的網路框架，參考[完整的 Rails 貢獻者清單](http://contributors.rubyonrails.org/)，感謝所有的貢獻者！
 
 [rails]: https://github.com/rails/rails
 [Railties-CHANGELOG]: https://github.com/rails/rails/blob/4-1-stable/railties/CHANGELOG.md
