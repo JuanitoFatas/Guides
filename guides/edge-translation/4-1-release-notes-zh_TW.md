@@ -37,7 +37,7 @@ PR#12389 代表 Rails Repository 上 12389 號 Pull Request。
 升級至 Rails 4.1
 ----------------------
 
-如果你正試著升級現有的應用程式至 Rails 4.1，最好有好的測試覆蓋度。首先應先升級至 4.0，再升上 4.1。升級需要注意的事項在此篇 [Ruby on Rails 升級指南](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md#2-從-rails-40-升級到-rails-41)可以找到。
+如果你正試著升級現有的應用程式至 Rails 4.1，最好有廣的測試覆蓋度。首先應先升級至 4.0，再升上 4.1。升級需要注意的事項在此篇 [Ruby on Rails 升級指南](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md#2-從-rails-40-升級到-rails-41)可以找到。
 
 主要功能
 --------------
@@ -108,7 +108,7 @@ development:
 
 ### Action Pack Variants
 
-針對手機、平板、桌上型電腦及瀏覽器，常需要 render 不同格式的模版：html、json、xml。
+針對手機、平板、桌上型電腦及瀏覽器，常需要 `render` 不同格式的模版：`html、`json`、`xml`。
 
 __Variant 簡化了這件事。__
 
@@ -168,7 +168,7 @@ end
 
 ### Active Record enums
 
-宣告一個 `enum` 屬性，將屬性映射到資料庫的整數，並可透過名字查詢出來。
+宣告一個 `enum` 屬性，將屬性映射到資料庫的整數，並可透過名字查詢出來：
 
 ```ruby
 class Conversation < ActiveRecord::Base
@@ -187,7 +187,7 @@ Conversation.archived # => Relation for all archived Conversations
 
 ### Application message verifier
 
-建立一個訊息驗證器，可以用來產生與確定應用程式所簽署的訊息（`message`）。
+建立一個訊息驗證器，可以用來產生與驗證應用程式所簽署的訊息（`message`）。
 
 ```ruby
 message = Rails.application.message_verifier('salt').generate('my sensible data')
@@ -290,13 +290,15 @@ Action Pack
 
 * 更改 Action Controller 下列常數的名稱：
 
-        ActionController::AbstractRequest  => ActionDispatch::Request
-        ActionController::Request          => ActionDispatch::Request
-        ActionController::AbstractResponse => ActionDispatch::Response
-        ActionController::Response         => ActionDispatch::Response
-        ActionController::Routing          => ActionDispatch::Routing
-        ActionController::Integration      => ActionDispatch::Integration
-        ActionController::IntegrationTest  => ActionDispatch::IntegrationTest
+  | Removed                            | Successor                       |
+  |:-----------------------------------|:--------------------------------|
+  | ActionController::AbstractRequest  | ActionDispatch::Request         |
+  | ActionController::Request          | ActionDispatch::Request         |
+  | ActionController::AbstractResponse | ActionDispatch::Response        |
+  | ActionController::Response         | ActionDispatch::Response        |
+  | ActionController::Routing          | ActionDispatch::Routing         |
+  | ActionController::Integration      | ActionDispatch::Integration     |
+  | ActionController::IntegrationTest  | ActionDispatch::IntegrationTest |
 
 ### 值得一提的變化
 
@@ -324,7 +326,7 @@ Active Record
 
 ### 移除
 
-* 移除了傳入 nil 至右列 `SchemaCache` 的方法：`primary_keys`、`tables`、`columns` 及 `columns_hash`。
+* 移除了傳入 `nil` 至右列 `SchemaCache` 的方法：`primary_keys`、`tables`、`columns` 及 `columns_hash`。
 
 * 從 `ActiveRecord::Migrator#migrate` 移除了 block filter。
 
@@ -370,7 +372,7 @@ Active Record
 
 * 移掉 `activerecord-deprecated_finders` gem 的相依性。
 
-* 移除了 `implicit_readonly`。請改用 `readonly` 方法，並將 record 明確標明為 `readonly`。 [PR#10769](https://github.com/rails/rails/pull/10769)。
+* 移除了 `implicit_readonly`。請改用 `readonly` 方法，並將 record 明確標明為 `readonly`。 [PR#10769](https://github.com/rails/rails/pull/10769)
 
 ### 棄用
 
@@ -436,7 +438,7 @@ Active Support
 
 * 移除對 `MultiJSON` Gem 的依賴。也就是說 `ActiveSupport::JSON.decode` 不再接受給 `MultiJSON` 的 hash 參數。[PR#10576](https://github.com/rails/rails/pull/10576)
 
-* 移除了 `encode_json` hook，本來可以用來把 object 轉成 JSON。這個功能被抽成了 [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder) Gem，請參考 [PR#12183](https://github.com/rails/rails/pull/12183) 與 [這裡](upgrading_ruby_on_rails.html#changes-in-json-handling)。
+* 移除了 `encode_json` hook，本來可以用來把 object 轉成 JSON。這個功能被抽成了 [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder) Gem，請參考 [PR#12183](https://github.com/rails/rails/pull/12183) 與[這裡](upgrading_ruby_on_rails.html#changes-in-json-handling)。
 
 * 移除了 `String#encoding_aware?`（`core_ext/string/encoding.rb`）。
 
