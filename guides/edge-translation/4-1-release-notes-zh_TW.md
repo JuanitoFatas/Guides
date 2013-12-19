@@ -25,68 +25,23 @@ PR#12389 代表 Rails Repository 上 12389 號 Pull Request。
 * Spring [Commit][spring]
 * Action View 從 Action Pack 抽離出來。
 
-本篇僅涵蓋主要的變化。要了解關於已修復的 bug、功能變更等，請參考 [Rails GitHub 主頁][rails]上各個 Gem 的 CHANGELOG 或是 [Rails 的 Commits 歷史](https://github.com/rails/rails/commits/master)。
+本篇僅涵蓋主要的變化。要了解關於已修復的 bug、功能變更等，請參考 [Rails GitHub 主頁][rails]上各個 Gem 的 CHANGELOG 或是 [Rails 的 Commits 清單](https://github.com/rails/rails/commits/master)。
 
 -------------------------------------------------------------------------------
 
 升級至 Rails 4.1
 ----------------------
 
-如果你正試著升級現有的應用程式至 Rails 4.1，最好有好的測試覆蓋度。首先應先升級至 4.0，再升上 4.1。升級需要注意的事項在此篇[升級 Rails](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md) 可以找到。
+如果你正試著升級現有的應用程式至 Rails 4.1，最好有好的測試覆蓋度。首先應先升級至 4.0，再升上 4.1。升級需要注意的事項在此篇[升級 Rails](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md#2-從-rails-40-升級到-rails-41) 可以找到。
 
 主要功能
 --------------
 
-### Variants
+### Spring 預加載應用程式
 
-針對手機、平板、桌上型電腦及瀏覽器，常需要 render 不同格式的模版：html、json、xml。
+Spring 預加載你的 Rails 應用程式。保持應用程式在背景執行，如此一來執行 Rails 命令時：如測試、`rake`、`migrate` 不用每次都重啟 Rails 應用程式，加速你的開發流程。
 
-__Variant 簡化了這件事。__
-
-Request variant 是一種特殊的 request 格式，像是 `:tablet`、`:phone` 或 `:desktop`。
-
-可在 `before_action` 裡設定 Variant：
-
-```ruby
-request.variant = :tablet if request.user_agent =~ /iPad/
-```
-
-在 Controller `action` 裡，回應特殊格式跟處理別的格式相同：
-
-```ruby
-respond_to do |format|
-  format.html do |html|
-    html.tablet # 會 render app/views/projects/show.html+tablet.erb
-    html.phone { extra_setup; render ... }
-  end
-end
-```
-
-Variant 定義可以用 inline 寫法：
-
-```ruby
-respond_to do |format|
-  format.js         { render "trash" }
-  format.html.phone { redirect_to progress_path }
-  format.html.none  { render "trash" }
-end
-```
-
-再給每個 format 與 variant 提供模版就搞定了：
-
-```
-app/views/projects/show.html.erb
-app/views/projects/show.html+tablet.erb
-app/views/projects/show.html+phone.erb
-```
-
-
-
-### Spring
-
-> Spring is a Rails application preloader. It speeds up development by keeping your application running in the background so you don't need to boot it every time you run a test, rake task or migration.
-
-新版 Rails 4.1 應用程式出廠內建 Spring 化的 binstubs（aka，執行檔，如 `rails`、`rake`）。這表示 `bin/rails`、`bin/rake` 會自動預載 Spring 的環境。
+新版 Rails 4.1 應用程式出廠內建 “Spring 化”的 binstubs（aka，執行檔，如 `rails`、`rake`）。這表示 `bin/rails`、`bin/rake` 會自動採用 Spring 預載的環境。
 
 **執行 rake 任務：**
 
@@ -121,9 +76,94 @@ Spring is running:
 
 請查閱 [Spring README](https://github.com/jonleighton/spring/blob/master/README.md) 了解所有功能。
 
+參考[Ruby on Rails 升級指南](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md#spring) 來了解如何在 Rails 4.1 以下使用此功能。
+
+### `config/secrets.yml`
+
+Rails 4.1 會在 `config/` 目錄下產生新的 `secrets.yml`。這個檔案預設存有應用程式的 `secret_key_base`，也可以用來存放其它像是存取外部 API 需要用的 access keys。
+
+怎麼用：
+
+`secrets.yml`:
+
+```yaml
+development:
+  secret_key_base: "3b7cd727ee24e8444053437c36cc66c3"
+  some_api_key: "b2c299a4a7b2fe41b6b7ddf517604a1c34"
+```
+
+```ruby
+> Rails.application.secrets
+=> "3b7cd727ee24e8444053437c36cc66c3"
+> Rails.application.secrets.some_api_key
+=> "SOMEKEY"
+```
+
+參考[Ruby on Rails 升級指南](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md#config-secrets-yml) 來了解如何在 Rails 4.1 以下使用此功能。
+
+### Action Pack Variants
+
+針對手機、平板、桌上型電腦及瀏覽器，常需要 render 不同格式的模版：html、json、xml。
+
+__Variant 簡化了這件事。__
+
+Request variant 是一種特殊的 request 格式，像是 `:tablet`、`:phone` 或 `:desktop`。
+
+可在 `before_action` 裡設定 Variant：
+
+```ruby
+request.variant = :tablet if request.user_agent =~ /iPad/
+```
+
+在 Controller `action` 裡，回應特殊格式跟處理別的格式相同：
+
+```ruby
+respond_to do |format|
+  format.html do |html|
+    html.tablet # 會 render app/views/projects/show.html+tablet.erb
+    html.phone { extra_setup; render ... }
+  end
+end
+```
+
+再給每個特殊格式提供對應的模版：
+
+```
+app/views/projects/show.html.erb
+app/views/projects/show.html+tablet.erb
+app/views/projects/show.html+phone.erb
+```
+
+Variant 定義可以用 inline 寫法來簡化：
+
+```ruby
+respond_to do |format|
+  format.js         { render "trash" }
+  format.html.phone { redirect_to progress_path }
+  format.html.none  { render "trash" }
+end
+```
+
+### Action Mailer 預覽
+
+不會真的寄出 Email，而是在瀏覽器裡預覽 Email。
+
+```ruby
+class NotifierPreview < ActionMailer::Preview
+  # Accessible from http://localhost:3000/rails/mailers/notifier/welcome
+  def welcome
+    Notifier.welcome(User.first)
+  end
+end
+```
+
+預設 preview 檔案產生在 `test/mailers/previews`、可以透過 `preview_path` 選項來調整存放的位置。
+
+參見 [Action Mailer 的文件](api.rubyonrails.org/v4.1.0/classes/ActionMailer/Base.html) 來了解更多。
+
 ### Active Record enums
 
-宣告一個 `enum` 屬性，將 attributes 映射到資料庫的整數，並可透過名字查詢出來。
+宣告一個 `enum` 屬性，將屬性映射到資料庫的整數，並可透過名字查詢出來。
 
 ```ruby
 class Conversation < ActiveRecord::Base
@@ -138,7 +178,63 @@ Conversation.archived # => Relation for all archived Conversations
 ```
 
 參見
-[active_record/enum.rb](http://api.rubyonrails.org/v4.1.0/classes/ActiveRecord/Enum.html) 更詳細的內容。
+[active_record/enum.rb](http://api.rubyonrails.org/v4.1.0/classes/ActiveRecord/Enum.html) 來了解更詳細的內容。
+
+### Application message verifier
+
+建立一個訊息驗證器，可以用來產生與確定應用程式所簽署的訊息（`message`）。
+
+```ruby
+message = Rails.application.message_verifier('salt').generate('my sensible data')
+Rails.application.message_verifier('salt').verify(message)
+# => 'my sensible data'
+```
+
+### Module#concerning
+
+將類別裡功能拆分的方式：
+
+A natural, low-ceremony way to separate responsibilities within a class:
+
+```ruby
+class Todo < ActiveRecord::Base
+  concerning :EventTracking do
+    included do
+      has_many :events
+    end
+
+    def latest_event
+      ...
+    end
+
+    private
+      def some_internal_method
+        ...
+      end
+  end
+end
+```
+
+上例等同於在檔案裡定義 `EventTracking` Module，`extend ActiveSupport::Concern`，再混入 (mixin) `Todo` Class。
+
+參見
+[Module Concerning](api.rubyonrails.org/v4.1.0/classes/Module/Concerning.html) 來了解更詳細的內容。
+
+### CSRF protection from remote `<script>` tags
+
+Rails 的跨站偽造請求（CSRF）防護機制現在也會保護 JavaScript 來的 GET 請求了！這預防第三方網站執行你的 JavaScript，試圖竊取敏感資料。
+
+這代表任何訪問 `.js` URL 的測試會失敗，除非你明確指定使用 `xhr` （XmlHttpRequests）。
+
+```ruby
+post :create, format: :js
+```
+
+改寫為
+
+```ruby
+xhr :post, :create, format: :js
+```
 
 文件
 -------------
