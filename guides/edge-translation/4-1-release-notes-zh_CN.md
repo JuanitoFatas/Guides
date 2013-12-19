@@ -44,25 +44,17 @@ PR#12389 代表 Rails Repository 上 12389 号 Pull Request。
 
 ### Spring 预加载应用程序
 
-Spring 预加载你的 Rails 应用程序。保持应用程序在背景执行，如此一来执行 Rails 命令时：如测试、`rake`、`migrate` 不用每次都重启 Rails 应用程序，加速你的开发流程。
+Spring 预加载你的 Rails 应用程序。保持应用程序在背景运行，如此一来运行 Rails 命令时：如测试、`rake`、`migrate` 不用每次都重启 Rails 应用程序，加速你的开发流程。
 
-新版 Rails 4.1 应用程序出厂内建 “Spring 化” 的 binstubs（aka，执行档，如 `rails`、`rake`）。这表示 `bin/rails`、`bin/rake` 会自动采用 Spring 预载的环境。
+新版 Rails 4.1 应用程序出厂内建 “Spring 化” 的 binstubs（aka，运行档，如 `rails`、`rake`）。这表示 `bin/rails`、`bin/rake` 会自动采用 Spring 预载的环境。
 
-**执行 rake 任务：**
-
-```
-bin/rake routes
-```
-
-**运行测试：**
+**运行 rake 任务：**
 
 ```
-bin/rake test
-bin/rake test test/models
-bin/rake test test/models/user_test.rb
+bin/rake test:models
 ```
 
-**执行 console：**
+**运行 console：**
 
 ```
 bin/rails console
@@ -151,20 +143,23 @@ end
 
 ### Action Mailer 预览
 
-不会真的寄出 Email，而是在浏览器里预览 Email。
+Action Mailer Preview 提供你访问特定 URL 来预览 Email 的功能，首先实现个预览用的类：
 
 ```ruby
 class NotifierPreview < ActionMailer::Preview
-  # Accessible from http://localhost:3000/rails/mailers/notifier/welcome
   def welcome
     Notifier.welcome(User.first)
   end
 end
 ```
 
-预设 preview 文件产生在 `test/mailers/previews`、可以透过 `preview_path` 选项来调整存放的位置。
+如此一来便可访问 http://localhost:3000/rails/mailers/notifier/welcome 来预览 Email。
 
-参见 [Action Mailer 的文件](api.rubyonrails.org/v4.1.0/classes/ActionMailer/Base.html)来了解更多细节。
+所有可预览的 Email 可在此找到：http://localhost:3000/rails/mailers
+
+预设 preview 类的文件产生在 `test/mailers/previews`、可以透过 `preview_path` 选项来调整存放的位置。
+
+参见 [Action Mailer 的文件](http://api.rubyonrails.org/v4.1.0/classes/ActionMailer/Base.html)来了解更多细节。
 
 ### Active Record enums
 
@@ -182,17 +177,19 @@ conversation.status  # => "archived"
 Conversation.archived # => Relation for all archived Conversations
 ```
 
-参见
-[active_record/enum.rb](http://api.rubyonrails.org/v4.1.0/classes/ActiveRecord/Enum.html) 来了解更多细节。
+参见 [active_record/enum.rb](http://api.rubyonrails.org/v4.1.0/classes/ActiveRecord/Enum.html) 来了解更多细节。
 
 ### Application message verifier
 
 建立一个讯息验证器，可以用来产生与验证应用程序所签署的讯息（`message`）。
 
 ```ruby
-message = Rails.application.message_verifier('salt').generate('my sensible data')
-Rails.application.message_verifier('salt').verify(message)
-# => 'my sensible data'
+signed_message = Rails.application.message_verifier('salt').generate('我的开房记录')
+Rails.application.message_verifier('salt').verify(signed_message)
+# => '我的开房记录'
+
+Rails.application.message_verifier('salt').verify(tampered_message)
+# raises ActiveSupport::MessageVerifier::InvalidSignature
 ```
 
 ### Module#concerning
@@ -220,12 +217,11 @@ end
 
 等同于以前要定义 `EventTracking` Module，`extend ActiveSupport::Concern`，再混入 (mixin) `Todo` 类。
 
-参见
-[Module#concerning](api.rubyonrails.org/v4.1.0/classes/Module/Concerning.html) 来了解更多细节。
+参见 [Module#concerning](http://api.rubyonrails.org/v4.1.0/classes/Module/Concerning.html) 来了解更多细节。
 
 ### CSRF protection from remote `<script>` tags
 
-Rails 的跨站伪造请求（CSRF）防护机制现在也会保护从第三方 JavaScript 来的 GET 请求了！这预防第三方网站执行你的 JavaScript，试图窃取敏感资料。
+Rails 的跨站伪造请求（CSRF）防护机制现在也会保护从第三方 JavaScript 来的 GET 请求了！这预防第三方网站运行你的 JavaScript，试图窃取敏感资料。
 
 这代表任何访问 `.js` URL 的测试会失败，除非你明确指定使用 `xhr` （`XmlHttpRequests`）。
 
