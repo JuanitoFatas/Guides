@@ -21,9 +21,14 @@ PR#12389 代表 Rails Repository 上 12389 號 Pull Request。
 
 ## Rails 4.1 精華摘要：
 
-* Variants [Commit][variants]
-* Spring [Commit][spring]
-* Action View 從 Action Pack 抽離出來。
+* 採用 Spring 來預載應用程式。[Commit][spring]
+* 新的 `config/secrets.yml`。
+* Action Pack Variants。[Commit][variants]
+* Action Mailer Preview。
+* Active Record enums。
+* Application message verifier。
+* Module#concerning。
+* CSRF 防護機制加強
 
 本篇僅涵蓋主要的變化。要了解關於已修復的 bug、功能變更等，請參考 [Rails GitHub 主頁][rails]上各個 Gem 的 CHANGELOG 或是 [Rails 的 Commits 清單](https://github.com/rails/rails/commits/master)。
 
@@ -218,7 +223,7 @@ end
 上例等同於在檔案裡定義 `EventTracking` Module，`extend ActiveSupport::Concern`，再混入 (mixin) `Todo` Class。
 
 參見
-[Module Concerning](api.rubyonrails.org/v4.1.0/classes/Module/Concerning.html) 來了解更詳細的內容。
+[Module#concerning](api.rubyonrails.org/v4.1.0/classes/Module/Concerning.html) 來了解更詳細的內容。
 
 ### CSRF protection from remote `<script>` tags
 
