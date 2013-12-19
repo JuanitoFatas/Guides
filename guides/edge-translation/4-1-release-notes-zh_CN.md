@@ -46,7 +46,7 @@ PR#12389 代表 Rails Repository 上 12389 号 Pull Request。
 
 Spring 预加载你的 Rails 应用程序。保持应用程序在背景运行，如此一来运行 Rails 命令时：如测试、`rake`、`migrate` 不用每次都重启 Rails 应用程序，加速你的开发流程。
 
-新版 Rails 4.1 应用程序出厂内建 “Spring 化” 的 binstubs（aka，运行档，如 `rails`、`rake`）。这表示 `bin/rails`、`bin/rake` 会自动采用 Spring 预载的环境。
+新版 Rails 4.1 应用程序出厂内建 “Spring 化” 的 binstubs（aka，运行文件，如 `rails`、`rake`）。这表示 `bin/rails`、`bin/rake` 会自动采用 Spring 预载的环境。
 
 **运行 rake 任务：**
 
