@@ -266,18 +266,14 @@ Railties
 
 ### 值得一提的變化
 
-* The [Spring application
-  preloader](https://github.com/jonleighton/spring) is now installed
-  by default for new applications. It uses the development group of
-  the Gemfile, so will not be installed in
-  production. [PR#12958](https://github.com/rails/rails/pull/12958)。
+* [Spring](https://github.com/jonleighton/spring) 是預設的 Gem，列在 `Gemfile`
+  的開發群組裡。[PR#12958](https://github.com/rails/rails/pull/12958)。
 
 * `BACKTRACE` 環境變數可看（unfiltered）測試的 backtrace。[Commit](https://github.com/rails/rails/commit/84eac5dab8b0fe9ee20b51250e52ad7bfea36553)
 
 * 可以在環境設定檔設定 `MiddlewareStack#unshift`。 [PR#12749](https://github.com/rails/rails/pull/12749)
 
-* Add `Application#message_verifier` method to return a message
-  verifier. [PR#12995](https://github.com/rails/rails/pull/12995)。
+* 新增 `Application#message_verifier` 方法來回傳訊息驗證器。[PR#12995](https://github.com/rails/rails/pull/12995)
 
 Action Pack
 -----------
