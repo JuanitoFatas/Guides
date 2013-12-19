@@ -51,15 +51,7 @@ Spring 預加載你的 Rails 應用程式。保持應用程式在背景執行，
 **執行 rake 任務：**
 
 ```
-bin/rake routes
-```
-
-**運行測試：**
-
-```
-bin/rake test
-bin/rake test test/models
-bin/rake test test/models/user_test.rb
+bin/rake test:units
 ```
 
 **執行 console：**
@@ -151,20 +143,23 @@ end
 
 ### Action Mailer 預覽
 
-不會真的寄出 Email，而是在瀏覽器裡預覽 Email。
+Action Mailer Preview 提供你訪問特定 URL 來預覽 Email 的功能。首先實現一個預覽用的 Class：
 
 ```ruby
 class NotifierPreview < ActionMailer::Preview
-  # Accessible from http://localhost:3000/rails/mailers/notifier/welcome
   def welcome
     Notifier.welcome(User.first)
   end
 end
 ```
 
-預設 preview 檔案產生在 `test/mailers/previews`、可以透過 `preview_path` 選項來調整存放的位置。
+便可以訪問 http://localhost:3000/rails/mailers/notifier/welcome 來預覽 Email。
 
-參見 [Action Mailer 的文件](api.rubyonrails.org/v4.1.0/classes/ActionMailer/Base.html)來了解更多細節。
+所有可預覽的 Email 可在此找到： http://localhost:3000/rails/mailers
+
+預設這些 preview class 產生在 `test/mailers/previews`、可以透過 `preview_path` 選項來調整存放的位置。
+
+參見 [Action Mailer 的文件](http://api.rubyonrails.org/v4.1.0/classes/ActionMailer/Base.html)來了解更多細節。
 
 ### Active Record enums
 
@@ -182,17 +177,19 @@ conversation.status  # => "archived"
 Conversation.archived # => Relation for all archived Conversations
 ```
 
-參見
-[active_record/enum.rb](http://api.rubyonrails.org/v4.1.0/classes/ActiveRecord/Enum.html) 來了解更多細節。
+參見 [active_record/enum.rb](http://http://api.rubyonrails.org/v4.1.0/classes/ActiveRecord/Enum.html) 來了解更多細節。
 
 ### Application message verifier
 
 建立一個訊息驗證器，可以用來產生與驗證應用程式所簽署的訊息（`message`）。
 
 ```ruby
-message = Rails.application.message_verifier('salt').generate('my sensible data')
-Rails.application.message_verifier('salt').verify(message)
+signed_message = Rails.application.message_verifier('salt').generate('my sensible data')
+Rails.application.message_verifier('salt').verify(signed_message)
 # => 'my sensible data'
+
+Rails.application.message_verifier('salt').verify(tampered_message)
+# raises ActiveSupport::MessageVerifier::InvalidSignature
 ```
 
 ### Module#concerning
@@ -220,8 +217,7 @@ end
 
 等同於以前要定義 `EventTracking` Module，`extend ActiveSupport::Concern`，再混入 (mixin) `Todo` Class。
 
-參見
-[Module#concerning](api.rubyonrails.org/v4.1.0/classes/Module/Concerning.html) 來了解更多細節。
+參見 [Module#concerning](http://api.rubyonrails.org/v4.1.0/classes/Module/Concerning.html) 來了解更多細節。
 
 ### CSRF protection from remote `<script>` tags
 
