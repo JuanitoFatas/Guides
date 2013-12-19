@@ -266,8 +266,8 @@ Railties
 
 ### 值得一提的變化
 
-* [Spring](https://github.com/jonleighton/spring) 是預設的 Gem，列在 `Gemfile`
-  的開發群組裡。[PR#12958](https://github.com/rails/rails/pull/12958)。
+* [Spring](https://github.com/jonleighton/spring) 納入預設 Gem，列在 `Gemfile`
+  的 `group :development` 裡。[PR#12958](https://github.com/rails/rails/pull/12958)。
 
 * `BACKTRACE` 環境變數可看（unfiltered）測試的 backtrace。[Commit](https://github.com/rails/rails/commit/84eac5dab8b0fe9ee20b51250e52ad7bfea36553)
 
