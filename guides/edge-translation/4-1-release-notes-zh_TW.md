@@ -475,8 +475,7 @@ Active Support
 * 新增了 `Date#middle_of_day`, `DateTime#middle_of_day` and `Time#middle_of_day`
   方法。同時添加了 `midday`、`noon`、`at_midday`、`at_noon`、`at_middle_of_day` 作為別名。[PR#10879](https://github.com/rails/rails/pull/10879)
 
-* `String#gsub(pattern,'')` 可簡寫為 `String#remove(pattern)`
-  。[Commit](https://github.com/rails/rails/commit/5da23a3f921f0a4a3139495d2779ab0d3bd4cb5f)
+* `String#gsub(pattern,'')` 可簡寫為 `String#remove(pattern)`。[Commit](https://github.com/rails/rails/commit/5da23a3f921f0a4a3139495d2779ab0d3bd4cb5f)
 
 * 移除了 `'cow'` => `'kine'` 這個不規則的轉換。[Commit](https://github.com/rails/rails/commit/c300dca9963bda78b8f358dbcb59cabcdc5e1dc9)
 
