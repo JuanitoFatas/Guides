@@ -44,7 +44,7 @@ PR#12389 代表 Rails Repository 上 12389 号 Pull Request。
 
 ### Spring 预加载应用程序
 
-Spring 预加载你的 Rails 应用程序。保持应用程序在背景运行，如此一来运行 Rails 命令时：如测试、`rake`、`migrate` 不用每次都重启 Rails 应用程序，加速你的开发流程。
+Spring 预加载你的 Rails 应用程序。保持应用程序在后台运行，如此一来运行 Rails 命令时：如测试、`rake`、`migrate` 不用每次都重启 Rails 应用程序，加速你的开发流程。
 
 新版 Rails 4.1 应用程序出厂内建 “Spring 化” 的 binstubs（aka，运行文件，如 `rails`、`rake`）。这表示 `bin/rails`、`bin/rake` 会自动采用 Spring 预载的环境。
 
@@ -77,7 +77,7 @@ Spring is running:
 
 ### `config/secrets.yml`
 
-Rails 4.1 会在 `config/` 目录下产生新的 `secrets.yml`。这个文件预设存有应用程序的 `secret_key_base`，也可以用来存放其它像是存取外部 API 需要用的 access keys。例子：
+Rails 4.1 会在 `config/` 目录下产生新的 `secrets.yml`。这个文件默认存有应用程序的 `secret_key_base`，也可以用来存放其它secrets, 比如存放外部 API 需要用的 access keys。例子：
 
 `secrets.yml`:
 
@@ -87,7 +87,8 @@ development:
   some_api_key: "b2c299a4a7b2fe41b6b7ddf517604a1c34"
 ```
 
-取出：
+
+读取：
 
 ```ruby
 > Rails.application.secrets
@@ -113,6 +114,7 @@ request.variant = :tablet if request.user_agent =~ /iPad/
 ```
 
 在 Controller `action` 里，回应特殊格式跟处理别的格式相同：
+
 
 ```ruby
 respond_to do |format|
@@ -157,13 +159,14 @@ end
 
 所有可预览的 Email 可在此找到：http://localhost:3000/rails/mailers
 
-预设 preview 类的文件产生在 `test/mailers/previews`、可以透过 `preview_path` 选项来调整存放的位置。
+默认 preview 类的文件保存在 `test/mailers/previews`、可以通过 `preview_path` 选项来配置。
 
 参见 [Action Mailer 的文件](http://api.rubyonrails.org/v4.1.0/classes/ActionMailer/Base.html)来了解更多细节。
 
 ### Active Record enums
 
-宣告一个 `enum` 属性，将属性映射到数据库的整数，并可透过名字查询出来：
+
+设置一个 `enum` 属性，将属性映射到数据库的整数，并可通过名字查询出来：
 
 ```ruby
 class Conversation < ActiveRecord::Base
@@ -179,21 +182,24 @@ Conversation.archived # => Relation for all archived Conversations
 
 参见 [active_record/enum.rb](http://api.rubyonrails.org/v4.1.0/classes/ActiveRecord/Enum.html) 来了解更多细节。
 
-### Application message verifier
 
-建立一个讯息验证器，可以用来产生与验证应用程序所签署的讯息（`message`）。可以用来实现像是记住我的功能：
+### Message verifiers 信息验证器
+
+
+信息验证器用来生成和校验签名信息，可以用来保障敏感数据（如记住我口令，朋友数据）传输的安全性。
 
 ```ruby
 signed_token = Rails.application.message_verifier(:remember_me).generate(token)
 Rails.application.message_verifier(:remember_me).verify(signed_token) # => token
 
 Rails.application.message_verifier(:remember_me).verify(tampered_token)
-# raises ActiveSupport::MessageVerifier::InvalidSignature
+# 抛出异常 ActiveSupport::MessageVerifier::InvalidSignature
 ```
 
 ### Module#concerning
 
-拆分类别功能的方式：
+一种更自然，轻量级的拆分类功能的方式：
+
 
 ```ruby
 class Todo < ActiveRecord::Base
@@ -261,14 +267,14 @@ Railties
 
 ### 值得一提的变化
 
-* [Spring](https://github.com/jonleighton/spring) 纳入预设 Gem，列在 `Gemfile`
-  的 `group :development` 里。[PR#12958](https://github.com/rails/rails/pull/12958)
+* [Spring](https://github.com/jonleighton/spring) 纳入默认 Gem，列在 `Gemfile`
+  的 `group :development` 里，所以 production 环境不会安装。[PR#12958](https://github.com/rails/rails/pull/12958)
 
-* `BACKTRACE` 环境变数可看（unfiltered）测试的 backtrace。[Commit](https://github.com/rails/rails/commit/84eac5dab8b0fe9ee20b51250e52ad7bfea36553)
+* `BACKTRACE` 环境变量可看（unfiltered）测试的 backtrace。[Commit](https://github.com/rails/rails/commit/84eac5dab8b0fe9ee20b51250e52ad7bfea36553)
 
 * 可以在环境配置文件配置 `MiddlewareStack#unshift`。 [PR#12749](https://github.com/rails/rails/pull/12749)
 
-* 新增 `Application#message_verifier` 方法来返回讯息验证器。[PR#12995](https://github.com/rails/rails/pull/12995)
+* 新增 `Application#message_verifier` 方法来返回消息验证器。[PR#12995](https://github.com/rails/rails/pull/12995)
 
 Action Pack
 -----------
@@ -285,7 +291,8 @@ Action Pack
 
 * 更改 Action Controller 下列常量的名称：
 
-  | Removed                            | Successor                       |
+
+  | 移除                               | 采用                            |
   |:-----------------------------------|:--------------------------------|
   | ActionController::AbstractRequest  | ActionDispatch::Request         |
   | ActionController::Request          | ActionDispatch::Request         |
@@ -405,11 +412,13 @@ Active Record
 
 * 对 Active Record Model 的类别做 `inspect` 不会去连数据库。这样当数据库不存在时，`inspect` 才不会喷错误。[PR#11014](https://github.com/rails/rails/pull/11014)
 
-* 移除了 `count` 的栏位限制，SQL 不正确时，让数据库自己丢出错误。 [PR#10710](https://github.com/rails/rails/pull/10710)
+* 移除了 `count` 的列限制，SQL 不正确时，让数据库自己丢出错误。 [PR#10710](https://github.com/rails/rails/pull/10710)
 
 * Rails 现在会自动侦测 inverse associations。如果 association 没有配置 `:inverse_of`，则 Active Record 会自己猜出对应的 associaiton。[PR#10886](https://github.com/rails/rails/pull/10886)
 
-* `ActiveRecord::Relation` 会处理有别名的 attributes。当使用符号作为 key 时，Active Record 现在也会一起翻译别名的属性了，将其转成数据库内所使用的栏位名。[PR#7839](https://github.com/rails/rails/pull/7839)
+* `ActiveRecord::Relation` 会处理有别名的 attributes。当使用符号作为 key 时，Active Record 现在也会一起翻译别名的属性了，将其转成数据库内所使用的列名。[PR#7839](https://github.com/rails/rails/pull/7839)
+
+* Fixtures文件中的ERB不再main对象上下文里执行了，多个fixtures使用的helper方法需要定义在被 `ActiveRecord::FixtureSet.context_class` 包含的模块里。[PR#13022](https://github.com/rails/rails/pull/13022)
 
 Active Model
 ------------
@@ -418,7 +427,7 @@ Active Model
 
 ### 弃用
 
-* 弃用了 `Validator#setup`。现在要手动在 Validator 的 constructor 里自己处理。[Commit](https://github.com/rails/rails/commit/7d84c3a2f7ede0e8d04540e9c0640de7378e9b3a)
+* 弃用了 `Validator#setup`。现在要手动在 Validator 的 constructor 里处理。[Commit](https://github.com/rails/rails/commit/7d84c3a2f7ede0e8d04540e9c0640de7378e9b3a)
 
 ### 值得一提的变化
 
@@ -434,6 +443,8 @@ Active Support
 * 移除对 `MultiJSON` Gem 的依赖。也就是说 `ActiveSupport::JSON.decode` 不再接受给 `MultiJSON` 的 hash 参数。[PR#10576](https://github.com/rails/rails/pull/10576)
 
 * 移除了 `encode_json` hook，本来可以用来把 object 转成 JSON。这个功能被抽成了 [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder) Gem，请参考 [PR#12183](https://github.com/rails/rails/pull/12183) 与[这里](upgrading_ruby_on_rails.html#changes-in-json-handling)。
+
+* 移除了 `ActiveSupport::JSON::Variable`。
 
 * 移除了 `String#encoding_aware?`（`core_ext/string/encoding.rb`）。
 
@@ -466,11 +477,21 @@ Active Support
 
 * 弃用了 `Numeric#{ago,until,since,from_now}`，要明确的将数值转成 `AS::Duration`。比如 `5.ago` 请改成 `5.seconds.ago`。 [PR#12389](https://github.com/rails/rails/pull/12389)
 
+* 引用路径里弃用了 `active_support/core_ext/object/to_json`. 请引用 `active_support/core_ext/object/json instead` [PR#12203](https://github.com/rails/rails/pull/12203)
+
+* 弃用了 `ActiveSupport::JSON::Encoding::CircularReferenceError`。 这个功能被抽成了 [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder) Gem，请参考 [PR#12183](https://github.com/rails/rails/pull/12183) 与[这里](upgrading_ruby_on_rails.html#changes-in-json-handling)
+
+* 弃用了 `ActiveSupport.encode_big_decimal_as_string` 选项。 这个功能被抽成了 [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder) Gem，请参考 [PR#12183](https://github.com/rails/rails/pull/12183) 与[这里](upgrading_ruby_on_rails.html#changes-in-json-handling)
+
 ### 值得一提的变化
 
-* 新增 `ActiveSupport::Testing::TimeHelpers#travel` 与 `#travel_to`。这两个方法透过 stubbing `Time.now` 与 `Date.today`，可做时光旅行。参考 [PR#12824](https://github.com/rails/rails/pull/12824)
+* 使用JSON gem重写ActiveSupport 的 JSON 编码部分，比用纯Ruby定制编码效率有提升。参考 [PR#12183](https://github.com/rails/rails/pull/12183) 与[这里](http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html#changes-in-json-handling)
 
-* 新增 `Numeric#in_milliseconds`，像是 1 小时有几毫秒：`1.hour.in_milliseconds`。可以将时间转成毫秒，再餵给 JavaScript 的 `getTime()` 函数。[Commit](https://github.com/rails/rails/commit/423249504a2b468d7a273cbe6accf4f21cb0e643)
+* 提升 JSON gem 兼容性。 [PR#12862](https://github.com/rails/rails/pull/12862) 与[这里](http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html#changes-in-json-handling)
+
+* 新增 `ActiveSupport::Testing::TimeHelpers#travel` 与 `#travel_to`。这两个方法通过 stubbing `Time.now` 与 `Date.today`，可设置任意时间，做时光旅行。参考 [PR#12824](https://github.com/rails/rails/pull/12824)
+
+* 新增 `Numeric#in_milliseconds`，像是 1 小时有几毫秒：`1.hour.in_milliseconds`。可以将时间转成毫秒，再传给 JavaScript 的 `getTime()` 函数。[Commit](https://github.com/rails/rails/commit/423249504a2b468d7a273cbe6accf4f21cb0e643)
 
 * 新增了 `Date#middle_of_day`、`DateTime#middle_of_day` 与 `Time#middle_of_day`
   方法。同时添加了 `midday`、`noon`、`at_midday`、`at_noon`、`at_middle_of_day` 作为别名。[PR#10879](https://github.com/rails/rails/pull/10879)
