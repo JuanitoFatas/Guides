@@ -472,7 +472,7 @@ Active Support
 
 * 新增 `Numeric#in_milliseconds`，像是 1 小时有几毫秒：`1.hour.in_milliseconds`。可以将时间转成毫秒，再餵给 JavaScript 的 `getTime()` 函数。[Commit](https://github.com/rails/rails/commit/423249504a2b468d7a273cbe6accf4f21cb0e643)
 
-* 新增了 `Date#middle_of_day`, `DateTime#middle_of_day` and `Time#middle_of_day`
+* 新增了 `Date#middle_of_day`、`DateTime#middle_of_day` 与 `Time#middle_of_day`
   方法。同时添加了 `midday`、`noon`、`at_midday`、`at_noon`、`at_middle_of_day` 作为别名。[PR#10879](https://github.com/rails/rails/pull/10879)
 
 * `String#gsub(pattern,'')` 可简写为 `String#remove(pattern)`。[Commit](https://github.com/rails/rails/commit/5da23a3f921f0a4a3139495d2779ab0d3bd4cb5f)
