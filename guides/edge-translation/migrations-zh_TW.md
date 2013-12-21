@@ -9,7 +9,6 @@ __學習目標__
 * 撰寫 Rake task 來管理資料庫的 schema。
 * 了解 Migration 與 schema.rb 的關係。
 
-
 # 目錄
 
 - [1. 概要](#1-概要)
@@ -323,13 +322,13 @@ __Active Record 支援的欄位類型有哪些？__
 
 類型後面還可加修飾符（modifiers），支持下列修飾符：
 
-|修飾符|說明|
-|:--|:--|
+|修飾符         |說明                                           |
+|:-------------|:---------------------------------------------|
 |`:limit`      | 設定 `string/text/binary/integer` 欄位的最大值。|
 |`:precision`  | 定義 `decimal` 欄位的精度，含小數點可以有幾個數字。|
 |`:scale`      | 定義 `decimal` 欄位的位數，小數點可以有幾位。|
-|`:null`       | 欄位允不允許 NULL 值。|
 |`:polymorphic`| 給 `belongs_to` association 加上 `type` 欄位。|
+|`:null`       | 欄位允不允許 `NULL` 值。|
 
 舉例來說
 
