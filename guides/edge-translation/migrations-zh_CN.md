@@ -9,7 +9,6 @@ __学习目标__
 * 撰写 Rake task 来管理数据库的 schema。
 * 了解 Migration 与 schema.rb 的关系。
 
-
 # 目录
 
 - [1. 概要](#1-概要)
@@ -323,13 +322,14 @@ __Active Record 支援的栏位类型有哪些？__
 
 类型后面还可加修饰符（modifiers），支持下列修饰符：
 
-|修饰符|说明|
-|:--|:--|
+|修饰符         |说明                                           |
+|:-------------|:---------------------------------------------|
 |`:limit`      | 设定 `string/text/binary/integer` 栏位的最大值。|
 |`:precision`  | 定义 `decimal` 栏位的精度，含小数点可以有几个数字。|
 |`:scale`      | 定义 `decimal` 栏位的位数，小数点可以有几位。|
-|`:null`       | 栏位允不允许 NULL 值。|
 |`:polymorphic`| 给 `belongs_to` association 加上 `type` 栏位。|
+|`:null`       | 栏位允不允许 `NULL` 值。|
+
 
 举例来说
 
