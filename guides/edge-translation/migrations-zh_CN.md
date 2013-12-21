@@ -330,7 +330,6 @@ __Active Record 支援的栏位类型有哪些？__
 |`:polymorphic`| 给 `belongs_to` association 加上 `type` 栏位。|
 |`:null`       | 栏位允不允许 `NULL` 值。|
 
-
 举例来说
 
 ```bash
