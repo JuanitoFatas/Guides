@@ -183,7 +183,6 @@ Conversation.archived # => Relation for all archived Conversations
 
 ### Message verifiers 信息验证器
 
-
 信息验证器用来生成和校验签名信息，可以用来保障敏感数据（如记住我口令，朋友数据）传输的安全性。
 
 ```ruby
