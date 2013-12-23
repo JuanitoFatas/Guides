@@ -77,7 +77,7 @@ Spring is running:
 
 ### `config/secrets.yml`
 
-Rails 4.1 会在 `config/` 目录下产生新的 `secrets.yml`。这个文件默认存有应用程序的 `secret_key_base`，也可以用来存放其它secrets, 比如存放外部 API 需要用的 access keys。例子：
+Rails 4.1 会在 `config/` 目录下产生新的 `secrets.yml`。这个文件默认存有应用程序的 `secret_key_base`，也可以用来存放其它 secrets，比如存放外部 API 需要用的 access keys。例子：
 
 `secrets.yml`:
 
@@ -86,7 +86,6 @@ development:
   secret_key_base: "3b7cd727ee24e8444053437c36cc66c3"
   some_api_key: "b2c299a4a7b2fe41b6b7ddf517604a1c34"
 ```
-
 
 读取：
 
@@ -114,7 +113,6 @@ request.variant = :tablet if request.user_agent =~ /iPad/
 ```
 
 在 Controller `action` 里，回应特殊格式跟处理别的格式相同：
-
 
 ```ruby
 respond_to do |format|
@@ -418,7 +416,7 @@ Active Record
 
 * `ActiveRecord::Relation` 会处理有别名的 attributes。当使用符号作为 key 时，Active Record 现在也会一起翻译别名的属性了，将其转成数据库内所使用的列名。[PR#7839](https://github.com/rails/rails/pull/7839)
 
-* Fixtures文件中的ERB不再main对象上下文里执行了，多个fixtures使用的helper方法需要定义在被 `ActiveRecord::FixtureSet.context_class` 包含的模块里。[PR#13022](https://github.com/rails/rails/pull/13022)
+* Fixtures 文件中的 ERB 不在 main 对象上下文里执行了，多个 fixtures 使用的 Helper 方法，需要定义在被 `ActiveRecord::FixtureSet.context_class` 包含的模块里。[PR#13022](https://github.com/rails/rails/pull/13022)
 
 Active Model
 ------------
@@ -479,13 +477,13 @@ Active Support
 
 * 引用路径里弃用了 `active_support/core_ext/object/to_json`. 请引用 `active_support/core_ext/object/json instead` [PR#12203](https://github.com/rails/rails/pull/12203)
 
-* 弃用了 `ActiveSupport::JSON::Encoding::CircularReferenceError`。 这个功能被抽成了 [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder) Gem，请参考 [PR#12183](https://github.com/rails/rails/pull/12183) 与[这里](upgrading_ruby_on_rails.html#changes-in-json-handling)
+* 弃用了 `ActiveSupport::JSON::Encoding::CircularReferenceError`。 这个功能被抽成了 [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder) Gem，请参考 [PR#12183](https://github.com/rails/rails/pull/12183) 与[这里](upgrading_ruby_on_rails.html#changes-in-json-handling)。
 
-* 弃用了 `ActiveSupport.encode_big_decimal_as_string` 选项。 这个功能被抽成了 [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder) Gem，请参考 [PR#12183](https://github.com/rails/rails/pull/12183) 与[这里](upgrading_ruby_on_rails.html#changes-in-json-handling)
+* 弃用了 `ActiveSupport.encode_big_decimal_as_string` 选项。 这个功能被抽成了 [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder) Gem，请参考 [PR#12183](https://github.com/rails/rails/pull/12183) 与[这里](upgrading_ruby_on_rails.html#changes-in-json-handling)。
 
 ### 值得一提的变化
 
-* 使用JSON gem重写ActiveSupport 的 JSON 编码部分，比用纯Ruby定制编码效率有提升。参考 [PR#12183](https://github.com/rails/rails/pull/12183) 与[这里](http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html#changes-in-json-handling)
+* 使用 JSON gem 重写 ActiveSupport 的 JSON 编码部分，提升了纯 Ruby 定制编码的效率。参考 [PR#12183](https://github.com/rails/rails/pull/12183) 与[这里](http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html#changes-in-json-handling)。
 
 * 提升 JSON gem 兼容性。 [PR#12862](https://github.com/rails/rails/pull/12862) 与[这里](http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html#changes-in-json-handling)
 
