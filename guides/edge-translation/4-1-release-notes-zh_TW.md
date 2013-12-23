@@ -77,7 +77,7 @@ Spring is running:
 
 ### `config/secrets.yml`
 
-Rails 4.1 會在 `config/` 目錄下產生新的 `secrets.yml`。這個檔案預設存有應用程式的 `secret_key_base`，也可以用來存放其它像是存取外部 API 需要用的 access keys。例子：
+Rails 4.1 會在 `config/` 目錄下產生新的 `secrets.yml`。這個檔案預設存有應用程式的 `secret_key_base`，也可以用來存放其它 secrets，比如存放外部 API 需要用的 access keys。例子：
 
 `secrets.yml`:
 
@@ -87,7 +87,7 @@ development:
   some_api_key: "b2c299a4a7b2fe41b6b7ddf517604a1c34"
 ```
 
-取出：
+讀出：
 
 ```ruby
 > Rails.application.secrets
@@ -179,7 +179,7 @@ Conversation.archived # => Relation for all archived Conversations
 
 參見 [active_record/enum.rb](http://api.rubyonrails.org/v4.1.0/classes/ActiveRecord/Enum.html) 來了解更多細節。
 
-### Application message verifier
+### Message verifier 訊息驗證器
 
 建立一個訊息驗證器，可以用來產生與驗證應用程式所簽署的訊息（`message`）。可以用來實現像是記住我的功能：
 
@@ -188,12 +188,12 @@ signed_token = Rails.application.message_verifier(:remember_me).generate(token)
 Rails.application.message_verifier(:remember_me).verify(signed_token) # => token
 
 Rails.application.message_verifier(:remember_me).verify(tampered_token)
-# raises ActiveSupport::MessageVerifier::InvalidSignature
+# 拋出異常 ActiveSupport::MessageVerifier::InvalidSignature
 ```
 
 ### Module#concerning
 
-拆分類別功能的方式：
+一種更自然、輕量級的方式來拆分類的功能。
 
 ```ruby
 class Todo < ActiveRecord::Base
@@ -285,7 +285,7 @@ Action Pack
 
 * 更改 Action Controller 下列常數的名稱：
 
-  | Removed                            | Successor                       |
+  | 移除                                | 採用                       |
   |:-----------------------------------|:--------------------------------|
   | ActionController::AbstractRequest  | ActionDispatch::Request         |
   | ActionController::Request          | ActionDispatch::Request         |
@@ -411,6 +411,8 @@ Active Record
 
 * `ActiveRecord::Relation` 會處理有別名的 attributes。當使用符號作為 key 時，Active Record 現在也會一起翻譯別名的屬性了，將其轉成資料庫內所使用的欄位名。[PR#7839](https://github.com/rails/rails/pull/7839)
 
+* Fixtures 檔案中的 ERB 不在 main 物件上下文裡執行了，多個 fixtures 使用的 Helper ，需要定義在被 `ActiveRecord::FixtureSet.context_class` 包含的 Module 裡。 [PR#13022](https://github.com/rails/rails/pull/13022)
+
 Active Model
 ------------
 
@@ -418,7 +420,7 @@ Active Model
 
 ### 棄用
 
-* 棄用了 `Validator#setup`。現在要手動在 Validator 的 constructor 裡自己處理。[Commit](https://github.com/rails/rails/commit/7d84c3a2f7ede0e8d04540e9c0640de7378e9b3a)
+* 棄用了 `Validator#setup`。現在要手動在 Validator 的 constructor 裡處理。[Commit](https://github.com/rails/rails/commit/7d84c3a2f7ede0e8d04540e9c0640de7378e9b3a)
 
 ### 值得一提的變化
 
@@ -434,6 +436,8 @@ Active Support
 * 移除對 `MultiJSON` Gem 的依賴。也就是說 `ActiveSupport::JSON.decode` 不再接受給 `MultiJSON` 的 hash 參數。[PR#10576](https://github.com/rails/rails/pull/10576)
 
 * 移除了 `encode_json` hook，本來可以用來把 object 轉成 JSON。這個功能被抽成了 [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder) Gem，請參考 [PR#12183](https://github.com/rails/rails/pull/12183) 與[這裡](upgrading_ruby_on_rails.html#changes-in-json-handling)。
+
+* 移除了 `ActiveSupport::JSON::Variable`。
 
 * 移除了 `String#encoding_aware?`（`core_ext/string/encoding.rb`）。
 
@@ -466,9 +470,19 @@ Active Support
 
 * 棄用了 `Numeric#{ago,until,since,from_now}`，要明確的將數值轉成 `AS::Duration`。比如 `5.ago` 請改成 `5.seconds.ago`。 [PR#12389](https://github.com/rails/rails/pull/12389)
 
+* 引用路徑裡棄用了 `active_support/core_ext/object/to_json`。請改用`active_support/core_ext/object/json` 來取代。 [PR#12203](https://github.com/rails/rails/pull/12203)
+
+* 棄用了 `ActiveSupport::JSON::Encoding::CircularReferenceError`。這個功能被抽成了[activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder) Gem，請參考 [PR#12183](https://github.com/rails/rails/pull/ 12183) 與[這裡](upgrading_ruby_on_rails.html#changes-in-json-handling)。
+
+* 棄用了 `ActiveSupport.encode_big_decimal_as_string` 選項。這個功能被抽成了[activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder) Gem，請參考 [PR#12183](https://github.com/rails/rails/pull/ 12183) 與[這裡](upgrading_ruby_on_rails.html#changes-in-json-handling)。
+
 ### 值得一提的變化
 
-* 新增 `ActiveSupport::Testing::TimeHelpers#travel` 與 `#travel_to`。這兩個方法透過 stubbing `Time.now` 與 `Date.today`，可做時光旅行。參考 [PR#12824](https://github.com/rails/rails/pull/12824)
+* 使用 JSON gem 重寫 ActiveSupport 的 JSON Encoding 部分，提升了純 Ruby 編碼的效率。參考 [PR#12183](https://github.com/rails/rails/pull/12183) 與[這裡](http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html#changes-in-json-handling)。
+
+* 提升 JSON gem 相容性。 [PR#12862](https://github.com/rails/rails/pull/12862) 與[這裡](http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html#changes-in-json-handling)
+
+* 新增 `ActiveSupport::Testing::TimeHelpers#travel` 與 `#travel_to`。這兩個方法透過 stubbing `Time.now` 與 `Date.today`，可設定任何時間，坐時光旅行。參考 [PR#12824](https://github.com/rails/rails/pull/12824)
 
 * 新增 `Numeric#in_milliseconds`，像是 1 小時有幾毫秒：`1.hour.in_milliseconds`。可以將時間轉成毫秒，再餵給 JavaScript 的 `getTime()` 函數。[Commit](https://github.com/rails/rails/commit/423249504a2b468d7a273cbe6accf4f21cb0e643)
 
