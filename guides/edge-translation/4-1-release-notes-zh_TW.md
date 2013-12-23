@@ -26,7 +26,7 @@ PR#12389 代表 Rails Repository 上 12389 號 Pull Request。
 * [Action Pack Variants](#action-pack-variants)
 * [Action Mailer Preview](#action-mailer-預覽)
 * [Active Record enums](#active-record-enums)
-* [Application message verifier](#application-message-verifier)
+* [Message verifier 訊息驗證器](#message-verifier-訊息驗證器)
 * [Module#concerning](#moduleconcerning)
 * [加強 CSRF 防護機制（防護來自第三方的 `<script>`）](#csrf-protection-from-remote-script-tags)
 
