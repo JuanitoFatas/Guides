@@ -181,7 +181,7 @@ Conversation.archived # => Relation for all archived Conversations
 
 ### Message verifier 訊息驗證器
 
-建立一個訊息驗證器，可以用來產生與驗證應用程式所簽署的訊息（`message`）。可以用來實現像是記住我的功能：
+訊息驗證器用來產生與驗證訊息，可以用來保護敏感資料（如記住我的 token、朋友資料）傳輸的安全性。
 
 ```ruby
 signed_token = Rails.application.message_verifier(:remember_me).generate(token)
@@ -262,7 +262,7 @@ Railties
 ### 值得一提的變化
 
 * [Spring](https://github.com/jonleighton/spring) 納入預設 Gem，列在 `Gemfile`
-  的 `group :development` 裡。[PR#12958](https://github.com/rails/rails/pull/12958)
+  的 `group :development` 裡，所以 production 環境不會安裝。[PR#12958](https://github.com/rails/rails/pull/12958)
 
 * `BACKTRACE` 環境變數可看（unfiltered）測試的 backtrace。[Commit](https://github.com/rails/rails/commit/84eac5dab8b0fe9ee20b51250e52ad7bfea36553)
 
