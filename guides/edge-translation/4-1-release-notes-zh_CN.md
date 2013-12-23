@@ -500,6 +500,12 @@ Active Support
 
 * 移除了 `'cow'` => `'kine'` 这个不规则的转换。[Commit](https://github.com/rails/rails/commit/c300dca9963bda78b8f358dbcb59cabcdc5e1dc9)
 
+延伸阅读
+---------
+
+[What's new in Rails 4.1 | Coherence.io](http://coherence.io/blog/2013/12/17/whats-new-in-rails-4-1.html)
+[What's new in Rails 4.1](http://www.slideshare.net/godfreykfc/rails-41)
+
 致谢
 -------
 
