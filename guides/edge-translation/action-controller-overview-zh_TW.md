@@ -575,9 +575,9 @@ end
 
 Note that while for session values you set the key to `nil`, to delete a cookie value you should use `cookies.delete(:key)`.
 
-# 7. Rendering XML and JSON data
+# 7. Rendering XML 與 JSON 資料
 
-ActionController makes it extremely easy to render `XML` or `JSON` data. If you've generated a controller using scaffolding, it would look something like this:
+在 `ActionController` 裡 render `XML` 或是 `JSON` 真是再簡單不過了，看看下面這個用鷹架產生出的 Controller：
 
 ```ruby
 class UsersController < ApplicationController
@@ -592,7 +592,7 @@ class UsersController < ApplicationController
 end
 ```
 
-You may notice in the above code that we're using `render xml: @users`, not `render xml: @users.to_xml`. If the object is not a String, then Rails will automatically invoke `to_xml` for us.
+注意這裡 `render` XML 的時候是寫 `render xml: @users`，而不是 `render xml: @users.to_xml`。如果 `render` 的物件不是字串的話，Rails 會自動替我們呼叫 `to_xml`。
 
 # 8. Filters
 
