@@ -4,43 +4,47 @@ __特別要強調的翻譯名詞__
 
 > application 應用程式。
 
-本篇介紹 Controller 如何工作，以及 Controller 與應用程式 的 request 生命週期如何結合在一起。
+本篇介紹 Controller 的工作原理、Controller 與如何應用程式的 Request 生命週期結合在一起。
 
 讀完本篇可能會學到.....
 
-* request 進到 Controller 的流程。
+* Request 進到 Controller 的流程。
 * 限制傳入 Controller 的參數。
-* 為何、如何把資料存在 session 或 cookie 裡。
-* 如何在處理 request 時使用 filters 來執行程式碼。
+* 為何、如何把資料存在 Session 或 Cookie 裡。
+* 如何在處理 Request 時使用 Filters 來執行程式碼。
 * 如何使用 Action Controller 內建的 HTTP 驗證。
 * 如何用串流方式將資料傳給使用者的瀏覽器。
-* 如何在應用程式的 log 裡過濾敏感資料。
-* 如何處理 request 處理週期可能拋出的異常。
+* 如何在應用程式的 Log 裡過濾敏感資料。
+* 如何處理 Request 處理週期可能拋出的異常。
 
 ## 目錄
 
 # 1. Controller 做了什麼？
 
-Action Controller is the C in MVC. After routing has determined which controller to use for a request, your controller is responsible for making sense of the request and producing the appropriate output. Luckily, Action Controller does most of the groundwork for you and uses smart conventions to make this as straightforward as possible.
+Action Controller 是 MVC 的 C，Controller。一個 Request 進來，路由決定是那個 Controller 的工作後，便把工作指派給 Controller，Controller 負責處理該 Request，給出對應的 Output。幸運的是 Action Controller 把大部分的苦力都給您辦好了，您只需按照一些規範來寫代碼，事情便豁然開朗。
 
-For most conventional [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer) applications, the controller will receive the request (this is invisible to you as the developer), fetch or save data from a model and use a view to create HTML output. If your controller needs to do things a little differently, that's not a problem, this is just the most common way for a controller to work.
+對多數按照 [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer) 規範來編寫的應用程式來說，Controller 的工作便是接收 Request，按照 Request 的請求，去 Model 取或寫資料，並將資料交給 View，來產生出 HTML。
 
-A controller can thus be thought of as a middle man between models and views. It makes the model data available to the view so it can display that data to the user, and it saves or updates data from the user to the model.
-
-NOTE: For more details on the routing process, see [Rails Routing from the Outside In](routing.html).
-
-# 2. Controller Naming Convention
-
-The naming convention of controllers in Rails favors pluralization of the last word in the controller's name, although it is not strictly required (e.g. `ApplicationController`). For example, `ClientsController` is preferable to `ClientController`, `SiteAdminsController` is preferable to `SiteAdminController` or `SitesAdminsController`, and so on.
-
-Following this convention will allow you to use the default route generators (e.g. `resources`, etc) without needing to qualify each `:path` or `:controller`, and keeps URL and path helpers' usage consistent throughout your application. See [Layouts & Rendering Guide](layouts_and_rendering.html) for more details.
-
-NOTE: The controller naming convention differs from the naming convention of models, which expected to be named in singular form.
+Controller 因此可以想成是 Model 與 View 的中間人。負責將 Model 資料傳遞給 View，讓 View 可以運用該資料顯示給使用者，並將使用者更新或儲存的資料，存回 Model。
 
 
-# 3. Methods and Actions
+路由過程的細節可以查閱 [Rails Routing From the Outside In](http://edgeguides.rubyonrails.org/routing.html)
 
-A controller is a Ruby class which inherits from `ApplicationController` and has methods just like any other class. When your application receives a request, the routing will determine which controller and action to run, then Rails creates an instance of that controller and runs the method with the same name as the action.
+# 2. Controller 命名規範
+
+Rails 偏好 Controller 以複數結尾，但也是有例外，比如 `ApplicationController`。舉例來說：
+
+偏好 `ClientsController` 而不是 `ClientController`。
+
+偏好 `SiteAdminsController` 而不是 `SitesAdminsController`。
+
+遵循規範便可使用預設的路由產生器：`resources`、`resource` 等，而無需特地修飾 `:path`、`controller`，讓 URL 與 path Helpers 保持一致。細節請參考 [Layouts & Rendering Guide](layouts_and_rendering.html) 一篇。
+
+注意：Controller 的命名規範與 Model 的命名規範不同，Model 預期的是單數形式。
+
+# 3. Methods 與 Actions
+
+Controller 其實跟普通的 Ruby class 一樣，有著 methods，但是從 `ApplicationController` 繼承而來。當應用程式收到 Request 時，Routing 會決定這要交給那個 Controller 的 Action 來處理，接著 Rails 創造出該 Controller 的 instance，執行與 Action 名稱相同的 Method。
 
 ```ruby
 class ClientsController < ApplicationController
@@ -49,7 +53,7 @@ class ClientsController < ApplicationController
 end
 ```
 
-As an example, if a user goes to `/clients/new` in your application to add a new client, Rails will create an instance of `ClientsController` and run the `new` method. Note that the empty method from the example above would work just fine because Rails will by default render the `new.html.erb` view unless the action says otherwise. The `new` method could make available to the view a `@client` instance variable by creating a new `Client`:
+假設使用者跑去 `/clients/new`，想要新增 `client` 時，Rails 創出 `ClientsController` 的 instance，並呼叫 `new` 來處理。注意 `new` 雖沒有內容，但 Rails 預設會 `render` `new.html.erb`。先前提到 Controller 可以從 Model 取資料給 View，要怎麼做呢？
 
 ```ruby
 def new
@@ -57,15 +61,15 @@ def new
 end
 ```
 
-The [Layouts & Rendering Guide](layouts_and_rendering.html) explains this in more detail.
+更多細節請參考 [Layouts & Rendering Guide](layouts_and_rendering.html) 一篇。
 
-`ApplicationController` inherits from `ActionController::Base`, which defines a number of helpful methods. This guide will cover some of these, but if you're curious to see what's in there, you can see all of them in the API documentation or in the source itself.
+`ApplicationController`從 `ActionController::Base` 繼承而來，`ActionController::Base` 定義了許多有用的 Methods。本篇會提到一些，但要是好奇定義了些什麼方法，可參考 [ActionController::Base 的 API 文件](http://edgeapi.rubyonrails.org/classes/ActionController/Base.html)，或是閱讀[ActionController::Base 原始碼](https://github.com/rails/rails/blob/master/actionpack/lib/action_controller/base.rb)。
 
-Only public methods are callable as actions. It is a best practice to lower the visibility of methods which are not intended to be actions, like auxiliary methods or filters.
+只有公有方法可以被外部作為 action 呼叫。所以輔助方法啦、Filter 啦，最好藏在 `protected` 或 `private` 裡。
 
-# 4. Parameters
+# 4. 參數
 
-You will probably want to access data sent in by the user or other parameters in your controller actions. There are two kinds of parameters possible in a web application. The first are parameters that are sent as part of the URL, called query string parameters. The query string is everything after "?" in the URL. The second type of parameter is usually referred to as POST data. This information usually comes from an HTML form which has been filled in by the user. It's called POST data because it can only be sent as part of an HTTP POST request. Rails does not make any distinction between query string parameters and POST parameters, and both are available in the `params` hash in your controller:
+你通常會想在 Controller 裡存取由使用者傳入的資料或是其他的參數，Web 應用程式的有兩種可能的參數。第一種是由 URL 的部份組成，傳來的參數叫做 “query string parameters”。Query string 是 URL `?` 後面的任何字串，是通過 HTTP `GET` 傳遞。第二種參數是 “POST data”，透過 HTTP `POST` 傳遞，故得名。這通常是使用者從表單填入的訊息。叫做 POST data 的原因是只能作為 HTTP POST Request 的一部分來傳遞。Rails 並不區分 Query String Parameter 或 POST Parameter，兩者皆可在 Controller 裡，從 `params` hash 裡取出：
 
 ```ruby
 class ClientsController < ApplicationController
@@ -99,7 +103,7 @@ class ClientsController < ApplicationController
 end
 ```
 
-### Hash and Array Parameters
+### Hash 與 Array 參數
 
 The `params` hash is not limited to one-dimensional keys and values. It can contain arrays and (nested) hashes. To send an array of values, append an empty pair of square brackets "[]" to the key name:
 
@@ -126,7 +130,7 @@ When this form is submitted, the value of `params[:client]` will be `{ "name" =>
 
 Note that the `params` hash is actually an instance of `ActiveSupport::HashWithIndifferentAccess`, which acts like a hash but lets you use symbols and strings interchangeably as keys.
 
-### JSON parameters
+### JSON 參數
 
 If you're writing a web service application, you might find yourself more comfortable accepting parameters in JSON format. If the "Content-Type" header of your request is set to "application/json", Rails will automatically convert your parameters into the `params` hash, which you can access as you would normally.
 
@@ -154,7 +158,7 @@ You can customize the name of the key or specific parameters you want to wrap by
 
 NOTE: Support for parsing XML parameters has been extracted into a gem named `actionpack-xml_parser`
 
-### Routing Parameters
+### Routing 參數
 
 The `params` hash will always contain the `:controller` and `:action` keys, but you should use the methods `controller_name` and `action_name` instead to access these values. Any other parameters defined by the routing, such as `:id` will also be available. As an example, consider a listing of clients where the list can show either active or inactive clients. We can add a route which captures the `:status` parameter in a "pretty" URL:
 
@@ -278,7 +282,7 @@ permitted scalar values allowed), a `hobbies` attribute as an array of
 permitted scalar values, and a `family` attribute which is restricted
 to having a `name` (any permitted scalar values allowed, too).
 
-#### More Examples
+#### 更多例子
 
 You want to also use the permitted attributes in the `new`
 action. This raises the problem that you can't use `require` on the
