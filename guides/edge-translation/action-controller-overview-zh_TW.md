@@ -25,26 +25,26 @@ Action Controller 是 MVC 的 C，Controller。一個 Request 進來，路由決
 
 對多數按照 [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer) 規範來編寫的應用程式來說，Controller 的工作便是接收 Request，按照 Request 的請求，去 Model 取或寫資料，並將資料交給 View，來產生出 HTML。
 
-Controller 因此可以想成是 Model 與 View 的中間人。負責將 Model 資料傳遞給 View，讓 View 可以運用該資料顯示給使用者，並將使用者更新或儲存的資料，存回 Model。
+Controller 因此可以想成是 Model 與 View 的中間人。負責替 Model 將資料傳給 View，讓 View 可以顯示資料給使用者。Controller 也將使用者更新或儲存的資料，存回 Model。
 
 
-路由過程的細節可以查閱 [Rails Routing From the Outside In](http://edgeguides.rubyonrails.org/routing.html)
+路由過程的細節可以查閱 [Rails Routing From the Outside In](http://edgeguides.rubyonrails.org/routing.html)。
 
 # 2. Controller 命名規範
 
 Rails 偏好 Controller 以複數結尾，但也是有例外，比如 `ApplicationController`。舉例來說：
 
-偏好 `ClientsController` 而不是 `ClientController`。
+偏好 `ClientsController` 勝過 `ClientController`。
 
-偏好 `SiteAdminsController` 而不是 `SitesAdminsController`。
+偏好 `SiteAdminsController` 勝過 `SitesAdminsController`。
 
-遵循規範便可使用預設的路由產生器：`resources`、`resource` 等，而無需特地修飾 `:path`、`controller`，讓 URL 與 path Helpers 保持一致。細節請參考 [Layouts & Rendering Guide](layouts_and_rendering.html) 一篇。
+遵循規範便可使用內建的路由產生器：`resources`、`resource` 等，而無需特地修飾 `:path`、`controller`，並可保持 URL 與 path Helpers 的一致性。細節請參考 [Layouts & Rendering Guide](/guides/edge/layouts_and_rendering.md) 一篇。
 
 注意：Controller 的命名規範與 Model 的命名規範不同，Model 預期的是單數形式。
 
 # 3. Methods 與 Actions
 
-Controller 其實跟普通的 Ruby class 一樣，有著 methods，但是從 `ApplicationController` 繼承而來。當應用程式收到 Request 時，Routing 會決定這要交給那個 Controller 的 Action 來處理，接著 Rails 創造出該 Controller 的 instance，執行與 Action 名稱相同的 Method。
+Controller 從 `ApplicationController` 繼承而來，但 Controller 其實跟普通的 Ruby Class 一樣，都有 methods。當應用程式收到 Request 時，Routing 會決定這要交給那個 Controller 的那個 Action 來處理，接著 Rails 創造出該 Controller 的 instance，執行與 Action 名稱相同的 Method。
 
 ```ruby
 class ClientsController < ApplicationController
@@ -63,7 +63,7 @@ end
 
 更多細節請參考 [Layouts & Rendering Guide](layouts_and_rendering.html) 一篇。
 
-`ApplicationController`從 `ActionController::Base` 繼承而來，`ActionController::Base` 定義了許多有用的 Methods。本篇會提到一些，但要是好奇定義了些什麼方法，可參考 [ActionController::Base 的 API 文件](http://edgeapi.rubyonrails.org/classes/ActionController/Base.html)，或是閱讀[ActionController::Base 原始碼](https://github.com/rails/rails/blob/master/actionpack/lib/action_controller/base.rb)。
+`ApplicationController`從 `ActionController::Base` 繼承而來，`ActionController::Base` 定義了許多有用的 Methods。本篇會提到一些，但要是好奇定義了些什麼方法，可參考 [ActionController::Base 的 API 文件](http://edgeapi.rubyonrails.org/classes/ActionController/Base.html)，或是閱讀 [ActionController::Base 原始碼](https://github.com/rails/rails/blob/master/actionpack/lib/action_controller/base.rb)。
 
 只有公有方法可以被外部作為 action 呼叫。所以輔助方法啦、Filter 啦，最好藏在 `protected` 或 `private` 裡。
 
