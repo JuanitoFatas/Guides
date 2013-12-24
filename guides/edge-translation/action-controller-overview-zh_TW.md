@@ -69,7 +69,7 @@ end
 
 # 4. 參數
 
-你通常會想在 Controller 裡存取由使用者傳入的資料或是其他的參數，Web 應用程式的有兩種可能的參數。第一種是由 URL 的部份組成，傳來的參數叫做 “query string parameters”。Query string 是 URL `?` 後面的任何字串，是通過 HTTP `GET` 傳遞。第二種參數是 “POST data”，透過 HTTP `POST` 傳遞，故得名。這通常是使用者從表單填入的訊息。叫做 POST data 的原因是只能作為 HTTP POST Request 的一部分來傳遞。Rails 並不區分 Query String Parameter 或 POST Parameter，兩者皆可在 Controller 裡，從 `params` hash 裡取出：
+通常會想在 Controller 裡，存取由使用者傳入的資料或是其他的參數。Web 應用程式有兩種參數。第一種是由 URL 的部份組成，這種叫做 “query string parameters”。Query string 是 URL `?` 後面的任何字串，通常是透過 HTTP `GET` 傳遞。第二種參數是 “POST data”，透過 HTTP `POST` 傳遞，故得名 “POST data”。這通常是使用者從表單填入的訊息。叫做 POST data 的原因是只能作為 HTTP POST Request 的一部分來傳遞。Rails 並不區分 Query String Parameter 或 POST Parameter，兩者皆可在 Controller 裡，從 `params` hash 裡取出：
 
 ```ruby
 class ClientsController < ApplicationController
@@ -105,17 +105,17 @@ end
 
 ### Hash 與 Array 參數
 
-The `params` hash is not limited to one-dimensional keys and values. It can contain arrays and (nested) hashes. To send an array of values, append an empty pair of square brackets "[]" to the key name:
+`params` hash 不侷限於一維的 hash。可以是巢狀的 Hash，裡面包有 Array，都可以。要將數值包裝在 Array 裡傳遞，在 key 的名稱後方附加 `[]`：
 
 ```
 GET /clients?ids[]=1&ids[]=2&ids[]=3
 ```
 
-NOTE: The actual URL in this example will be encoded as "/clients?ids%5b%5d=1&ids%5b%5d=2&ids%5b%5d=3" as "[" and "]" are not allowed in URLs. Most of the time you don't have to worry about this because the browser will take care of it for you, and Rails will decode it back when it receives it, but if you ever find yourself having to send those requests to the server manually you have to keep this in mind.
+注意：上例 URL 會編碼為 `"/clients?ids%5B%5D=1&ids%5B%5D=2&ids%5B%5D=3"`，因為 `[]` 對 URL 來說是非法字元。多數情況下，瀏覽器會幫我們處理好檢查字元合法性的問題，自動幫我們編碼，Rails 收到時會在解碼。但當你要手動將 Request 發給 Server 時，要記得自己處理好這件事。
 
-The value of `params[:ids]` will now be `["1", "2", "3"]`. Note that parameter values are always strings; Rails makes no attempt to guess or cast the type.
+`params[:ids]` 現在會是 `["1", "2", "3"]`。注意參數的值永遠是 String。Rails 不會試著去臆測或是轉換類型。
 
-To send a hash you include the key name inside the brackets:
+要送出 hash，在中括號裡聲明 key 的名稱：
 
 ```html
 <form accept-charset="UTF-8" action="/clients" method="post">
@@ -126,37 +126,44 @@ To send a hash you include the key name inside the brackets:
 </form>
 ```
 
-When this form is submitted, the value of `params[:client]` will be `{ "name" => "Acme", "phone" => "12345", "address" => { "postcode" => "12345", "city" => "Carrot City" } }`. Note the nested hash in `params[:client][:address]`.
+這個表單送出時，`params[:client]` 的數值會是 `{ "name" => "Acme", "phone" => "12345", "address" => { "postcode" => "12345", "city" => "Carrot City" } }`
 
-Note that the `params` hash is actually an instance of `ActiveSupport::HashWithIndifferentAccess`, which acts like a hash but lets you use symbols and strings interchangeably as keys.
+注意 `params[:client][:address]` 是巢狀的結構。
+
+`params` hash 其實是 `ActiveSupport::HashWithIndifferentAccess` 的 instance，`ActiveSupport::HashWithIndifferentAccess` 與一般 hash 相同，不同的是 hash 的 key 可以用字串與符號。
+
+`params[:foo]` 等同於 `params["foo"]`
 
 ### JSON 參數
 
-If you're writing a web service application, you might find yourself more comfortable accepting parameters in JSON format. If the "Content-Type" header of your request is set to "application/json", Rails will automatically convert your parameters into the `params` hash, which you can access as you would normally.
+在撰寫 Web Service 的應用程式時，通常接受 JSON 格式的參數會比較簡單。若 Request 的 `"Content-Type"` header 是 `"application/json"`，Rails 會自動將參數轉換好，存至 `params` hash 裡。
 
-So for example, if you are sending this JSON content:
+送出
 
 ```json
 { "company": { "name": "acme", "address": "123 Carrot Street" } }
 ```
 
-You'll get `params[:company]` as `{ "name" => "acme", "address" => "123 Carrot Street" }`.
+取得
 
-Also, if you've turned on `config.wrap_parameters` in your initializer or calling `wrap_parameters` in your controller, you can safely omit the root element in the JSON parameter. The parameters will be cloned and wrapped in the key according to your controller's name by default. So the above parameter can be written as:
+`params[:company]` ＝ `{ "name" => "acme", "address" => "123 Carrot Street" }`
+
+除此之外，如果開啟了 `config.wrap_parameters` 選項，或是在 Controller 呼叫了 `wrap_parameters`，可以忽略掉 JSON 參數的 root element，JSON 參數的內容會被拷貝到 `params` 裡，有著對應的 key：
 
 ```json
 { "name": "acme", "address": "123 Carrot Street" }
 ```
 
-And assume that you're sending the data to `CompaniesController`, it would then be wrapped in `:company` key like this:
+傳給 `CompaniesController`，會被包在 `:company` key 裡：
 
 ```ruby
 { name: "acme", address: "123 Carrot Street", company: { name: "acme", address: "123 Carrot Street" } }
 ```
 
-You can customize the name of the key or specific parameters you want to wrap by consulting the [API documentation](http://api.rubyonrails.org/classes/ActionController/ParamsWrapper.html)
+關於如何客製化 key 名稱，或是對某些特殊的參數執行 wrap，請查閱 [ActionController::ParamsWrapper 的 API 文件](http://edgeapi.rubyonrails.org/classes/ActionController/ParamsWrapper.html)。
 
-NOTE: Support for parsing XML parameters has been extracted into a gem named `actionpack-xml_parser`
+
+解析 XML 的功能已被抽離至 [actionpack-xml_parser](https://github.com/rails/actionpack-xml_parser) Gem。
 
 ### Routing 參數
 
