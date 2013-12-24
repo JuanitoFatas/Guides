@@ -698,13 +698,13 @@ Again, this is not an ideal example for this filter, because it's not run in the
 
 # 9. Request Forgery Protection
 
-Cross-site request forgery is a type of attack in which a site tricks a user into making requests on another site, possibly adding, modifying or deleting data on that site without the user's knowledge or permission.
+跨站偽造請求（CSRF, Cross-site request forgery）是利用 A 站的使用者，給 B 站發送 Request 的一種攻擊手法，比如利用 A 站的梁山伯，去新增、修改、刪除 B 站祝英台的資料。
 
-The first step to avoid this is to make sure all "destructive" actions (create, update and destroy) can only be accessed with non-GET requests. If you're following RESTful conventions you're already doing this. However, a malicious site can still send a non-GET request to your site quite easily, and that's where the request forgery protection comes in. As the name says, it protects from forged requests.
+防範的第一動是確保所有破壞性的 Actions：`create`、`update` 與 `destroy` 只可以透過 **非 GET** Request 來操作。若你遵循 RESTful 的慣例，則這已經沒問題了。但惡意站點仍可發送非 GET Request 至你的網站，這時便是 Request Forgery Protection 派上用場的時刻了，Request Forgery Protection 如其名：偽造請求防禦。
 
-The way this is done is to add a non-guessable token which is only known to your server to each request. This way, if a request comes in without the proper token, it will be denied access.
+防護的手法是每次 Request 加上一個猜不到的暗號（token）。如此一來，沒有正確暗號的 Request 便會被拒絕存取。.
 
-If you generate a form like this:
+假設有下列表單
 
 ```erb
 <%= form_for @user do |f| %>
@@ -713,22 +713,30 @@ If you generate a form like this:
 <% end %>
 ```
 
-You will see how the token gets added as a hidden field:
+會看到 Rails 自動加上一個隱藏的 input field，數值是 token：
 
 ```html
 <form accept-charset="UTF-8" action="/users/1" method="post">
 <input type="hidden"
        value="67250ab105eb5ad10851c00a5621854a23af5489"
        name="authenticity_token"/>
-<!-- fields -->
+<!-- username & password fields -->
 </form>
 ```
 
-Rails adds this token to every form that's generated using the [form helpers](form_helpers.html), so most of the time you don't have to worry about it. If you're writing a form manually or need to add the token for another reason, it's available through the method `form_authenticity_token`:
+Rails 給所有使用了 [Form Helpers](https://github.com/JuanitoFatas/Guides/blob/master/guides/edge-translation/form-helpers-zh_TW.md)的表單加上這個 token，所以你不用擔心怎麼處理。若是你手寫表單可以透過 `form_authenticity_token` 方法來處理。
 
-The `form_authenticity_token` generates a valid authentication token. That's useful in places where Rails does not add it automatically, like in custom Ajax calls.
+`form_authenticity_token` 產生一個有效的驗證 token。這在 Rails 沒有自動加上 token 的場景下很有用，像是自定的 Ajax Request，`form_authenticity_token` 很簡單，就是設定了 Session 的 `_csrf_token`：
 
-The [Security Guide](security.html) has more about this and a lot of other security-related issues that you should be aware of when developing a web application.
+```ruby
+def form_authenticity_token
+  session[:_csrf_token] ||= SecureRandom.base64(32)
+end
+```
+
+來自：[ActionController::RequestForgeryProtection API](http://edgeapi.rubyonrails.org/classes/ActionController/RequestForgeryProtection.html#method-i-form_authenticity_token)
+
+參閱 [Security Guide](http://edgeguides.rubyonrails.org/security.html) 來了解更多與安全性有關的問題。
 
 # 10. The Request and Response Objects
 
