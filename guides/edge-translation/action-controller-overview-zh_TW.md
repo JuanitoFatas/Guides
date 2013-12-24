@@ -1097,7 +1097,7 @@ NOTE: Certain exceptions are only rescuable from the `ApplicationController` cla
 
 # 15. Force HTTPS protocol
 
-Sometime you might want to force a particular controller to only be accessible via an HTTPS protocol for security reasons. You can use the `force_ssl` method in your controller to enforce that:
+有時候出於安全性考量，可能想讓特定的 Controller 只可以透過 HTTPS 來存取。可以在 Controller 使用 `force_ssl` 方法：
 
 ```ruby
 class DinnerController
@@ -1105,7 +1105,7 @@ class DinnerController
 end
 ```
 
-Just like the filter, you could also pass `:only` and `:except` to enforce the secure connection only to specific actions:
+和 `filter` 的用法相同，可以傳入 `:only` 與 `except` 選項來決定哪幾個 Action 要用 HTTPS：
 
 ```ruby
 class DinnerController
@@ -1115,4 +1115,4 @@ class DinnerController
 end
 ```
 
-Please note that if you find yourself adding `force_ssl` to many controllers, you may want to force the whole application to use HTTPS instead. In that case, you can set the `config.force_ssl` in your environment file.
+請注意，若你發現要給許多 Controller 都加上 `force_ssl`，可以在環境設定檔開啟 `config.force_ssl` 選項。
