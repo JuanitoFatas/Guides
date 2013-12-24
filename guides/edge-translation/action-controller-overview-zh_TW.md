@@ -111,7 +111,7 @@ end
 GET /clients?ids[]=1&ids[]=2&ids[]=3
 ```
 
-注意：上例 URL 會編碼為 `"/clients?ids%5B%5D=1&ids%5B%5D=2&ids%5B%5D=3"`，因為 `[]` 對 URL 來說是非法字元。多數情況下，瀏覽器會幫我們處理好檢查字元合法性的問題，自動幫我們編碼，Rails 收到時會在解碼。但當你要手動將 Request 發給 Server 時，要記得自己處理好這件事。
+注意：上例 URL 會編碼為 `"/clients?ids%5B%5D=1&ids%5B%5D=2&ids%5B%5D=3"`，因為 `[]` 對 URL 來說是非法字元。多數情況下，瀏覽器會幫處理好檢查字元合法性的問題，自動將非法字元做編碼，Rails 收到時會自己解碼。但當你要手動將 Request 發給 Server 時，要記得自己處理好這件事。
 
 `params[:ids]` 現在會是 `["1", "2", "3"]`。注意參數的值永遠是 String。Rails 不會試著去臆測或是轉換類型。
 
@@ -130,15 +130,13 @@ GET /clients?ids[]=1&ids[]=2&ids[]=3
 
 注意 `params[:client][:address]` 是巢狀的結構。
 
-`params` hash 其實是 `ActiveSupport::HashWithIndifferentAccess` 的 instance，`ActiveSupport::HashWithIndifferentAccess` 與一般 hash 相同，不同的是 hash 的 key 可以用字串與符號。
-
-`params[:foo]` 等同於 `params["foo"]`
+`params` hash 其實是 `ActiveSupport::HashWithIndifferentAccess` 的 instance，`ActiveSupport::HashWithIndifferentAccess` 與一般 hash 相同，不同的是 hash 的 key 可以用字串與符號：`params[:foo]` 等同於 `params["foo"]`。
 
 ### JSON 參數
 
-在撰寫 Web Service 的應用程式時，通常接受 JSON 格式的參數會比較簡單。若 Request 的 `"Content-Type"` header 是 `"application/json"`，Rails 會自動將參數轉換好，存至 `params` hash 裡。
+在撰寫 Web Service 的應用程式時，通常會需要處理 JSON 格式的參數。若 Request 的 `"Content-Type"` header 是 `"application/json"`，Rails 會自動將收到的 JSON 參數轉換好，存至 `params` hash 裡。
 
-送出
+送出的 JSON
 
 ```json
 { "company": { "name": "acme", "address": "123 Carrot Street" } }
@@ -146,9 +144,13 @@ GET /clients?ids[]=1&ids[]=2&ids[]=3
 
 取得
 
-`params[:company]` ＝ `{ "name" => "acme", "address" => "123 Carrot Street" }`
+```ruby
+params[:company] => { "name" => "acme", "address" => "123 Carrot Street" }
+```
 
 除此之外，如果開啟了 `config.wrap_parameters` 選項，或是在 Controller 呼叫了 `wrap_parameters`，可以忽略掉 JSON 參數的 root element，JSON 參數的內容會被拷貝到 `params` 裡，有著對應的 key：
+
+送出的 JSON
 
 ```json
 { "name": "acme", "address": "123 Carrot Street" }
@@ -160,10 +162,9 @@ GET /clients?ids[]=1&ids[]=2&ids[]=3
 { name: "acme", address: "123 Carrot Street", company: { name: "acme", address: "123 Carrot Street" } }
 ```
 
-關於如何客製化 key 名稱，或是對某些特殊的參數執行 wrap，請查閱 [ActionController::ParamsWrapper 的 API 文件](http://edgeapi.rubyonrails.org/classes/ActionController/ParamsWrapper.html)。
+關於如何客製化 key 名稱，或針對某些特殊的參數執行 wrap，請查閱 [ActionController::ParamsWrapper 的 API 文件](http://edgeapi.rubyonrails.org/classes/ActionController/ParamsWrapper.html)。
 
-
-解析 XML 的功能已被抽離至 [actionpack-xml_parser](https://github.com/rails/actionpack-xml_parser) Gem。
+**解析 XML 的功能已被抽離至 [actionpack-xml_parser](https://github.com/rails/actionpack-xml_parser) Gem。**
 
 ### Routing 參數
 
