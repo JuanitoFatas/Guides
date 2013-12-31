@@ -49,7 +49,7 @@ class ClientsController < ApplicationController
 end
 ```
 
-As an example, if a user goes to `/clients/new` in your application to add a new client, Rails will create an instance of `ClientsController` and run the `new` action. Note that the empty action from the example above would work just fine because Rails will by default render the `new.html.erb` view unless the action says otherwise. The `new` action could make available to the view a `@client` instance variable by creating a new `Client`:
+As an example, if a user goes to `/clients/new` in your application to add a new client, Rails will create an instance of `ClientsController` and run the `new` method. Note that the empty method from the example above would work just fine because Rails will by default render the `new.html.erb` view unless the action says otherwise. The `new` method could make available to the view a `@client` instance variable by creating a new `Client`:
 
 ```ruby
 def new
