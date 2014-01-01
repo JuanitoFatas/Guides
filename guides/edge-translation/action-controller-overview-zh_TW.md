@@ -647,15 +647,13 @@ end
 
 ### After Filters and Around Filters
 
-有 “before” filter 也有 “after” 與 “around” filter
+“before” filter 在 `action` 前執行，也可以在 `action` 後執行：“after” filter。
 
-In addition to "before" filters, you can also run filters after an action has been executed, or both before and after.
+“after” filter 與 “before” filter 類似，但因為 `action` 已經執行完畢，所以 “after” filter 可以存取即將要回給使用者的 Response。“after” filter 是無法終止 Request 週期的，因為 `action` 已經執行完畢，無法終止。不像 `before_action` 可以 `render` 或是 `redirect_to`，來終止 action 的執行。
 
-"After" filters are similar to "before" filters, but because the action has already been run they have access to the response data that's about to be sent to the client. Obviously, "after" filters cannot stop the action from running.
+“around” filter 主要負責執行相關的 action，跟 Rack 的工作原理類似。
 
-"Around" filters are responsible for running their associated actions by yielding, similar to how Rack middlewares work.
-
-For example, in a website where changes have an approval workflow an administrator could be able to preview them easily, just apply them within a transaction:
+舉例來說，要給某個網站提交改動時，必須先獲得管理員同意，改動才會生效。管理員會需要某種類似預覽功能的操作，將此操作包在 transaction 即可：
 
 ```ruby
 class ChangesController < ApplicationController
@@ -675,25 +673,30 @@ class ChangesController < ApplicationController
 end
 ```
 
-Note that an "around" filter also wraps rendering. In particular, if in the example above, the view itself reads from the database (e.g. via a scope), it will do so within the transaction and thus present the data to preview.
+注意 “around” filter 包含了 `render`。需要特別說明的是，假設 View 會從資料庫讀取資料來顯示，在 transaction 裡也會這麼做，如此一來便可達到預覽的效果。
 
-You can choose not to yield and build the response yourself, in which case the action will not be run.
+你也可以自己生 Response，不需要用 `yield`。若是沒使用 `yield`，則 `show` action 便不會被執行。
 
 ### Other Ways to Use Filters
 
-While the most common way to use filters is by creating private methods and using *_action to add them, there are two other ways to do the same thing.
+Filters 一般的使用方式是，先建立一個 `private` 方法，在使用 `*_action` 來針對特定 `action` 執行該 `private` 方法。但還有兩種方式，也可以達到 filters 的效果。
 
-The first is to use a block directly with the *_action methods. The block receives the controller as an argument, and the `require_login` filter from above could be rewritten to use a block:
+第一種是直接對 `*_action` 使用區塊。區塊接受 `controller` 作為參數，上面的 `require_login` 例子可以改寫為：
 
 ```ruby
 class ApplicationController < ActionController::Base
   before_action do |controller|
-    redirect_to new_login_url unless controller.send(:logged_in?)
+    unless controller.send(:logged_in?)
+      flash[:error] = flash[:error] = "這個區塊必須登入才能存取"
+      redirect_to new_login_url
+    end
   end
 end
 ```
 
-Note that the filter in this case uses `send` because the `logged_in?` method is private and the filter is not run in the scope of the controller. This is not the recommended way to implement this particular filter, but in more simple cases it might be useful.
+注意到這裡使用了 `send`，因為 `logged_in?` 方法是 `private`，filter 不在 controller 的 scope 下執行。這種實作 filter 的方式不推薦使用，但在非常簡單的情況下可能有用。
+
+第二種方式是使用 `Class`，實際上使用任何物件都可以，只要有回應 filter 需要用的 method 即可。
 
 The second way is to use a class (actually, any object that responds to the right methods will do) to handle the filtering. This is useful in cases that are more complex and can not be implemented in a readable and reusable way using the two other methods. As an example, you could rewrite the login filter again to use a class:
 
