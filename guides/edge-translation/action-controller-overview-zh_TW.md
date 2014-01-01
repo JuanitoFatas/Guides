@@ -12,12 +12,12 @@ __特別要強調的翻譯名詞__
 
 * Request 進到 Controller 的流程。
 * 限制傳入 Controller 的參數。
-* 為何、如何把資料存在 Session 或 Cookie 裡。
-* 如何在處理 Request 時使用 Filters 來執行程式碼。
-* 如何使用 Action Controller 內建的 HTTP 驗證。
-* 如何用串流方式將資料傳給使用者的瀏覽器。
+* 資料存在 Session 或 Cookie 裡的應用場景。
+* 如何在處理 Request 時，使用 Filters 來附加行為。
+* 如何使用 Action Controller 內建的 HTTP 驗證機制。
+* 如何用串流方式將資料傳給使用者。
 * 如何在應用程式的 Log 裡過濾敏感資料。
-* 如何處理 Request 處理週期可能拋出的異常。
+* 如何處理 Request 處理週期中，可能拋出的異常。
 
 ## 目錄
 
@@ -246,11 +246,12 @@ end
 
 #### Permitted Scalar Values
 
-Given
+給定
 
 ```ruby
 params.permit(:id)
 ```
+
 
 the key `:id` will pass the whitelisting if it appears in `params` and
 it has a permitted scalar value associated. Otherwise the key is going
@@ -283,7 +284,7 @@ mass-assigned.
 
 #### Nested Parameters
 
-You can also use permit on nested parameters, like:
+巢狀參數的允許：
 
 ```ruby
 params.permit(:name, { emails: [] },
@@ -336,15 +337,10 @@ params.require(:book).permit(:title, chapters_attributes: [:title])
 
 #### Outside the Scope of Strong Parameters
 
-The strong parameter API was designed with the most common use cases
-in mind. It is not meant as a silver bullet to handle all your
-whitelisting problems. However you can easily mix the API with your
-own code to adapt to your situation.
 
-Imagine a scenario where you want to whitelist an attribute
-containing a hash with any keys. Using strong parameters you can't
-allow a hash with any keys but you can use a simple assignment to get
-the job done:
+Strong Parameter API 不是銀彈，無法處理所有白名單的問題。但你可以簡單地將 API 與你的程式碼混合使用，來應用不同的需求。
+
+假想看看，你想要給某個 attribute 加上白名單，該 attribute 可以包含一個 Hash，裡面可能有任何 key。使用 Strong Parameter 你無法允許有任何 key 的 Hash，但你可以這麼做：
 
 ```ruby
 def product_params
@@ -453,7 +449,6 @@ end
 
 ```ruby
 class LoginsController < ApplicationController
-  # "刪除" 登入，也就是 "將使用者登出"
   def destroy
     # 將 user id 從 session 裡移除
     @_current_user = session[:current_user_id] = nil
@@ -466,9 +461,9 @@ end
 
 ### The Flash
 
-Flash 是 session 特殊的一部分，可以從一個 Request，傳遞訊息（錯誤、提示訊息）到下個 Request，下個 Request 結束後，便會清除 Flash。
+Flash 是 Session 特殊的一部分，可以從一個 Request，傳遞訊息（錯誤、提示訊息）到下個 Request，下個 Request 結束後，便會清除 Flash。
 
-`flash` 的使用方式與 session 雷同，跟操作一般的 Hash 一樣（實際上是 [FlashHash](http://edgeapi.rubyonrails.org/classes/ActionDispatch/Flash/FlashHash.html) 的 instance）。
+`flash` 的使用方式與 `session` 雷同，跟操作一般的 Hash 一樣（實際上 `flash` 是 [FlashHash](http://edgeapi.rubyonrails.org/classes/ActionDispatch/Flash/FlashHash.html) 的 instance）。
 
 用登出作為例子，Controller 可以傳一個訊息，用來給下個 Request 顯示：
 
@@ -491,8 +486,6 @@ redirect_to root_url, notice: "You have successfully logged out."
 redirect_to root_url, alert: "You're stuck here!"
 redirect_to root_url, flash: { referral_code: 1234 }
 ```
-
-
 
 The `destroy` action redirects to the application's `root_url`, where the message will be displayed. Note that it's entirely up to the next action to decide what, if anything, it will do with what the previous action put in the flash. It's conventional to display any error alerts or notices from the flash in the application's layout:
 
