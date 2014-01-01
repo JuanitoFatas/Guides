@@ -19,9 +19,8 @@ __特別要強調的翻譯名詞__
 * 如何在應用程式的 Log 裡過濾敏感資料。
 * 如何處理 Request 處理週期中，可能拋出的異常。
 
-## 目錄
-
-# 1. Controller 做了什麼？
+Controller 做了什麼？
+-------------------------
 
 Action Controller 是 MVC 的 C，Controller。一個 Request 進來，路由決定是那個 Controller 的工作後，便把工作指派給 Controller，Controller 負責處理該 Request，給出對應的 Output。幸運的是 Action Controller 把大部分的苦力都給您辦好了，您只需按照一些規範來寫代碼，事情便豁然開朗。
 
@@ -31,7 +30,8 @@ Controller 因此可以想成是 Model 與 View 的中間人。負責替 Model �
 
 路由過程的細節可以查閱 [Rails Routing From the Outside In](http://edgeguides.rubyonrails.org/routing.html)。
 
-# 2. Controller 命名規範
+Controller 命名規範
+------------------------------
 
 Rails 偏好 Controller 以複數結尾，但也是有例外，比如 `ApplicationController`。舉例來說：
 
