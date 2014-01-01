@@ -3,8 +3,8 @@
 __特別要強調的翻譯名詞__
 
 > application 應用程式。
-
 > parameters 參數
+> Client 客戶端
 
 本篇介紹 Controller 的工作原理、Controller 與如何應用程式的 Request 生命週期結合在一起。
 
@@ -465,29 +465,33 @@ To reset the entire session, use `reset_session`.
 
 ### The Flash
 
-The flash is a special part of the session which is cleared with each request. This means that values stored there will only be available in the next request, which is useful for passing error messages etc.
+Flash 是 session 特殊的一部分，可以從一個 Request，傳遞訊息（錯誤、提示訊息）到下個 Request，下個 Request 結束後，便會清除 Flash。
 
-It is accessed in much the same way as the session, as a hash (it's a [FlashHash](http://api.rubyonrails.org/classes/ActionDispatch/Flash/FlashHash.html) instance).
+`flash` 的使用方式與 session 雷同，跟操作一般的 Hash 一樣（實際上是 [FlashHash](http://edgeapi.rubyonrails.org/classes/ActionDispatch/Flash/FlashHash.html) 的 instance）。
 
-Let's use the act of logging out as an example. The controller can send a message which will be displayed to the user on the next request:
+用登出作為例子，Controller 可以傳一個訊息，用來給下個 Request 顯示：
 
 ```ruby
 class LoginsController < ApplicationController
   def destroy
     session[:current_user_id] = nil
-    flash[:notice] = "You have successfully logged out."
+    flash[:notice] = "成功登出了"
     redirect_to root_url
   end
 end
 ```
 
-Note that it is also possible to assign a flash message as part of the redirection. You can assign `:notice`, `:alert` or the general purpose `:flash`:
+`destroy` action 轉向到應用程式的 `root_url`，並顯示 `"成功登出了"`。
+
+`redirect_to` 也接受 flash 訊息參數：
 
 ```ruby
 redirect_to root_url, notice: "You have successfully logged out."
 redirect_to root_url, alert: "You're stuck here!"
 redirect_to root_url, flash: { referral_code: 1234 }
 ```
+
+
 
 The `destroy` action redirects to the application's `root_url`, where the message will be displayed. Note that it's entirely up to the next action to decide what, if anything, it will do with what the previous action put in the flash. It's conventional to display any error alerts or notices from the flash in the application's layout:
 
@@ -504,9 +508,9 @@ The `destroy` action redirects to the application's `root_url`, where the messag
 </html>
 ```
 
-This way, if an action sets a notice or an alert message, the layout will display it automatically.
+如此一來，action 有設定 `:notice` 或 `:alert` 訊息，layout 便會自動顯示。
 
-You can pass anything that the session can store; you're not limited to notices and alerts:
+Flash 訊息的種類不侷限於 `:notice`、`:alert` 或 `:flash`，可以自己定義：
 
 ```erb
 <% if flash[:just_signed_up] %>
@@ -514,7 +518,7 @@ You can pass anything that the session can store; you're not limited to notices 
 <% end %>
 ```
 
-If you want a flash value to be carried over to another request, use the `keep` method:
+若是想要 Flash 在 Request 之間保留下來，使用 `keep` 方法：
 
 ```ruby
 class MainController < ApplicationController
@@ -524,10 +528,10 @@ class MainController < ApplicationController
   # would normally be lost when another redirect happens, but you
   # can use 'keep' to make it persist for another request.
   def index
-    # Will persist all flash values.
+    # 保留整個 flash
     flash.keep
 
-    # You can also use a key to keep only some kind of value.
+    # 也可以只保留 :notice 訊息
     # flash.keep(:notice)
     redirect_to users_url
   end
@@ -554,24 +558,24 @@ end
 
 # 6. Cookies
 
-Your application can store small amounts of data on the client - called cookies - that will be persisted across requests and even sessions. Rails provides easy access to cookies via the `cookies` method, which - much like the `session` - works like a hash:
+應用程式可以在客戶端儲存小量的資料，這種資料我們稱作 Cookie。Cookie 在 Request 與 Session 之間是不會消失的。Rails 提供了簡單存取 Cookies 的方法，`cookies`，跟 `session` 方法很像：
 
 ```ruby
 class CommentsController < ApplicationController
   def new
-    # Auto-fill the commenter's name if it has been stored in a cookie
+    # 若是 Cookie 裡有存留言者的名字，自動填入。
     @comment = Comment.new(author: cookies[:commenter_name])
   end
 
   def create
     @comment = Comment.new(params[:comment])
     if @comment.save
-      flash[:notice] = "Thanks for your comment!"
+      flash[:notice] = "感謝您的意見！"
       if params[:remember_name]
-        # Remember the commenter's name.
+        # 選擇記住名字，則記下留言者的名稱。
         cookies[:commenter_name] = @comment.author
       else
-        # Delete cookie for the commenter's name cookie, if any.
+        # 選擇不記住名字，刪掉 Cookie 裡留言者的名稱。
         cookies.delete(:commenter_name)
       end
       redirect_to @comment.article
