@@ -258,13 +258,13 @@ Client.where(first_name: 'Lifo').take!
 
 ### 取出多個物件
 
-#### 用多個主鍵
+#### 透過主鍵
 
-`Model.find(array_of_primary_key)` accepts an array of _primary keys_, returning an array containing all of the matching records for the supplied _primary keys_. For example:
+`Model.find(array_of_primary_key)` 接受一列主鍵，並以陣列形式返回所有匹配的結果。
 
 ```ruby
-# Find the clients with primary keys 1 and 10.
-client = Client.find([1, 10]) # Or even Client.find(1, 10)
+# 找到主鍵從 1 至 10 的 clients。
+client = Client.find([1, 10]) # 或簡寫為 Client.find(1, 10)
 # => [#<Client id: 1, first_name: "Lifo">, #<Client id: 10, first_name: "Ryan">]
 ```
 
@@ -274,11 +274,11 @@ client = Client.find([1, 10]) # Or even Client.find(1, 10)
 SELECT * FROM clients WHERE (clients.id IN (1,10))
 ```
 
-WARNING: `Model.find(array_of_primary_key)` will raise an `ActiveRecord::RecordNotFound` exception unless a matching record is found for **all** of the supplied primary keys.
+警告：如果沒有全找到符合條件的 record，會拋出 `ActiveRecord::RecordNotFound` 異常。
 
 #### take
 
-`Model.take(limit)` retrieves the first number of records specified by `limit` without any explicit ordering:
+`Model.take(limit)` 從頭取出 `limit` 指定範圍內的多筆記錄（不排序）：
 
 ```ruby
 Client.take(2)
@@ -294,7 +294,7 @@ SELECT * FROM clients LIMIT 2
 
 #### first
 
-`Model.first(limit)` finds the first number of records specified by `limit` ordered by primary key:
+`Model.first(limit)` 從頭取出 `limit` 指定範圍內的多筆記錄（按主鍵排序）：
 
 ```ruby
 Client.first(2)
@@ -310,7 +310,7 @@ SELECT * FROM clients ORDER BY id ASC LIMIT 2
 
 #### last
 
-`Model.last(limit)` finds the number of records specified by `limit` ordered by primary key in descending order:
+`Model.last(limit)` 從最後開始取出 `limit` 指定範圍內的多筆記錄（按主鍵排序）：
 
 ```ruby
 Client.last(2)
@@ -324,26 +324,32 @@ Client.last(2)
 SELECT * FROM clients ORDER BY id DESC LIMIT 2
 ```
 
-### Retrieving Multiple Objects in Batches
+### 批次取出多筆記錄
 
-We often need to iterate over a large set of records, as when we send a newsletter to a large set of users, or when we export data.
+我們常需要處理多筆記錄，比如寄信給使用者，或是轉出資料。
 
-This may appear straightforward:
+可能會想到這麼做：
 
 ```ruby
-# This is very inefficient when the users table has thousands of rows.
+# 如果有數千個使用者，非常沒效率。
 User.all.each do |user|
   NewsLetter.weekly_deliver(user)
 end
 ```
 
+`User.all.each` 會叫 Active Record 去抓整個表，
+
 But this approach becomes increasingly impractical as the table size increases, since `User.all.each` instructs Active Record to fetch _the entire table_ in a single pass, build a model object per row, and then keep the entire array of model objects in memory. Indeed, if we have a large number of records, the entire collection may exceed the amount of memory available.
+
+Rails 提供了兩個方法，來解決這樣的問題：`find_each` 與 `find_in_batch`。
 
 Rails provides two methods that address this problem by dividing records into memory-friendly batches for processing. The first method, `find_each`, retrieves a batch of records and then yields _each_ record to the block individually as a model. The second method, `find_in_batches`, retrieves a batch of records and then yields _the entire batch_ to the block as an array of models.
 
 TIP: The `find_each` and `find_in_batches` methods are intended for use in the batch processing of a large number of records that wouldn't fit in memory all at once. If you just need to loop over a thousand records the regular find methods are the preferred option.
 
 #### `find_each`
+
+`find_each`
 
 The `find_each` method retrieves a batch of records and then yields _each_ record to the block individually as a model. In the following example, `find_each` will retrieve 1000 records (the current default for both `find_each` and `find_in_batches`) and then yield each record individually to the block as a model. This process is repeated until all of the records have been processed:
 
@@ -353,7 +359,7 @@ User.find_each do |user|
 end
 ```
 
-##### Options for `find_each`
+##### `find_each` 接受的選項
 
 The `find_each` method accepts most of the options allowed by the regular `find` method, except for `:order` and `:limit`, which are reserved for internal use by `find_each`.
 
@@ -396,71 +402,71 @@ end
 
 NOTE: The `:include` option allows you to name associations that should be loaded alongside with the models.
 
-##### Options for `find_in_batches`
+##### `find_in_batches` 接受的選項
 
 The `find_in_batches` method accepts the same `:batch_size` and `:start` options as `find_each`, as well as most of the options allowed by the regular `find` method, except for `:order` and `:limit`, which are reserved for internal use by `find_in_batches`.
 
-Conditions
+條件
 ----------
 
-The `where` method allows you to specify conditions to limit the records returned, representing the `WHERE`-part of the SQL statement. Conditions can either be specified as a string, array, or hash.
+`where` 方法允許你輸入條件來回傳記錄，`where` 即代表了 SQL 語句的 `WHERE` 部分。
 
-### Pure String Conditions
+條件可以是字串、陣列、或是 Hash。
 
-If you'd like to add conditions to your find, you could just specify them in there, just like `Client.where("orders_count = '2'")`. This will find all clients where the `orders_count` field's value is 2.
+### 字串條件
 
-WARNING: Building your own conditions as pure strings can leave you vulnerable to SQL injection exploits. For example, `Client.where("first_name LIKE '%#{params[:first_name]}%'")` is not safe. See the next section for the preferred way to handle conditions using an array.
+Client.where("orders_count = '2'")` 會回傳所有 `orders_count` 是 2 的 clients。
 
-### Array Conditions
+警告：條件是純字串可能有 SQL injection 的風險。舉例來說，`Client.where("first_name LIKE '%#{params[:first_name]}%'")` 是不安全的，參考下節如何將字串條件改用陣列來處理。
 
-Now what if that number could vary, say as an argument from somewhere? The find would then take the form:
+### 陣列條件
+
+如果我們要找的 `orders_count`，不一定固定是 2，可能是不定的數字？
 
 ```ruby
 Client.where("orders_count = ?", params[:orders])
 ```
 
-Active Record will go through the first element in the conditions value and any additional elements will replace the question marks `(?)` in the first element.
-
-If you want to specify multiple conditions:
+Active Record 會將 `?` 換成 `params[:orders]`。也可聲明多個條件：
 
 ```ruby
 Client.where("orders_count = ? AND locked = ?", params[:orders], false)
 ```
 
-In this example, the first question mark will be replaced with the value in `params[:orders]` and the second will be replaced with the SQL representation of `false`, which depends on the adapter.
-
-This code is highly preferable:
+這樣的程式碼
 
 ```ruby
 Client.where("orders_count = ?", params[:orders])
 ```
 
-to this code:
+比下面這個好多了
 
 ```ruby
 Client.where("orders_count = #{params[:orders]}")
 ```
 
-because of argument safety. Putting the variable directly into the conditions string will pass the variable to the database **as-is**. This means that it will be an unescaped variable directly from a user who may have malicious intent. If you do this, you put your entire database at risk because once a user finds out he or she can exploit your database they can do just about anything to it. Never ever put your arguments directly inside the conditions string.
+因為比較安全。直接將變數插入條件字串裡，不論變數是什麼，都會直接存到資料庫裡。這表示從惡意使用者傳來的變數，會直接存到資料庫。這麼做是把資料庫放在風險裡不管啊！一旦有人知道可以隨意將任何字串插入資料庫裡，他們可以做任何事。
 
-TIP: For more information on the dangers of SQL injection, see the [Ruby on Rails Security Guide](security.html#sql-injection).
+__絕對不要直接將變數插入條件字串裡。__
 
-#### Placeholder Conditions
+關於更多 SQL injection 的資料，請參考 [Ruby on Rails 安全指南](edgeguides.rubyonrails.org/security.html#sql-injection)。
 
-Similar to the `(?)` replacement style of params, you can also specify keys/values hash in your array conditions:
+#### 佔位符
+
+`?` 可以換成 symbol，並以 Hash 的方式傳入指定的數值：
 
 ```ruby
 Client.where("created_at >= :start_date AND created_at <= :end_date",
   {start_date: params[:start_date], end_date: params[:end_date]})
 ```
 
-This makes for clearer readability if you have a large number of variable conditions.
+這樣不僅是可讀性提昇了，多值傳遞也方便。
 
-### Hash Conditions
+### Hash
 
-Active Record also allows you to pass in hash conditions which can increase the readability of your conditions syntax. With hash conditions, you pass in a hash with keys of the fields you want conditionalised and the values of how you want to conditionalise them:
+Active Record 同時允許你傳入 hash 形式的條件：
 
-NOTE: Only equality, range and subset checking are possible with Hash conditions.
+__注意！只有 Equality、Range、subset 可用這種形式來寫條件__
 
 #### Equality Conditions
 
@@ -468,20 +474,20 @@ NOTE: Only equality, range and subset checking are possible with Hash conditions
 Client.where(locked: true)
 ```
 
-The field name can also be a string:
+欄位名稱也可以是字串：
 
 ```ruby
 Client.where('locked' => true)
 ```
 
-In the case of a belongs_to relationship, an association key can be used to specify the model if an Active Record object is used as the value. This method works with polymorphic relationships as well.
+`belongs_to` 關係裡，關聯名稱也可以用來做查詢，`polymorphic` 關係也可以。
 
 ```ruby
-Post.where(author: author)
-Author.joins(:posts).where(posts: {author: author})
+Address.where(client: client)
+Address.joins(:clients).where(clients: {address: address})
 ```
 
-NOTE: The values cannot be symbols. For example, you cannot do `Client.where(status: :active)`.
+注意！查詢的數值不可是 symbol。比如這樣是不允許的 `Client.where(status: :active)`。
 
 #### Range Conditions
 
@@ -1593,7 +1599,7 @@ Post.first.categories.any?
 Post.first.categories.many?
 ```
 
-Calculations
+計算
 ------------
 
 This section uses count as an example method in this preamble, but the options described apply to all sub-sections.
@@ -1628,7 +1634,7 @@ SELECT count(DISTINCT clients.id) AS count_all FROM clients
 
 ### Count
 
-If you want to see how many records are in your model's table you could call `Client.count` and that will return the number. If you want to be more specific and find all the clients with their age present in the database you can use `Client.count(:age)`.
+想知道 Model 有多少筆記錄，呼叫 `Client.count` 即可，要知道 Model 裡特定欄位有幾個非空，可以用 `count(:field)`，如 `Client.count(:age)`。
 
 For options, please see the parent section, [Calculations](#calculations).
 
@@ -1638,6 +1644,7 @@ If you want to see the average of a certain number in one of your tables you can
 
 ```ruby
 Client.average("orders_count")
+Client.average(:orders_count)
 ```
 
 This will return a number (possibly a floating point number such as 3.14159265) representing the average value in the field.
@@ -1650,6 +1657,7 @@ If you want to find the minimum value of a field in your table you can call the 
 
 ```ruby
 Client.minimum("age")
+Client.minimum(:age)
 ```
 
 For options, please see the parent section, [Calculations](#calculations).
@@ -1660,6 +1668,7 @@ If you want to find the maximum value of a field in your table you can call the 
 
 ```ruby
 Client.maximum("age")
+Client.maximum(:age)
 ```
 
 For options, please see the parent section, [Calculations](#calculations).
@@ -1670,6 +1679,7 @@ If you want to find the sum of a field for all records in your table you can cal
 
 ```ruby
 Client.sum("orders_count")
+Client.sum(:orders_count)
 ```
 
 For options, please see the parent section, [Calculations](#calculations).
@@ -1744,7 +1754,7 @@ EXPLAIN for: SELECT `posts`.* FROM `posts`  WHERE `posts`.`user_id` IN (1)
 
 under MySQL.
 
-### Interpreting EXPLAIN
+### 解讀 EXPLAIN
 
 Interpretation of the output of EXPLAIN is beyond the scope of this guide. The
 following pointers may be helpful:
