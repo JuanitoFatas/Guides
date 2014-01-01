@@ -696,9 +696,7 @@ end
 
 注意到這裡使用了 `send`，因為 `logged_in?` 方法是 `private`，filter 不在 controller 的 scope 下執行。這種實作 filter 的方式不推薦使用，但在非常簡單的情況下可能有用。
 
-第二種方式是使用 `Class`，實際上使用任何物件都可以，只要有回應 filter 需要用的 method 即可。
-
-The second way is to use a class (actually, any object that responds to the right methods will do) to handle the filtering. This is useful in cases that are more complex and can not be implemented in a readable and reusable way using the two other methods. As an example, you could rewrite the login filter again to use a class:
+第二種方式是使用 `Class`，實際上使用任何物件都可以，只要物件有回應 `filter` 這個 class method 即可。用 `Class` 實作的好處是可讀性、重用性提昇。舉個例子，login filter 可以改寫為：
 
 ```ruby
 class ApplicationController < ActionController::Base
@@ -715,7 +713,7 @@ class LoginFilter
 end
 ```
 
-Again, this is not an ideal example for this filter, because it's not run in the scope of the controller but gets the controller passed as an argument. The filter class has a class method `filter` which gets run before or after the action, depending on if it's a before or after filter. Classes used as around filters can also use the same `filter` method, which will get run in the same way. The method must `yield` to execute the action. Alternatively, it can have both a `before` and an `after` method that are run before and after the action.
+這也不推薦使用，因為不是在 controller 的 scope 下執行，所以需要傳 `controller` 作為參數。`LoginFilter` class 有一個 class method `filter`，會在 `ApplicationController` 的 action 執行前執行。用 Class 來實作 “around” filters 也可以使用同樣的 `filter` 方法，必須使用 `yield` 才能執行 action。或者是使用 `before` 與 `after` 的組合來達到 `around` 的效果。
 
 # 9. Request Forgery Protection
 
