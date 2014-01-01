@@ -605,9 +605,9 @@ end
 
 # 8. Filters
 
-Filters are methods that are run before, after or "around" a controller action.
+Filter 是在 Controller action 執行前、後、之間所執行的方法。Filter 可繼承，也就是在 `ApplicationController` 定義的 Filter，在整個應用程式裡都會執行該 Filter。
 
-Filters are inherited, so if you set a filter on `ApplicationController`, it will be run on every controller in your application.
+“Before” filters 可能會終止 Request 週期。
 
 "Before" filters may halt the request cycle. A common "before" filter is one which requires that a user is logged in for an action to be run. You can define the filter method this way:
 
