@@ -4,6 +4,8 @@ __特別要強調的翻譯名詞__
 
 > application 應用程式。
 
+> parameters 參數
+
 本篇介紹 Controller 的工作原理、Controller 與如何應用程式的 Request 生命週期結合在一起。
 
 讀完本篇可能會學到.....
@@ -27,7 +29,6 @@ Action Controller 是 MVC 的 C，Controller。一個 Request 進來，路由決
 
 Controller 因此可以想成是 Model 與 View 的中間人。負責替 Model 將資料傳給 View，讓 View 可以顯示資料給使用者。Controller 也將使用者更新或儲存的資料，存回 Model。
 
-
 路由過程的細節可以查閱 [Rails Routing From the Outside In](http://edgeguides.rubyonrails.org/routing.html)。
 
 # 2. Controller 命名規範
@@ -40,7 +41,7 @@ Rails 偏好 Controller 以複數結尾，但也是有例外，比如 `Applicati
 
 遵循規範便可使用內建的路由產生器：`resources`、`resource` 等，而無需特地修飾 `:path`、`controller`，並可保持 URL 與 path Helpers 的一致性。細節請參考 [Layouts & Rendering Guide](/guides/edge/layouts_and_rendering.md) 一篇。
 
-注意：Controller 的命名規範與 Model 的命名規範不同，Model 預期的是單數形式。
+注意：Controller 的命名規範與 Model 的命名規範不同，Model 命名希望是**單數形式**。
 
 # 3. Methods 與 Actions
 
@@ -53,7 +54,9 @@ class ClientsController < ApplicationController
 end
 ```
 
-假設使用者跑去 `/clients/new`，想要新增 `client` 時，Rails 創出 `ClientsController` 的 instance，並呼叫 `new` 來處理。注意 `new` 雖沒有內容，但 Rails 預設會 `render` `new.html.erb`。先前提到 Controller 可以從 Model 取資料給 View，要怎麼做呢？
+假設使用者跑去 `/clients/new`，想要新增 `client` 時，Rails 創出 `ClientsController` 的 instance，並呼叫 `new` 來處理。注意 `new` 雖沒有內容，但 Rails 預設行為會 `render` `new.html.erb`。
+
+而先前提到 Controller 可從 Model 取資料，再拿給 View，要怎麼做呢？
 
 ```ruby
 def new
@@ -61,11 +64,13 @@ def new
 end
 ```
 
+如此一來便可在 View 裡取用 `@client`。
+
 更多細節請參考 [Layouts & Rendering Guide](layouts_and_rendering.html) 一篇。
 
 `ApplicationController`從 `ActionController::Base` 繼承而來，`ActionController::Base` 定義了許多有用的 Methods。本篇會提到一些，但要是好奇定義了些什麼方法，可參考 [ActionController::Base 的 API 文件](http://edgeapi.rubyonrails.org/classes/ActionController/Base.html)，或是閱讀 [ActionController::Base 原始碼](https://github.com/rails/rails/blob/master/actionpack/lib/action_controller/base.rb)。
 
-只有公有方法可以被外部作為 action 呼叫。所以輔助方法啦、Filter 啦，最好藏在 `protected` 或 `private` 裡。
+只有公有方法可以被外部作為 `action` 呼叫。所以輔助方法、Filter 方法，最好藏在 `protected` 或 `private` 裡。
 
 # 4. 參數
 
@@ -105,17 +110,17 @@ end
 
 ### Hash 與 Array 參數
 
-`params` hash 不侷限於一維的 hash。可以是巢狀的 Hash，裡面包有 Array，都可以。要將數值包裝在 Array 裡傳遞，在 key 的名稱後方附加 `[]`：
+`params` hash 不侷限於一維的 Hash。可以是巢狀結構，或是 Hash 裡面包有陣列，都可以。若想要將數值放在陣列裡傳遞，在 key 的名稱後方附加 `[]`，如下所示：
 
 ```
 GET /clients?ids[]=1&ids[]=2&ids[]=3
 ```
 
-注意：上例 URL 會編碼為 `"/clients?ids%5B%5D=1&ids%5B%5D=2&ids%5B%5D=3"`，因為 `[]` 對 URL 來說是非法字元。多數情況下，瀏覽器會幫處理好檢查字元合法性的問題，自動將非法字元做編碼，Rails 收到時會自己解碼。但當你要手動將 Request 發給 Server 時，要記得自己處理好這件事。
+注意：上例 URL 會編碼為 `"/clients?ids%5B%5D=1&ids%5B%5D=2&ids%5B%5D=3"`，因為 `[]` 對 URL 來說是非法字元。多數情況下，瀏覽器會處理好檢查字元是否合法，自動將非法字元做編碼。Rails 收到時會自己解碼。但當你要手動將 Request 發給 Server 時，要記得自己處理好這件事。
 
 `params[:ids]` 現在會是 `["1", "2", "3"]`。注意參數的值永遠是 String。Rails 不會試著去臆測或是轉換類型。
 
-要送出 hash，在中括號裡聲明 key 的名稱：
+要送出 Hash 形式的參數，在中括號裡聲明 Hash 與 key 的名稱：
 
 ```html
 <form accept-charset="UTF-8" action="/clients" method="post">
@@ -128,13 +133,13 @@ GET /clients?ids[]=1&ids[]=2&ids[]=3
 
 這個表單送出時，`params[:client]` 的數值會是 `{ "name" => "Acme", "phone" => "12345", "address" => { "postcode" => "12345", "city" => "Carrot City" } }`
 
-注意 `params[:client][:address]` 是巢狀的結構。
+注意 `params[:client][:address]` 是巢狀結構。
 
-`params` hash 其實是 `ActiveSupport::HashWithIndifferentAccess` 的 instance，`ActiveSupport::HashWithIndifferentAccess` 與一般 hash 相同，不同的是 hash 的 key 可以用字串與符號：`params[:foo]` 等同於 `params["foo"]`。
+`params` Hash 其實是 `ActiveSupport::HashWithIndifferentAccess` 的 instance，`ActiveSupport::HashWithIndifferentAccess` 與一般 Hash 相同，不同的是 Hash 的 key 可以用字串與符號：`params[:foo]` 等同於 `params["foo"]`。
 
 ### JSON 參數
 
-在撰寫 Web Service 的應用程式時，通常會需要處理 JSON 格式的參數。若 Request 的 `"Content-Type"` header 是 `"application/json"`，Rails 會自動將收到的 JSON 參數轉換好，存至 `params` hash 裡。
+在撰寫 Web Service 的應用程式時，通常會需要處理 JSON 格式的參數。若 Request 的 `"Content-Type"` header 是 `"application/json"`，Rails 會自動將收到的 JSON 參數轉換好（將 JSON 轉成 Ruby 的 Hash），存至 `params` 裡。
 
 送出的 JSON
 
@@ -142,13 +147,13 @@ GET /clients?ids[]=1&ids[]=2&ids[]=3
 { "company": { "name": "acme", "address": "123 Carrot Street" } }
 ```
 
-取得
+會獲得
 
 ```ruby
 params[:company] => { "name" => "acme", "address" => "123 Carrot Street" }
 ```
 
-除此之外，如果開啟了 `config.wrap_parameters` 選項，或是在 Controller 呼叫了 `wrap_parameters`，可以忽略掉 JSON 參數的 root element，JSON 參數的內容會被拷貝到 `params` 裡，有著對應的 key：
+除此之外，如果開啟了 `config.wrap_parameters` 選項，或是在 Controller 呼叫了 `wrap_parameters`，可以忽略掉 JSON 參數的 Root element，JSON 參數的內容會被拷貝到 `params` 裡，並有著對應的 key：
 
 送出的 JSON
 
@@ -156,7 +161,7 @@ params[:company] => { "name" => "acme", "address" => "123 Carrot Street" }
 { "name": "acme", "address": "123 Carrot Street" }
 ```
 
-傳給 `CompaniesController`，會被包在 `:company` key 裡：
+傳給 `CompaniesController` 時，會自動推測出 Hash 名稱，放在 `:company` key 裡：
 
 ```ruby
 { name: "acme", address: "123 Carrot Street", company: { name: "acme", address: "123 Carrot Street" } }
@@ -168,11 +173,17 @@ params[:company] => { "name" => "acme", "address" => "123 Carrot Street" }
 
 ### Routing 參數
 
-The `params` hash will always contain the `:controller` and `:action` keys, but you should use the methods `controller_name` and `action_name` instead to access these values. Any other parameters defined by the routing, such as `:id` will also be available. As an example, consider a listing of clients where the list can show either active or inactive clients. We can add a route which captures the `:status` parameter in a "pretty" URL:
+`params` Hash 永遠會有的兩個 key 是：`:controller` 與 `:action`。若想知道現在的 Controller 以及呼叫的 action 名稱時，請使用 `controller_name` 與 `action_name`，不要直接從 `params` 裡取。
+
+路由定義裡的參數也會放在 `params` 裡，像是 `:id`。
+
+ consider a listing of clients where the list can show either active or inactive clients. We can add a route which captures the `:status` parameter in a "pretty" URL:
 
 ```ruby
 get '/clients/:status' => 'clients#index', foo: 'bar'
 ```
+
+這個情況裡，當使用者打開 `/clients/active` 這一頁，`params[:status]` 會被設成 `"active"`。
 
 In this case, when a user opens the URL `/clients/active`, `params[:status]` will be set to "active". When this route is used, `params[:foo]` will also be set to "bar" just like it was passed in the query string. In the same way `params[:action]` will contain "index".
 
@@ -194,11 +205,9 @@ If you define `default_url_options` in `ApplicationController`, as in the exampl
 
 ### Strong Parameters
 
-With strong parameters, Action Controller parameters are forbidden to
-be used in Active Model mass assignments until they have been
-whitelisted. This means you'll have to make a conscious choice about
-which attributes to allow for mass updating and thus prevent
-accidentally exposing that which shouldn't be exposed.
+有了 Strong Parameters，Action Controller 負責 Active Model 做大量賦值的白名單過濾。這表示你會需要決定，哪些 attributes 允許做大量賦值。
+
+除此之外，參數也可以被標記成需要的欄位，
 
 In addition, parameters can be marked as required and flow through a
 predefined raise/rescue flow to end up as a 400 Bad Request with no
