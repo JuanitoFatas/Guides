@@ -628,7 +628,7 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-**`before_action` 是 `before_filter` 的 alias，兩者皆可用，Rails 4 偏好 `before_action`。**
+**`before_action` 是 `before_filter` 的 alias，兩者皆可用，Rails 4 偏好 `before_action`。** [Commit](https://github.com/rails/rails/commit/9d62e04838f01f5589fa50b0baa480d60c815e2c)
 
 這個方法非常簡單，當使用者沒有登入時，將錯誤訊息存在 flash，並轉向到登入頁。若 “before” filter 執行了 `render` 或是 `redirect_to`，則 `admin` action 便不會執行。要是 before filter 互相之間有依賴，一個取消了，另一個也會跟著取消。
 
