@@ -1145,3 +1145,9 @@ end
 ```
 
 請注意，若你發現要給許多 Controller 都加上 `force_ssl`，可以在環境設定檔開啟 `config.force_ssl` 選項。
+
+# 16. 延伸閱讀
+
+[ActionController | Ruby on Rails 實戰聖經](http://ihower.tw/rails3/actioncontroller.html)
+
+[#395 Action Controller Walkthrough (pro) - RailsCasts](http://railscasts.com/episodes/395-action-controller-walkthrough)
