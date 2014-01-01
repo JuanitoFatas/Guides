@@ -181,11 +181,11 @@ params[:company] => { "name" => "acme", "address" => "123 Carrot Street" }
 get '/clients/:status' => 'clients#index', foo: 'bar'
 ```
 
-這個情況裡，當使用者打開 `/clients/active` 這一頁，`params[:status]` 會被設成 `"active"`，`params[:foo]` 也會被設成 `"bar"`，就像是我們從 query string 傳進去那樣。同樣的，params[:action] 也會被設成 `index`。
+這個情況裡，當使用者打開 `/clients/active` 這一頁，`params[:status]` 會被設成 `"active"`，`params[:foo]` 也會被設成 `"bar"`，就像是我們從 query string 傳進去那樣。同樣的，`params[:action]` 也會被設成 `index`。
 
 ### `default_url_options`
 
-You can set global default parameters for URL generation by defining a method called `default_url_options` in your controller. Such a method must return a hash with the desired defaults, whose keys must be symbols:
+可以為 URL 產生設定預設的參數，在 Controller 定義一個叫做 `default_url_options` 的方法。這個方法必須回傳期望的預設值，且 key 必須是 `Symbol`：
 
 ```ruby
 class ApplicationController < ActionController::Base
@@ -195,9 +195,9 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-These options will be used as a starting point when generating URLs, so it's possible they'll be overridden by the options passed in `url_for` calls.
+這些選項會被作為預設的選項，用來傳給 `url_for`，但還是可以被覆寫掉。
 
-If you define `default_url_options` in `ApplicationController`, as in the example above, it would be used for all URL generation. The method can also be defined in one specific controller, in which case it only affects URLs generated there.
+如果你在 `ApplicationController` 定義 `default_url_options`，如上例，則產生所有 URL 的時候，都會傳入所定義的參數。`default_url_options` 也可以在特定的 Controller 裡定義，只會影響與定義 `default_url_options` Controller 有關 URL 的產生。
 
 ### Strong Parameters
 
