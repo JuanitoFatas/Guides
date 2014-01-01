@@ -1023,15 +1023,17 @@ you should also note the following things:
 
 # 13. Log Filtering
 
-Rails keeps a log file for each environment in the `log` folder. These are extremely useful when debugging what's actually going on in your application, but in a live application you may not want every bit of information to be stored in the log file.
+Rails 為每個環境都存有 log 檔案，放在 `log` 目錄下。這些 log 檔案拿來 debug 非常有用，可以瞭解應用程式當下究竟在幹嘛。但正式運行的應用程式，可能不想要記錄所有的資訊。
 
 ### Parameters Filtering
 
-You can filter certain request parameters from your log files by appending them to `config.filter_parameters` in the application configuration. These parameters will be marked [FILTERED] in the log.
+可以從 log 檔案過濾掉特定的 Request 參數，在 `config/application.rb` 裡的 `config.filter_parameters` 設定。
 
 ```ruby
 config.filter_parameters << :password
 ```
+
+設定過的參數在 log 裡會被改成 `[FILTERED]`，確保 log 外洩時，輸入的密碼不會跟著外洩。
 
 ### Redirects Filtering
 
