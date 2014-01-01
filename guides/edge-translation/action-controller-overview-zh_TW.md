@@ -798,14 +798,16 @@ Note: in the above case it would make more sense to use the `content_type` sette
 
 # 11. HTTP Authentications
 
-Rails comes with two built-in HTTP authentication mechanisms:
+Rails 內建了兩種 HTTP 驗證方法：
 
-* Basic Authentication
+* Basic Authentication（基礎驗證）
 * Digest Authentication
 
 ### HTTP Basic Authentication
 
-HTTP basic authentication is an authentication scheme that is supported by the majority of browsers and other HTTP clients. As an example, consider an administration section which will only be available by entering a username and a password into the browser's HTTP basic dialog window. Using the built-in authentication is quite easy and only requires you to use one method, `http_basic_authenticate_with`.
+「HTTP 基礎驗證」是一種主流瀏覽器與 HTTP 客戶端皆支援的驗證方式。舉個例子，假設有一段管理員才能瀏覽的區塊，必須在瀏覽器的 HTTP basic dialog 視窗輸入 `username` 與 `password`，確保身分是管理員才可瀏覽。
+
+在 Rails 裡只要使用一個方法：`http_basic_authenticate_with` 即可。
 
 ```ruby
 class AdminsController < ApplicationController
@@ -813,11 +815,11 @@ class AdminsController < ApplicationController
 end
 ```
 
-With this in place, you can create namespaced controllers that inherit from `AdminController`. The filter will thus be run for all actions in those controllers, protecting them with HTTP basic authentication.
+有了這行代碼之後，可以從 `AdminsController` 切出 namespace，讓要管控的 Controller 繼承 `AdminsController`。
 
 ### HTTP Digest Authentication
 
-HTTP digest authentication is superior to the basic authentication as it does not require the client to send an unencrypted password over the network (though HTTP basic authentication is safe over HTTPS). Using digest authentication with Rails is quite easy and only requires using one method, `authenticate_or_request_with_http_digest`.
+HTTP digest authentication 比 HTTP Basic Authentication 高級一些，不需要使用者透過網路傳送未加密的密碼（但採用 HTTPS 的情況下，HTTP Basic Authentication 是安全的）。使用 digest authentication 也只需要一個方法：`authenticate_or_request_with_http_digest`。
 
 ```ruby
 class AdminsController < ApplicationController
@@ -835,7 +837,15 @@ class AdminsController < ApplicationController
 end
 ```
 
-As seen in the example above, the `authenticate_or_request_with_http_digest` block takes only one argument - the username. And the block returns the password. Returning `false` or `nil` from the `authenticate_or_request_with_http_digest` will cause authentication failure.
+從上例可以看出來，`authenticate_or_request_with_http_digest` 接受一個參數，`username`。區塊內返回密碼：
+
+```ruby
+authenticate_or_request_with_http_digest do |username|
+  USERS[username]
+end
+```
+
+最後 `authenticate` 返回 `true` 或 `false`，決定驗證是否成功。
 
 # 12. Streaming and File Downloads
 
