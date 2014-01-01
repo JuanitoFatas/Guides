@@ -1,6 +1,4 @@
-# Edge Ruby on Rails Guides 翻譯
-
-## [跳至 Edge Ruby on Rails Guides 目錄](/guides/index.md)
+# [跳至 Edge Ruby on Rails Guides 目錄](/guides/index.md)
 
 ## 狀態 Status
 
