@@ -356,12 +356,12 @@ end
 
 應用程式為每個使用者都準備了一個 Session，可以儲存小量的資料，資料在 Request 之間都會保存下來。Session 僅在 Controller 與 View 可存取，有下列幾種儲存機制：
 
-* `ActionDispatch::Session::CookieStore` - Stores everything on the client.
-* `ActionDispatch::Session::CacheStore` - Stores the data in the Rails cache.
-* `ActionDispatch::Session::ActiveRecordStore` - Stores the data in a database using Active Record. (require `activerecord-session_store` gem).
-* `ActionDispatch::Session::MemCacheStore` - Stores the data in a memcached cluster (this is a legacy implementation; consider using CacheStore instead).
+* `ActionDispatch::Session::CookieStore` - 資料存在用戶端。
+* `ActionDispatch::Session::CacheStore` - 資料存在 Rails 的 Cache。
+* `ActionDispatch::Session::ActiveRecordStore` - 資料使用 Active Record 存在資料庫（需要 `activerecord-session_store` RubyGem）。
+* `ActionDispatch::Session::MemCacheStore` - 資料存在 memcached（這是遠古時代的實作方式，考慮改用 CacheStore 吧）。
 
-All session stores use a cookie to store a unique ID for each session (you must use a cookie, Rails will not allow you to pass the session ID in the URL as this is less secure).
+所有的儲存機制，會為每個 Session 在 Cookie 裡存一個獨立的 ID。必須要存在 Cookie 裡，否則 Rails 不允許你在 URL 傳遞 session ID（不安全）。
 
 For most stores, this ID is used to look up the session data on the server, e.g. in a database table. There is one exception, and that is the default and recommended session store - the CookieStore - which stores all session data in the cookie itself (the ID is still available to you if you need it). This has the advantage of being very lightweight and it requires zero setup in a new application in order to use the session. The cookie data is cryptographically signed to make it tamper-proof. And it is also encrypted so anyone with access to it can't read its contents. (Rails will not accept it if it has been edited).
 
@@ -369,9 +369,9 @@ The CookieStore can store around 4kB of data - much less than the others - but t
 
 If your user sessions don't store critical data or don't need to be around for long periods (for instance if you just use the flash for messaging), you can consider using ActionDispatch::Session::CacheStore. This will store sessions using the cache implementation you have configured for your application. The advantage of this is that you can use your existing cache infrastructure for storing sessions without requiring any additional setup or administration. The downside, of course, is that the sessions will be ephemeral and could disappear at any time.
 
-Read more about session storage in the [Security Guide](security.html).
+關於如何安全地儲存 Session，請閱讀 [Security Guide](/guides/edge/security.md)。
 
-If you need a different session storage mechanism, you can change it in the `config/initializers/session_store.rb` file:
+若是需要不同的 Session 儲存機制，可以在 `config/initializers/session_store.rb` 裡更改：
 
 ```ruby
 # Use the database for sessions instead of the cookie-based default,
@@ -410,7 +410,8 @@ NOTE: Changing the secret when using the `CookieStore` will invalidate all exist
 
 ### Accessing the Session
 
-In your controller you can access the session through the `session` instance method.
+在 Controller 可以透過 `session` 這個 instance method 來存取 Session。
+
 
 NOTE: Sessions are lazily loaded. If you don't access sessions in your action's code, they will not be loaded. Hence you will never need to disable sessions, just not accessing them will do the job.
 
@@ -432,7 +433,7 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-To store something in the session, just assign it to the key like a hash:
+要在 Session 裡存值，只要像使用 Hash 一樣操作即可：
 
 ```ruby
 class LoginsController < ApplicationController
@@ -448,20 +449,20 @@ class LoginsController < ApplicationController
 end
 ```
 
-To remove something from the session, assign that key to be `nil`:
+要從 Session 裡移掉數值，賦 `nil` 給想移除的 key 即可：
 
 ```ruby
 class LoginsController < ApplicationController
-  # "Delete" a login, aka "log the user out"
+  # "刪除" 登入，也就是 "將使用者登出"
   def destroy
-    # Remove the user id from the session
+    # 將 user id 從 session 裡移除
     @_current_user = session[:current_user_id] = nil
     redirect_to root_url
   end
 end
 ```
 
-To reset the entire session, use `reset_session`.
+要將整個 session 清掉，使用 `reset_session`。
 
 ### The Flash
 
