@@ -354,7 +354,7 @@ end
 
 # 5. Session
 
-Your application has a session for each user in which you can store small amounts of data that will be persisted between requests. The session is only available in the controller and the view and can use one of a number of different storage mechanisms:
+應用程式為每個使用者都準備了一個 Session，可以儲存小量的資料，資料在 Request 之間都會保存下來。Session 僅在 Controller 與 View 可存取，有下列幾種儲存機制：
 
 * `ActionDispatch::Session::CookieStore` - Stores everything on the client.
 * `ActionDispatch::Session::CacheStore` - Stores the data in the Rails cache.
@@ -540,7 +540,7 @@ end
 
 #### `flash.now`
 
-By default, adding values to the flash will make them available to the next request, but sometimes you may want to access those values in the same request. For example, if the `create` action fails to save a resource and you render the `new` template directly, that's not going to result in a new request, but you may still want to display a message using the flash. To do this, you can use `flash.now` in the same way you use the normal `flash`:
+預設情況下，加入值至 `flash` 會訊息在下次 Request 可以取用，但有時候你想在同個 Request 裡顯示這些訊息。舉例來說，如果 `create` action 無法儲存，你想要直接 `render` `new` template，這不會發另一個 Request，但你仍想顯示訊息，這時候便可以使用 `flash.now`：
 
 ```ruby
 class ClientsController < ApplicationController
@@ -549,7 +549,7 @@ class ClientsController < ApplicationController
     if @client.save
       # ...
     else
-      flash.now[:error] = "Could not save client"
+      flash.now[:error] = "無法儲存 Client"
       render action: "new"
     end
   end
