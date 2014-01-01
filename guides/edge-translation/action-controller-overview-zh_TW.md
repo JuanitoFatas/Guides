@@ -607,28 +607,32 @@ end
 
 Filter 是在 Controller action 執行前、後、之間所執行的方法。Filter 可繼承，也就是在 `ApplicationController` 定義的 Filter，在整個應用程式裡都會執行該 Filter。
 
-“Before” filters 可能會終止 Request 週期。
-
-"Before" filters may halt the request cycle. A common "before" filter is one which requires that a user is logged in for an action to be run. You can define the filter method this way:
+“Before” filters 可能會終止 Request 週期。常見的 “before” filter 像是某個 `action` 需要使用者登入。Filter 方法可以這麼定義：
 
 ```ruby
 class ApplicationController < ActionController::Base
-  before_action :require_login
+  before_action :require_login, only: [:admin]
+
+  def admin
+    # 管理員才可使用的...
+  end
 
   private
 
   def require_login
     unless logged_in?
-      flash[:error] = "You must be logged in to access this section"
-      redirect_to new_login_url # halts request cycle
+      flash[:error] = "這個區塊必須登入才能存取"
+      redirect_to new_login_url # 終止 Request 週期
     end
   end
 end
 ```
 
-The method simply stores an error message in the flash and redirects to the login form if the user is not logged in. If a "before" filter renders or redirects, the action will not run. If there are additional filters scheduled to run after that filter, they are also cancelled.
+**`before_action` 是 `before_filter` 的 alias，兩者皆可用，Rails 4 偏好 `before_action`。**
 
-In this example the filter is added to `ApplicationController` and thus all controllers in the application inherit it. This will make everything in the application require the user to be logged in in order to use it. For obvious reasons (the user wouldn't be able to log in in the first place!), not all controllers or actions should require this. You can prevent this filter from running before particular actions with `skip_before_action`:
+這個方法非常簡單，當使用者沒有登入時，將錯誤訊息存在 flash，並轉向到登入頁。若 “before” filter 執行了 `render` 或是 `redirect_to`，則 `admin` action 便不會執行。要是 before filter 互相之間有依賴，一個取消了，另一個也會跟著取消。
+
+剛剛的例子裡，filter 加入至 `ApplicationController`，所以在應用程式裡，只要是繼承 `ApplicationController` 的所有 action，都會需要登入才能使用。但使用者還沒註冊之前，怎麼登入？所以一定有方法可以跳過 filter，`skip_before_action`：
 
 ```ruby
 class LoginsController < ApplicationController
@@ -636,9 +640,11 @@ class LoginsController < ApplicationController
 end
 ```
 
-Now, the `LoginsController`'s `new` and `create` actions will work as before without requiring the user to be logged in. The `:only` option is used to only skip this filter for these actions, and there is also an `:except` option which works the other way. These options can be used when adding filters too, so you can add a filter which only runs for selected actions in the first place.
+現在 `LoginsController` 的 `new` 與 `create` action 會如同先前一般工作，而不需要使用者登入。`:only` 選項用來決定這個 filter 只需要檢查哪幾個 action；相反地 `:except` 選項則是決定這個 filter 不需要檢查哪幾個 action。
 
 ### After Filters and Around Filters
+
+有 “before” filter 也有 “after” 與 “around” filter
 
 In addition to "before" filters, you can also run filters after an action has been executed, or both before and after.
 
