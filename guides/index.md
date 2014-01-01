@@ -41,7 +41,7 @@
 |:--:|:--:|:--:|
 |[Active Support Core Extensions](/guides/edge/active_support_core_extensions.md)|to be translated|to be translated|
 |[Rails Internationalization API](/guides/edge/i18n.md)|[Work In Progress](/guides/edge-translation/i18n-zh_TW.md)|_Available soon_|
-|[Action Mailer Basics](/guides/edge/action_mailer_basics.md)|to be translated|to be translated|
+|[Action Mailer Basics](/guides/edge/action_mailer_basics.md)|[Work In Progress](/guides/edge-translation/action-mailer-basics-zh_TW.md)|to be translated|
 |[Testing Rails Applications](/guides/edge/testing.md)|to be translated|to be translated|
 |[Securing Rails Applications](/guides/edge/security.md)|to be translated|to be translated|
 |[Debugging Rails Applications](/guides/edge/debugging_rails_applications.md)|to be translated|to be translated|
