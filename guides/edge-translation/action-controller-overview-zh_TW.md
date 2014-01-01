@@ -19,8 +19,7 @@ __特別要強調的翻譯名詞__
 * 如何在應用程式的 Log 裡過濾敏感資料。
 * 如何處理 Request 處理週期中，可能拋出的異常。
 
-Controller 做了什麼？
--------------------------
+# 1. Controller 做了什麼？
 
 Action Controller 是 MVC 的 C，Controller。一個 Request 進來，路由決定是那個 Controller 的工作後，便把工作指派給 Controller，Controller 負責處理該 Request，給出對應的 Output。幸運的是 Action Controller 把大部分的苦力都給您辦好了，您只需按照一些規範來寫代碼，事情便豁然開朗。
 
@@ -30,8 +29,7 @@ Controller 因此可以想成是 Model 與 View 的中間人。負責替 Model �
 
 路由過程的細節可以查閱 [Rails Routing From the Outside In](http://edgeguides.rubyonrails.org/routing.html)。
 
-Controller 命名規範
-------------------------------
+# 2. Controller 命名規範
 
 Rails 偏好 Controller 以複數結尾，但也是有例外，比如 `ApplicationController`。舉例來說：
 
@@ -41,7 +39,7 @@ Rails 偏好 Controller 以複數結尾，但也是有例外，比如 `Applicati
 
 遵循規範便可使用內建的路由產生器：`resources`、`resource` 等，而無需特地修飾 `:path`、`controller`，並可保持 URL 與 path Helpers 的一致性。細節請參考 [Layouts & Rendering Guide](/guides/edge/layouts_and_rendering.md) 一篇。
 
-注意：Controller 的命名規範與 Model 的命名規範不同，Model 命名希望是**單數形式**。
+注意：Controller 的命名規範與 Model 的命名規範不同，Model 命名採**單數形式**。
 
 # 3. Methods 與 Actions
 
@@ -110,7 +108,7 @@ end
 
 ### Hash 與 Array 參數
 
-`params` hash 不侷限於一維的 Hash。可以是巢狀結構，或是 Hash 裡面包有陣列，都可以。若想要將數值放在陣列裡傳遞，在 key 的名稱後方附加 `[]`，如下所示：
+`params` Hash 不侷限於一維的 Hash，可以是巢狀結構；或是 Hash 裡面包有陣列，都可以。若想要將數值放在陣列裡傳遞，在 key 的名稱後方附加 `[]` 即可，如下所示：
 
 ```
 GET /clients?ids[]=1&ids[]=2&ids[]=3
@@ -169,23 +167,21 @@ params[:company] => { "name" => "acme", "address" => "123 Carrot Street" }
 
 關於如何客製化 key 名稱，或針對某些特殊的參數執行 wrap，請查閱 [ActionController::ParamsWrapper 的 API 文件](http://edgeapi.rubyonrails.org/classes/ActionController/ParamsWrapper.html)。
 
-**解析 XML 的功能已被抽離至 [actionpack-xml_parser](https://github.com/rails/actionpack-xml_parser) Gem。**
+**解析 XML 的功能已被抽成 [actionpack-xml_parser](https://github.com/rails/actionpack-xml_parser) Gem。**
 
 ### Routing 參數
 
-`params` Hash 永遠會有的兩個 key 是：`:controller` 與 `:action`。若想知道現在的 Controller 以及呼叫的 action 名稱時，請使用 `controller_name` 與 `action_name`，不要直接從 `params` 裡取。
+`params` Hash 永遠會有的兩個 key 是：`:controller` 與 `:action`，分別是當下呼叫的 Controller 與 Action 的名稱。若想知道現在的 Controller 以及 Action 名稱時，請使用 `controller_name` 與 `action_name`，不要直接從 `params` 裡取。
 
 路由定義裡的參數也會放在 `params` 裡，像是 `:id`。
 
- consider a listing of clients where the list can show either active or inactive clients. We can add a route which captures the `:status` parameter in a "pretty" URL:
+假設有一張 Client 的清單，Client 有兩種狀態，分別為 Active 與 Inactive。我們可以加入一條路由，來捕捉 Client 的狀態：
 
 ```ruby
 get '/clients/:status' => 'clients#index', foo: 'bar'
 ```
 
-這個情況裡，當使用者打開 `/clients/active` 這一頁，`params[:status]` 會被設成 `"active"`。
-
-In this case, when a user opens the URL `/clients/active`, `params[:status]` will be set to "active". When this route is used, `params[:foo]` will also be set to "bar" just like it was passed in the query string. In the same way `params[:action]` will contain "index".
+這個情況裡，當使用者打開 `/clients/active` 這一頁，`params[:status]` 會被設成 `"active"`，`params[:foo]` 也會被設成 `"bar"`，就像是我們從 query string 傳進去那樣。同樣的，params[:action] 也會被設成 `index`。
 
 ### `default_url_options`
 
