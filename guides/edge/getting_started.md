@@ -757,7 +757,7 @@ the `show` action. That's not very useful though, so let's add the
 As we have seen in the output of `rake routes`, the route for `show` action is
 as follows:
 
-```ruby
+```
 post GET    /posts/:id(.:format)      posts#show
 ```
 
@@ -804,7 +804,7 @@ Visit <http://localhost:3000/posts/new> and give it a try!
 We still need a way to list all our posts, so let's do that.
 The route for this as per output of `rake routes` is:
 
-```ruby
+```
 posts GET    /posts(.:format)          posts#index
 ```
 
@@ -816,7 +816,7 @@ def index
 end
 ```
 
-And then finally a view for this action, located at `app/views/posts/index.html.erb`:
+And then finally, add view for this action, located at `app/views/posts/index.html.erb`:
 
 ```html+erb
 <h1>Listing posts</h1>
@@ -1406,7 +1406,6 @@ class Post < ActiveRecord::Base
   has_many :comments
   validates :title, presence: true,
                     length: { minimum: 5 }
-  [...]
 end
 ```
 
@@ -1771,7 +1770,6 @@ class Post < ActiveRecord::Base
   has_many :comments, dependent: :destroy
   validates :title, presence: true,
                     length: { minimum: 5 }
-  [...]
 end
 ```
 
