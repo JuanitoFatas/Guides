@@ -105,6 +105,10 @@ secrets, you need to:
 
 5. Restart your server.
 
+## 2.1 Changes to test helper
+
+If your test helper contains a call to ActiveRecord::Migration.check_pending! this can be removed. The check is now done automatically when you require 'test_help', although leaving this line in your helper is not harmful in any way.
+
 ## 2.2 處理 JSON 的變化
 
 Rails 4.1 有些關於 JSON 處理的重要變化。
