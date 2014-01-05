@@ -270,6 +270,13 @@ Railties
 
 * 新增 `Application#message_verifier` 方法來回傳訊息驗證器。[PR#12995](https://github.com/rails/rails/pull/12995)
 
+* The `test_help.rb` file which is required by the default generated test
+  helper will automatically keep your test database up-to-date with
+  `db/schema.rb` (or `db/structure.sql`). It raises an error if
+  reloading the schema does not resolve all pending migrations. Opt out
+  with `config.active_record.maintain_test_schema = false`. ([Pull
+  Request](https://github.com/rails/rails/pull/13528))
+
 Action Pack
 -----------
 
@@ -374,6 +381,9 @@ Active Record
 * 棄用了任何地方都沒用到的 `quoted_locking_column` 方法。
 
 * 棄用了 association 從 Array 獲得的 bang 方法。要使用請先將 association 轉成陣列（`#to_a`），再對元素做處理。 [PR#12129](https://github.com/rails/rails/pull/12129)。
+
+* Deprecated `rake db:test:*` tasks as the test database is now
+  automatically maintained. See railties release notes. [PR#13528](https://github.com/rails/rails/pull/13528)
 
 * Rails 內部棄用了 `ConnectionAdapters::SchemaStatements#distinct`。 [PR#10556](https://github.com/rails/rails/pull/10556)
 
