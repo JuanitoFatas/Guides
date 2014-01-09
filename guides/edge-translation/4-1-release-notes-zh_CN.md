@@ -423,6 +423,8 @@ Active Record
 
 * Fixtures 文件中的 ERB 不在 main 对象上下文里执行了，多个 fixtures 使用的 Helper 方法，需要定义在被 `ActiveRecord::FixtureSet.context_class` 包含的模块里。[PR#13022](https://github.com/rails/rails/pull/13022)
 
+* 若是明确指定了 `RAILS_ENV`，则不要建立与删除数据库。
+
 Active Model
 ------------
 
