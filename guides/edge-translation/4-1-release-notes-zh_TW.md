@@ -419,6 +419,8 @@ Active Record
 
 * Fixtures 檔案中的 ERB 不在 main 物件上下文裡執行了，多個 fixtures 使用的 Helper ，需要定義在被 `ActiveRecord::FixtureSet.context_class` 包含的 Module 裡。 [PR#13022](https://github.com/rails/rails/pull/13022)
 
+* 若明確指定了 `RAILS_ENV`，則不要建立或刪除資料庫。
+
 Active Model
 ------------
 
