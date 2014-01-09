@@ -270,12 +270,7 @@ Railties
 
 * 新增 `Application#message_verifier` 方法來回傳訊息驗證器。[PR#12995](https://github.com/rails/rails/pull/12995)
 
-* The `test_help.rb` file which is required by the default generated test
-  helper will automatically keep your test database up-to-date with
-  `db/schema.rb` (or `db/structure.sql`). It raises an error if
-  reloading the schema does not resolve all pending migrations. Opt out
-  with `config.active_record.maintain_test_schema = false`. ([Pull
-  Request](https://github.com/rails/rails/pull/13528))
+* 預設產生的 `test_helper.rb` 會 `require` `test_help.rb`，幫你把測試的資料庫與 `db/schema.rb` （或 `db/structure.sql`）同步。但發現尚未執行的 migration 與 schema 不一致時會拋出錯誤。錯誤拋出與否：`config.active_record.maintain_test_schema = false`，參見此 [PR#13528](https://github.com/rails/rails/pull/13528)。
 
 Action Pack
 -----------
@@ -382,10 +377,11 @@ Active Record
 
 * 棄用了 association 從 Array 獲得的 bang 方法。要使用請先將 association 轉成陣列（`#to_a`），再對元素做處理。 [PR#12129](https://github.com/rails/rails/pull/12129)。
 
-* Deprecated `rake db:test:*` tasks as the test database is now
-  automatically maintained. See railties release notes. [PR#13528](https://github.com/rails/rails/pull/13528)
-
 * Rails 內部棄用了 `ConnectionAdapters::SchemaStatements#distinct`。 [PR#10556](https://github.com/rails/rails/pull/10556)
+
+* 棄用 `rake db:test:*` 系列的 task，因為現在會自動設定好測試資料庫。參見 Railties 的發佈記。[PR#13528](https://github.com/rails/rails/pull/13528)
+
+* 棄用了無用的 `ActiveRecord::Base.symbolized_base_class` 與 `ActiveRecord::Base.symbolized_sti_name`，且沒有替代方案。[Commit](https://github.com/rails/rails/commit/97e7ca48c139ea5cce2fa9b4be631946252a1ebd)
 
 ### 值得一提的變化
 
