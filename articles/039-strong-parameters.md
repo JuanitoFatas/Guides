@@ -8,7 +8,7 @@ Rails 4 引進了一個新的保護機制：Strong Parameters，譯作健壯參�
 
 在建模或更新 Active Record 物件時，會有 Mass assignment （大量賦值）的問題。
 
-Mass assignment 是建模或更新時，傳入 hash 參數，一次給多個欄位賦值：
+Mass assignment 是建模或更新時，傳入 Hash 參數，一次給多個欄位賦值：
 
 ```ruby
 # params[:book] => { name: 'Ruby on Rails 4', who: 'Juanito Fatas', role: :reviewer }
@@ -116,7 +116,7 @@ Unpermitted parameters: age
 
 由於是 `ActionController::Parameters` 的 instance，所以 `permit` 與 `require` 可以連鎖使用。
 
-傳入沒有的參數也沒關係：
+傳入不存在的 `attribute` 也沒關係：
 
 ```ruby
 > params.require(:bride).permit(:name, :age, :cup)
@@ -130,7 +130,7 @@ Unpermitted parameters: age
 ActionController::ParameterMissing: param not found: cup
 ```
 
-`require` 返回 hash 對應 key 的值，`permit` 返回 `ActionController::Parameters` 的 instance。
+`require` 返回 Hash 對應 key 的值，`permit` 返回 `ActionController::Parameters` 的 instance。
 
 ```ruby
 >  params.require(:bride).require(:name)
@@ -196,7 +196,7 @@ Unpermitted parameters: bridegroom
 => {"user"=>{"username"=>"john", "data"=>{"foo"=>"bar"}}}
 ```
 
-假設我們不知道 `data` hash 裡有什麼 key，該怎麼破？
+假設我們不知道 `data` Hash 裡有什麼 key，該怎麼破？
 
 ```ruby
 > params.require(:user).permit(:username).tap do |whitelisted|
