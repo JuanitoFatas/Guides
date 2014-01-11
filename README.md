@@ -2,9 +2,7 @@
 
 ## 狀態 Status
 
-工作好累，下班緩慢翻譯中。
-
-Slowly Translating.
+也許有一天我會全翻完。
 
 ## 注意事項
 
