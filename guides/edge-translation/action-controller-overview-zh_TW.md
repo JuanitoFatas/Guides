@@ -342,8 +342,7 @@ params.require(:book).permit(:title, chapters_attributes: [:title])
 
 #### Outside the Scope of Strong Parameters
 
-
-Strong Parameter API 不是銀彈，無法處理所有白名單的問題。但你可以簡單地將 API 與你的程式碼混合使用，來應用不同的需求。
+Strong Parameter API 不是銀彈，無法處理所有白名單的問題。但可以簡單地將 API 與你的程式碼混合使用，來因應不同的需求。
 
 假想看看，你想要給某個 attribute 加上白名單，該 attribute 可以包含一個 Hash，裡面可能有任何 key。使用 Strong Parameter 你無法允許有任何 key 的 Hash，但你可以這麼做：
 
@@ -357,10 +356,10 @@ end
 
 應用程式為每個使用者都準備了一個 Session，可以儲存小量的資料，資料在 Request 之間都會保存下來。Session 僅在 Controller 與 View 可存取，有下列幾種儲存機制：
 
-* `ActionDispatch::Session::CookieStore` - 資料存在用戶端。
-* `ActionDispatch::Session::CacheStore` - 資料存在 Rails 的 Cache。
-* `ActionDispatch::Session::ActiveRecordStore` - 資料使用 Active Record 存在資料庫（需要 `activerecord-session_store` RubyGem）。
-* `ActionDispatch::Session::MemCacheStore` - 資料存在 memcached（這是遠古時代的實作方式，考慮改用 CacheStore 吧）。
+* `ActionDispatch::Session::CookieStore` ─ 資料存在用戶端。
+* `ActionDispatch::Session::CacheStore` ─ 資料存在 Rails 的 Cache。
+* `ActionDispatch::Session::ActiveRecordStore` ─ 資料使用 Active Record 存在資料庫（需要 `activerecord-session_store` RubyGem）。
+* `ActionDispatch::Session::MemCacheStore` ─ 資料存在 memcached（這是遠古時代的實作方式，考慮改用 CacheStore 吧）。
 
 所有的儲存機制，會為每個 Session 在 Cookie 裡存一個獨立的 ID。必須要存在 Cookie 裡，否則 Rails 不允許你在 URL 傳遞 session ID（不安全）。
 
