@@ -1,4 +1,4 @@
-# [跳至 Edge Ruby on Rails Guides 目錄](/guides/index.md)
+# [Edge Ruby on Rails Guides 目錄](/guides/index.md)
 
 ## 狀態 Status
 
