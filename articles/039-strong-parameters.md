@@ -216,7 +216,7 @@ params.require(:user).permit(:username, data: [ :foo ])
 
 這個方法很危險，我不告訴你怎麼用，哼！
 
-> 允許所有參數！
+> **DANGER** 允許所有參數！
 
 ### 來自第三方的 JSON
 
@@ -240,6 +240,8 @@ params.permit(:name, {age: []}, girlfriends: [ :name, { family: [ :name ], hobbi
 不會用到 [Ruby-China](http://ruby-china.org/) 提問唄！
 
 ## 延伸閱讀
+
+[Strong Parameters GitHub Page](https://github.com/rails/strong_parameters)
 
 [Strong Parameters — Action Controller Overview — Edge Ruby on Rails Guides](http://edgeguides.rubyonrails.org/action_controller_overview.html#strong-parameters)
 
