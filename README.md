@@ -2,19 +2,19 @@
 
 ## 狀態 Status
 
-也許有一天我會全翻完。
+**也許有一天我會全翻完。**
 
 ## 注意事項
 
-__Pull Requests are STRONGLY welcome!__
+**Pull Requests are STRONGLY welcome!**
 
-__全文轉載煩請導回此處，因為我會一直更新這些文章。__
+**全文轉載煩請導回此處，因為我會一直更新這些文章。**
 
 ## 建議
 
-任何建議歡迎來信。
+**任何建議歡迎來信。**
 
-Any thoughts & recommendations, please open issue or send me a mail.
+**Any thoughts & recommendations, please open issue or send me a mail.**
 
 ## Copyright Declaration
 
