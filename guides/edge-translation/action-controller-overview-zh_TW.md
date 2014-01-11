@@ -761,6 +761,8 @@ end
 
 # 10. The Request and Response Objects
 
+每個 controller 都有兩個 accessor 方法，`request` 與 `response`。
+
 In every controller there are two accessor methods pointing to the request and the response objects associated with the request cycle that is currently in execution. The `request` method contains an instance of `AbstractRequest` and the `response` method returns a response object representing what is going to be sent back to the client.
 
 ### The `request` Object
