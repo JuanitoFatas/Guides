@@ -54,15 +54,15 @@ class BookController < ActionController::Base
 end
 ```
 
-原本 `create`、`update` 方法直接傳入整個 `params`，現在傳入一個封裝過的 `book_params`
+原本 `create`、`update` 方法直接傳入整個 `params`，現在傳入一個封裝過的 `book_params`。
 
-`book_params` 是個 private 方法，在這寫，需要（`require`）用到那個 model，並允許（`permit`）哪些欄位做大量賦值。
+`book_params` 是個 `private` 方法，在這寫，需要用到那個 Model（`require`），並允許哪些欄位做大量賦值（`permit`）。
 
 若試圖傳入未允許的欄位，會拋 `ActiveModel::ForbiddenAttributesError` 錯誤。
 
 ### Strong Parameters 語法：
 
-__params.需要(:model_name).允許(:欄位_1, :欄位_2)__
+<strong>params.需要(:model_name).允許(:欄位_1, :欄位_2)</strong>
 
 ```ruby
 params.require(:person).permit(:name, :age)
