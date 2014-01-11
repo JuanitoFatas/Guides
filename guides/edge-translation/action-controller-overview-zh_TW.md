@@ -2,11 +2,11 @@
 
 __特別要強調的翻譯名詞__
 
-> application 應用程式。
-> parameters 參數
+> application 應用程式 <br>
+> Parameters 參數 <br>
 > Client 客戶端
 
-本篇介紹 Controller 的工作原理、Controller 與如何應用程式的 Request 生命週期結合在一起。
+本篇介紹 Controller 的工作原理、Controller 如何與應用程式的 Request 生命週期結合在一起。
 
 讀完本篇可能會學到.....
 
