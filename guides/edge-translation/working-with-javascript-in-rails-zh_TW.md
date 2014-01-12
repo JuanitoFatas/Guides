@@ -43,7 +43,7 @@ Ajax 介紹
 
 如果你在網頁裡按下某個連結，將會重複剛剛的步驟：發送請求、抓取資源、組合頁面、返回結果。這幾個步驟通常稱之為 “Request Response Cycle”。
 
-JavaScript 也可向 Server 發送請求或是解析 Response。JavaScript 也具有更新網頁的能力。熟悉 JavaScript 的開發者可以做到只更新部分的頁面，而無需要向伺服器索要整個頁面。
+JavaScript 也可向 Server 發送請求或是解析 Response。JavaScript 也具有更新網頁的能力。熟悉 JavaScript 的開發者可以做到只更新部分的頁面，而無需向伺服器索要整個頁面。
 
 __這個強大的技術叫做 Ajax。__
 
@@ -63,7 +63,7 @@ Rails 對於使用這種技巧來撰寫網頁，提供了相當多的官方支�
 Unobtrusive JavaScript
 -------------------------------------
 
-Rails 使用一種叫做 “Unobtrusive JavaScript” （縮寫為 UJS）的技術來處理 DOM 操作。這是來自前端社群的最佳實踐，但有些教學文件可能會用別種技術，來達成同樣的事情。
+Rails 使用一種叫做 “[Unobtrusive JavaScript][ujs]” （縮寫為 UJS）的技術來處理 DOM 操作。這是來自前端社群的最佳實踐，但有些教學文件可能會用別種技術，來達成同樣的事情。
 
 以下是撰寫 JavaScript 最簡單的方式（行內 JavaScript）：
 
@@ -71,7 +71,7 @@ Rails 使用一種叫做 “Unobtrusive JavaScript” （縮寫為 UJS）的技�
 <a href="#" onclick="this.style.backgroundColor='#990000'">Paint it red</a>
 ```
 
-按下連結，背景就變紅。但要是我們有許多 JavaScript 程式要在按下時執行怎麼辦？
+按下連結，背景就變紅。但要是我們有許多 JavaScript 程式碼，要在按下時執行怎麼辦？
 
 ```html
 <a href="#" onclick="this.style.backgroundColor='#009900';this.style.color='#FFFFFF';">Paint it green</a>
@@ -378,5 +378,7 @@ $(document).on "page:change", ->
 [form_tag]: http://api.rubyonrails.org/classes/ActionView/Helpers/FormTagHelper.html#method-i-form_tag
 [link_to]: http://api.rubyonrails.org/classes/ActionView/Helpers/UrlHelper.html#method-i-link_to
 [button_to]: http://api.rubyonrails.org/classes/ActionView/Helpers/UrlHelper.html#method-i-button_to
+
+[ujs]: http://zh.wikipedia.org/zh-tw/Unobtrusive_JavaScript
 
 [rails-3-2-ajax-by-rei]: http://chloerei.com/2012/04/21/rails-3-2-ajax-guide/
