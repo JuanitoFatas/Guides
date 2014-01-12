@@ -49,7 +49,7 @@
 |[Rails Command Line Tools and Rake Tasks](/guides/edge/command_line.md)|to be translated|to be translated|
 |[Caching with Rails](/guides/edge/caching_with_rails.md)|to be translated|to be translated|
 |[Asset Pipeline](/guides/edge/asset_pipeline.md)|to be translated|to be translated|
-|[Working with JavaScript in Rails](/guides/edge/working_with_javascript_in_rails.md)|[Work In Progress](/guides/edge-translation/working-with-javascript-in-rails-zh_TW.md)|to be translated|
+|[Working with JavaScript in Rails](/guides/edge/working_with_javascript_in_rails.md)|[zh-TW](/guides/edge-translation/working-with-javascript-in-rails-zh_TW.md)|[zh-CN](/guides/edge-translation/working-with-javascript-in-rails-zh_CN.md)|
 |[Getting Started with Engines](/guides/edge/engines.md)|[zh-TW](/guides/edge-translation/engines-zh_TW.md)|[zh-CN](/guides/edge-translation/engines-zh_CN.md)|
 |[The Rails Initialization Process](/guides/edge/initialization.md)|to be translated|to be translated|
 
