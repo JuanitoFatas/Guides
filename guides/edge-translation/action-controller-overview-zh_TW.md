@@ -761,27 +761,29 @@ end
 
 # 10. The Request and Response Objects
 
-每個 controller 都有兩個 accessor 方法，`request` 與 `response`。
+Request 生命週期裡，每個 controller 都有兩個 accessor 方法，`request` 與 `response`。
 
-In every controller there are two accessor methods pointing to the request and the response objects associated with the request cycle that is currently in execution. The `request` method contains an instance of `AbstractRequest` and the `response` method returns a response object representing what is going to be sent back to the client.
+`request` 方法包含了 `AbstractRequest` 的實例。
+
+`response` 方法則包含即將回給 client 的 response 物件。
 
 ### The `request` Object
 
-The request object contains a lot of useful information about the request coming in from the client. To get a full list of the available methods, refer to the [API documentation](http://api.rubyonrails.org/classes/ActionDispatch/Request.html). Among the properties that you can access on this object are:
+`request` object 帶有從 client 端而來的許多有用資訊。關於所有可用的方法，請查閱 [ActionDispatch::Request API 文件](http://api.rubyonrails.org/classes/ActionDispatch/Request.html)。而所有可存取的 properties 有：
 
-| Property of `request`                     | Purpose                                                                          |
-| ----------------------------------------- | -------------------------------------------------------------------------------- |
-| host                                      | The hostname used for this request.                                              |
-| domain(n=2)                               | The hostname's first `n` segments, starting from the right (the TLD).            |
-| format                                    | The content type requested by the client.                                        |
-| method                                    | The HTTP method used for the request.                                            |
-| get?, post?, patch?, put?, delete?, head? | Returns true if the HTTP method is GET/POST/PATCH/PUT/DELETE/HEAD.               |
-| headers                                   | Returns a hash containing the headers associated with the request.               |
-| port                                      | The port number (integer) used for the request.                                  |
-| protocol                                  | Returns a string containing the protocol used plus "://", for example "http://". |
-| query_string                              | The query string part of the URL, i.e., everything after "?".                    |
-| remote_ip                                 | The IP address of the client.                                                    |
-| url                                       | The entire URL used for the request.                                             |
+| `request` 的 property                     | 用途                                                        |
+| ----------------------------------------- | ---------------------------------------------------------- |
+| host                                      | request 使用的 hostname。|
+| domain(n=2)                               | Hostname 的前 `n` 個區段，從 TLD 右邊開始算起。|
+| format                                    | request 使用的 content type。|
+| method                                    | request 使用的 HTTP 動詞。|
+| get?, post?, patch?, put?, delete?, head? | HTTP 動詞為右列其一時，返回真。 GET/POST/PATCH/PUT/DELETE/HEAD。|
+| headers                                   | 返回 request 的 header (Hash)。|
+| port                                      | Request 使用的 port 號。|
+| protocol                                  | 返回包含 "://" 的字串，如 "http://"。|
+| query_string                              | URL 的 Query String 部分。也就是 "?" 之後的字串。|
+| remote_ip                                 | Client 的 IP 位址。|
+| url                                       | Request 使用的完整 URL 位址。|
 
 #### `path_parameters`, `query_parameters`, and `request_parameters`
 
