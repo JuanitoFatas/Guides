@@ -3,8 +3,8 @@ Rails x JavaScript
 
 __特别要强调的翻译名词__
 
-> Web application 应用程序
-> Request 请求
+> Web application 应用程序<br>
+> Request 请求<br>
 > Vanilla JavaScript 纯 JavaScript
 
 本篇介绍 Rails 自带的 Ajax/JavaScript 功能。让你轻松打造丰富生动的 Ajax 应用程序。
