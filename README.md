@@ -20,7 +20,7 @@
 
 ## 貢獻者
 
-**感謝所有的貢獻者！[請看完整貢獻者列表](https://github.com/JuanitoFatas/Guides/graphs/contributors).**
+**感謝所有的貢獻者！[請看完整貢獻者列表](https://github.com/JuanitoFatas/Guides/graphs/contributors)。**
 
 ## Copyright Declaration
 
