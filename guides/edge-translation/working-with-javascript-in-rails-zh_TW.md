@@ -1,4 +1,6 @@
-Rails 與 JavaScript
+
+
+Rails x JavaScript
 ================================
 
 __特別要強調的翻譯名詞__
@@ -17,7 +19,21 @@ __特別要強調的翻譯名詞__
 * 在伺服器端處理 Ajax。
 * Turbolinks。
 
--------------------------------------------------------------------------------
+**目錄**
+
+  - [1. Ajax 介紹](#ajax-介紹)
+  - [2. Unobtrusive JavaScript](#unobtrusive-javascript)
+  - [3. 內建的 Ajax Helpers](#內建的-ajax-helpers)
+    - [3.1 form_for](#form_for)
+    - [3.2 form_tag](#form_tag)
+    - [3.3 link_to](#link_to)
+    - [3.4 button_to](#button_to)
+  - [4. 伺服器端的考量](#伺服器端的考量)
+    - [簡單的例子](#簡單的例子)
+  - [5. Turbolinks](#turbolinks)
+    - [Turbolinks 工作原理](#turbolinks-工作原理)
+    - [頁面變化的事件](#頁面變化的事件)
+  - [6. 其他資源](#其他資源)
 
 Ajax 介紹
 ------------------------
@@ -83,7 +99,7 @@ paintIt = (element, backgroundColor, textColor) ->
 <a href="#" onclick="paintIt(this, '#000099', '#FFFFFF')">Paint it blue</a>
 ```
 
-不是很漂亮，很冗餘。可以使用事件來簡化。給每個連結加上 `data-*` 屬性，接著給每個連結的 click 事件綁定事件處理器：
+不是很漂亮，很冗餘。可以使用事件來簡化。給每個連結加上 `data-*` 屬性，接著給每個連結的 click 事件綁定事件 Handler：
 
 ```coffeescript
 paintIt = (element, backgroundColor, textColor) ->
@@ -103,7 +119,7 @@ $ ->
 <a href="#" data-background-color="#000099" data-text-color="#FFFFFF">Paint it blue</a>
 ```
 
-我們將這個技術稱為 “unobtrusive” JavaScript 因為我們不再需要把 JavaScript 與 HTML 混在一起。如此一來之後更容易修改，也更容易加新功能上去，只要加個 `data-` attribute。將 JavaScript 從 HTML 抽離後，JavaScript 便可透過合併壓縮工具，將整份 JavaScript 與所有頁面共用，也就是說，只需在第一次戴入頁面時下載一次，之後的頁面使用快取的檔案即可。  
+我們將這個技術稱為 “unobtrusive” JavaScript 因為我們不再需要把 JavaScript 與 HTML 混在一起。如此一來之後更容易修改，也更容易加新功能上去，只要加個 `data-` attribute。將 JavaScript 從 HTML 抽離後，JavaScript 便可透過合併壓縮工具，讓所有頁面可以共用整份 JavaScript ，也就是說，只需在第一次戴入頁面時下載一次，之後的頁面使用快取的檔案即可。
 
 Rails 團隊強烈建議你用這種風格來撰寫 CoffeeScript (JavaScript)。
 
@@ -184,7 +200,7 @@ $(document).ready ->
 <a href="/posts/1" data-remote="true">a post</a>
 ```
 
-你可以綁定相同的 Ajax 事件像 `form_for`。 來看個例子，假設按個按鍵就可以刪除一串貼文。我們只需寫一些 HTML 像這樣:
+你可以綁定 `form_for` 相同的 Ajax 事件。 來看個例子，假設按個按鍵就可以刪除一串貼文。我們只需寫一些 HTML ，就像這樣:
 
 ```erb
 <%= link_to "Delete post", @post, remote: true, method: :delete %>
@@ -337,13 +353,10 @@ $(document).on "page:change", ->
 
 關於更多細節，其他你可以綁定的事件等，參考 [Turbolinks 的 README](https://github.com/rails/turbolinks/blob/master/README.md)。
 
-譯者推薦
------------
-
-推薦閱讀 [@Rei](https://twitter.com/chloerei) 所寫的 [Rails 3.2 的 Ajax 嚮導][rails-3-2-ajax-by-rei]。
-
 其他資源
 -----------------
+
+中文推薦閱讀 [@Rei](https://twitter.com/chloerei) 所寫的 [Rails 3.2 的 Ajax 嚮導][rails-3-2-ajax-by-rei]。
 
 了解更多相關內容，請參考以下連結：
 
