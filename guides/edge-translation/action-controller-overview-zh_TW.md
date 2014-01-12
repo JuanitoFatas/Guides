@@ -816,7 +816,7 @@ Request 物件有三個 accessors，讓你取出這些參數，分別是 `query_
 
 #### Setting Custom Headers
 
-若是想給 Response 自定 Header，修改 `response.headers`。`headers` 是一個 Hash，將 Response Header 的名稱與值關連起來，某些值 Rails 已經幫你設定好了。假設你的 API 需要回一個特殊的 Header，`X-TOP-SECRET-HEADER`
+若是想給 Response 自定 Header，修改 `response.headers`。`headers` 是一個 Hash，將 Response Header 的名稱與值關連起來，某些值 Rails 已經幫你設定好了。假設你的 API 需要回一個特殊的 Header，`X-TOP-SECRET-HEADER`，在 Controller 便可以這麼寫：
 
 ```ruby
 response.headers["X-TOP-SECRET-HEADER"] = '123456789'
@@ -1082,21 +1082,23 @@ Matching URLs will be marked as '[FILTERED]'.
 
 # 14. Rescue
 
-Most likely your application is going to contain bugs or otherwise throw an exception that needs to be handled. For example, if the user follows a link to a resource that no longer exists in the database, Active Record will throw the `ActiveRecord::RecordNotFound` exception.
+> Exception 異常
 
-Rails' default exception handling displays a "500 Server Error" message for all exceptions. If the request was made locally, a nice traceback and some added information gets displayed so you can figure out what went wrong and deal with it. If the request was remote Rails will just display a simple "500 Server Error" message to the user, or a "404 Not Found" if there was a routing error or a record could not be found. Sometimes you might want to customize how these errors are caught and how they're displayed to the user. There are several levels of exception handling available in a Rails application:
+每個應用程式都可能有 bugs，或是拋出異常，這些都需要處理。舉例來說，使用者點了一個連結，該連結的 resource 已經不在資料庫了，Active Record 會拋出 `ActiveRecord::RecordNotFound` exception。
 
-### The Default 500 and 404 Templates
+Rails 預設處理 exception 的方式是 `"500 Internal Server Error"`。若 Request 是從 local 端發出，會有 backtrace 資訊，讓你來查找錯誤究竟在哪裡。若 Request 是從 Remote 端而來，則 Rails 僅顯示 `"500 Internal Server Error"`。若是使用者試圖存取不存在的路徑，Rails 則會回 `"404 Not Found"`。有時你會想自定這些錯誤的處理及顯示方式。接著讓我們看看 Rails 當中，處理錯誤與異常的幾個層級：
 
-By default a production application will render either a 404 or a 500 error message. These messages are contained in static HTML files in the `public` folder, in `404.html` and `500.html` respectively. You can customize these files to add some extra information and layout, but remember that they are static; i.e. you can't use RHTML or layouts in them, just plain HTML.
+### The Default 500, 404 and 422 Templates
+
+跑在 production 環境的應用程式，預設會 `render` 404、500 或 422 錯誤訊息，分別在 `public` 目錄下面的 `404.html`、`500.html` 與 `422.html`。你可以修改 `404.html` 或是 `500.html` 或 `422.html`。**注意這些是靜態文件。**
 
 ### `rescue_from`
 
-If you want to do something a bit more elaborate when catching errors, you can use `rescue_from`, which handles exceptions of a certain type (or multiple types) in an entire controller and its subclasses.
+若想要對捕捉錯誤做些更複雜的事情，可以使用 `rescue_from`。`rescue_from` 在整個 Controller 與 Controller 的 subclass 下，處理特定類型的異常（或多種類型的異常）。
 
-When an exception occurs which is caught by a `rescue_from` directive, the exception object is passed to the handler. The handler can be a method or a `Proc` object passed to the `:with` option. You can also use a block directly instead of an explicit `Proc` object.
+當異常發生被 `rescue_from` 捕捉時，exception 物件會傳給 Handler。Handler 可以是有著 `:with` 選項的 `Proc` 物件，也可以直接使用區塊。
 
-Here's how you can use `rescue_from` to intercept all `ActiveRecord::RecordNotFound` errors and do something with them.
+以下是使用 `rescue_from` 來攔截所有 `ActiveRecord::RecordNotFound` 的錯誤示範：
 
 ```ruby
 class ApplicationController < ActionController::Base
@@ -1110,7 +1112,7 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-Of course, this example is anything but elaborate and doesn't improve on the default exception handling at all, but once you can catch all those exceptions you're free to do whatever you want with them. For example, you could create custom exception classes that will be thrown when a user doesn't have access to a certain section of your application:
+上例跟預設的處理方式沒什麼兩樣，只是演示給你看如何捕捉異常，捕捉到之後，你想做任何事都可以。舉例來說，可以創建一個自定義的異常類別，在使用者沒有權限存取應用程式的某一部分時拋出：
 
 ```ruby
 class ApplicationController < ActionController::Base
@@ -1125,24 +1127,24 @@ class ApplicationController < ActionController::Base
 end
 
 class ClientsController < ApplicationController
-  # Check that the user has the right authorization to access clients.
+  # 檢查使用者是否有正確的權限可以存取。
   before_action :check_authorization
 
-  # Note how the actions don't have to worry about all the auth stuff.
+  # 注意到 action 不需要處理授權問題，因為已經在 before_action 裡處理了。
   def edit
     @client = Client.find(params[:id])
   end
 
   private
 
-    # If the user is not authorized, just throw the exception.
+    # 若使用者沒有授權，拋出異常。
     def check_authorization
       raise User::NotAuthorized unless current_user.admin?
     end
 end
 ```
 
-NOTE: Certain exceptions are only rescuable from the `ApplicationController` class, as they are raised before the controller gets initialized and the action gets executed. See Pratik Naik's [article](http://m.onkey.org/2008/7/20/rescue-from-dispatching) on the subject for more information.
+注意！特定的異常只有在 `ApplicationController` 裡面可以捕捉的到，因為他們在 Controller 被實例化出來之前，或 action 執行之前便發生了。參考 Pratik Naik 的[文章](http://m.onkey.org/2008/7/20/rescue-from-dispatching)來了解更多關於這個問題的細節。
 
 # 15. Force HTTPS protocol
 
