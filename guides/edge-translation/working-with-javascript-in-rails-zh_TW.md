@@ -26,11 +26,11 @@ Ajax 介紹
 
 當你在瀏覽器網址欄輸入 `http://localhost:3000`，並按下前往。瀏覽器（“Client”）向伺服器發送請求（Request）。伺服器接受 Request，去拿所有需要的資源（assets）給你，像是 js、css、圖片等，將這些資源組合成網頁，再返回給你（Response）。在網頁裡按下某個連結，重複這個步驟：發送請求、抓取資源、組合頁面、返回結果。這通常叫做 “Request Response Cycle”。
 
-JavaScript 也可以當作 Client。向 Server 發送請求，並解析 Response，來更新網頁。JavaScript 的熟手可寫出只更新部分頁面的 JavaScript 程式，並只從伺服器拿需要的資料即可（不浪費）。
+JavaScript 也可向 Server 發送請求，並解析 Response，來更新網頁。JavaScript 的熟手可以只更新部分的頁面，而不需要從伺服器取得全部的頁面。
 
 __這個技術叫做 Ajax。__
 
-Rails 出廠內建 CoffeeScript，故以下的例子皆以 CoffeeScript 撰寫。這些例子當然也可用純 JavaScript 寫出來。
+Rails 出廠內建 CoffeeScript，故以下的例子皆以 CoffeeScript 撰寫。當然，這些例子也可用純 JavaScript 寫出來。
 
 用 jQuery 發送 Ajax 請求的例子：
 
@@ -41,7 +41,7 @@ $.ajax(url: "/test").done (html) ->
 
 這段程式從 `/test` 獲取資料，並將資料附加在 `id` 為 `#results` 的元素後。
 
-上面的技巧 Rails 提供了許多的官方支援。很少會需要自己寫這樣的程式。以下章節將示範 Rails 如何用簡單的技術幫助你寫出這樣的網站，
+上面的技巧， Rails 提供了許多的官方支援。很少會需要自己寫這樣的程式。以下章節將示範 Rails 如何用簡單的技術幫助你寫出這樣的網站，
 
 Unobtrusive JavaScript
 -------------------------------------
@@ -54,7 +54,7 @@ Rails 運用一種叫做 “Unobtrusive JavaScript” 的技術來處理 DOM 操
 <a href="#" onclick="this.style.backgroundColor='#990000'">Paint it red</a>
 ```
 
-按下連結，背景就變紅。但要是我們有許多 JavaScript 程式要在按下時執行怎麼辦？lick?
+按下連結，背景就變紅。但要是我們有許多 JavaScript 程式要在按下時執行怎麼辦？
 
 ```html
 <a href="#" onclick="this.style.backgroundColor='#009900';this.style.color='#FFFFFF';">Paint it green</a>
@@ -83,7 +83,7 @@ paintIt = (element, backgroundColor, textColor) ->
 <a href="#" onclick="paintIt(this, '#000099', '#FFFFFF')">Paint it blue</a>
 ```
 
-不是很漂亮，很冗餘。可以使用事件來簡化。給每個連結加上 `data-*` 屬性，接著給每個連結的 click 事件綁上 handler 來處理：
+不是很漂亮，很冗餘。可以使用事件來簡化。給每個連結加上 `data-*` 屬性，接著給每個連結的 click 事件綁定事件處理器：
 
 ```coffeescript
 paintIt = (element, backgroundColor, textColor) ->
@@ -103,7 +103,7 @@ $ ->
 <a href="#" data-background-color="#000099" data-text-color="#FFFFFF">Paint it blue</a>
 ```
 
-我們將這個技術稱為 “unobtrusive” JavaScript 因為我們不再需要把 JavaScript 與 HTML 混在一起。如此一來之後更容易修改，也更容易加新功能上去，只消加個新的 `data-` attribute。JavaScript 與 HTML 分開便可用 JavaScript 壓縮工具來壓縮程式碼，
+我們將這個技術稱為 “unobtrusive” JavaScript 因為我們不再需要把 JavaScript 與 HTML 混在一起。如此一來之後更容易修改，也更容易加新功能上去，只要加個 `data-` attribute。將 JavaScript 從 HTML 抽離後，JavaScript 便可透過合併壓縮工具，將整份 JavaScript 與所有頁面共用，也就是說，只需在第一次戴入頁面時下載一次，之後的頁面使用快取的檔案即可。  
 
 Rails 團隊強烈建議你用這種風格來撰寫 CoffeeScript (JavaScript)。
 
@@ -184,15 +184,13 @@ $(document).ready ->
 <a href="/posts/1" data-remote="true">a post</a>
 ```
 
-You can bind to the same Ajax events as `form_for`. Here's an example. Let's
-assume that we have a list of posts that can be deleted with just one
-click. We would generate some HTML like this:
+你可以綁定相同的 Ajax 事件像 `form_for`。 來看個例子，假設按個按鍵就可以刪除一串貼文。我們只需寫一些 HTML 像這樣:
 
 ```erb
 <%= link_to "Delete post", @post, remote: true, method: :delete %>
 ```
 
-and write some CoffeeScript like this:
+用 CoffeeScript 寫就像這樣:
 
 ```coffeescript
 $ ->
