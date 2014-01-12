@@ -212,19 +212,12 @@ end
 
 > 大量賦值 Mass Assignment
 
-原先大量賦值是由 Active Model 來處理，透過白名單來過濾不可賦值的參數。有了 Strong Parameter 之後，這件工作由 Action Controller 處理。
-
-這表示你會需要決定，哪些 attributes 允許做大量賦值。
-
-In addition, parameters can be marked as required and flow through a
-predefined raise/rescue flow to end up as a 400 Bad Request with no
-effort.
+原先大量賦值是由 Active Model 來處理，透過白名單來過濾不可賦值的參數。有了 Strong Parameter 之後，這件工作交給 Action Controller 負責。
 
 ```ruby
 class PeopleController < ActionController::Base
-  # This will raise an ActiveModel::ForbiddenAttributes exception
-  # because it's using mass assignment without an explicit permit
-  # step.
+  # 會拋出 ActiveModel::ForbiddenAttributes 異常。
+  # 因為做了大量覆值卻沒有明確的說明允許賦值的參數有哪些。
   def create
     Person.create(params[:person])
   end
@@ -241,10 +234,9 @@ class PeopleController < ActionController::Base
   end
 
   private
-    # Using a private method to encapsulate the permissible parameters
-    # is just a good pattern since you'll be able to reuse the same
-    # permit list between create and update. Also, you can specialize
-    # this method with per-user checking of permissible attributes.
+    # 使用 private 方法來封裝允許大量賦值的參數
+    # 這麼做的好處是這個方法可以在 create 與 update 重複使用。
+    # 同時可以這個方法也很容易擴展。
     def person_params
       params.require(:person).permit(:name, :age)
     end
@@ -253,51 +245,46 @@ end
 
 #### Permitted Scalar Values
 
+> 純量類型 Scalar Types
+
 給定
 
 ```ruby
 params.permit(:id)
 ```
 
+若 `params` 裡有 `:id` 的話，`:id` 會先過白名單，要是白名單沒有 `:id`，則 `:id` 的值會被過濾掉，如此一來 array 啦、Hash 啦，或任何其他的物件，都無法注入。
 
-the key `:id` will pass the whitelisting if it appears in `params` and
-it has a permitted scalar value associated. Otherwise the key is going
-to be filtered out, so arrays, hashes, or any other objects cannot be
-injected.
+允許的純量類型有：
 
-The permitted scalar types are `String`, `Symbol`, `NilClass`,
-`Numeric`, `TrueClass`, `FalseClass`, `Date`, `Time`, `DateTime`,
-`StringIO`, `IO`, `ActionDispatch::Http::UploadedFile` and
-`Rack::Test::UploadedFile`.
+`String`、`Symbol`、`NilClass`、`Numeric`、`TrueClass`、`FalseClass`、`Date`、`Time`、`DateTime`、`StringIO`、`IO`、`ActionDispatch::Http::UploadedFile` 以及
+`Rack::Test::UploadedFile`。
 
-To declare that the value in `params` must be an array of permitted
-scalar values map the key to an empty array:
+要宣告 `params` 的值必須是允許賦值的純量陣列：
 
 ```ruby
 params.permit(id: [])
 ```
 
-To whitelist an entire hash of parameters, the `permit!` method can be
-used:
+允許整個 Hash 裡的參數，使用 `permit!`：
 
 ```ruby
 params.require(:log_entry).permit!
 ```
 
-This will mark the `:log_entry` parameters hash and any subhash of it
-permitted. Extreme care should be taken when using `permit!` as it
-will allow all current and future model attributes to be
-mass-assigned.
+`params` 裡的 `:log_entry` hash 以及裡面所有的子 Hash 都會被允許做大量賦值。**使用 `permit!` 要非常小心**，因為這允許了 Model 所有的 attributes 都可以做大量賦值，要是之後 Model 新增了 `admin` attribute 而沒注意到 `permit!`，可能就會有問題了。
 
 #### Nested Parameters
 
-巢狀參數的允許：
+允許巢狀參數做大量賦值：
 
 ```ruby
 params.permit(:name, { emails: [] },
               friends: [ :name,
                          { family: [ :name ], hobbies: [] }])
 ```
+
+上面的程式碼過濾 `name`、`emails` 以及 `friends` attribute。且期望 `emails` 是 array。
 
 This declaration whitelists the `name`, `emails` and `friends`
 attributes. It is expected that `emails` will be an array of permitted
@@ -309,32 +296,32 @@ to having a `name` (any permitted scalar values allowed, too).
 
 #### 更多例子
 
+你可能也想在 `new` action 裡使用允許的 attributes。
 You want to also use the permitted attributes in the `new`
 action. This raises the problem that you can't use `require` on the
 root key because normally it does not exist when calling `new`:
 
 ```ruby
-# using `fetch` you can supply a default and use
-# the Strong Parameters API from there.
+# 使用 `fetch` 你可以設定預設值，並使用
+# Strong Parameters 的 API
 params.fetch(:blog, {}).permit(:title, :author)
 ```
 
-`accepts_nested_attributes_for` allows you to update and destroy
-associated records. This is based on the `id` and `_destroy`
-parameters:
+`accepts_nested_attributes_for` 允許你 `update` 與 `destroy` 相關的 record。基於 `id` 與 `_destroy` 參數：
 
 ```ruby
-# permit :id and :_destroy
+# 允許 :id 與 :_destroy
 params.require(:author).permit(:name, books_attributes: [:title, :id, :_destroy])
 ```
 
+有著整數 key 的 Hash 處理方式有點不同，
 Hashes with integer keys are treated differently and you can declare
 the attributes as if they were direct children. You get these kinds of
 parameters when you use `accepts_nested_attributes_for` in combination
 with a `has_many` association:
 
 ```ruby
-# To whitelist the following data:
+# 白名單過濾下列資料
 # {"book" => {"title" => "Some Book",
 #             "chapters_attributes" => { "1" => {"title" => "First Chapter"},
 #                                        "2" => {"title" => "Second Chapter"}}}}
@@ -364,36 +351,38 @@ end
 * `ActionDispatch::Session::ActiveRecordStore` ─ 資料使用 Active Record 存在資料庫（需要 `activerecord-session_store` RubyGem）。
 * `ActionDispatch::Session::MemCacheStore` ─ 資料存在 memcached（這是遠古時代的實作方式，考慮改用 CacheStore 吧）。
 
-所有的儲存機制，會為每個 Session 在 Cookie 裡存一個獨立的 ID。必須要存在 Cookie 裡，否則 Rails 不允許你在 URL 傳遞 session ID（不安全）。
+所有的儲存機制，會為每個 Session，在 Cookie 裡存一個獨立的 Session ID。必須要存在 Cookie 裡，因為 Rails 不允許你在 URL 傳遞 session ID（不安全）。
+
+對於多數的儲存機制來說，ID 用在 Server 端查詢 Session 資料。
 
 For most stores, this ID is used to look up the session data on the server, e.g. in a database table. There is one exception, and that is the default and recommended session store - the CookieStore - which stores all session data in the cookie itself (the ID is still available to you if you need it). This has the advantage of being very lightweight and it requires zero setup in a new application in order to use the session. The cookie data is cryptographically signed to make it tamper-proof. And it is also encrypted so anyone with access to it can't read its contents. (Rails will not accept it if it has been edited).
 
-The CookieStore can store around 4kB of data - much less than the others - but this is usually enough. Storing large amounts of data in the session is discouraged no matter which session store your application uses. You should especially avoid storing complex objects (anything other than basic Ruby objects, the most common example being model instances) in the session, as the server might not be able to reassemble them between requests, which will result in an error.
+CookieStore 可以存大約 4KB 的資料，其他儲存機制可以存更多，但這通常已經很足夠了。不管儲存機制用的是那一種，存大量資料在 Session 都是不鼓勵的行為。特別要避免儲存複雜的物件在 Session 裡，因為 Server 可能沒辦法在 Request 之間重新將物件還原，便會導致錯誤發生。
 
-If your user sessions don't store critical data or don't need to be around for long periods (for instance if you just use the flash for messaging), you can consider using ActionDispatch::Session::CacheStore. This will store sessions using the cache implementation you have configured for your application. The advantage of this is that you can use your existing cache infrastructure for storing sessions without requiring any additional setup or administration. The downside, of course, is that the sessions will be ephemeral and could disappear at any time.
+若 User Session 沒有儲存重要的資料，或不需要保存很久（比如只是用來顯示 Flash message）。可以考慮使用 `ActionDispatch::Session::CacheStore`。這會將 Session 存在應用程式所設定的 Cache 裡。優點是利用現有的 Cache 架構來儲存，不用額外管理或是設定 Session 的儲存方式。缺點是 Session 生命週期短、可能隨時會消失。
 
 關於如何安全地儲存 Session，請閱讀 [Security Guide](/guides/edge/security.md)。
 
 若是需要不同的 Session 儲存機制，可以在 `config/initializers/session_store.rb` 裡更改：
 
 ```ruby
-# Use the database for sessions instead of the cookie-based default,
-# which shouldn't be used to store highly confidential information
-# (create the session table with "rails g active_record:session_migration")
+# 使用資料庫來存 Session，而不是使用預設的 cookie 來存。
+# 注意，不要存任何高度敏感的資料在 Session。
+# （建立 Session table: "rails g active_record:session_migration"）
 # YourApp::Application.config.session_store :active_record_store
 ```
 
-Rails sets up a session key (the name of the cookie) when signing the session data. These can also be changed in `config/initializers/session_store.rb`:
+當簽署 Session 資料時，Rails 設了一個 session key（用 cookie 的名字），這個名字可在 `config/initializers/session_store.rb` 裡修改：
 
 ```ruby
-# Be sure to restart your server when you modify this file.
+# 修改此文件時記得重新啟動 Server
 YourApp::Application.config.session_store :cookie_store, key: '_your_app_session'
 ```
 
-You can also pass a `:domain` key and specify the domain name for the cookie:
+也可以傳入 `:domain` key，來指定 cookie 的 domain name：
 
 ```ruby
-# Be sure to restart your server when you modify this file.
+# 修改此文件時記得重新啟動 Server
 YourApp::Application.config.session_store :cookie_store, key: '_your_app_session', domain: ".example.com"
 ```
 
