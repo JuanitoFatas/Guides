@@ -1,6 +1,6 @@
 # [Edge Ruby on Rails Guides 目錄](/guides/index.md)
 
-## 狀態 Status
+## 狀態
 
 **有一天會翻完的。**
 
@@ -12,9 +12,7 @@
 
 ## 建議
 
-**任何建議歡迎來信。**
-
-**Any thoughts & recommendations, please open issue or send me a mail.**
+**任何建議、問題歡迎[來信][mail-to-juanito-fatas]、[開 Issue][new-issue]。**
 
 ## 翻譯用語
 
@@ -33,3 +31,6 @@ Code is under Public Domain (Unlicense). Please read [UNLICENSE](/UNLICENSE).
 ## I am
 
 [@JuanitoFatas](https://twitter.com/JuanitoFatas)
+
+[mail-to-juanito-fatas]: mailto://katehuang0320@gmail.com
+[new-issue]: https://github.com/JuanitoFatas/Guides/issues/new
