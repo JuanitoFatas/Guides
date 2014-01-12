@@ -386,28 +386,34 @@ YourApp::Application.config.session_store :cookie_store, key: '_your_app_session
 YourApp::Application.config.session_store :cookie_store, key: '_your_app_session', domain: ".example.com"
 ```
 
-Rails sets up (for the CookieStore) a secret key used for signing the session data. This can be changed in `config/initializers/secret_token.rb`
+Rails 替 CookieStore 設了一個 secret key，用來簽署 Session 資料。這個 key 可以在 `config/initializers/secret_token.rb` 裡修改。
+
+在命令行敲入 `rake secret` 來產生新的一組 key，填到這個檔案裡，記得重開。若是開源專案，記得要保密 `secret_key_base`，如使用 [SettingsLogic](https://github.com/binarylogic/settingslogic) 這個 Gem。
 
 ```ruby
 # Be sure to restart your server when you modify this file.
 
-# Your secret key for verifying the integrity of signed cookies.
+# Your secret key is used for verifying the integrity of signed cookies.
 # If you change this key, all old signed cookies will become invalid!
+
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
+# You can use `rake secret` to generate a secure secret key.
+
+# Make sure your secret_key_base is kept private
+# if you're sharing your code publicly.
 YourApp::Application.config.secret_key_base = '49d3f3de9ed86c74b94ad6bd0...'
 ```
 
-NOTE: Changing the secret when using the `CookieStore` will invalidate all existing sessions.
+**注意：更改 `secret_key_base` 之後，先前簽署的 Session 都會失效。**
 
 ### Accessing the Session
 
 在 Controller 可以透過 `session` 這個 instance method 來存取 Session。
 
+**注意：Session 是惰性加載的。如果沒用到 Session，便不會載入 Session。若是不想要 Session，無需關掉 Session，不要用便是。
 
-NOTE: Sessions are lazily loaded. If you don't access sessions in your action's code, they will not be loaded. Hence you will never need to disable sessions, just not accessing them will do the job.
-
-Session values are stored using key/value pairs like a hash:
+Session 以類似於 Hash 的方式儲存（鍵值對）：
 
 ```ruby
 class ApplicationController < ActionController::Base
@@ -457,7 +463,7 @@ end
 
 ### The Flash
 
-Flash 是 Session 特殊的一部分，可以從一個 Request，傳遞訊息（錯誤、提示訊息）到下個 Request，下個 Request 結束後，便會清除 Flash。
+Flash 是 Session 特殊的一部分，可以從一個 Request，傳遞（錯誤、提示）訊息到下個 Request，下個 Request 結束後，便會自動清除 Flash。
 
 `flash` 的使用方式與 `session` 雷同，跟操作一般的 Hash 一樣（實際上 `flash` 是 [FlashHash](http://edgeapi.rubyonrails.org/classes/ActionDispatch/Flash/FlashHash.html) 的 instance）。
 
@@ -483,7 +489,10 @@ redirect_to root_url, alert: "You're stuck here!"
 redirect_to root_url, flash: { referral_code: 1234 }
 ```
 
-The `destroy` action redirects to the application's `root_url`, where the message will be displayed. Note that it's entirely up to the next action to decide what, if anything, it will do with what the previous action put in the flash. It's conventional to display any error alerts or notices from the flash in the application's layout:
+上面的 `destroy` action 最後導向回應用程式的 `root_url`，導回到 `root_url` 後會顯示`"成功登出了"`訊息。接下來便不關 `destroy` 的事了。
+
+
+Flash 也用來顯示錯誤或是提示訊息，通常會在 `app/views/layout/application.html.erb` 加入 Flash 訊息：
 
 ```erb
 <html>
