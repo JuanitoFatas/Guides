@@ -791,11 +791,11 @@ Rails 將所有與 Request 一起送來的參數，不管是 query string 還是
 
 Request 物件有三個 accessors，讓你取出這些參數，分別是 `query_parameters`、`request_parameters` 以及 `path_parameters`，這仨都是 Hash。
 
-* `query_parameters` => Query String 參數（via GET）
+* `query_parameters`： Query String 參數（via GET）。
 
-* `request_parameters` => POST 而來的參數
+* `request_parameters`： POST 而來的參數。
 
-* `path_parameters` => Controller 與 Action 名稱
+* `path_parameters`： Controller 與 Action 名稱。
 
   ```ruby
   { 'action' => 'my_action', 'controller' => 'my_controller' }
@@ -816,14 +816,13 @@ Request 物件有三個 accessors，讓你取出這些參數，分別是 `query_
 
 #### Setting Custom Headers
 
-
-If you want to set custom headers for a response then `response.headers` is the place to do it. The headers attribute is a hash which maps header names to their values, and Rails will set some of them automatically. If you want to add or change a header, just assign it to `response.headers` this way:
+若是想給 Response 自定 Header，修改 `response.headers`。`headers` 是一個 Hash，將 Response Header 的名稱與值關連起來，某些值 Rails 已經幫你設定好了。假設你的 API 需要回一個特殊的 Header，`X-TOP-SECRET-HEADER`
 
 ```ruby
-response.headers["Content-Type"] = "application/pdf"
+response.headers["X-TOP-SECRET-HEADER"] = '123456789'
 ```
 
-Note: in the above case it would make more sense to use the `content_type` setter directly.
+若是要設定每個 response 的預設 Header，參考 [Configuring Rails Applications - 3.8 Configuring Action Dispatch](http://edgeguides.rubyonrails.org/configuring.html#configuring-action-dispatch) 一節。
 
 # 11. HTTP Authentications
 
