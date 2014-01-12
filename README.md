@@ -6,7 +6,7 @@
 
 ## 注意事項
 
-**Pull Requests are STRONGLY welcome!**
+**讓 Pull Request 都來吧！**
 
 **全文轉載煩請導回此處，因為我會一直更新這些文章。**
 
@@ -20,7 +20,7 @@
 
 ## 貢獻者
 
-**Thanks all of them! [View Full List of Contributors](https://github.com/JuanitoFatas/Guides/graphs/contributors).**
+**感謝所有的貢獻者！[請看完整貢獻者列表](https://github.com/JuanitoFatas/Guides/graphs/contributors).**
 
 ## Copyright Declaration
 
