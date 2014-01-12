@@ -1,13 +1,11 @@
-
-
 Rails x JavaScript
 ================================
 
 __特別要強調的翻譯名詞__
 
-> Web application 應用程式。
-
-> Request 請求。
+> Web application 應用程式
+> Request 請求
+> Vanilla JavaScript 純 JavaScript
 
 本篇介紹 Rails 內建的 Ajax/JavaScript 功能。讓你輕鬆打造豐富生動的 Ajax 應用程式。
 
@@ -19,7 +17,8 @@ __特別要強調的翻譯名詞__
 * 在伺服器端處理 Ajax。
 * Turbolinks。
 
-**目錄**
+目錄
+------
 
   - [1. Ajax 介紹](#ajax-介紹)
   - [2. Unobtrusive JavaScript](#unobtrusive-javascript)
@@ -38,13 +37,13 @@ __特別要強調的翻譯名詞__
 Ajax 介紹
 ------------------------
 
-為了要理解 Ajax，首先要了解瀏覽器平常如何運作。
+為了要理解 Ajax，首先要了解瀏覽器平常時如何運作。
 
-當你在瀏覽器網址欄輸入 `http://localhost:3000`，並按下前往。瀏覽器（“Client”）向伺服器發送請求（Request）。伺服器接受 Request，去拿所有需要的資源（assets）給你，像是 js、css、圖片等，將這些資源組合成網頁，再返回給你（Response）。在網頁裡按下某個連結，重複這個步驟：發送請求、抓取資源、組合頁面、返回結果。這通常叫做 “Request Response Cycle”。
+當你在瀏覽器網址欄輸入 `http://localhost:3000`，並按下前往。瀏覽器（Client）向伺服器發送請求（Request）。伺服器接受 Request，去拿所有需要的資源（assets）給你，像是 js、css、圖片等，將這些資源組合成網頁，再返回給你（Response）。如果你在網頁裡按下某個連結，將會重複剛剛的步驟：發送請求、抓取資源、組合頁面、返回結果。這通常叫做 “Request Response Cycle”。
 
-JavaScript 也可向 Server 發送請求，並解析 Response，來更新網頁。JavaScript 的熟手可以只更新部分的頁面，而不需要從伺服器取得全部的頁面。
+JavaScript 也可向 Server 發送請求，並解析 Response，來更新網頁。熟悉 JavaScript 的開發者可以做到只更新部分的頁面，而無需要向伺服器索要整個頁面。
 
-__這個技術叫做 Ajax。__
+__這個強大的技術叫做 Ajax。__
 
 Rails 出廠內建 CoffeeScript，故以下的例子皆以 CoffeeScript 撰寫。當然，這些例子也可用純 JavaScript 寫出來。
 
@@ -55,16 +54,16 @@ $.ajax(url: "/test").done (html) ->
   $("#results").append html
 ```
 
-這段程式從 `/test` 獲取資料，並將資料附加在 `id` 為 `#results` 的元素後。
+這段程式從 `/test` 獲取資料，並將資料附加在 `id` 為 `#results` 的元素之後。
 
-上面的技巧， Rails 提供了許多的官方支援。很少會需要自己寫這樣的程式。以下章節將示範 Rails 如何用簡單的技術幫助你寫出這樣的網站，
+上面的技巧， Rails 提供了許多的官方支援。很少會需要自己寫這樣的程式。以下章節將示範只用一點簡單的技術，Rails 如何幫你寫出這樣的網站，
 
 Unobtrusive JavaScript
 -------------------------------------
 
-Rails 運用一種叫做 “Unobtrusive JavaScript” 的技術來處理 DOM 操作。這是前端社群的最佳實踐，但有些教學文件可能會用別種技術來達成同樣的事情。
+Rails 運用一種叫做 “Unobtrusive JavaScript” （縮寫為 UJS）的技術來處理 DOM 操作。這是來自前端社群的最佳實踐，但有些教學文件可能會用別種技術，來達成同樣的事情。
 
-以下是寫 JavaScript 最簡單的方式（行內 JavaScript）：
+以下是撰寫 JavaScript 最簡單的方式（行內 JavaScript）：
 
 ```html
 <a href="#" onclick="this.style.backgroundColor='#990000'">Paint it red</a>
@@ -99,7 +98,7 @@ paintIt = (element, backgroundColor, textColor) ->
 <a href="#" onclick="paintIt(this, '#000099', '#FFFFFF')">Paint it blue</a>
 ```
 
-不是很漂亮，很冗餘。可以使用事件來簡化。給每個連結加上 `data-*` 屬性，接著給每個連結的 click 事件綁定事件 Handler：
+不是很漂亮，很冗贅。可以使用事件來簡化。給每個連結加上 `data-*` 屬性，接著給每個連結的 click 事件，加上一個 Handler：
 
 ```coffeescript
 paintIt = (element, backgroundColor, textColor) ->
@@ -119,7 +118,7 @@ $ ->
 <a href="#" data-background-color="#000099" data-text-color="#FFFFFF">Paint it blue</a>
 ```
 
-我們將這個技術稱為 “unobtrusive” JavaScript 因為我們不再需要把 JavaScript 與 HTML 混在一起。如此一來之後更容易修改，也更容易加新功能上去，只要加個 `data-` attribute。將 JavaScript 從 HTML 抽離後，JavaScript 便可透過合併壓縮工具，讓所有頁面可以共用整份 JavaScript ，也就是說，只需在第一次戴入頁面時下載一次，之後的頁面使用快取的檔案即可。
+我們將這個技術稱為 “Unobtrusive” JavaScript。因為我們不再需要把 JavaScript 與 HTML 混在一起。之後便更容易修改，也更容易加新功能上去，只要加個 `data-` attribute。將 JavaScript 從 HTML 抽離後，JavaScript 便可透過合併壓縮工具，讓所有頁面可以共用整份 JavaScript 。也就是說，只需在第一次戴入頁面時下載一次，之後的頁面使用快取的檔案即可。
 
 Rails 團隊強烈建議你用這種風格來撰寫 CoffeeScript (JavaScript)。
 
@@ -128,15 +127,15 @@ Rails 團隊強烈建議你用這種風格來撰寫 CoffeeScript (JavaScript)。
 
 Rails 在 View 提供了許多用 Ruby 寫的 Helper 方法來幫你產生 HTML。有時候會想在這些元素加上 Ajax，沒問題，Rails 會幫助你。
 
-Rails 的 “Ajax Helpers” 實際上分成 JavaScript 與 Ruby 寫成的 Helpers。
+Rails 的 “Ajax Helpers” 實際上分成 JavaScript 所寫的 Helpers，與 Ruby 所寫成的 Helpers。
 
-用 JavaScript 寫的可以在這找到 [rails.js][rails-js]
+用 JavaScript 寫的可以在這找到 [rails.js][rails-js]。
 
 ### form_for
 
 [`form_for`][form_for]
 
-撰寫表單。接受一個 `:remote` 選項：
+幫助你撰寫表單的 Helper。接受一個 `:remote` 選項：
 
 ```erb
 <%= form_for(@post, remote: true) do |f| %>
@@ -152,9 +151,9 @@ Rails 的 “Ajax Helpers” 實際上分成 JavaScript 與 Ruby 寫成的 Helpe
 </form>
 ```
 
-注意 `data-remote="true"`。有了這個 attribute 後，表單會透過 Ajax 提交，而不是平常瀏覽器的提交機制。
+注意 `data-remote="true"`。有了這個 attribute 之後，表單會透過 Ajax 提交，而不是瀏覽器平常的提交機制。
 
-提交成功與失敗可以透過 `ajax:success` 與 `ajax:error` 事件來附加內容至 DOM：
+提交成功與失敗可以透過 `ajax:success` 與 `ajax:error` 事件，來附加內容至 DOM：
 
 ```coffeescript
 $(document).ready ->
@@ -188,7 +187,7 @@ $(document).ready ->
 
 [`link_to`][link_to]
 
-產生連結。接受一個 `:remote` 選項：
+幫助你產生連結的 Helper。接受一個 `:remote` 選項：
 
 ```erb
 <%= link_to "a post", @post, remote: true %>
@@ -200,13 +199,13 @@ $(document).ready ->
 <a href="/posts/1" data-remote="true">a post</a>
 ```
 
-你可以綁定 `form_for` 相同的 Ajax 事件。 來看個例子，假設按個按鍵就可以刪除一串貼文。我們只需寫一些 HTML ，就像這樣:
+你可以上面 `form_for` 例子那樣，綁定相同的 Ajax 事件上去。 來看個例子，假設按個按鍵，刪除一篇文章，提示一些訊息。只需寫一些 HTML：
 
 ```erb
 <%= link_to "Delete post", @post, remote: true, method: :delete %>
 ```
 
-用 CoffeeScript 寫就像這樣:
+並寫一點 CoffeeScript：
 
 ```coffeescript
 $ ->
@@ -214,11 +213,13 @@ $ ->
     alert "The post was deleted."
 ```
 
+就這麼簡單。
+
 ### button_to
 
 [`button_to`][button_to]
 
-建立按鈕。接受一個 `:remote` 選項：
+建立按鈕的 Helper。接受一個 `:remote` 選項：
 
 ```erb
 <%= button_to "A post", @post, remote: true %>
@@ -235,14 +236,16 @@ $ ->
 </form>
 ```
 
+由於這只是個 `<form>`，所有 `form_for` 可用的東西，也可以應用在 `button_to`。
+
 伺服器端的考量
 --------------------
 
-Ajax 不只是 Client-side 的事，伺服器也要出力。人們傾向 Ajax requests 返回 JSON 而不是 HTML，讓我們看看如何返回 JSON。
+Ajax 不只是 Client-side 的事，伺服器也要出力。人們傾向 Ajax requests 返回 JSON，而不是 HTML，讓我們看看如何返回 JSON。
 
 ### 簡單的例子
 
-想像你有許多用戶，你想給他們顯示建立新用戶的表單：。Controller 的 `index` action：
+想像你有許多用戶，你想給他們顯示建立新用戶的表單。而 Controller 的 `index` action：
 
 ```ruby
 class UsersController < ApplicationController
@@ -253,13 +256,13 @@ class UsersController < ApplicationController
   # ...
 ```
 
-`index` view (`app/views/users/index.html.erb`)：
+以及 `index` View (`app/views/users/index.html.erb`)：
 
 ```erb
 <b>Users</b>
 
 <ul id="users">
-<%= render @users %>
+  <%= render @users %>
 </ul>
 
 <br>
@@ -271,7 +274,7 @@ class UsersController < ApplicationController
 <% end %>
 ```
 
-`app/views/users/_user.html.erb` partial：
+`app/views/users/_user.html.erb` Partial：
 
 ```erb
 <li><%= user.name %></li>
@@ -279,7 +282,7 @@ class UsersController < ApplicationController
 
 index 頁面上半部列出用戶，下半部提供新建用戶的表單。
 
-下面的表單會呼叫 Users Controller 的 `create` action。因為表單有 `remote: true` 這個選項，Request 會使用 Ajax Post 到 Users Controller，要求 JavaScript。處理這個 Request 的 `create` action：
+下面的表單會呼叫 Users Controller 的 `create` action。因為表單有 `remote: true` 這個選項，Request 會使用 Ajax Post 到 Users Controller，等待 Controller 回應 JavaScript。處理這個 Request 的 `create` action 會像是：
 
 ```ruby
   # app/controllers/users_controller.rb
@@ -311,7 +314,7 @@ Turbolinks
 
 Rails 4 出廠內建 [Turbolinks Gem](https://github.com/rails/turbolinks)。
 
-這個 Gem 使用了 Ajax 技術，來加速頁面的渲染。
+這個 Gem 使用了 Ajax 技術，可以加速頁面的渲染。
 
 ### Turbolinks 工作原理
 
@@ -351,7 +354,7 @@ $(document).on "page:change", ->
   alert "page has loaded!"
 ```
 
-關於更多細節，其他你可以綁定的事件等，參考 [Turbolinks 的 README](https://github.com/rails/turbolinks/blob/master/README.md)。
+關於更多細節，其他可以綁定的事件等，參考 [Turbolinks 的 README](https://github.com/rails/turbolinks/blob/master/README.md)。
 
 其他資源
 -----------------
