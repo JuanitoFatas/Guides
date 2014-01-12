@@ -795,7 +795,7 @@ Request 物件有三個 accessors，讓你取出這些參數，分別是 `query_
 
 * `request_parameters`： POST 而來的參數。
 
-* `path_parameters`： Controller 與 Action 名稱。
+* `path_parameters`： Controller 與 Action 名稱：
 
   ```ruby
   { 'action' => 'my_action', 'controller' => 'my_controller' }
@@ -803,13 +803,13 @@ Request 物件有三個 accessors，讓你取出這些參數，分別是 `query_
 
 ### The `response` Object
 
-`response` 物件通常不會直接使用，會在執行 action 與 render 即將送回給使用者的資料時建立出來。有時候在 `after` Filter 會有用，可以存取到 Response，甚至透過 setters 來改變 Response 部分的值。
+`response` 物件通常不會直接使用，會在執行 action 與 render 即將送回給使用者的資料時建立出 `response` 物件。有時候需要處理 Response 再回給 User 時有用，比如在 `after` Filter 處理這件事。這時便可以存取到 Response，甚至透過 setters 來改變 Response 部分的值。
 
 | `response` 的 property  | 用途                                               |
 | ---------------------- | ---------------------------------------------------|
 | body                   | 傳回給 Client 的字串，通常是 HTML。|
 | status                 | Response 的 Status code，比如成功回 200，找不到回 404。|
-| location               | 轉向的 URL（如果有的話）。|
+| location               | Redirect 的 URL（如果有的話）。|
 | content_type           | Response 的 Content-Type。|
 | charset                | Response 使用的編碼集，預設是 "UTF-8"。|
 | headers                | Response 使用的 Header。|
@@ -822,7 +822,7 @@ Request 物件有三個 accessors，讓你取出這些參數，分別是 `query_
 response.headers["X-TOP-SECRET-HEADER"] = '123456789'
 ```
 
-若是要設定每個 response 的預設 Header，參考 [Configuring Rails Applications - 3.8 Configuring Action Dispatch](http://edgeguides.rubyonrails.org/configuring.html#configuring-action-dispatch) 一節。
+若是要設定每個 response 的預設 Header，可在 `config/application.rb` 裡設定，詳情參考 [Configuring Rails Applications - 3.8 Configuring Action Dispatch](http://edgeguides.rubyonrails.org/configuring.html#configuring-action-dispatch) 一節。
 
 # 11. HTTP Authentications
 
