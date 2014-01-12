@@ -2,7 +2,7 @@
 
 ## 狀態 Status
 
-**也許有一天我會全翻完。**
+**有一天會翻完的。**
 
 ## 注意事項
 
@@ -18,11 +18,11 @@
 
 ## 翻譯用語
 
-常見翻譯用語來自[Ruby on Rails 實戰聖經 | 翻譯術語對照](http://ihower.tw/rails3/translation.html)。
+**常見翻譯用語來自 [Ruby on Rails 實戰聖經 | 翻譯術語對照](http://ihower.tw/rails3/translation.html)。**
 
 ## 貢獻者
 
-Thanks all of them! [View fullList of Contributors](https://github.com/JuanitoFatas/Guides/graphs/contributors)
+**Thanks all of them! [View Full List of Contributors](https://github.com/JuanitoFatas/Guides/graphs/contributors)**
 
 ## Copyright Declaration
 
