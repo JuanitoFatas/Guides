@@ -3,18 +3,18 @@ Rails x JavaScript
 
 __特别要强调的翻译名词__
 
-> Web application 应用程式
+> Web application 应用程序
 > Request 请求
 > Vanilla JavaScript 纯 JavaScript
 
-本篇介绍 Rails 内建的 Ajax/JavaScript 功能。让你轻松打造丰富生动的 Ajax 应用程式。
+本篇介绍 Rails 自带的 Ajax/JavaScript 功能。让你轻松打造丰富生动的 Ajax 应用程序。
 
 读完你可能会学到...
 
 * Ajax 的基础。
 * Unobtrusive JavaScript (via jQuery-ujs)。
 * 如何使用 Rails 内建的 Helpers。
-* 在伺服器端处理 Ajax。
+* 在服务器端处理 Ajax。
 * Turbolinks。
 
 目录
@@ -22,12 +22,12 @@ __特别要强调的翻译名词__
 
   - [1. Ajax 介绍](#ajax-介绍)
   - [2. Unobtrusive JavaScript](#unobtrusive-javascript)
-  - [3. 内建的 Ajax Helpers](#内建的-ajax-helpers)
+  - [3. 自带的 Ajax Helpers](#自带的-ajax-helpers)
     - [3.1 form_for](#form_for)
     - [3.2 form_tag](#form_tag)
     - [3.3 link_to](#link_to)
     - [3.4 button_to](#button_to)
-  - [4. 伺服器端的考量](#伺服器端的考量)
+  - [4. 服务器端的考量](#服务器端的考量)
     - [简单的例子](#简单的例子)
   - [5. Turbolinks](#turbolinks)
     - [Turbolinks 工作原理](#turbolinks-工作原理)
@@ -39,11 +39,11 @@ Ajax 介绍
 
 为了要理解 Ajax，首先要了解浏览器平常的工作原理。
 
-当你在浏览器网址栏输入 `http://localhost:3000`，并按下 Enter。浏览器此时（Client）便向伺服器发送 Request。伺服器接受 Request，去拿所有需要的资源（assets）给你，像是 js、css、图片等，接著将这些资源按照程式逻辑组合成网页，再返回给你（Response）。
+当你在浏览器网址栏输入 `http://localhost:3000`，并按下回车。浏览器此时（Client）便向服务器发送请求。服务器接受 Request，去拿所有需要的资源（assets）给你，像是 js、css、图片等，接著将这些资源按照程序逻辑组合成网页，再响应给你（Response）。
 
 如果你在网页里按下某个连结，将会重复刚刚的步骤：发送请求、抓取资源、组合页面、返回结果。这几个步骤通常称之为 “Request Response Cycle”。
 
-JavaScript 也可向 Server 发送请求或是解析 Response。JavaScript 也具有更新网页的能力。熟悉 JavaScript 的开发者可以做到只更新部分的页面，而无需要向伺服器索要整个页面。
+JavaScript 也可向服务器发送请求或是解析 Response。JavaScript 也具有更新网页的能力。熟悉 JavaScript 的开发者可以做到只更新部分的页面，而无需向服务器请求整个页面。
 
 __这个强大的技术叫做 Ajax。__
 
@@ -56,14 +56,14 @@ $.ajax(url: "/test").done (html) ->
   $("#results").append html
 ```
 
-这段程式从 `/test` 获取资料，并将资料附加在 `id` 为 `#results` 的元素之后。
+这段程序从 `/test` 获取数据，并将数据附加在 `id` 为 `#results` 的元素之后。
 
-Rails 对于使用这种技巧来撰写网页，提供了相当多的官方支援。几乎鲜少会需要自己写这样的程式。以下章节将示范，如何用点简单的技术，Rails 便能帮你写出应用了 Ajax 的网站。
+Rails 对于使用这种技巧来撰写网页，提供了相当多的官方支援。几乎鲜少会需要自己编这样的程序。以下章节将示范，如何用点简单的技术，Rails 便能帮你写出应用了 Ajax 的网站。
 
 Unobtrusive JavaScript
 -------------------------------------
 
-Rails 使用一种叫做 “Unobtrusive JavaScript” （缩写为 UJS）的技术来处理 DOM 操作。这是来自前端社群的最佳实践，但有些教学文件可能会用别种技术，来达成同样的事情。
+Rails 使用一种叫做 “[Unobtrusive JavaScript][ujs]” （缩写为 UJS）的技术来处理 DOM 操作。这是来自前端社群的最佳实践，但有些教学文件可能会用别种技术，来达成同样的事情。
 
 以下是撰写 JavaScript 最简单的方式（行内 JavaScript）：
 
@@ -71,7 +71,7 @@ Rails 使用一种叫做 “Unobtrusive JavaScript” （缩写为 UJS）的技�
 <a href="#" onclick="this.style.backgroundColor='#990000'">Paint it red</a>
 ```
 
-按下连结，背景就变红。但要是我们有许多 JavaScript 程式要在按下时执行怎么办？
+按下连结，背景就变红。但要是我们有许多 JavaScript 代码，要在按下时执行怎么办？
 
 ```html
 <a href="#" onclick="this.style.backgroundColor='#009900';this.style.color='#FFFFFF';">Paint it green</a>
@@ -120,14 +120,14 @@ $ ->
 <a href="#" data-background-color="#000099" data-text-color="#FFFFFF">Paint it blue</a>
 ```
 
-我们将这个技术称为 “Unobtrusive” JavaScript。因为我们不再需要把 JavaScript 与 HTML 混在一起。之后便更容易修改，也更容易加新功能上去，只要加个 `data-` attribute。将 JavaScript 从 HTML 抽离后，JavaScript 便可透过合并压缩工具，让所有页面可以共用整份 JavaScript 。也就是说，只需在第一次戴入页面时下载一次，之后的页面使用快取的档案即可。
+我们将这个技术称为 “Unobtrusive” JavaScript。因为我们不再需要把 JavaScript 与 HTML 混在一起。之后便更容易修改，也更容易加新功能上去，只要加个 `data-` attribute。将 JavaScript 从 HTML 抽离后，JavaScript 便可透过合并压缩工具，让所有页面可以共用整份 JavaScript 。也就是说，只需在第一次戴入页面时下载一次，之后的页面使用快取的文件即可。
 
 Rails 团队强烈建议你用这种风格来撰写 CoffeeScript (JavaScript)。
 
-内建的 Ajax Helpers
+自带的 Ajax Helpers
 ----------------------
 
-Rails 在 View 提供了许多用 Ruby 写的 Helper 方法来帮你产生 HTML。有时候会想在这些元素加上 Ajax，没问题，Rails 会帮助你。
+Rails 在 View 提供了许多用 Ruby 写的 Helper 方法来帮你生成 HTML。有时候会想在这些元素加上 Ajax，没问题，Rails 会帮助你。
 
 Rails 的 “Ajax Helpers” 实际上分成 JavaScript 所写的 Helpers，与 Ruby 所写成的 Helpers。
 
@@ -145,7 +145,7 @@ Rails 的 “Ajax Helpers” 实际上分成 JavaScript 所写的 Helpers，与 
 <% end %>
 ```
 
-会产生出：
+会生成出：
 
 ```html
 <form accept-charset="UTF-8" action="/posts" class="new_post" data-remote="true" id="new_post" method="post">
@@ -177,7 +177,7 @@ $(document).ready ->
 <%= form_tag('/posts', remote: true) %>
 ```
 
-会产生
+会生成
 
 ```html
 <form accept-charset="UTF-8" action="/posts" data-remote="true" method="post">
@@ -189,13 +189,13 @@ $(document).ready ->
 
 [`link_to`][link_to]
 
-帮助你产生连结的 Helper。接受一个 `:remote` 选项：
+帮助你生成连结的 Helper。接受一个 `:remote` 选项：
 
 ```erb
 <%= link_to "a post", @post, remote: true %>
 ```
 
-会产生
+会生成
 
 ```html
 <a href="/posts/1" data-remote="true">a post</a>
@@ -227,7 +227,7 @@ $ ->
 <%= button_to "A post", @post, remote: true %>
 ```
 
-会产生：
+会生成：
 
 ```html
 <form action="/posts/1" class="button_to" data-remote="true" method="post">
@@ -240,10 +240,10 @@ $ ->
 
 由于这只是个 `<form>`，所有 `form_for` 可用的东西，也可以应用在 `button_to`。
 
-伺服器端的考量
+服务器端的考量
 --------------------
 
-Ajax 不只是 Client-side 的事，伺服器也要出力。人们倾向 Ajax requests 返回 JSON，而不是 HTML，让我们看看如何返回 JSON。
+Ajax 不只是 Client-side 的事，服务器也要出力。人们倾向 Ajax requests 返回 JSON，而不是 HTML，让我们看看如何返回 JSON。
 
 ### 简单的例子
 
@@ -328,7 +328,7 @@ Turbolinks 给页面上所有的 `a` 标籤添加了一个 click handler。如�
 gem 'turbolinks'
 ```
 
-并在 CoffeeScript Manifest 档案（`app/assets/javascripts/application.js`）里加入：
+并在 CoffeeScript Manifest 文件（`app/assets/javascripts/application.js`）里加入：
 
 ```coffeescript
 //= require turbolinks
@@ -342,14 +342,14 @@ gem 'turbolinks'
 
 ### 页面变化的事件
 
-撰写 CoffeeScript 时，通常会想在页面加载时做某些处理，搭配 jQuery，通常会写出像是下面的程式码：
+撰写 CoffeeScript 时，通常会想在页面加载时做某些处理，搭配 jQuery，通常会写出像是下面的代码：
 
 ```coffeescript
 $(document).ready ->
   alert "page has loaded!"
 ```
 
-而 Turbolinks 覆写了页面加载逻辑，依赖 `$(document).ready` 的程式码不会被执行。必须改写成：
+而 Turbolinks 覆写了页面加载逻辑，依赖 `$(document).ready` 的代码不会被执行。必须改写成：
 
 ```coffeescript
 $(document).on "page:change", ->
@@ -378,5 +378,6 @@ $(document).on "page:change", ->
 [form_tag]: http://api.rubyonrails.org/classes/ActionView/Helpers/FormTagHelper.html#method-i-form_tag
 [link_to]: http://api.rubyonrails.org/classes/ActionView/Helpers/UrlHelper.html#method-i-link_to
 [button_to]: http://api.rubyonrails.org/classes/ActionView/Helpers/UrlHelper.html#method-i-button_to
+[ujs]: http://zh.wikipedia.org/zh-cn/Unobtrusive_JavaScript
 
 [rails-3-2-ajax-by-rei]: http://chloerei.com/2012/04/21/rails-3-2-ajax-guide/
