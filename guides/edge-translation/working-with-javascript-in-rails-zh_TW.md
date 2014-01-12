@@ -374,9 +374,9 @@ $(document).on "page:change", ->
 [jquery-ujs-wiki]: https://github.com/rails/jquery-ujs/wiki/ajax
 [ps]: https://developer.mozilla.org/en-US/docs/DOM/Manipulating_the_browser_history#The_pushState(\).C2.A0method
 [rails-js]: https://github.com/rails/jquery-ujs/blob/master/src/rails.js
-[form_for]: http://edgeapi.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-form_for
-[form_tag]: http://edgeapi.rubyonrails.org/classes/ActionView/Helpers/FormTagHelper.html#method-i-form_tag
-[link_to]: http://edgeapi.rubyonrails.org/classes/ActionView/Helpers/UrlHelper.html#method-i-link_to
-[button_to]: http://edgeapi.rubyonrails.org/classes/ActionView/Helpers/UrlHelper.html#method-i-button_to
+[form_for]: http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-form_for
+[form_tag]: http://api.rubyonrails.org/classes/ActionView/Helpers/FormTagHelper.html#method-i-form_tag
+[link_to]: http://api.rubyonrails.org/classes/ActionView/Helpers/UrlHelper.html#method-i-link_to
+[button_to]: http://api.rubyonrails.org/classes/ActionView/Helpers/UrlHelper.html#method-i-button_to
 
 [rails-3-2-ajax-by-rei]: http://chloerei.com/2012/04/21/rails-3-2-ajax-guide/
