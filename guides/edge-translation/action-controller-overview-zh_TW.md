@@ -83,11 +83,8 @@ end
 
 ```ruby
 class ClientsController < ApplicationController
-  # This action uses query string parameters because it gets run
-  # by an HTTP GET request, but this does not make any difference
-  # to the way in which the parameters are accessed. The URL for
-  # this action would look like this in order to list activated
-  # clients: /clients?status=activated
+  # 這個 action 使用了 query string 參數，因為 Request 用的是
+  # HTTP GET。URL 看起來會像是: /clients?status=activated
   def index
     if params[:status] == "activated"
       @clients = Client.activated
@@ -96,17 +93,15 @@ class ClientsController < ApplicationController
     end
   end
 
-  # This action uses POST parameters. They are most likely coming
-  # from an HTML form which the user has submitted. The URL for
-  # this RESTful request will be "/clients", and the data will be
-  # sent as part of the request body.
+  # 這個 action 使用了 POST 參數，參數很有可能是從使用者送出的表單而來。
+  # URL 看起來會像是: "/clients" (若 Request 遵循 RESTful 慣例）。
+  # 資料會放在 Request body 裡送過來。
   def create
     @client = Client.new(params[:client])
     if @client.save
       redirect_to @client
     else
-      # This line overrides the default rendering behavior, which
-      # would have been to render the "create" view.
+      # 這行覆寫了預設的 render 行為，預設是 render "create"。
       render "new"
     end
   end
