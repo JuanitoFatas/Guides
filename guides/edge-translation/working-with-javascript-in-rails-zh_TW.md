@@ -37,11 +37,13 @@ __特別要強調的翻譯名詞__
 Ajax 介紹
 ------------------------
 
-為了要理解 Ajax，首先要了解瀏覽器平常時如何運作。
+為了要理解 Ajax，首先要了解瀏覽器平常的工作原理。
 
-當你在瀏覽器網址欄輸入 `http://localhost:3000`，並按下前往。瀏覽器（Client）向伺服器發送請求（Request）。伺服器接受 Request，去拿所有需要的資源（assets）給你，像是 js、css、圖片等，將這些資源組合成網頁，再返回給你（Response）。如果你在網頁裡按下某個連結，將會重複剛剛的步驟：發送請求、抓取資源、組合頁面、返回結果。這通常叫做 “Request Response Cycle”。
+當你在瀏覽器網址欄輸入 `http://localhost:3000`，並按下 Enter。瀏覽器此時（Client）便向伺服器發送 Request。伺服器接受 Request，去拿所有需要的資源（assets）給你，像是 js、css、圖片等，接著將這些資源按照程式邏輯組合成網頁，再返回給你（Response）。
 
-JavaScript 也可向 Server 發送請求，並解析 Response，來更新網頁。熟悉 JavaScript 的開發者可以做到只更新部分的頁面，而無需要向伺服器索要整個頁面。
+如果你在網頁裡按下某個連結，將會重複剛剛的步驟：發送請求、抓取資源、組合頁面、返回結果。這幾個步驟通常稱之為 “Request Response Cycle”。
+
+JavaScript 也可向 Server 發送請求或是解析 Response。JavaScript 也具有更新網頁的能力。熟悉 JavaScript 的開發者可以做到只更新部分的頁面，而無需要向伺服器索要整個頁面。
 
 __這個強大的技術叫做 Ajax。__
 
@@ -56,12 +58,12 @@ $.ajax(url: "/test").done (html) ->
 
 這段程式從 `/test` 獲取資料，並將資料附加在 `id` 為 `#results` 的元素之後。
 
-上面的技巧， Rails 提供了許多的官方支援。很少會需要自己寫這樣的程式。以下章節將示範只用一點簡單的技術，Rails 如何幫你寫出這樣的網站，
+Rails 對於使用這種技巧來撰寫網頁，提供了相當多的官方支援。幾乎鮮少會需要自己寫這樣的程式。以下章節將示範，如何用點簡單的技術，Rails 便能幫你寫出應用了 Ajax 的網站。
 
 Unobtrusive JavaScript
 -------------------------------------
 
-Rails 運用一種叫做 “Unobtrusive JavaScript” （縮寫為 UJS）的技術來處理 DOM 操作。這是來自前端社群的最佳實踐，但有些教學文件可能會用別種技術，來達成同樣的事情。
+Rails 使用一種叫做 “Unobtrusive JavaScript” （縮寫為 UJS）的技術來處理 DOM 操作。這是來自前端社群的最佳實踐，但有些教學文件可能會用別種技術，來達成同樣的事情。
 
 以下是撰寫 JavaScript 最簡單的方式（行內 JavaScript）：
 
