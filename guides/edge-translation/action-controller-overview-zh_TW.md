@@ -755,21 +755,21 @@ def form_authenticity_token
 end
 ```
 
-來自：[ActionController::RequestForgeryProtection API](http://edgeapi.rubyonrails.org/classes/ActionController/RequestForgeryProtection.html#method-i-form_authenticity_token)
+來自：[ActionController::RequestForgeryProtection API](http://edgeapi.rubyonrails.org/classes/ActionController/RequestForgeryProtection.html#method-i-form_authenticity_token)。
 
-參閱 [Security Guide](http://edgeguides.rubyonrails.org/security.html) 來了解更多與安全性有關的問題。
+參閱 [Security Guide](http://edgeguides.rubyonrails.org/security.html) 來了解更多關於安全性的問題。
 
 # 10. The Request and Response Objects
 
-Request 生命週期裡，每個 controller 都有兩個 accessor 方法，`request` 與 `response`。
+Request 生命週期裡，每個 Controller 都有兩個 accessor 方法，`request` 與 `response`。
 
 `request` 方法包含了 `AbstractRequest` 的實例。
 
-`response` 方法則包含即將回給 client 的 response 物件。
+`response` 方法則包含即將回給 client 的 `response` 物件。
 
 ### The `request` Object
 
-`request` object 帶有從 client 端而來的許多有用資訊。關於所有可用的方法，請查閱 [ActionDispatch::Request API 文件](http://api.rubyonrails.org/classes/ActionDispatch/Request.html)。而所有可存取的 properties 有：
+`request` object 帶有許多從 client 端而來的有用資訊。關於所有可用的方法，請查閱 [ActionDispatch::Request API 文件](http://api.rubyonrails.org/classes/ActionDispatch/Request.html)。而所有可存取的 properties 有：
 
 | `request` 的 property                     | 用途                                                        |
 | ----------------------------------------- | ---------------------------------------------------------- |
@@ -787,22 +787,35 @@ Request 生命週期裡，每個 controller 都有兩個 accessor 方法，`requ
 
 #### `path_parameters`, `query_parameters`, and `request_parameters`
 
-Rails collects all of the parameters sent along with the request in the `params` hash, whether they are sent as part of the query string or the post body. The request object has three accessors that give you access to these parameters depending on where they came from. The `query_parameters` hash contains parameters that were sent as part of the query string while the `request_parameters` hash contains parameters sent as part of the post body. The `path_parameters` hash contains parameters that were recognized by the routing as being part of the path leading to this particular controller and action.
+Rails 將所有與 Request 一起送來的參數，不管是 query string 還是 post body 而來的參數，都蒐集在 `params` Hash 裡。
+
+Request 物件有三個 accessors，讓你取出這些參數，分別是 `query_parameters`、`request_parameters` 以及 `path_parameters`，這仨都是 Hash。
+
+* `query_parameters` => Query String 參數（via GET）
+
+* `request_parameters` => POST 而來的參數
+
+* `path_parameters` => Controller 與 Action 名稱
+
+  ```ruby
+  { 'action' => 'my_action', 'controller' => 'my_controller' }
+  ```
 
 ### The `response` Object
 
-The response object is not usually used directly, but is built up during the execution of the action and rendering of the data that is being sent back to the user, but sometimes - like in an after filter - it can be useful to access the response directly. Some of these accessor methods also have setters, allowing you to change their values.
+`response` 物件通常不會直接使用，會在執行 action 與 render 即將送回給使用者的資料時建立出來。有時候在 `after` Filter 會有用，可以存取到 Response，甚至透過 setters 來改變 Response 部分的值。
 
-| Property of `response` | Purpose                                                                                             |
-| ---------------------- | --------------------------------------------------------------------------------------------------- |
-| body                   | This is the string of data being sent back to the client. This is most often HTML.                  |
-| status                 | The HTTP status code for the response, like 200 for a successful request or 404 for file not found. |
-| location               | The URL the client is being redirected to, if any.                                                  |
-| content_type           | The content type of the response.                                                                   |
-| charset                | The character set being used for the response. Default is "utf-8".                                  |
-| headers                | Headers used for the response.                                                                      |
+| `response` 的 property  | 用途                                               |
+| ---------------------- | ---------------------------------------------------|
+| body                   | 傳回給 Client 的字串，通常是 HTML。|
+| status                 | Response 的 Status code，比如成功回 200，找不到回 404。|
+| location               | 轉向的 URL（如果有的話）。|
+| content_type           | Response 的 Content-Type。|
+| charset                | Response 使用的編碼集，預設是 "UTF-8"。|
+| headers                | Response 使用的 Header。|
 
 #### Setting Custom Headers
+
 
 If you want to set custom headers for a response then `response.headers` is the place to do it. The headers attribute is a hash which maps header names to their values, and Rails will set some of them automatically. If you want to add or change a header, just assign it to `response.headers` this way:
 
