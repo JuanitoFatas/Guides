@@ -745,7 +745,7 @@ end
 </form>
 ```
 
-Rails 給所有使用了 [Form Helpers](https://github.com/JuanitoFatas/Guides/blob/master/guides/edge-translation/form-helpers-zh_TW.md)的表單加上這個 token，所以你不用擔心怎麼處理。若是你手寫表單可以透過 `form_authenticity_token` 方法來處理。
+Rails 給所有使用了 [Form Helpers](https://github.com/JuanitoFatas/Guides/blob/master/guides/edge-translation/form-helpers-zh_TW.md) 的表單加上這個 token，所以你不用擔心怎麼處理。若是你手寫表單可以透過 `form_authenticity_token` 方法來處理。
 
 `form_authenticity_token` 產生一個有效的驗證 token。這在 Rails 沒有自動加上 token 的場景下很有用，像是自定的 Ajax Request，`form_authenticity_token` 很簡單，就是設定了 Session 的 `_csrf_token`：
 
