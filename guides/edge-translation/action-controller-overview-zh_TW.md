@@ -1044,20 +1044,19 @@ config.filter_parameters << :password
 
 ### Redirects Filtering
 
-Sometimes it's desirable to filter out from log files some sensible locations your application is redirecting to.
-You can do that by using the `config.filter_redirect` configuration option:
+有時候會想要從 log 檔案過濾某些應用程式 redirect_to 的地方。可以透過設定 `config.filter_redirect` 來達成：
 
 ```ruby
 config.filter_redirect << 's3.amazonaws.com'
 ```
 
-You can set it to a String, a Regexp, or an array of both.
+也可以用字串、正規表達式，或用陣列存字串、正規表達式：
 
 ```ruby
 config.filter_redirect.concat ['s3.amazonaws.com', /private_path/]
 ```
 
-Matching URLs will be marked as '[FILTERED]'.
+匹配的 URL 會被標記成 `'[FILTERED]'`。
 
 14. Rescue
 ---------------
