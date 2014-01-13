@@ -347,7 +347,7 @@ end
 
 所有的儲存機制，會為每個 Session，在 Cookie 裡存一個獨立的 Session ID。必須要存在 Cookie 裡，因為 Rails 不允許你在 URL 傳遞 session ID（不安全）。
 
-對於多數的儲存機制來說，ID 用在 Server 端查詢 Session 資料。
+對於多數的儲存機制來說，ID 用來在 Server 端查詢 Session 資料。
 
 For most stores, this ID is used to look up the session data on the server, e.g. in a database table. There is one exception, and that is the default and recommended session store - the CookieStore - which stores all session data in the cookie itself (the ID is still available to you if you need it). This has the advantage of being very lightweight and it requires zero setup in a new application in order to use the session. The cookie data is cryptographically signed to make it tamper-proof. And it is also encrypted so anyone with access to it can't read its contents. (Rails will not accept it if it has been edited).
 
