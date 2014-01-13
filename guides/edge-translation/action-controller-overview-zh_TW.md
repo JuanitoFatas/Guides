@@ -969,9 +969,9 @@ Rails 允許你串流檔案之外的資料。實際上，可以透過 Response �
 
 #### Incorporating Live Streaming
 
-Including `ActionController::Live` inside of your controller class will provide
-all actions inside of the controller the ability to stream data. You can mix in
-the module like so:
+> Class 類別
+
+在 Controller 類別內部引入 `ActionController::Live` 讓 Controller 內部所有的 action 皆可串流資料：
 
 ```ruby
 class MyController < ActionController::Base
@@ -989,15 +989,9 @@ class MyController < ActionController::Base
 end
 ```
 
-The above code will keep a persistent connection with the browser and send 100
-messages of `"hello world\n"`, each one second apart.
+上面的程式碼會在瀏覽器打開一個持久性的連結，傳送 100 次 `"hello world\n"`，每次間隔 1 秒。
 
-There are a couple of things to notice in the above example. We need to make
-sure to close the response stream. Forgetting to close the stream will leave
-the socket open forever. We also have to set the content type to `text/event-stream`
-before we write to the response stream. This is because headers cannot be written
-after the response has been committed (when `response.committed` returns a truthy
-value), which occurs when you `write` or `commit` the response stream.
+上例有幾件事情要注意。我們需要確保 Response Stream 使用完之後要關閉。忘記關掉 Response Stream 會導致 socket 永遠打開。另一件事是，在寫出 Response Stream 前，要設定 Content-Type 為 `text/event-stream`。這是因為 headers 無法在送出 Response 之後（`response.committed` 返回一個真值之時）更改，比如上面的 `response.stream.write "hello world\n"`。
 
 #### Example Usage
 
