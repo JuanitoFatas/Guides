@@ -79,11 +79,11 @@ end
 4. 參數
 ------------
 
-通常會想在 Controller 裡，存取由使用者傳入的資料，或是其他的參數。Web 應用程式有兩種參數。第一種是由 URL 的部份組成，這種叫做 “query string parameters”。Query string 是 URL `?` 後面的任何字串，通常是透過 HTTP `GET` 傳遞。第二種參數是 “POST data”，透過 HTTP `POST` 傳遞，故得名 “POST data”。這通常是使用者從表單填入的訊息。叫做 POST data 的原因是，這種參數只能作為 HTTP POST Request 的一部分來傳遞。Rails 並不區分 Query String Parameter 或 POST Parameter，兩者皆可在 Controller 裡取用，從 `params` hash 裡取出：
+通常會想在 Controller 裡，存取由使用者傳入的資料，或是其他的參數。Web 應用程式有兩種參數。第一種是由 URL 的部份組成，這種叫做 “query string parameters”。Query String 是 URL `?` 號後面的任何字串，通常是透過 HTTP `GET` 傳遞。第二種參數是 “POST data”，透過 HTTP `POST` 傳遞，故得名 “POST data”。這通常是使用者從表單填入的訊息。叫做 POST data 的原因是，這種參數只能作為 HTTP POST Request 的一部分來傳遞。Rails 並不區分 Query String Parameter 或 POST Parameter，兩者皆可在 Controller 裡取用，從 `params` hash 裡取出：
 
 ```ruby
 class ClientsController < ApplicationController
-  # 這個 action 使用了 query string 參數，因為 Request 用的是
+  # 這個 action 使用了 Query String 參數，因為 Request 用的是
   # HTTP GET。URL 看起來會像是: /clients?status=activated
   def index
     if params[:status] == "activated"
@@ -214,6 +214,8 @@ end
 
 原先大量賦值是由 Active Model 來處理，透過白名單來過濾不可賦值的參數。有了 Strong Parameter 之後，這件工作交給 Action Controller 負責。
 
+除此之外，還可以限制哪些參數必須傳入，若是沒傳的話，Rails 預先定義好的 `raise`/`rescue` 會處理好，並返回 400 Bad Request。
+
 ```ruby
 class PeopleController < ActionController::Base
   # 會拋出 ActiveModel::ForbiddenAttributes 異常。
@@ -222,11 +224,8 @@ class PeopleController < ActionController::Base
     Person.create(params[:person])
   end
 
-  # This will pass with flying colors as long as there's a person key
-  # in the parameters, otherwise it'll raise a
-  # ActionController::ParameterMissing exception, which will get
-  # caught by ActionController::Base and turned into that 400 Bad
-  # Request reply.
+  # 若沒有傳入 `:id`，會拋出 ActionController::ParameterMissing 異常。
+  # 這個異常會被 ActionController::Base 捕捉，並轉換成 400 Bad Request。
   def update
     person = current_account.people.find(params[:id])
     person.update!(person_params)
@@ -247,20 +246,20 @@ end
 
 > 純量類型 Scalar Types
 
-給定
+假定你允許可以傳入 `:id`。
 
 ```ruby
 params.permit(:id)
 ```
 
-若 `params` 裡有 `:id` 的話，`:id` 會先過白名單，要是白名單沒有 `:id`，則 `:id` 的值會被過濾掉，如此一來 array 啦、Hash 啦，或任何其他的物件，都無法注入。
+若 `params` 有 `:id`，並且 `:id` 有相對應的值。便可以通過白名單檢查，不然 `:id` 就會被過濾掉。這也是為什麼無法注入 array、Hash 或任何其他的物件。
 
 允許的純量類型有：
 
 `String`、`Symbol`、`NilClass`、`Numeric`、`TrueClass`、`FalseClass`、`Date`、`Time`、`DateTime`、`StringIO`、`IO`、`ActionDispatch::Http::UploadedFile` 以及
 `Rack::Test::UploadedFile`。
 
-要宣告 `params` 的值必須是允許賦值的純量陣列：
+`params` 裡需要允許賦值的參數是以參數形式怎麼辦？
 
 ```ruby
 params.permit(id: [])
