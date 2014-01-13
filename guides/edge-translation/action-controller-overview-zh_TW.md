@@ -1002,13 +1002,9 @@ value), which occurs when you `write` or `commit` the response stream.
 
 #### Example Usage
 
-Let's suppose that you were making a Karaoke machine and a user wants to get the
-lyrics for a particular song. Each `Song` has a particular number of lines and
-each line takes time `num_beats` to finish singing.
+假設你正在做一個卡拉 OK 機器，而使用者想要獲得特定歌曲的歌詞。每首 `Song` 的歌詞都有特定的行數，而每一行所花費的時間是 `num_beats`。
 
-If we wanted to return the lyrics in Karaoke fashion (only sending the line when
-the singer has finished the previous line), then we could use `ActionController::Live`
-as follows:
+若我們想以常見的卡拉 OK 形式返回歌詞（在上一句唱完之後，傳送下句歌詞），則我們可使用 `ActionController::Live`：
 
 ```ruby
 class LyricsController < ActionController::Base
@@ -1028,24 +1024,15 @@ class LyricsController < ActionController::Base
 end
 ```
 
-The above code sends the next line only after the singer has completed the previous
-line.
+上面的程式碼僅在歌手唱完上一句，才會發送下句歌詞。
 
 #### Streaming Considerations
 
-Streaming arbitrary data is an extremely powerful tool. As shown in the previous
-examples, you can choose when and what to send across a response stream. However,
-you should also note the following things:
+串流任意資料是個非常強大的工具。像上個例子，可以選擇何時、與傳送何種資料。但有幾件事情需要注意：
 
-* Each response stream creates a new thread and copies over the thread local
-  variables from the original thread. Having too many thread local variables can
-  negatively impact performance. Similarly, a large number of threads can also
-  hinder performance.
-* Failing to close the response stream will leave the corresponding socket open
-  forever. Make sure to call `close` whenever you are using a response stream.
-* WEBrick servers buffer all responses, and so including `ActionController::Live`
-  will not work. You must use a web server which does not automatically buffer
-  responses.
+* 每個 Response Stream 建立新的 Thread，並從原本的 Thread 拷貝區域變數出來。Thread 有太多區域變數會大大影響效能，有太多 Thread 也是。
+* 忘記關掉 Response Stream 會使 socket 一直開著。記得使用完 Response Stream 要 `close` 掉。
+* WEBrick 伺服器會自動將所有的 Response 放入緩衝區，所以 `include ActionController::Live` 不會起作用。必須使用不會自動將 Response 放入緩衝區的伺服器。
 
 13. Log Filtering
 ---------------------
