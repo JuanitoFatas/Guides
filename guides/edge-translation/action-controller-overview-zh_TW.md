@@ -271,7 +271,7 @@ params.permit(id: [])
 params.require(:log_entry).permit!
 ```
 
-`params` 裡的 `:log_entry` hash 以及裡面所有的子 Hash 都會被允許做大量賦值。**使用 `permit!` 要非常小心**，因為這允許了 Model 所有的 attributes 都可以做大量賦值，要是之後 Model 新增了 `admin` attribute 而沒注意到 `permit!`，可能就會有問題了。
+`params` 裡的 `:log_entry` hash 以及裡面所有的子 Hash 都會允許做大量賦值。**使用 `permit!` 要非常小心**，因為這允許了 Model 所有的 attributes，都可以做大量賦值，要是之後 Model 新增了 `admin` attribute 而沒注意到 `permit!`，可能就會出問題了。
 
 #### Nested Parameters
 
@@ -283,8 +283,6 @@ params.permit(:name, { emails: [] },
                          { family: [ :name ], hobbies: [] }])
 ```
 
-上面的程式碼過濾 `name`、`emails` 以及 `friends` attribute。且期望 `emails` 是 array。
-
 This declaration whitelists the `name`, `emails` and `friends`
 attributes. It is expected that `emails` will be an array of permitted
 scalar values and that `friends` will be an array of resources with
@@ -295,10 +293,7 @@ to having a `name` (any permitted scalar values allowed, too).
 
 #### 更多例子
 
-你可能也想在 `new` action 裡使用允許的 attributes。
-You want to also use the permitted attributes in the `new`
-action. This raises the problem that you can't use `require` on the
-root key because normally it does not exist when calling `new`:
+你可能也想在 `new` action 裡使用允許的 attributes。但這帶出了一個問題，你無法 `require`，因為呼叫 `new` 的時候，資料根本還不存在，這時可以用 `fetch`：
 
 ```ruby
 # 使用 `fetch` 你可以設定預設值，並使用
@@ -306,14 +301,14 @@ root key because normally it does not exist when calling `new`:
 params.fetch(:blog, {}).permit(:title, :author)
 ```
 
-`accepts_nested_attributes_for` 允許你 `update` 與 `destroy` 相關的 record。基於 `id` 與 `_destroy` 參數：
+`accepts_nested_attributes_for` 允許你基於 `id` 與 `_destroy` 參數，來 `update` 與 `destroy` 相關的 record：
 
 ```ruby
 # 允許 :id 與 :_destroy
 params.require(:author).permit(:name, books_attributes: [:title, :id, :_destroy])
 ```
 
-有著整數 key 的 Hash 處理方式有點不同，
+Hash key 是整數的處理方式不大一樣，
 Hashes with integer keys are treated differently and you can declare
 the attributes as if they were direct children. You get these kinds of
 parameters when you use `accepts_nested_attributes_for` in combination
@@ -390,17 +385,15 @@ Rails 替 CookieStore 設了一個 secret key，用來簽署 Session 資料。�
 在命令行敲入 `rake secret` 來產生新的一組 key，填到這個檔案裡，記得重開。若是開源專案，記得要保密 `secret_key_base`，如使用 [SettingsLogic](https://github.com/binarylogic/settingslogic) 這個 Gem。
 
 ```ruby
-# Be sure to restart your server when you modify this file.
+# 修改此文件時記得重新啟動 Server
 
-# Your secret key is used for verifying the integrity of signed cookies.
-# If you change this key, all old signed cookies will become invalid!
+# Secret Key 用來簽署與認證 Cookie。
+# key 變了先前的 cookie 都會失效！
 
-# Make sure the secret is at least 30 characters and all random,
-# no regular words or you'll be exposed to dictionary attacks.
-# You can use `rake secret` to generate a secure secret key.
+# 確保 secret 至少有 30 個隨機字元，沒有一般的單字（防禦字典查表攻擊）。
+# 可以使用 `rake secret` 來產生安全的 secure key。
 
-# Make sure your secret_key_base is kept private
-# if you're sharing your code publicly.
+# 若你將程式公開分享，則不要公開 secret_key_base。
 YourApp::Application.config.secret_key_base = '49d3f3de9ed86c74b94ad6bd0...'
 ```
 
@@ -419,10 +412,9 @@ class ApplicationController < ActionController::Base
 
   private
 
-  # Finds the User with the ID stored in the session with the key
-  # :current_user_id This is a common way to handle user login in
-  # a Rails application; logging in sets the session value and
-  # logging out removes it.
+  # 用存在 Session 的 :current_user_id 來找到 User。
+  # 這是 Rails 常見處理使用者登入的手法；
+  # 登入時將使用者的 ID 存在 Session，登出時再清掉。
   def current_user
     @_current_user ||= session[:current_user_id] &&
       User.find_by(id: session[:current_user_id])
@@ -434,11 +426,10 @@ end
 
 ```ruby
 class LoginsController < ApplicationController
-  # "Create" a login, aka "log the user in"
+  # 建立“登入”，也就是“登入使用者”
   def create
     if user = User.authenticate(params[:username], params[:password])
-      # Save the user ID in the session so it can be used in
-      # subsequent requests
+      # 將使用者的 ID 存在 Session，供之後的 Request 使用。
       session[:current_user_id] = user.id
       redirect_to root_url
     end
