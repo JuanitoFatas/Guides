@@ -224,7 +224,7 @@ class PeopleController < ActionController::Base
     Person.create(params[:person])
   end
 
-  # 若沒有傳入 `:id`，會拋出 ActionController::ParameterMissing 異常。
+  # 若沒有傳入 :id，會拋出 ActionController::ParameterMissing 異常。
   # 這個異常會被 ActionController::Base 捕捉，並轉換成 400 Bad Request。
   def update
     person = current_account.people.find(params[:id])
@@ -874,15 +874,16 @@ end
 12. Streaming and File Downloads
 ----------------------------------------
 
+有時候想給使用者傳檔案，而不是渲染 HTML 頁面。Rails 所有的 Controller 都有 `send_data` 與 `send_file`，可以用來串流資料給 Client。`send_file` 是個簡單傳檔案的方法，只要輸入檔案名稱，便可串流內容。
 Sometimes you may want to send a file to the user instead of rendering an HTML page. All controllers in Rails have the `send_data` and the `send_file` methods, which will both stream data to the client. `send_file` is a convenience method that lets you provide the name of a file on the disk and it will stream the contents of that file for you.
 
-To stream data to the client, use `send_data`:
+要串流資料給 Client，使用 `send_data`：
 
 ```ruby
 require "prawn"
 class ClientsController < ApplicationController
-  # Generates a PDF document with information on the client and
-  # returns it. The user will get the PDF as a file download.
+  # 用 Client 的資訊產生並返回 PDF 文件。
+  # 使用者會像是下載檔案一樣獲得 PDF。
   def download_pdf
     client = Client.find(params[:id])
     send_data generate_pdf(client),
@@ -902,15 +903,15 @@ class ClientsController < ApplicationController
 end
 ```
 
-The `download_pdf` action in the example above will call a private method which actually generates the PDF document and returns it as a string. This string will then be streamed to the client as a file download and a filename will be suggested to the user. Sometimes when streaming files to the user, you may not want them to download the file. Take images, for example, which can be embedded into HTML pages. To tell the browser a file is not meant to be downloaded, you can set the `:disposition` option to "inline". The opposite and default value for this option is "attachment".
+上例的 `download_pdf` 會呼叫產生 PDF 文件的 private 方法，並返回一個字串。這個字串會串流給使用者，讓使用者可以依其推薦的檔案名稱來下載檔案。有時候串流檔案給使用者時，你可能不希望他們下載檔案。舉圖片的例子來說，圖片可以嵌入在 HTML。要跟瀏覽器說，某種檔案不是用來下載的，可以設定 `:disposition` 選項為 `"inline"`。預設值是 `"attachment"`。
 
 ### Sending Files
 
-If you want to send a file that already exists on disk, use the `send_file` method.
+若想傳送硬碟上的檔案，使用 `send_file`：
 
 ```ruby
 class ClientsController < ApplicationController
-  # Stream a file that has already been generated and stored on disk.
+  # 串流已存在硬碟上的檔案
   def download_pdf
     client = Client.find(params[:id])
     send_file("#{Rails.root}/files/clients/#{client.id}.pdf",
@@ -920,13 +921,13 @@ class ClientsController < ApplicationController
 end
 ```
 
-This will read and stream the file 4kB at the time, avoiding loading the entire file into memory at once. You can turn off streaming with the `:stream` option or adjust the block size with the `:buffer_size` option.
+這會讀檔案的 4KB 到 Memory，避免載入整個檔案。串流可以透過 `:stream` 選項關掉，或是調整預讀取的大小：`:buffer_size`。
 
-If `:type` is not specified, it will be guessed from the file extension specified in `:filename`. If the content type is not registered for the extension, `application/octet-stream` will be used.
+若是沒有指定 `:type`，會使用 `:filename` 的副檔名。若該副檔名的 Content-Type 沒有註冊過，會使用 `application/octet-stream`。
 
-WARNING: Be careful when using data coming from the client (params, cookies, etc.) to locate the file on disk, as this is a security risk that might allow someone to gain access to files they are not meant to.
+**警告：小心使用從 Client 來的資料來指定檔案位址（params、cookies 等），因為這變相的讓某人獲得存取不該存取檔案的權限。**
 
-TIP: It is not recommended that you stream static files through Rails if you can instead keep them in a public folder on your web server. It is much more efficient to let the user download the file directly using Apache or another web server, keeping the request from unnecessarily going through the whole Rails stack.
+**講個秘訣：不推薦透過 Rails 來串流靜態檔案。可以將檔案存在 public 目錄，讓使用者透過 Nginx 或其他 Server 下載會比較有效率，串流檔案避免讓 Request 過整個 Rails stack。**
 
 ### RESTful Downloads
 
