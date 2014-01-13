@@ -963,10 +963,9 @@ GET /clients/1.pdf
 
 ### Live Streaming of Arbitrary Data
 
-Rails allows you to stream more than just files. In fact, you can stream anything
-you would like in a response object. The `ActionController::Live` module allows
-you to create a persistent connection with a browser. Using this module, you will
-be able to send arbitrary data to the browser at specific points in time.
+> Module 模組
+
+Rails 允許你串流檔案之外的資料。實際上，可以透過 Response 物件來串流任何資料。`ActionController::Live` 模組允許你與瀏覽器之間建立持久的連結。使用此模組，能夠在任何時間送任何資料給瀏覽器。
 
 #### Incorporating Live Streaming
 
