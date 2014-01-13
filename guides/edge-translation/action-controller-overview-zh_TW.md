@@ -931,11 +931,11 @@ end
 
 ### RESTful Downloads
 
-While `send_data` works just fine, if you are creating a RESTful application having separate actions for file downloads is usually not necessary. In REST terminology, the PDF file from the example above can be considered just another representation of the client resource. Rails provides an easy and quite sleek way of doing "RESTful downloads". Here's how you can rewrite the example so that the PDF download is a part of the `show` action, without any streaming:
+`send_data` 可以用，但打造 RESTful 應用程式時，不需要將檔案下載切成不同的 action。在 REST 世界裡，上例的 PDF 檔案可以想成另一種 Client 資源的表現方式。Rails 提供簡單有序的方式來實作 “RESTful 式的下載”。以下是如何重寫上例，讓 PDF 下載成為 `show` action 的一部分，而無需使用任何串流：
 
 ```ruby
 class ClientsController < ApplicationController
-  # The user can request to receive this resource as HTML or PDF.
+  # 使用者可發 Request 來決定要獲取資源的 HTML 格式，還是 PDF 格式。
   def show
     @client = Client.find(params[:id])
 
@@ -947,15 +947,15 @@ class ClientsController < ApplicationController
 end
 ```
 
-In order for this example to work, you have to add the PDF MIME type to Rails. This can be done by adding the following line to the file `config/initializers/mime_types.rb`:
+為了使上例可以用，必須要加入 PDF 的 MIME type 到 Rails。在 `config/initializers/mime_types.rb`：
 
 ```ruby
 Mime::Type.register "application/pdf", :pdf
 ```
 
-NOTE: Configuration files are not reloaded on each request, so you have to restart the server in order for their changes to take effect.
+**注意：設定檔不會在每個 Request 之間重新載入，所以必須要重新啟動伺服器，更改才能生效。**
 
-Now the user can request to get a PDF version of a client just by adding ".pdf" to the URL:
+現在使用者可以發 Request 到 URL `/clients/1.pdf` 來獲得 Client 的 PDF。
 
 ```bash
 GET /clients/1.pdf
