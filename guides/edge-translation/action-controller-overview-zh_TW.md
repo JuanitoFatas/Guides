@@ -511,11 +511,10 @@ Flash 訊息的種類不侷限於 `:notice`、`:alert` 或 `:flash`，可以自�
 
 ```ruby
 class MainController < ApplicationController
-  # Let's say this action corresponds to root_url, but you want
-  # all requests here to be redirected to UsersController#index.
-  # If an action sets the flash and redirects here, the values
-  # would normally be lost when another redirect happens, but you
-  # can use 'keep' to make it persist for another request.
+  # 假設這個 action 會回應 root_url
+  # 但你想要所有的 Request 都導到 UsersController#index
+  # 若在此設定了 Flash 接著 redirect，則 Flash 的值會丟掉。
+  # 可以用 flash.keep 將 Flash 的值保存下來，給另個 Request 使用。
   def index
     # 保留整個 flash
     flash.keep
@@ -576,7 +575,7 @@ class CommentsController < ApplicationController
 end
 ```
 
-Note that while for session values you set the key to `nil`, to delete a cookie value you should use `cookies.delete(:key)`.
+**注意 Session 用賦 `nil` 值來清空，cookie 要使用 `cookies.delete(:key)` 刪掉。**
 
 7. Rendering XML 與 JSON 資料
 ------------------------------------------
