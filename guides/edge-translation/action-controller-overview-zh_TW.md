@@ -1086,7 +1086,7 @@ class ApplicationController < ActionController::Base
   private
 
     def record_not_found
-      render text: "404 Not Found", status: 404
+      render text: "404 沒有找到", status: 404
     end
 end
 ```
