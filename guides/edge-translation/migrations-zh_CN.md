@@ -134,7 +134,7 @@ __Migration 存在那里？__
 
 __Migration 文件名规则？__
 
-`YYYYMMDDHHMMSS_migration_name.rb`，前面的 `YYYYMMDDHHMMSS` 是 UTC 形式的时间戳章，后面接的是该 Migration 的名称（前例 `migration_name.rb`）。Migration 的类别是用驼峰形式（CamelCased）定义的，会对应到文件名。
+`YYYYMMDDHHMMSS_migration_name.rb`，前面的 `YYYYMMDDHHMMSS` 是 UTC 格式的时间戳章，后面接的是该 Migration 的名称（前例 `migration_name.rb`）。Migration 的类别是用驼峰形式（CamelCased）定义的，会对应到文件名。
 
 举个例子：
 
