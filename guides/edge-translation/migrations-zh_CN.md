@@ -84,12 +84,12 @@ __Active Record 自动替你加上主键及时间戳章。__
 
 Migration 是前进下一关，那回到上一关叫做什么？ __Rollback，回滚。__
 
-当我们回滚刚刚的 Migration，Active Record 会自动帮你移除这个 table。有些数据库支援 transaction （事务），改变 schema 的 Migration 会包在事务里
-。不支援事务的数据库，无法 rollback 到上一个版本，则你得自己手动 rollback。
+当我们回滚刚刚的 Migration，Active Record 会自动帮你移除这个 table。有些数据库支援 transaction （事务），改变 Schema 的 Migration 会包在事务里
+。不支援事务的数据库，无法 Rollback 到上一个版本，则你得自己手动 Rollback。
 
-注意：有些 query 不能在事务里运行。如果你的数据库支援的是 DDL 事务，可以用 `disable_ddl_transaction!` 停用它。
+注意：有些 Query 不能在事务里运行。如果你的数据库支援的是 DDL 事务，可以用 `disable_ddl_transaction!` 停用它。
 
-如果 Active Record 不知道如何 rollback，你可以自己写，用 `reversible`：
+如果 Active Record 不知道如何 Rollback，你可以自己用 `reversible` 处理：
 
 ```ruby
 class ChangeProductsPrice < ActiveRecord::Migration
