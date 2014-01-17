@@ -851,7 +851,7 @@ __警告：__
 <%= form_for @person do |person_form| %>
   <%= person_form.text_field :name %>
   <% @person.addresses.each do |address| %>
-    <%= person_form.fields_for address, index: address do |address_form|%>
+    <%= person_form.fields_for address, index: address.id do |address_form|%>
       <%= address_form.text_field :city %>
     <% end %>
   <% end %>
