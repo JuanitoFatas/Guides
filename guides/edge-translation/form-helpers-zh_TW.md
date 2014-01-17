@@ -852,7 +852,7 @@ Array 參數跟 `check_box` 配合的不好。根據 HTML 的規範來看，沒�
 <%= form_for @person do |person_form| %>
   <%= person_form.text_field :name %>
   <% @person.addresses.each do |address| %>
-    <%= person_form.fields_for address, index: address do |address_form|%>
+    <%= person_form.fields_for address, index: address.id do |address_form|%>
       <%= address_form.text_field :city %>
     <% end %>
   <% end %>
