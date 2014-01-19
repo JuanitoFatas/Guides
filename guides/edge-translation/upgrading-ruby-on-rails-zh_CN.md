@@ -280,13 +280,13 @@ get 'こんにちは', controller: 'welcome', action: 'index'
 
 ```ruby
   # Rails 3.x
-  match "/" => "root#index"
+  match '/' => 'root#index'
 
   # 改成
-  match "/" => "root#index", via: :get
+  match '/' => 'root#index', via: :get
 
   # 或
-  get "/" => "root#index"
+  get '/' => 'root#index'
 ```
 
 * Rails 4.0 移除了 `ActionDispatch::BestStandardsSupport` 中间件。因为 `<!DOCTYPE html>` 如[此文](http://msdn.microsoft.com/en-us/library/jj676915(v=vs.85).aspx)所述，已触发了标准模式。而 ChromeFrame header 被移到 `config.action_dispatch.default_headers` 了。
