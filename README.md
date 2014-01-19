@@ -16,7 +16,7 @@
 
 ## 翻譯用語
 
-**常見翻譯用語來自 [Ruby on Rails 實戰聖經 | 翻譯術語對照](http://ihower.tw/rails3/translation.html)。**
+**常見翻譯用語部分參考 [Ruby on Rails 實戰聖經 | 翻譯術語對照](http://ihower.tw/rails3/translation.html)。**
 
 ## 貢獻者
 
