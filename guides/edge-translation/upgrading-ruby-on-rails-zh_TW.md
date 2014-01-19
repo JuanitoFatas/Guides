@@ -141,7 +141,7 @@ Rails-specific features. For example:
 ```ruby
 class FooBar
   def as_json(options = nil)
-    { foo: "bar" }
+    { foo: 'bar' }
   end
 end
 
@@ -468,13 +468,13 @@ get 'こんにちは', controller: 'welcome', action: 'index'
 
 ```ruby
   # Rails 3.x
-  match "/" => "root#index"
+  match '/' => 'root#index'
 
   # 改成
-  match "/" => "root#index", via: :get
+  match '/' => 'root#index', via: :get
 
   # 或
-  get "/" => "root#index"
+  get '/' => 'root#index'
 ```
 
 * Rails 4.0 移除了 `ActionDispatch::BestStandardsSupport` 中間件。因為 `<!DOCTYPE html>` 如[此文](http://msdn.microsoft.com/en-us/library/jj676915(v=vs.85).aspx)所述，已觸發了標準模式。而 ChromeFrame header 被移到 `config.action_dispatch.default_headers` 了。
@@ -576,6 +576,10 @@ config.active_record.mass_assignment_sanitizer = :strict
 
 Rails 3.2 deprecates `vendor/plugins` and Rails 4.0 will remove them completely. While it's not strictly necessary as part of a Rails 3.2 upgrade, you can start replacing any plugins by extracting them to gems and adding them to your Gemfile. If you choose not to make them gems, you can move them into, say, `lib/my_plugin/*` and add an appropriate initializer in `config/initializers/my_plugin.rb`.
 
+## 4.5 Active Record
+
+Option `:dependent => :restrict` has been removed from `belongs_to`. If you want to prevent deleting the object if there are any associated objects, you can set `:dependent => :destroy` and return `false` after checking for existence of association from any of the associated object's destroy callbacks.
+
 # 5. 從 Rails 3.0 升級到 Rails 3.1
 
 If your application is currently on any version of Rails older than 3.0.x, you should upgrade to Rails 3.0 before attempting an update to Rails 3.1.
@@ -662,7 +666,7 @@ You can help test performance with these additions to your test environment:
 ```ruby
 # Configure static asset server for tests with Cache-Control for performance
 config.serve_static_assets = true
-config.static_cache_control = "public, max-age=3600"
+config.static_cache_control = 'public, max-age=3600'
 ```
 
 ## 5.6 config/initializers/wrap_parameters.rb
