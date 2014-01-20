@@ -138,7 +138,7 @@ When you call the `mail` method now, Action Mailer will detect the two templates
 
 Mailers are really just another way to render a view. Instead of rendering a
 view and sending out the HTTP protocol, they are just sending it out through the
-Email protocols instead. Due to this, it makes sense to just have your
+email protocols instead. Due to this, it makes sense to just have your
 controller tell the Mailer to send an email when a user is successfully created.
 
 Setting this up is painfully simple.
@@ -164,7 +164,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.save
-        # Tell the UserMailer to send a welcome Email after save
+        # Tell the UserMailer to send a welcome email after save
         UserMailer.welcome_email(@user).deliver
 
         format.html { redirect_to(@user, notice: 'User was successfully created.') }
@@ -639,8 +639,8 @@ config.action_mailer.default_options = {from: 'no-reply@example.com'}
 
 ### Action Mailer Configuration for Gmail
 
-As Action Mailer now uses the Mail gem, this becomes as simple as adding to your
-`config/environments/$RAILS_ENV.rb` file:
+As Action Mailer now uses the [Mail gem](https://github.com/mikel/mail), this
+becomes as simple as adding to your `config/environments/$RAILS_ENV.rb` file:
 
 ```ruby
 config.action_mailer.delivery_method = :smtp
