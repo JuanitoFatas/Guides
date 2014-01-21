@@ -62,7 +62,7 @@ If you want to use Spring as your application preloader you need to:
 
 NOTE: User defined rake tasks will run in the `development` environment by
 default. If you want them to run in other environments consult the
-[Spring README](https://github.com/jonleighton/spring#rake).
+[Spring README](https://github.com/rails/spring#rake).
 
 ### `config/secrets.yml`
 
@@ -148,7 +148,7 @@ part of the rewrite, the following features have been removed from the encoder:
 2. Support for the `encode_json` hook
 3. Option to encode `BigDecimal` objects as numbers instead of strings
 
-If you application depends on one of these features, you can get them back by
+If your application depends on one of these features, you can get them back by
 adding the [`activesupport-json_encoder`](https://github.com/rails/activesupport-json_encoder)
 gem to your Gemfile.
 
@@ -320,7 +320,7 @@ being used, you can update your form to use the `PUT` method instead:
 <%= form_for [ :update_name, @user ], method: :put do |f| %>
 ```
 
-For more on PATCH and why this change was made, see [this post](http://weblog.rubyonrails.org/2012/2/25/edge-rails-patch-is-the-new-primary-http-method-for-updates/)
+For more on PATCH and why this change was made, see [this post](http://weblog.rubyonrails.org/2012/2/26/edge-rails-patch-is-the-new-primary-http-method-for-updates/)
 on the Rails blog.
 
 #### A note about media types
