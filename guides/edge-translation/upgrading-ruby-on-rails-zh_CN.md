@@ -103,7 +103,7 @@ end
 <%= form_for [ :update_name, @user ], method: :put do |f| %>
 ```
 
-至于为什么要改成 `PATCH`，参考[这篇文章](http://weblog.rubyonrails.org/2012/2/25/edge-rails-patch-is-the-new-primary-http-method-for-updates/)。
+至于为什么要改成 `PATCH`，参考[这篇文章](http://weblog.rubyonrails.org/2012/2/26/edge-rails-patch-is-the-new-primary-http-method-for-updates/)。
 
 ### 3.1.1 关于 media types 的说明
 
