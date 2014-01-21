@@ -76,7 +76,7 @@ If you want to use Spring as your application preloader you need to:
 
 NOTE: User defined rake tasks will run in the `development` environment by
 default. If you want them to run in other environments consult the
-[Spring README](https://github.com/jonleighton/spring#rake).
+[Spring README](https://github.com/rails/spring#rake).
 
 ### `config/secrets.yml`
 
@@ -291,7 +291,7 @@ end
 <%= form_for [ :update_name, @user ], method: :put do |f| %>
 ```
 
-至於為什麼要改成 `PATCH`，參考[這篇文章](http://weblog.rubyonrails.org/2012/2/25/edge-rails-patch-is-the-new-primary-http-method-for-updates/)。
+至於為什麼要改成 `PATCH`，參考[這篇文章](http://weblog.rubyonrails.org/2012/2/26/edge-rails-patch-is-the-new-primary-http-method-for-updates/)。
 
 ### 3.1.1 關於 media types 的說明
 
