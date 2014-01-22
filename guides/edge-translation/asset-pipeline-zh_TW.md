@@ -1,7 +1,7 @@
 The Asset Pipeline
 ==================
 
-This guide covers the asset pipeline.
+本篇介紹 Asset Pipeline。
 
 After reading this guide, you will know:
 
