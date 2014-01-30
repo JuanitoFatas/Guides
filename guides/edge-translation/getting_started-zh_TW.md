@@ -1,37 +1,37 @@
 Rails 入門
 ==========================
 
-在這篇文章你會學到如何啟動和執行Ruby on Rails。
+在這篇文章你會學到如何啟動和執行 Ruby on Rails。
 
 讀完這篇文章你會知道:
 
-* 如何安裝Rails，如何建立一個新的Rails應用程式，以及將你的應用程式與資料庫做結合。
-* 為Rails應用程式產生畫面布局。
-* MVC(Model，View，Controller)和RESTful設計。
-* 如何快速建立Rails應用程式。
+* 如何安裝 Rails，如何建立一個新的 Rails 應用程式，以及將你的應用程式與資料庫做結合。
+* 為 Rails 應用程式產生畫面布局。
+* MVC(Model，View，Controller) 和 RESTful 設計。
+* 如何快速建立 Rails 應用程式。
 
 --------------------------------------------------------------------------------
 
 指南
 -----------------
 
-本指南是設計讓想學Rails的初學者。不論你是否有Rails的開發經驗。為了能夠正確執行Rails你需要事前安裝：
+本指南是設計讓想學 Rails 的初學者。不論你是否有 Rails 的開發經驗。為了能夠正確執行 Rails 你需要事前安裝：
 
 * [Ruby](http://www.ruby-lang.org/en/downloads) 1.9.3版本，或更新的版本
 * [RubyGems](http://rubygems.org/)
-	* 想要知道更多RubyGems，可以參考[RubyGems使用手冊](http://guides.rubygems.org)
-* [SQLite3資料庫](http://www.sqlite.org/) 
+	* 想要知道更多 RubyGems，可以參考[RubyGems使用手冊](http://guides.rubygems.org)
+* [SQLite3 資料庫](http://www.sqlite.org/) 
 
-Rails是使用Ruby開發的網頁應用程式的框架(framework)。如果你沒有開發Ruby的經驗，你會發現Rails的學習並不容易。這邊有些免費而且很棒的Ruby學習資源：
+Rails 是使用 Ruby 開發的網頁應用程式的框架(framework)。如果你沒有開發 Ruby 的經驗，你會發現 Rails 的學習並不容易。這邊有些免費而且很棒的 Ruby 學習資源：
 
 * [Mr. Neighborly's Humble Little Ruby Book](http://www.humblelittlerubybook.com/)
 * [Programming Ruby](http://www.ruby-doc.org/docs/ProgrammingRuby/)
 * [Why's (Poignant) Guide to Ruby](http://mislav.uniqpath.com/poignant-guide/)
 
-Rails是什麼?
+Rails 是什麼?
 --------------
 
-Rails是使用Ruby開發的網頁應用程式的框架(framework)。Rails的目的是要讓網頁應用程式能夠更容易。比起其他的程式語言和框架，它可以使用更簡短的程式來實現。經驗豐富的Rails開發者也認為它始網頁應用程式開發變得更有趣。
+Rails 是使用 Ruby 開發的網頁應用程式的框架(framework)。Rails 的目的是要讓網頁應用程式能夠更容易。比起其他的程式語言和框架，它可以使用更簡短的程式來實現。經驗豐富的 Rails 開發者也認為它始網頁應用程式開發變得更有趣。
 
 Rails is opinionated software. It makes the assumption that there is the "best"
 way to do things, and it's designed to encourage that way - and in some cases to
