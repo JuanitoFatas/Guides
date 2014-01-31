@@ -352,6 +352,10 @@ value. Defaults to `'encrypted cookie'`.
 * `config.action_dispatch.encrypted_signed_cookie_salt` sets the signed
 encrypted cookies salt value. Defaults to `'signed encrypted cookie'`.
 
+* `config.action_dispatch.perform_deep_munge` configures whether `deep_munge`
+  method should be performed on the parameters. See [Security Guide](security.html#unsafe-query-generation)
+  for more information. It defaults to true.
+
 * `ActionDispatch::Callbacks.before` takes a block of code to run before the request.
 
 * `ActionDispatch::Callbacks.to_prepare` takes a block to run after `ActionDispatch::Callbacks.before`, but before the request. Runs for every request in `development` mode, but only once for `production` or environments with `cache_classes` set to `true`.
@@ -386,6 +390,8 @@ encrypted cookies salt value. Defaults to `'signed encrypted cookie'`.
 
     The default setting is `true`, which uses the partial at `/admin/posts/_post.erb`. Setting the value to `false` would render `/posts/_post.erb`, which is the same behavior as rendering from a non-namespaced controller such as `PostsController`.
 
+* `config.action_view.raise_on_missing_translations` determines whether an error should be raised for missing translations
+
 ### Configuring Action Mailer
 
 There are a number of settings available on `config.action_mailer`:
@@ -413,10 +419,18 @@ There are a number of settings available on `config.action_mailer`:
 * `config.action_mailer.default_options` configures Action Mailer defaults. Use to set options like `from` or `reply_to` for every mailer. These default to:
 
     ```ruby
-    :mime_version => "1.0",
-    :charset      => "UTF-8",
-    :content_type => "text/plain",
-    :parts_order  => [ "text/plain", "text/enriched", "text/html" ]
+    mime_version:  "1.0",
+    charset:       "UTF-8",
+    content_type: "text/plain",
+    parts_order:  ["text/plain", "text/enriched", "text/html"]
+    ```
+
+    Assign a hash to set additional options:
+
+    ```ruby
+    config.action_mailer.default_options = {
+      from: "noreply@example.com"
+    }
     ```
 
 * `config.action_mailer.observers` registers observers which will be notified when mail is delivered.
@@ -440,6 +454,8 @@ There are a few configuration options available in Active Support:
 * `config.active_support.escape_html_entities_in_json` enables or disables the escaping of HTML entities in JSON serialization. Defaults to `false`.
 
 * `config.active_support.use_standard_json_time_format` enables or disables serializing dates to ISO 8601 format. Defaults to `true`.
+
+* `config.active_support.time_precision` sets the precision of JSON encoded time values. Defaults to `3`.
 
 * `ActiveSupport::Logger.silencer` is set to `false` to disable the ability to silence logging in a block. The default is `true`.
 
