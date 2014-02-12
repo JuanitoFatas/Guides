@@ -473,7 +473,6 @@ There are a few configuration options available in Active Support:
 
 * `ActiveSupport::Deprecation.silenced` sets whether or not to display deprecation warnings.
 
-* `ActiveSupport::Logger.silencer` is set to `false` to disable the ability to silence logging in a block. The default is `true`.
 
 ### Configuring a Database
 
@@ -722,7 +721,7 @@ Rails will now prepend "/app1" when generating links.
 
 #### Using Passenger
 
-Passenger makes it easily to run your application in a subdirectory. You can find
+Passenger makes it easy to run your application in a subdirectory. You can find
 the relevant configuration in the
 [passenger manual](http://www.modrails.com/documentation/Users%20guide%20Apache.html#deploying_rails_to_sub_uri).
 
@@ -940,4 +939,4 @@ ActiveRecord::ConnectionTimeoutError - could not obtain a database connection wi
 If you get the above error, you might want to increase the size of connection
 pool by incrementing the `pool` option in `database.yml`
 
-NOTE. If you have enabled `Rails.threadsafe!` mode then there could be a chance that several threads may be accessing multiple connections simultaneously. So depending on your current request load, you could very well have multiple threads contending for a limited amount of connections.
+NOTE. As Rails is multi-threaded by default, there could be a chance that several threads may be accessing multiple connections simultaneously. So depending on your current request load, you could very well have multiple threads contending for a limited amount of connections.

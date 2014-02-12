@@ -402,7 +402,7 @@ Rails adds some custom assertions of its own to the `test/unit` framework:
 | `assert_recognizes(expected_options, path, extras={}, message=nil)`               | Asserts that the routing of the given path was handled correctly and that the parsed options (given in the expected_options hash) match path. Basically, it asserts that Rails recognizes the route given by expected_options.|
 | `assert_generates(expected_path, options, defaults={}, extras = {}, message=nil)` | Asserts that the provided options can be used to generate the provided path. This is the inverse of assert_recognizes. The extras parameter is used to tell the request the names and values of additional request parameters that would be in a query string. The message parameter allows you to specify a custom error message for assertion failures.|
 | `assert_response(type, message = nil)`                                            | Asserts that the response comes with a specific status code. You can specify `:success` to indicate 200-299, `:redirect` to indicate 300-399, `:missing` to indicate 404, or `:error` to match the 500-599 range. You can also pass an explicit status number or its symbolic equivalent. For more information, see [full list of status codes](http://rubydoc.info/github/rack/rack/master/Rack/Utils#HTTP_STATUS_CODES-constant) and how their [mapping](http://rubydoc.info/github/rack/rack/master/Rack/Utils#SYMBOL_TO_STATUS_CODE-constant) works.|
-| `assert_redirected_to(options = {}, message=nil)`                                 | Assert that the redirection options passed in match those of the redirect called in the latest action. This match can be partial, such that `assert_redirected_to(controller: "weblog")` will also match the redirection of `redirect_to(controller: "weblog", action: "show")` and so on.|
+| `assert_redirected_to(options = {}, message=nil)`                                 | Assert that the redirection options passed in match those of the redirect called in the latest action. This match can be partial, such that `assert_redirected_to(controller: "weblog")` will also match the redirection of `redirect_to(controller: "weblog", action: "show")` and so on. You can also pass named routes such as `assert_redirected_to root_path` and Active Record objects such as `assert_redirected_to @article`.|
 | `assert_template(expected = nil, message=nil)`                                    | Asserts that the request was rendered with the appropriate template file.|
 
 You'll see the usage of some of these assertions in the next chapter.
@@ -518,8 +518,10 @@ You also have access to three instance variables in your functional tests:
 
 ### Setting Headers and CGI variables
 
-Headers and cgi variables can be set directly on the `@request`
-instance variable:
+[HTTP headers](http://tools.ietf.org/search/rfc2616#section-5.3)
+and
+[CGI variables](http://tools.ietf.org/search/rfc3875#section-4.1)
+can be set directly on the `@request` instance variable:
 
 ```ruby
 # setting a HTTP Header
