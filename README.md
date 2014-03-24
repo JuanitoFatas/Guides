@@ -2,7 +2,9 @@
 
 ## 狀態
 
-**有一天會翻完的。**
+zh-CN 請移駕由 [@AndorChen][ac] 翻譯的 => http://docs-china.com/rails/
+
+**zh-TW 緩慢翻譯中...**
 
 ## 注意事項
 
@@ -34,3 +36,4 @@ Code is under Public Domain (Unlicense). Please read [UNLICENSE](/UNLICENSE).
 
 [mail-to-juanito-fatas]: mailto://katehuang0320@gmail.com
 [new-issue]: https://github.com/JuanitoFatas/Guides/issues/new
+[ac]: http://about.ac/
