@@ -1,11 +1,4 @@
-Rails x JavaScript
-================================
-
-__特別要強調的翻譯名詞__
-
-> Web application 應用程式<br>
-> Request 請求<br>
-> Vanilla JavaScript 純 JavaScript
+# Rails x JavaScript
 
 本篇介紹 Rails 內建的 Ajax/JavaScript 功能。讓你輕鬆打造豐富生動的 Ajax 應用程式。
 
@@ -17,25 +10,7 @@ __特別要強調的翻譯名詞__
 * 在伺服器端處理 Ajax。
 * Turbolinks。
 
-目錄
-------
-
-  - [1. Ajax 介紹](#ajax-介紹)
-  - [2. Unobtrusive JavaScript](#unobtrusive-javascript)
-  - [3. 內建的 Ajax Helpers](#內建的-ajax-helpers)
-    - [3.1 form_for](#form_for)
-    - [3.2 form_tag](#form_tag)
-    - [3.3 link_to](#link_to)
-    - [3.4 button_to](#button_to)
-  - [4. 伺服器端的考量](#伺服器端的考量)
-    - [簡單的例子](#簡單的例子)
-  - [5. Turbolinks](#turbolinks)
-    - [Turbolinks 工作原理](#turbolinks-工作原理)
-    - [頁面變化的事件](#頁面變化的事件)
-  - [6. 其他資源](#其他資源)
-
-Ajax 介紹
-------------------------
+## Ajax 介紹
 
 為了要理解 Ajax，首先要了解瀏覽器平常的工作原理。
 
@@ -51,17 +26,16 @@ Rails 出廠內建 CoffeeScript，故以下的例子皆以 CoffeeScript 撰寫�
 
 用 jQuery 發送 Ajax 請求的例子：
 
-```coffeescript
-$.ajax(url: "/test").done (html) ->
-  $("#results").append html
-```
+{lang="js"}
+    $.ajax(url: "/test").done (html) ->
+      $("#results").append html
+
 
 這段程式從 `/test` 獲取資料，並將資料附加在 `id` 為 `#results` 的元素之後。
 
 Rails 對於使用這種技巧來撰寫網頁，提供了相當多的官方支援。幾乎鮮少會需要自己寫這樣的程式。以下章節將示範，如何用點簡單的技術，Rails 便能幫你寫出應用了 Ajax 的網站。
 
-Unobtrusive JavaScript
--------------------------------------
+## Unobtrusive JavaScript
 
 Rails 使用一種叫做 “[Unobtrusive JavaScript][ujs]” （縮寫為 UJS）的技術來處理 DOM 操作。這是來自前端社群的最佳實踐，但有些教學文件可能會用別種技術，來達成同樣的事情。
 
@@ -79,12 +53,11 @@ Rails 使用一種叫做 “[Unobtrusive JavaScript][ujs]” （縮寫為 UJS）
 
 尷尬吧？我們可以將 JavaScript 抽離出來，並用 CoffeeScript 改寫：
 
-```coffeescript
-paintIt = (element, backgroundColor, textColor) ->
-  element.style.backgroundColor = backgroundColor
-  if textColor?
-    element.style.color = textColor
-```
+{lang="js"}
+    paintIt = (element, backgroundColor, textColor) ->
+      element.style.backgroundColor = backgroundColor
+      if textColor?
+        element.style.color = textColor
 
 接著在頁面上：
 
@@ -102,18 +75,20 @@ paintIt = (element, backgroundColor, textColor) ->
 
 不是很漂亮，很冗贅。可以使用事件來簡化。給每個連結加上 `data-*` 屬性，接著給每個連結的 click 事件，加上一個 Handler：
 
-```coffeescript
-paintIt = (element, backgroundColor, textColor) ->
-  element.style.backgroundColor = backgroundColor
-  if textColor?
-    element.style.color = textColor
+{lang="js"}
+    paintIt = (element, backgroundColor, textColor) ->
+      element.style.backgroundColor = backgroundColor
+      if textColor?
+        element.style.color = textColor
 
-$ ->
-  $("a[data-background-color]").click ->
-    backgroundColor = $(this).data("background-color")
-    textColor = $(this).data("text-color")
-    paintIt(this, backgroundColor, textColor)
-```
+    $ ->
+      $("a[data-background-color]").click (e) ->
+        e.preventDefault()
+
+        backgroundColor = $(this).data("background-color")
+        textColor = $(this).data("text-color")
+        paintIt(this, backgroundColor, textColor)
+
 ```html
 <a href="#" data-background-color="#990000">Paint it red</a>
 <a href="#" data-background-color="#009900" data-text-color="#FFFFFF">Paint it green</a>
@@ -124,8 +99,7 @@ $ ->
 
 Rails 團隊強烈建議你用這種風格來撰寫 CoffeeScript (JavaScript)。
 
-內建的 Ajax Helpers
-----------------------
+## 內建的 Ajax Helpers
 
 Rails 在 View 提供了許多用 Ruby 寫的 Helper 方法來幫你產生 HTML。有時候會想在這些元素加上 Ajax，沒問題，Rails 會幫助你。
 
@@ -157,13 +131,12 @@ Rails 的 “Ajax Helpers” 實際上分成 JavaScript 所寫的 Helpers，與 
 
 提交成功與失敗可以透過 `ajax:success` 與 `ajax:error` 事件，來附加內容至 DOM：
 
-```coffeescript
-$(document).ready ->
-  $("#new_post").on("ajax:success", (e, data, status, xhr) ->
-    $("#new_post").append xhr.responseText
-  ).bind "ajax:error", (e, xhr, status, error) ->
-    $("#new_post").append "<p>ERROR</p>"
-```
+{lang="js"}
+    $(document).ready ->
+      $("#new_post").on("ajax:success", (e, data, status, xhr) ->
+        $("#new_post").append xhr.responseText
+      ).on "ajax:error", (e, xhr, status, error) ->
+        $("#new_post").append "<p>ERROR</p>"
 
 當然這只是個開始，更多可用的事件可在 [jQuery-ujs 的維基頁面][jquery-ujs-wiki]上可找到。
 
@@ -209,11 +182,10 @@ $(document).ready ->
 
 並寫一點 CoffeeScript：
 
-```coffeescript
-$ ->
-  $("a[data-remote]").on "ajax:success", (e, data, status, xhr) ->
-    alert "The post was deleted."
-```
+{lang="js"}
+    $ ->
+      $("a[data-remote]").on "ajax:success", (e, data, status, xhr) ->
+        alert "The post was deleted."
 
 就這麼簡單。
 
@@ -240,8 +212,7 @@ $ ->
 
 由於這只是個 `<form>`，所有 `form_for` 可用的東西，也可以應用在 `button_to`。
 
-伺服器端的考量
---------------------
+## 伺服器端的考量
 
 Ajax 不只是 Client-side 的事，伺服器也要出力。人們傾向 Ajax requests 返回 JSON，而不是 HTML，讓我們看看如何返回 JSON。
 
@@ -311,8 +282,7 @@ index 頁面上半部列出用戶，下半部提供新建用戶的表單。
 $("<%= escape_javascript(render @user) %>").appendTo("#users");
 ```
 
-Turbolinks
--------------
+## Turbolinks
 
 Rails 4 出廠內建 [Turbolinks Gem](https://github.com/rails/turbolinks)。
 
@@ -330,9 +300,8 @@ gem 'turbolinks'
 
 並在 CoffeeScript Manifest 檔案（`app/assets/javascripts/application.js`）裡加入：
 
-```coffeescript
-//= require turbolinks
-```
+{lang="js"}
+    //= require turbolinks
 
 要給某些 link 禁用 Turbolinks，給該標籤加上 `data-no-turbolink` attribute 即可：
 
@@ -344,24 +313,19 @@ gem 'turbolinks'
 
 撰寫 CoffeeScript 時，通常會想在頁面加載時做某些處理，搭配 jQuery，通常會寫出像是下面的程式碼：
 
-```coffeescript
-$(document).ready ->
-  alert "page has loaded!"
-```
+{lang="js"}
+    $(document).ready ->
+      alert "page has loaded!"
 
 而 Turbolinks 覆寫了頁面加載邏輯，依賴 `$(document).ready` 的程式碼不會被執行。必須改寫成：
 
-```coffeescript
-$(document).on "page:change", ->
-  alert "page has loaded!"
-```
+{lang="js"}
+    $(document).on "page:change", ->
+      alert "page has loaded!"
 
 關於更多細節，其他可以綁定的事件等，參考 [Turbolinks 的 README](https://github.com/rails/turbolinks/blob/master/README.md)。
 
-其他資源
------------------
-
-中文推薦閱讀 [@Rei](https://twitter.com/chloerei) 所寫的 [Rails 3.2 的 Ajax 嚮導][rails-3-2-ajax-by-rei]。
+## 其他資源
 
 了解更多相關內容，請參考以下連結：
 
@@ -370,6 +334,10 @@ $(document).on "page:change", ->
 * [Rails 3 Remote Links and Forms: A Definitive Guide](http://www.alfajango.com/blog/rails-3-remote-links-and-forms/)
 * [Railscasts: Unobtrusive JavaScript](http://railscasts.com/episodes/205-unobtrusive-javascript)
 * [Railscasts: Turbolinks](http://railscasts.com/episodes/390-turbolinks)
+
+## 譯者補充
+
+中文推薦閱讀 [@Rei](https://twitter.com/chloerei) 所寫的 [Rails 3.2 的 Ajax 嚮導][rails-3-2-ajax-by-rei]。
 
 [jquery-ujs-wiki]: https://github.com/rails/jquery-ujs/wiki/ajax
 [ps]: https://developer.mozilla.org/en-US/docs/DOM/Manipulating_the_browser_history#The_pushState(\).C2.A0method
@@ -380,5 +348,4 @@ $(document).on "page:change", ->
 [button_to]: http://api.rubyonrails.org/classes/ActionView/Helpers/UrlHelper.html#method-i-button_to
 
 [ujs]: http://zh.wikipedia.org/zh-tw/Unobtrusive_JavaScript
-
 [rails-3-2-ajax-by-rei]: http://chloerei.com/2012/04/21/rails-3-2-ajax-guide/
