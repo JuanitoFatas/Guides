@@ -26,10 +26,10 @@ Rails 出廠內建 CoffeeScript，故以下的例子皆以 CoffeeScript 撰寫�
 
 用 jQuery 發送 Ajax 請求的例子：
 
-{lang="js"}
-    $.ajax(url: "/test").done (html) ->
-      $("#results").append html
-
+```javascript
+$.ajax(url: "/test").done (html) ->
+  $("#results").append html
+```
 
 這段程式從 `/test` 獲取資料，並將資料附加在 `id` 為 `#results` 的元素之後。
 
@@ -53,11 +53,12 @@ Rails 使用一種叫做 “[Unobtrusive JavaScript][ujs]” （縮寫為 UJS）
 
 尷尬吧？我們可以將 JavaScript 抽離出來，並用 CoffeeScript 改寫：
 
-{lang="js"}
-    paintIt = (element, backgroundColor, textColor) ->
-      element.style.backgroundColor = backgroundColor
-      if textColor?
-        element.style.color = textColor
+```javascript
+paintIt = (element, backgroundColor, textColor) ->
+  element.style.backgroundColor = backgroundColor
+  if textColor?
+    element.style.color = textColor
+```
 
 接著在頁面上：
 
@@ -75,19 +76,20 @@ Rails 使用一種叫做 “[Unobtrusive JavaScript][ujs]” （縮寫為 UJS）
 
 不是很漂亮，很冗贅。可以使用事件來簡化。給每個連結加上 `data-*` 屬性，接著給每個連結的 click 事件，加上一個 Handler：
 
-{lang="js"}
-    paintIt = (element, backgroundColor, textColor) ->
-      element.style.backgroundColor = backgroundColor
-      if textColor?
-        element.style.color = textColor
+```javascript
+paintIt = (element, backgroundColor, textColor) ->
+  element.style.backgroundColor = backgroundColor
+  if textColor?
+    element.style.color = textColor
 
-    $ ->
-      $("a[data-background-color]").click (e) ->
-        e.preventDefault()
+$ ->
+  $("a[data-background-color]").click (e) ->
+    e.preventDefault()
 
-        backgroundColor = $(this).data("background-color")
-        textColor = $(this).data("text-color")
-        paintIt(this, backgroundColor, textColor)
+    backgroundColor = $(this).data("background-color")
+    textColor = $(this).data("text-color")
+    paintIt(this, backgroundColor, textColor)
+```
 
 ```html
 <a href="#" data-background-color="#990000">Paint it red</a>
@@ -131,12 +133,13 @@ Rails 的 “Ajax Helpers” 實際上分成 JavaScript 所寫的 Helpers，與 
 
 提交成功與失敗可以透過 `ajax:success` 與 `ajax:error` 事件，來附加內容至 DOM：
 
-{lang="js"}
-    $(document).ready ->
-      $("#new_post").on("ajax:success", (e, data, status, xhr) ->
-        $("#new_post").append xhr.responseText
-      ).on "ajax:error", (e, xhr, status, error) ->
-        $("#new_post").append "<p>ERROR</p>"
+```javascript
+$(document).ready ->
+  $("#new_post").on("ajax:success", (e, data, status, xhr) ->
+    $("#new_post").append xhr.responseText
+  ).on "ajax:error", (e, xhr, status, error) ->
+    $("#new_post").append "<p>ERROR</p>"
+```
 
 當然這只是個開始，更多可用的事件可在 [jQuery-ujs 的維基頁面][jquery-ujs-wiki]上可找到。
 
@@ -182,10 +185,11 @@ Rails 的 “Ajax Helpers” 實際上分成 JavaScript 所寫的 Helpers，與 
 
 並寫一點 CoffeeScript：
 
-{lang="js"}
-    $ ->
-      $("a[data-remote]").on "ajax:success", (e, data, status, xhr) ->
-        alert "The post was deleted."
+```javascript
+$ ->
+  $("a[data-remote]").on "ajax:success", (e, data, status, xhr) ->
+    alert "The post was deleted."
+```
 
 就這麼簡單。
 
@@ -300,8 +304,9 @@ gem 'turbolinks'
 
 並在 CoffeeScript Manifest 檔案（`app/assets/javascripts/application.js`）裡加入：
 
-{lang="js"}
-    //= require turbolinks
+```javascript
+//= require turbolinks
+```
 
 要給某些 link 禁用 Turbolinks，給該標籤加上 `data-no-turbolink` attribute 即可：
 
@@ -313,15 +318,17 @@ gem 'turbolinks'
 
 撰寫 CoffeeScript 時，通常會想在頁面加載時做某些處理，搭配 jQuery，通常會寫出像是下面的程式碼：
 
-{lang="js"}
-    $(document).ready ->
-      alert "page has loaded!"
+```javascript
+$(document).ready ->
+  alert "page has loaded!"
+```
 
 而 Turbolinks 覆寫了頁面加載邏輯，依賴 `$(document).ready` 的程式碼不會被執行。必須改寫成：
 
-{lang="js"}
-    $(document).on "page:change", ->
-      alert "page has loaded!"
+```javascript
+$(document).on "page:change", ->
+  alert "page has loaded!"
+```
 
 關於更多細節，其他可以綁定的事件等，參考 [Turbolinks 的 README](https://github.com/rails/turbolinks/blob/master/README.md)。
 
