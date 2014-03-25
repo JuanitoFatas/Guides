@@ -9,39 +9,7 @@ __學習目標__
 * 撰寫 Rake task 來管理資料庫的 schema。
 * 了解 Migration 與 schema.rb 的關係。
 
-# 目錄
-
-- [1. 概要](#1-概要)
-- [2. 新增 Migration](#2-新增-migration)
-  - [2.1 新增獨立的 Migration](#21-新增獨立的-migration)
-  - [2.2 Model 產生器](#22-model-產生器)
-  - [2.3 類型修飾符](#23-類型修飾符)
-- [3. 撰寫 Migration](#3-撰寫-migration)
-  - [3.1 產生 Table](#31-產生-table)
-    - [3.2 產生 Join Table](#32-產生-join-table)
-    - [3.3 變更 Table](#33-變更-table)
-    - [3.4 Helpers 不夠用怎麼辦](#34-helpers-不夠用怎麼辦)
-    - [3.5 使用 `change` 方法](#35-使用-change-方法)
-    - [3.6 使用 `reversible`](#36-使用-reversible)
-    - [3.7 使用 `up`、`down` 方法](#37-使用-up、down-方法)
-    - [3.8 取消之前的 Migration](#38-取消之前的-migration)
-- [4. 執行 Migrations](#4-執行-migrations)
-  - [4.1 回滾](#41-回滾)
-  - [4.2 設定資料庫](#42-設定資料庫)
-  - [4.3 重置資料庫](#43-重置資料庫)
-  - [4.4 執行特定的 migration](#44-執行特定的-migration)
-  - [4.5 在不同環境下執行 migration](#45-在不同環境下執行-migration)
-  - [4.6 修改執行中 Migration 的輸出](#46-修改執行中-migration-的輸出)
-- [5. 修改現有的 Migrations](#5-修改現有的-migrations)
-- [6. Schema Dumping 與你](#6-schema-dumping-與你)
-  - [6.1 Schema 有什麼用](#61-schema-有什麼用)
-  - [6.2 Schema Dump 的種類](#62-schema-dump-的種類)
-  - [6.3 Schema Dumps 與版本管理](#63-schema-dumps-與版本管理)
-- [7. Active Record 與 Referential Integrity](#7-active-record-與-referential-integrity)
-- [8. Migrations 與 Seed Data](#8-migrations-與-seed-data)
-- [延伸閱讀](#延伸閱讀)
-
-# 1. 概要
+## 概要
 
 Migration 讓你...
 
@@ -123,9 +91,9 @@ end
 
 這裡的 `up` 就是 migrate；`down` 便是 rollback。
 
-# 2. 新增 Migration
+## 新增 Migration
 
-## 2.1 新增獨立的 Migration
+### 新增獨立的 Migration
 
 __Migration 存在那裡？__
 
@@ -284,7 +252,7 @@ class CreateJoinTableCustomerProduct < ActiveRecord::Migration
 end
 ```
 
-## 2.2 Model 產生器
+### Model 產生器
 
 看看 `rails generate model` 會產生出來的 Migration 例子，比如：
 
@@ -317,7 +285,7 @@ __Active Record 支援的欄位類型有哪些？__
 > `:datetime`, `:timestamp`, `:time`, <br>
 > `:date`, `:binary`, `:boolean`, `:references`
 
-## 2.3 類型修飾符
+### 類型修飾符
 
 類型後面還可加修飾符（modifiers），支持下列修飾符：
 
@@ -346,9 +314,9 @@ class AddDetailsToProducts < ActiveRecord::Migration
 end
 ```
 
-# 3. 撰寫 Migration
+## 撰寫 Migration
 
-## 3.1 產生 Table
+### 產生 Table
 
 `create_table`，通常用 `rails generate model` 或是 `rails generate scaffold` 的時候會自動產生 Migration，裡面就帶有 `create_table`，比如 `rails g model product name:string`：
 
@@ -371,7 +339,7 @@ end
 更多可查閱 [create_table](http://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-create_table) API。
 
 
-### 3.2 產生 Join Table
+### 產生 Join Table
 
 `create_join_table` 會產生 HABTM (HasAndBelongsToMany) join table。常見的應用場景：
 
@@ -402,7 +370,7 @@ create_join_table :products, :categories do |t|
 end
 ```
 
-### 3.3 變更 Table
+### 變更 Table
 
 `change_table` 用來變更已存在的 table。
 
@@ -417,7 +385,7 @@ end
 
 會移除 `description` 與 `name` 欄位。新增 `part_number` （字串）欄位，並打上索引。並將 `upccode` 欄位重新命名為 `upc_code`。
 
-### 3.4 Helpers 不夠用怎麼辦
+### Helpers 不夠用怎麼辦
 
 Active Record 提供的 Helper 無法完成你想做的事情時，可以使用 `execute` 方法來執行任何 SQL 語句：
 
@@ -436,7 +404,7 @@ Product.connection.execute('UPDATE `products` SET `price`=`free` WHERE 1')
 [`ActiveRecord::ConnectionAdapters::Table`](http://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/Table.html)
 (which provides the methods available on the object yielded by `change_table`).
 
-### 3.5 使用 `change` 方法
+### 使用 `change` 方法
 
 撰寫 Migration 主要用 `change`，大多數情況 Active Record 知道如何執行逆操作。下面是 Active Record 可以自動產生逆操作的方法：
 
@@ -458,7 +426,7 @@ Product.connection.execute('UPDATE `products` SET `price`=`free` WHERE 1')
 
 如果你想有更多的靈活性，可以使用 `reversible` 或是撰寫 `up`、`down` 方法。
 
-### 3.6 使用 `reversible`
+### 使用 `reversible`
 
 複雜的 Migration Active Record 可能不知道怎麼變回來。這時候可以使用 `reversible`：
 
@@ -495,7 +463,7 @@ class ExampleMigration < ActiveRecord::Migration
 使用 `reversible` 會確保執行順序的正確性。若你做了不可逆的操作，比如刪除資料。Active Record 會在執行 `down` 區塊時，raise 一個 `ActiveRecord::IrreversibleMigration`。
 
 
-### 3.7 使用 `up`、`down` 方法
+### 使用 `up`、`down` 方法
 
 可以不用 `change` 撰寫 Migration，使用經典的 `up`、`down` 寫法。
 
@@ -538,7 +506,7 @@ end
 
 如果 Migration 是不可逆的操作，要在 `down` raise 一個 `ActiveRecord::IrreversibleMigration`。
 
-### 3.8 取消之前的 Migration
+### 取消之前的 Migration
 
 用 `revert` 來取消先前的 Migration：
 
@@ -608,7 +576,7 @@ end
 
 這其實就是 `revert` 做的事。
 
-# 4. 執行 Migrations
+## 執行 Migrations
 
 Rails 提供了許多 Rake 任務用來執行 Migration。
 
@@ -626,7 +594,7 @@ $ rake db:rollback VERSION=20080906120000
 
 會從最新的版本，執行 `down` 方法到 `20080906120000` 但不包含（`20080906120000`）
 
-## 4.1 回滾
+### 回滾
 
 最常見的就是回滾上一個 task。假設你犯了個錯誤，並想修正。可以：
 
@@ -650,11 +618,11 @@ $ rake db:migrate:redo STEP=3
 
 這些操作用 `db:migrate` 都辦得到，只是方便你使用而已。
 
-## 4.2 設定資料庫
+### 設定資料庫
 
 The `rake db:setup` 會新建資料庫、載入 schema、並用種子資料來初始化資料庫。
 
-## 4.3 重置資料庫
+### 重置資料庫
 
 `rake db:reset` 會將資料庫 drop 掉，並重新恢復。
 
@@ -662,7 +630,7 @@ The `rake db:setup` 會新建資料庫、載入 schema、並用種子資料來�
 
 __注意！__ 這跟執行所有的 Migration 不一樣。這只會用 `schema.rb` 裡的內容來操作。如果 Migration 不能回退， `rake db:reset` 也是派不上用場的！了解更多參考 [schema dumping and you](#7-schema-dumping-與你)。
 
-## 4.4 執行特定的 migration
+### 執行特定的 Migration
 
 用 `db:migrate:up` 或 `db:migrate:down` tasks，並指定版本：
 
@@ -672,7 +640,7 @@ $ rake db:migrate:up VERSION=20080906120000
 
 會執行在 `20080906120000` 版本之前的 Migration 裡面的 `change`、`up` 方法。若已經遷移過了，則 Active Record 不會執行。
 
-## 4.5 在不同環境下執行 migration
+### 在不同環境下執行 Migration
 
 默認 `rake db:migrate` 會在 `development` 環境下執行。可以通過指定 `RAILS_ENV` 來指定運行的環境，比如在 `test` 環境下：
 
@@ -680,7 +648,7 @@ $ rake db:migrate:up VERSION=20080906120000
 $ rake db:migrate RAILS_ENV=test
 ```
 
-## 4.6 修改執行中 Migration 的輸出
+### 修改執行中 Migration 的輸出
 
 Migration 通常會告訴你他們幹了什麼，並花了多長時間。建立 table 及加 index 的輸出可能像是這樣：
 
@@ -739,7 +707,7 @@ end
 
 如果想 Active Record 完全不要輸出訊息，執行 `rake db:migrate VERBOSE=false`。
 
-# 5. 修改現有的 Migrations
+## 修改現有的 Migrations
 
 有時候 Migration 可能會寫錯。修正過來之後，要先執行 `rake db:rollback`，再執行 `rake db:migrate`。
 
@@ -747,9 +715,9 @@ end
 
 `revert` 方法用來寫新的 Migration 取消先前的 Migration 很有用。
 
-# 7. Schema Dumping 與你
+## Schema Dumping 與你
 
-## 7.1 Schema 有什麼用
+### Schema 有什麼用
 
 Migrations，是可以變化的，要確定資料庫的 schema，還是看 `db/schema.rb` 最可靠，或是由 Active Record 產生的 SQL 檔案。`db/schema.rb` 與 SQL 都是用來表示資料庫目前的狀態，不要修改這兩個檔案。
 
@@ -761,7 +729,7 @@ Migrations，是可以變化的，要確定資料庫的 schema，還是看 `db/s
 
 [annotate_models](https://github.com/ctran/annotate_models) Gem 自動替你在每個 model 最上方，添加或更新註解，描述每個 model 屬性的註解。
 
-## 7.2 Schema Dump 的種類
+### Schema Dump 的種類
 
 兩種方式來 dump schema。可在 `config/application.rb` 來設定：
 
@@ -795,11 +763,11 @@ end
 
 載入這些 schema ，不過是執行裡面的 SQL 語句。定義上來說，這可以完美拷貝一份資料庫的結構。但使用 `:sql` schema 格式，便不能從一種 RDBMS 資料庫，切換到另一種 RDBMS 資料庫了。
 
-## 7.3 Schema Dumps 與版本管理
+### Schema Dumps 與版本管理
 
 因為 schema dumps 是資料庫 schema 最完整的來源，強烈建議你將 schema 用版本管理來追蹤。
 
-# 8. Active Record 與 Referential Integrity
+## Active Record 與 Referential Integrity
 
 Active Record 認為事情要在 model 裡處理好，不是在資料庫。也是因為這個原因，像是 trigger 或 foreign key constraints 這種牽涉到資料庫的事情不常使用
 
@@ -807,7 +775,7 @@ Active Record 認為事情要在 model 裡處理好，不是在資料庫。也�
 
 雖然 Active Record 沒有直接提供任何工具來解決這件事，但你可以用 `execute` 方法來執行 SQL 語句，也可以使用像是 [foreigner](https://github.com/matthuhiggins/foreigner) 這種 Gem。Foreigner 給  Active Record 加入 foreign key 的支援（包含在 `db/schema.rb` dumping foreign key。）
 
-# 9. Migrations 與 Seed Data
+## Migrations 與 Seed Data
 
 有些人使用 Migration 來加資料到資料庫：
 
@@ -835,7 +803,9 @@ end
 
 這個辦法比用 Migration 來建立資料到空的資料庫好。
 
-# 延伸閱讀
+## 譯者補充
+
+### 延伸閱讀
 
 [Active Record Migrations — Ruby on Rails Guides](http://edgeguides.rubyonrails.org/migrations.html)
 
