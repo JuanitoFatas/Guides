@@ -33,13 +33,12 @@ __學習目標__
   - [4.5 在不同環境下執行 migration](#45-在不同環境下執行-migration)
   - [4.6 修改執行中 Migration 的輸出](#46-修改執行中-migration-的輸出)
 - [5. 修改現有的 Migrations](#5-修改現有的-migrations)
-- [6. 在 Migration 裡使用 Model](#6-在-migration-裡使用-model)
-- [7. Schema Dumping 與你](#7-schema-dumping-與你)
-  - [7.1 Schema 有什麼用](#71-schema-有什麼用)
-  - [7.2 Schema Dump 的種類](#72-schema-dump-的種類)
-  - [7.3 Schema Dumps 與版本管理](#73-schema-dumps-與版本管理)
-- [8. Active Record 與 Referential Integrity](#8-active-record-與-referential-integrity)
-- [9. Migrations 與 Seed Data](#9-migrations-與-seed-data)
+- [6. Schema Dumping 與你](#6-schema-dumping-與你)
+  - [6.1 Schema 有什麼用](#61-schema-有什麼用)
+  - [6.2 Schema Dump 的種類](#62-schema-dump-的種類)
+  - [6.3 Schema Dumps 與版本管理](#63-schema-dumps-與版本管理)
+- [7. Active Record 與 Referential Integrity](#7-active-record-與-referential-integrity)
+- [8. Migrations 與 Seed Data](#8-migrations-與-seed-data)
 - [延伸閱讀](#延伸閱讀)
 
 # 1. 概要
@@ -643,8 +642,6 @@ $ rake db:rollback STEP=3
 
 會取消前 3 次 migrations。
 
-
-
 `db:migrate:redo` 用來回退、接著再一次 `rake db:migrate`，同樣接受 `STEP` 參數：
 
 ```bash
@@ -749,137 +746,6 @@ end
 編輯現有的 Migration 不太好，因為會增加一起開發的人更多工作量。尤其是 Migration 已經上 production，應該要寫個新的 Migration，來達成你想完成的事情。
 
 `revert` 方法用來寫新的 Migration 取消先前的 Migration 很有用。
-
-# 6. 在 Migration 裡使用 Model
-
-在 migration 新增或更新資料的時候，常常會需要用到 model，讓你可以取出現有的資料。但有些事情要注意：
-
-舉例來說，
-
-一、用了尚未存在的資料庫欄位。
-
-二、用了即將新增的資料庫欄位。
-
-下面舉個例子，祝英台跟梁山伯協同開發，手上是兩份相同的代碼，裡面有一個 `Product` model：
-
-梁山伯去度假了。
-
-祝英台給 `products` table 新增了一個 Migration，加了新欄位，並初始化這個欄位。
-
-```ruby
-# db/migrate/20100513121110_add_flag_to_product.rb
-
-class AddFlagToProduct < ActiveRecord::Migration
-  def change
-    add_column :products, :flag, :boolean
-    reversible do |dir|
-      dir.up { Product.update_all flag: false }
-    end
-  end
-end
-```
-
-也給新欄位加了驗證措施：
-
-```ruby
-# app/models/product.rb
-
-class Product < ActiveRecord::Base
-  validates :flag, inclusion: { in: [true, false] }
-end
-```
-
-祝英台加入第二個驗證，並加入另一個欄位到 `products` table，並初始化：
-
-```ruby
-# db/migrate/20100515121110_add_fuzz_to_product.rb
-
-class AddFuzzToProduct < ActiveRecord::Migration
-  def change
-    add_column :products, :fuzz, :string
-    reversible do |dir|
-      dir.up { Product.update_all fuzz: 'fuzzy' }
-    end
-  end
-end
-```
-
-又給 `Product` model 的新欄位加了驗證：
-
-```ruby
-# app/models/product.rb
-
-class Product < ActiveRecord::Base
-  validates :flag, inclusion: { in: [true, false] }
-  validates :fuzz, presence: true
-end
-```
-
-Migrations 在祝英台的電腦上都沒有問題。
-
-梁山伯放假回來之後：
-
-* 先更新代碼 - 包含了最新的 Migrations 及 Product model。
-* 接著執行 `rake db:migrate`
-
-Migration 突然失敗了，因為當執行第一個 Migration 時，model 試圖去驗證第二次新增的欄位，而這些欄位資料庫裡還沒有：
-
-```
-rake aborted!
-An error has occurred, this and all later migrations canceled:
-
-undefined method `fuzz' for #<Product:0x000001049b14a0>
-```
-
-一個解決辦法是在 Migration 裡建一個 local model。這可以騙過 Rails，便不會觸發驗證。
-
-使用 local model 時，在更新資料庫資料之前，記得要呼叫 `Product.reset_column_information` 來刷新 Active Record 對 `Product` model 的 cache。
-
-如果祝英台早知道這麼做，就不會有問題啦：
-
-```ruby
-# db/migrate/20100513121110_add_flag_to_product.rb
-
-class AddFlagToProduct < ActiveRecord::Migration
-  class Product < ActiveRecord::Base
-  end
-
-  def change
-    add_column :products, :flag, :boolean
-    Product.reset_column_information
-    reversible do |dir|
-      dir.up { Product.update_all flag: false }
-    end
-  end
-end
-```
-
-```ruby
-# db/migrate/20100515121110_add_fuzz_to_product.rb
-
-class AddFuzzToProduct < ActiveRecord::Migration
-  class Product < ActiveRecord::Base
-  end
-
-  def change
-    add_column :products, :fuzz, :string
-    Product.reset_column_information
-    reversible do |dir|
-      dir.up { Product.update_all fuzz: 'fuzzy' }
-    end
-  end
-end
-```
-
-可能有比上面的例子更糟的情況。
-
-舉例來說，想想看，要是祝英台新增了一個 Migration，選擇性地對某些 product 更新 `description` 欄位。她執行 Migration，提交代碼，並開始做下個功能：添加 `fuzz` 到 products 表。
-
-她為這個新功能，又新增了兩個 Migration，一個加入新欄位，另一個根據 product 的屬性選擇性更新 `fuzz` 欄位。
-
-這些 Migration 在祝英台的計算機上執行沒有問題。但當梁山伯放假回來，執行 `rake db:migrate`，梁山伯碰到奇妙的 bug：`description` 有預設值，還新增了 `fuzz` 欄位，且所有的 products 的 `fuzz` 都是 `nil`。
-
-解決辦法是再次使用 `Product.reset_column_information`，確保 Active Record 在對這些 record 處理之前，知道整個 table 的結構。
 
 # 7. Schema Dumping 與你
 
