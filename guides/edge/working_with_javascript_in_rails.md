@@ -111,7 +111,9 @@ paintIt = (element, backgroundColor, textColor) ->
     element.style.color = textColor
 
 $ ->
-  $("a[data-background-color]").click ->
+  $("a[data-background-color]").click (e) ->
+    e.preventDefault()
+
     backgroundColor = $(this).data("background-color")
     textColor = $(this).data("text-color")
     paintIt(this, backgroundColor, textColor)
@@ -180,7 +182,7 @@ bind to the `ajax:success` event. On failure, use `ajax:error`. Check it out:
 $(document).ready ->
   $("#new_post").on("ajax:success", (e, data, status, xhr) ->
     $("#new_post").append xhr.responseText
-  ).bind "ajax:error", (e, xhr, status, error) ->
+  ).on "ajax:error", (e, xhr, status, error) ->
     $("#new_post").append "<p>ERROR</p>"
 ```
 
