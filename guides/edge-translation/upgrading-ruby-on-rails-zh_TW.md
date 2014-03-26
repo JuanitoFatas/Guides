@@ -4,7 +4,7 @@
 
 ## 一般建議
 
-升級前先想好為何要升級：需要新功能？舊代碼越來越難維護？有多少時間？有能力解決升級的兼容問題嗎？等等。
+升級前請先想好為何要升級：需要新功能？舊代碼越來越難維護？有多少時間？有能力解決升級的兼容問題嗎？等等。
 
 ### 測試覆蓋度
 
@@ -31,7 +31,9 @@ Rails 通常與最新的 Ruby 一起前進：
 
 ### CSRF protection from remote `<script>` tags
 
-Or, "whaaat my tests are failing!!!?"
+或是...."阿阿阿測試為什麼壞了！！！？"
+
+跨站
 
 Cross-site request forgery (CSRF) protection now covers GET requests with
 JavaScript responses, too. That prevents a third-party site from referencing
@@ -709,9 +711,10 @@ gem 'rails', '3.2.17'
 group :assets do
   gem 'sass-rails',   '~> 3.2.6'
   gem 'coffee-rails', '~> 3.2.2'
-  gem 'uglifier',     '>= 1.2.3'
+  gem 'uglifier',     '~> 2.5.0'
 end
 ```
+
 
 ### config/environments/development.rb
 
@@ -870,3 +873,5 @@ $ rake db:sessions:clear
 ### Remove :cache and :concat options in asset helpers references in views
 
 * With the Asset Pipeline the :cache and :concat options aren't used anymore, delete these options from your views.
+
+## 譯者補充
