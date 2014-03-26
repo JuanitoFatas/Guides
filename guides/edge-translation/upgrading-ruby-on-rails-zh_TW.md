@@ -682,7 +682,7 @@ Active Record Observer 與 Action Controller Sweeper 被抽成獨立的 Gem：[r
 
 ### sprockets-rails
 
-* `assets:precompile:primary` 被移除了。請改用 `assets:precompile`。
+* 移除了 `assets:precompile:primary` 與 `assets:precompile:all`。請改用 `assets:precompile`。
 * `config.assets.compress` 選項應改成 `config.assets.js_compressor`：
 
 ```ruby
@@ -697,14 +697,14 @@ config.assets.js_compressor = :uglifier
 
 若你的應用程式為 3.1.x 之前的版本，先升級至 3.1，再試著升級至 3.2。
 
-下面幫助你從 Rails 3.1 升級至 Rails 3.2.15（Rails 3.2.x 的最後版本）。
+下面幫助你從 Rails 3.1 升級至 Rails 3.2.17（Rails 3.2.x 的最後版本）。
 
 ### Gemfile
 
 修改 `Gemfile`。
 
 ```ruby
-gem 'rails', '3.2.15'
+gem 'rails', '3.2.17'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.6'
