@@ -1,26 +1,16 @@
 # Ruby on Rails 升級指南
 
-__特別要強調的翻譯名詞__
-
-> application 應用程式
-> deprecated 棄用的、不宜使用的、過時的：即將在下一版移除的功能。
-> middleware 中間件
-> route 路由
-> raise 拋出
-> exception 異常
-> association 關聯
-
 本篇講解升級至新版 Rails 所需的步驟。同時也提供各版本的升級指導。
 
-# 1. 一般建議
+## 一般建議
 
 升級前先想好為何要升級：需要新功能？舊代碼越來越難維護？有多少時間？有能力解決升級的兼容問題嗎？等等。
 
-## 1.1 測試覆蓋度
+### 測試覆蓋度
 
 最好的方式來確保應用程式升級後仍然正常工作，便是有全面的測試覆蓋度。若沒有撰寫測試，將會花上許多時間，來處理升級帶來的新變化。在升級前，先確保測試覆蓋得夠廣吧！
 
-## 1.2 Ruby 版本
+### Ruby 版本
 
 Rails 通常與最新的 Ruby 一起前進：
 
@@ -37,9 +27,7 @@ Rails 通常與最新的 Ruby 一起前進：
 
 > [Ruby 1.8.7（官方已經不維護了）](https://www.ruby-lang.org/zh_tw/news/2013/06/30/we-retire-1-8-7/)
 
-# 2. 從 Rails 4.0 升級到 Rails 4.1
-
-**本小節正在施工中**
+## 從 Rails 4.0 升級到 Rails 4.1
 
 ### CSRF protection from remote `<script>` tags
 
@@ -105,15 +93,72 @@ secrets, you need to:
 
 5. Restart your server.
 
-## 2.1 Changes to test helper
+### Changes to test helper
 
 If your test helper contains a call to ActiveRecord::Migration.check_pending! this can be removed. The check is now done automatically when you require 'test_help', although leaving this line in your helper is not harmful in any way.
 
-## 2.2 處理 JSON 的變化
+### Cookies serializer
 
-Rails 4.1 有些關於 JSON 處理的重要變化。
+Applications created before Rails 4.1 uses `Marshal` to serialize cookie values into
+the signed and encrypted cookie jars. If you want to use the new `JSON`-based format
+in your application, you can add an initializer file with the following content:
 
-### 2.2.1 移除 MultiJSON
+  ```ruby
+  Rails.application.config.cookies_serializer :hybrid
+  ```
+
+This would transparently migrate your existing `Marshal`-serialized cookies into the
+new `JSON`-based format.
+
+When using the `:json` or `:hybrid` serializer, you should beware that not all
+Ruby objects can be serialized as JSON. For example, `Date` and `Time` objects
+will be serialized as strings, and `Hash`es will have their keys stringified.
+
+```ruby
+class CookiesController < ApplicationController
+  def set_cookie
+    cookies.encrypted[:expiration_date] = Date.tomorrow # => Thu, 20 Mar 2014
+    redirect_to action: 'read_cookie'
+  end
+
+  def read_cookie
+    cookies.encrypted[:expiration_date] # => "2014-03-20"
+  end
+end
+```
+
+It's advisable that you only store simple data (strings and numbers) in cookies.
+If you have to store complex objects, you would need to handle the conversion
+manually when reading the values on subsequent requests.
+
+If you use the cookie session store, this would apply to the `session` and
+`flash` hash as well.
+
+### Flash structure changes
+
+Flash message keys are
+[normalized to strings](https://github.com/rails/rails/commit/a668beffd64106a1e1fedb71cc25eaaa11baf0c1). They
+can still be accessed using either symbols or strings. Lopping through the flash
+will always yield string keys:
+
+```ruby
+flash["string"] = "a string"
+flash[:symbol] = "a symbol"
+
+# Rails < 4.1
+flash.keys # => ["string", :symbol]
+
+# Rails >= 4.1
+flash.keys # => ["string", "symbol"]
+```
+
+Make sure you are comparing Flash message keys against strings.
+
+### Changes in JSON handling
+
+There are a few major changes related to JSON handling in Rails 4.1.
+
+#### MultiJSON removal
 
 MultiJSON has reached its [end-of-life](https://github.com/rails/rails/pull/10576)
 and has been removed from Rails.
@@ -128,7 +173,7 @@ WARNING: Do not simply replace `MultiJson.dump` and `MultiJson.load` with
 `JSON.dump` and `JSON.load`. These JSON gem APIs are meant for serializing and
 deserializing arbitrary Ruby objects and are generally [unsafe](http://www.ruby-doc.org/stdlib-2.0.0/libdoc/json/rdoc/JSON.html#method-i-load).
 
-### 2.2.2 JSON gem compatibility
+#### JSON gem compatibility
 
 Historically, Rails had some compatibility issues with the JSON gem. Using
 `JSON.generate` and `JSON.dump` inside a Rails application could produce
@@ -149,7 +194,7 @@ end
 >> JSON.generate(FooBar.new, quirks_mode: true) # => "\"#<FooBar:0x007fa80a481610>\""
 ```
 
-### 2.2.3 New JSON encoder
+#### New JSON encoder
 
 The JSON encoder in Rails 4.1 has been rewritten to take advantage of the JSON
 gem. For most applications, this should be a transparent change. However, as
@@ -159,11 +204,11 @@ part of the rewrite, the following features have been removed from the encoder:
 2. Support for the `encode_json` hook
 3. Option to encode `BigDecimal` objects as numbers instead of strings
 
-If you application depends on one of these features, you can get them back by
+If your application depends on one of these features, you can get them back by
 adding the [`activesupport-json_encoder`](https://github.com/rails/activesupport-json_encoder)
 gem to your Gemfile.
 
-## 2.3 Usage of `return` within inline callback blocks
+### Usage of `return` within inline callback blocks
 
 Previously, Rails allowed inline callback blocks to use `return` this way:
 
@@ -207,9 +252,7 @@ Controller (e.g. `before_action`).
 
 See [this pull request](https://github.com/rails/rails/pull/13271) for more
 details.
-
-
-## 2.4 Methods defined in Active Record fixtures
+### Methods defined in Active Record fixtures
 
 Rails 4.1 evaluates each fixture's ERB in a separate context, so helper methods
 defined in a fixture will not be available in other fixtures.
@@ -227,13 +270,133 @@ end
 ActiveRecord::FixtureSet.context_class.send :include, FixtureFileHelpers
 ```
 
-# 3. 從 Rails 3.2 升級到 Rails 4.0
+### I18n enforcing available locales
+
+Rails 4.1 now defaults the I18n option `enforce_available_locales` to `true`,
+meaning that it will make sure that all locales passed to it must be declared in
+the `available_locales` list.
+
+To disable it (and allow I18n to accept *any* locale option) add the following
+configuration to your application:
+
+```ruby
+config.i18n.enforce_available_locales = false
+```
+
+Note that this option was added as a security measure, to ensure user input could
+not be used as locale information unless previously known, so it's recommended not
+to disable this option unless you have a strong reason for doing so.
+
+### Mutator methods called on Relation
+
+`Relation` no longer has mutator methods like `#map!` and `#delete_if`. Convert
+to an `Array` by calling `#to_a` before using these methods.
+
+It intends to prevent odd bugs and confusion in code that call mutator
+methods directly on the `Relation`.
+
+```ruby
+# Instead of this
+Author.where(name: 'Hank Moody').compact!
+
+# Now you have to do this
+authors = Author.where(name: 'Hank Moody').to_a
+authors.compact!
+```
+
+### Changes on Default Scopes
+
+Default scopes are no longer overriden by chained conditions.
+
+In previous versions when you defined a `default_scope` in a model
+it was overriden by chained conditions in the same field. Now it
+is merged like any other scope.
+
+Before:
+
+```ruby
+class User < ActiveRecord::Base
+  default_scope { where state: 'pending' }
+  scope :active, -> { where state: 'active' }
+  scope :inactive, -> { where state: 'inactive' }
+end
+
+User.all
+# SELECT "users".* FROM "users" WHERE "users"."state" = 'pending'
+
+User.active
+# SELECT "users".* FROM "users" WHERE "users"."state" = 'active'
+
+User.where(state: 'inactive')
+# SELECT "users".* FROM "users" WHERE "users"."state" = 'inactive'
+```
+
+After:
+
+```ruby
+class User < ActiveRecord::Base
+  default_scope { where state: 'pending' }
+  scope :active, -> { where state: 'active' }
+  scope :inactive, -> { where state: 'inactive' }
+end
+
+User.all
+# SELECT "users".* FROM "users" WHERE "users"."state" = 'pending'
+
+User.active
+# SELECT "users".* FROM "users" WHERE "users"."state" = 'pending' AND "users"."state" = 'active'
+
+User.where(state: 'inactive')
+# SELECT "users".* FROM "users" WHERE "users"."state" = 'pending' AND "users"."state" = 'inactive'
+```
+
+To get the previous behavior it is needed to explicitly remove the
+`default_scope` condition using `unscoped`, `unscope`, `rewhere` or
+`except`.
+
+```ruby
+class User < ActiveRecord::Base
+  default_scope { where state: 'pending' }
+  scope :active, -> { unscope(where: :state).where(state: 'active') }
+  scope :inactive, -> { rewhere state: 'inactive' }
+end
+
+User.all
+# SELECT "users".* FROM "users" WHERE "users"."state" = 'pending'
+
+User.active
+# SELECT "users".* FROM "users" WHERE "users"."state" = 'active'
+
+User.inactive
+# SELECT "users".* FROM "users" WHERE "users"."state" = 'inactive'
+```
+
+### Rendering content from string
+
+Rails 4.1 introduces `:plain`, `:html`, and `:body` options to `render`. Those
+options are now the preferred way to render string-based content, as it allows
+you to specify which content type you want the response sent as.
+
+* `render :plain` will set the content type to `text/plain`
+* `render :html` will set the content type to `text/html`
+* `render :body` will *not* set the content type header.
+
+From the security standpoint, if you don't expect to have any markup in your
+response body, you should be using `render :plain` as most browsers will escape
+unsafe content in the response for you.
+
+We will be deprecating the use of `render :text` in a future version. So please
+start using the more precise `:plain:`, `:html`, and `:body` options instead.
+Using `render :text` may pose a security risk, as the content is sent as
+`text/html`.
+
+## 從 Rails 3.2 升級到 Rails 4.0
 
 若你是 3.2 以前的版本，先升到 3.2 再試著升到 Rails 4.0。
 
 以下是針對從 Rails 3.2 升級至 Rails 4.0 的說明。
 
-## 3.1 HTTP PATCH
+### HTTP PATCH
 
 > 這裡的路由作動詞解。
 
@@ -293,7 +456,7 @@ end
 
 至於為什麼要改成 `PATCH`，參考[這篇文章](http://weblog.rubyonrails.org/2012/2/26/edge-rails-patch-is-the-new-primary-http-method-for-updates/)。
 
-### 3.1.1 關於 media types 的說明
+#### 關於 media types 的說明
 
 <!-- The errata for the `PATCH` verb [specifies that a 'diff' media type should be
 used with `PATCH`](http://www.rfc-editor.org/errata_search.php?rfc=5789). One
@@ -326,7 +489,7 @@ Mime::Type.register 'application/json-patch+json', :json_patch
 
 由於 JSON Patch 最近才有 RFC，仍未有好的 Ruby 函式庫出現。Aaron Patterson 的 [hana](https://github.com/tenderlove/hana) 是一個實作 JSON Patch 的 gem，但仍未完整支援 Spec 裡所有最近更新的內容。
 
-## 3.2 Gemfile
+### Gemfile
 
 Rails 4.0 移除了 Gemfile 裡的 `assets` group。升級至 4.0 時要移除這個 group，同時需要更新 `config/application.rb`：
 
@@ -336,11 +499,11 @@ Rails 4.0 移除了 Gemfile 裡的 `assets` group。升級至 4.0 時要移除�
 Bundler.require(:default, Rails.env)
 ```
 
-## 3.3 vendor/plugins
+### vendor/plugins
 
 Rails 4.0 不再支援從 `vendor/plugins` 載入 plugins。__必須__將任何 plugins 包成 Gems ，再加入至 Gemfile。若你不想包成 Gem，則可將 plugin 移到 `lib/my_plugin/*`，並使用適當的 initializer：`config/initializer/my_plugin.rb`。
 
-## 3.4 Active Record
+### Active Record
 
 * Rails 4.0 移除了 Active Record 的 identity map，因為這會產生[某些關聯的不一致性](https://github.com/rails/rails/commit/302c912bf6bcd0fa200d964ec2dc4a44abe328a6)。也就是說 `config.active_record.identity_map` ，這個設定不再有作用。
 
@@ -385,11 +548,11 @@ scope :active, -> { where active: true }
 
 * 要重新啟用舊式的 Finder 方法，可以使用 [activerecord-deprecated_finders gem](https://github.com/rails/activerecord-deprecated_finders)。
 
-## 3.5 Active Resource
+### Active Resource
 
 Rails 4.0 將 Active Resource 抽成獨立的 Gem。若你仍需要此功能，將 [Active Resource gem](https://github.com/rails/activeresource) 加到 Gemfile。
 
-## 3.6 Active Model
+### Active Model
 
 * Rails 4.0 更改了 `ActiveModel::Validations::ConfirmationValidator` 錯誤附加的方式。以前 confirmation 驗證錯誤發生時，錯誤會加到 `attribute` 上，現在則會附加到 `:#{attribute}_confirmation`。
 
@@ -404,7 +567,7 @@ Rails 4.0 將 Active Resource 抽成獨立的 Gem。若你仍需要此功能，�
 # end
 ```
 
-## 3.7 Action Pack
+### Action Pack
 
 * Rails 4.0 引入了 `ActiveSupport::KeyGenerator`，用來產生及檢查已簽署的 cookie。請在 `config/initializers/secret_token.rb` 加入新的 `secret_key_base`：
 
@@ -505,19 +668,19 @@ config.middleware.insert_before(Rack::Lock, ActionDispatch::BestStandardsSupport
 * Rails 4.0 棄用了 `ActionController::Response` 請使用 `ActionDispatch::Response`。
 * Rails 4.0 棄用了 `ActionController::Routing` 請使用 `ActionDispatch::Routing`。
 
-## 3.8 Active Support
+### Active Support
 
 Rails 4.0 移除了 `ERB::Util#json_escape` 的 `j` 別名。因為 `j` 已經被 `ActionView::Helpers::JavaScriptHelper#escape_javascript` 所使用。
 
-## 3.9 Helpers 加載順序
+### Helpers 加載順序
 
 Rails 4.0 更改了 Helpers 的加載順序。之前是將各目錄的 Helpers 集合起來，並按字母排序加載。Rails 4.0 之後，Helpers 會按照目錄原本加載的順序，並在各自的目錄裡按字母依序加載。除非你特別使用了 `helpers_path` 參數，否則這個改動只會影響到從 Engine 加載 Helpers 的順序。如果你正依賴加載的順序，可以檢查升級後這些 Helper 是否正常工作。如果想更改 Engine 加載的順序，可以使用 `config.railties_order=` 方法。
 
-## 3.10 Active Record Observer 與 Action Controller Sweeper
+### Active Record Observer 與 Action Controller Sweeper
 
 Active Record Observer 與 Action Controller Sweeper 被抽成獨立的 Gem：[rails-observers](https://github.com/rails/rails-observers)。
 
-## 3.11 sprockets-rails
+### sprockets-rails
 
 * `assets:precompile:primary` 被移除了。請改用 `assets:precompile`。
 * `config.assets.compress` 選項應改成 `config.assets.js_compressor`：
@@ -526,17 +689,17 @@ Active Record Observer 與 Action Controller Sweeper 被抽成獨立的 Gem：[r
 config.assets.js_compressor = :uglifier
 ```
 
-## 3.12 sass-rails
+### sass-rails
 
 * `asset-url("rails.png", image)` 改成 `asset-url("rails.png")`
 
-# 4. 從 Rails 3.1 升級到 Rails 3.2
+## 從 Rails 3.1 升級到 Rails 3.2
 
 若你的應用程式為 3.1.x 之前的版本，先升級至 3.1，再試著升級至 3.2。
 
 下面幫助你從 Rails 3.1 升級至 Rails 3.2.15（Rails 3.2.x 的最後版本）。
 
-## 4.1 Gemfile
+### Gemfile
 
 修改 `Gemfile`。
 
@@ -550,7 +713,7 @@ group :assets do
 end
 ```
 
-## 4.2 config/environments/development.rb
+### config/environments/development.rb
 
 There are a couple of new configuration settings that you should add to your development environment:
 
@@ -563,7 +726,7 @@ config.active_record.mass_assignment_sanitizer = :strict
 config.active_record.auto_explain_threshold_in_seconds = 0.5
 ```
 
-## 4.3 config/environments/test.rb
+### config/environments/test.rb
 
 The `mass_assignment_sanitizer` configuration setting should also be be added to `config/environments/test.rb`:
 
@@ -572,21 +735,21 @@ The `mass_assignment_sanitizer` configuration setting should also be be added to
 config.active_record.mass_assignment_sanitizer = :strict
 ```
 
-## 4.4 vendor/plugins
+### vendor/plugins
 
 Rails 3.2 deprecates `vendor/plugins` and Rails 4.0 will remove them completely. While it's not strictly necessary as part of a Rails 3.2 upgrade, you can start replacing any plugins by extracting them to gems and adding them to your Gemfile. If you choose not to make them gems, you can move them into, say, `lib/my_plugin/*` and add an appropriate initializer in `config/initializers/my_plugin.rb`.
 
-## 4.5 Active Record
+### Active Record
 
 Option `:dependent => :restrict` has been removed from `belongs_to`. If you want to prevent deleting the object if there are any associated objects, you can set `:dependent => :destroy` and return `false` after checking for existence of association from any of the associated object's destroy callbacks.
 
-# 5. 從 Rails 3.0 升級到 Rails 3.1
+## 從 Rails 3.0 升級到 Rails 3.1
 
 If your application is currently on any version of Rails older than 3.0.x, you should upgrade to Rails 3.0 before attempting an update to Rails 3.1.
 
 The following changes are meant for upgrading your application to Rails 3.1.11, the latest 3.1.x version of Rails.
 
-## 5.1 Gemfile
+### Gemfile
 
 Make the following changes to your `Gemfile`.
 
@@ -605,7 +768,7 @@ end
 gem 'jquery-rails'
 ```
 
-## 5.2 config/application.rb
+### config/application.rb
 
 The asset pipeline requires the following additions:
 
@@ -621,7 +784,7 @@ If your application is using an "/assets" route for a resource you may want chan
 config.assets.prefix = '/asset-files'
 ```
 
-## 5.3 config/environments/development.rb
+### config/environments/development.rb
 
 Remove the RJS setting `config.action_view.debug_rjs = true`.
 
@@ -635,7 +798,7 @@ config.assets.compress = false
 config.assets.debug = true
 ```
 
-## 5.4 config/environments/production.rb
+### config/environments/production.rb
 
 Again, most of the changes below are for the asset pipeline. You can read more about these in the [Asset Pipeline](asset_pipeline.html) guide.
 
@@ -659,7 +822,7 @@ config.assets.digest = true
 # config.force_ssl = true
 ```
 
-## 5.5 config/environments/test.rb
+### config/environments/test.rb
 
 You can help test performance with these additions to your test environment:
 
@@ -669,7 +832,7 @@ config.serve_static_assets = true
 config.static_cache_control = 'public, max-age=3600'
 ```
 
-## 5.6 config/initializers/wrap_parameters.rb
+### config/initializers/wrap_parameters.rb
 
 Add this file with the following contents, if you wish to wrap parameters into a nested hash. This is on by default in new applications.
 
@@ -689,7 +852,7 @@ ActiveSupport.on_load(:active_record) do
 end
 ```
 
-## 5.7 config/initializers/session_store.rb
+### config/initializers/session_store.rb
 
 You need to change your session key to something new, or remove all sessions:
 
@@ -704,6 +867,6 @@ or
 $ rake db:sessions:clear
 ```
 
-## 5.8 Remove :cache and :concat options in asset helpers references in views
+### Remove :cache and :concat options in asset helpers references in views
 
 * With the Asset Pipeline the :cache and :concat options aren't used anymore, delete these options from your views.
