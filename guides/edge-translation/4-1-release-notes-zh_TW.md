@@ -279,17 +279,14 @@ xhr :post, :create, format: :js
 
 * 記錄受 deep munge 影響的 key。 [PR#13813](https://github.com/rails/rails/pull/13813)
 
-* New config option `config.action_dispatch.perform_deep_munge` to opt out of
-  params "deep munging" that was used to address security vulnerability
-  CVE-2013-0155. ([Pull Request](https://github.com/rails/rails/pull/13188))
+* 新設定： `config.action_dispatch.perform_deep_munge`。用來決定是不是要開啟 "deep munging" （deep munge 用來處理安全風險 CVE-2013-0155）。 [PR#13188](https://github.com/rails/rails/pull/13188)
 
-* 新設定 `config.action_dispatch.cookies_serializer`。用來指定加密與簽署 cookie jars 的 serializer。 [PR#13692](https://github.com/rails/rails/pull/13692) & [PR#13945](https://github.com/rails/rails/pull/13945) & [更多資訊](http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html#cookies-serializer)
+* 新設定：`config.action_dispatch.cookies_serializer`。用來指定加密與簽署 cookie jars 的 serializer。 [PR#13692](https://github.com/rails/rails/pull/13692) & [PR#13945](https://github.com/rails/rails/pull/13945) & [更多資訊](http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html#cookies-serializer)
 
 * 新增 `render :plain`、`render :html` 以及 `render
   :body`。 [PR#14062](https://github.com/rails/rails/pull/14062) & [更多資訊](http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html#rendering-content-from-string)
 
-Action Mailer
--------------
+## Action Mailer
 
 請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/actionmailer/CHANGELOG.md) 來了解更多細節。
 
@@ -299,8 +296,7 @@ Action Mailer
 
 *  Action Mailer 產生 mail 的時間會寫到 log 裡。 [PR#12556](https://github.com/rails/rails/pull/12556)
 
-Active Record
--------------
+## Active Record
 
 請參考 [Changelog][AR-CHANGELOG] 來了解更多細節。
 
