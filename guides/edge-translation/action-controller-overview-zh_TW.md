@@ -15,7 +15,7 @@
 
 ----------------------------------------------------------------
 
-## Controller 做了什麼？
+## Controller 是幹嘛的？
 
 Action Controller 是 MVC 的 C，Controller。一個 Request 進來，路由決定是那個 Controller 的工作後，便把工作指派給 Controller，Controller 負責處理該 Request，給出對應的 Output。幸運的是，Action Controller 把大部分的苦差事都給您辦好了，您只需按照一些規範來寫代碼，事情便豁然開朗。
 
@@ -25,8 +25,7 @@ Controller 因此可以想成是 Model 與 View 的中間人。負責替 Model �
 
 路由過程的細節可以查閱 [Rails Routing From the Outside In](http://edgeguides.rubyonrails.org/routing.html)。
 
-2. Controller 命名慣例
------------------------
+## Controller 命名慣例
 
 Rails Controller 的命名慣例是以**複數形式結尾**，但也是有例外，比如 `ApplicationController`。舉例來說：
 
@@ -38,8 +37,7 @@ Rails Controller 的命名慣例是以**複數形式結尾**，但也是有例�
 
 注意：Controller 的命名慣例與 Model 的命名慣例不同，Model 命名慣例是**單數形式**。
 
-3. Methods 與 Actions
--------------------------
+## Methods 與 Actions
 
 Controller 繼承自 `ApplicationController`，但 Controller 其實與普通的 Ruby Class 一樣，都擁有 methods。當應用程式收到 Request 時，Router 會決定這要交給那個 Controller 的那個 Action 來處理，接著 Rails 實例化出該 Controller 的 instance，呼叫與 Action 名稱相同的 Method。
 
@@ -68,8 +66,7 @@ end
 
 只有公有方法可以被外部作為 `action` 呼叫。所以輔助方法、Filter 方法，最好藏在 `protected` 或 `private` 裡。
 
-4. 參數
-------------
+## Parameters
 
 通常會想在 Controller 裡，存取由使用者傳入的資料，或是其他的參數。Web 應用程式有兩種參數。第一種是由 URL 的部份組成，這種叫做 “query string parameters”。Query String 是 URL `?` 號後面的任何字串，通常是透過 HTTP `GET` 傳遞。第二種參數是 “POST data”，透過 HTTP `POST` 傳遞，故得名 “POST data”。這通常是使用者從表單填入的訊息。叫做 POST data 的原因是，這種參數只能作為 HTTP POST Request 的一部分來傳遞。Rails 並不區分 Query String Parameter 或 POST Parameter，兩者皆可在 Controller 裡取用，從 `params` hash 裡取出：
 
@@ -331,8 +328,7 @@ def product_params
 end
 ```
 
-5. Session
---------------------
+## Session
 
 應用程式為每個使用者都準備了一個 Session，可以儲存小量的資料，資料在 Request 之間都會保存下來。Session 僅在 Controller 與 View 可存取，有下列幾種儲存機制：
 
@@ -551,8 +547,7 @@ class ClientsController < ApplicationController
 end
 ```
 
-6. Cookies
-------------------
+## Cookies
 
 應用程式可以在客戶端儲存小量的資料，這種資料我們稱作 Cookie。Cookie 在 Request 與 Session 之間是不會消失的。Rails 提供了簡單存取 Cookies 的方法，`cookies`，跟 `session` 方法很像：
 
@@ -640,8 +635,7 @@ manually when reading the values on subsequent requests.
 If you use the cookie session store, this would apply to the `session` and
 `flash` hash as well.
 
-7. Rendering XML 與 JSON 資料
-------------------------------------------
+## Rendering XML 與 JSON 資料
 
 在 `ActionController` 裡 render `XML` 或是 `JSON` 真是再簡單不過了，看看下面這個用鷹架產生出的 Controller：
 
@@ -660,8 +654,7 @@ end
 
 注意這裡 `render` XML 的時候是寫 `render xml: @users`，而不是 `render xml: @users.to_xml`。如果 `render` 的物件不是字串的話，Rails 會自動替我們呼叫 `to_xml`。
 
-8. Filters
-------------------------
+## Filters
 
 Filter 是在 Controller action 執行前、後、之間所執行的方法。Filter 可繼承，也就是在 `ApplicationController` 定義的 Filter，在整個應用程式裡都會執行該 Filter。
 
@@ -819,8 +812,7 @@ end
 
 參閱 [Security Guide](http://edgeguides.rubyonrails.org/security.html) 來了解更多關於安全性的問題。
 
-10. The Request and Response Objects
-------------------------------------------------------
+## The Request and Response Objects
 
 Request 生命週期裡，每個 Controller 都有兩個 accessor 方法，`request` 與 `response`。
 
@@ -885,8 +877,7 @@ response.headers["X-TOP-SECRET-HEADER"] = '123456789'
 
 若是要設定每個 response 的預設 Header，可在 `config/application.rb` 裡設定，詳情參考 [Configuring Rails Applications - 3.8 Configuring Action Dispatch](http://edgeguides.rubyonrails.org/configuring.html#configuring-action-dispatch) 一節。
 
-11. HTTP Authentications
-------------------------------------
+## HTTP Authentications
 
 Rails 內建了兩種 HTTP 驗證方法：
 
@@ -937,8 +928,7 @@ end
 
 最後 `authenticate` 返回 `true` 或 `false`，決定驗證是否成功。
 
-12. Streaming and File Downloads
-----------------------------------------
+## Streaming and File Downloads
 
 有時候想給使用者傳檔案，而不是渲染 HTML 頁面。Rails 所有的 Controller 都有 `send_data` 與 `send_file`，可以用來串流資料給 Client。`send_file` 是個簡單傳檔案的方法，只要輸入檔案名稱，便可串流內容。
 Sometimes you may want to send a file to the user instead of rendering an HTML page. All controllers in Rails have the `send_data` and the `send_file` methods, which will both stream data to the client. `send_file` is a convenience method that lets you provide the name of a file on the disk and it will stream the contents of that file for you.
@@ -1093,8 +1083,7 @@ end
 * 忘記關掉 Response Stream 會使 socket 一直開著。記得使用完 Response Stream 要 `close` 掉。
 * WEBrick 伺服器會自動將所有的 Response 放入緩衝區，所以 `include ActionController::Live` 不會起作用。必須使用不會自動將 Response 放入緩衝區的伺服器。
 
-13. Log Filtering
----------------------
+## Log Filtering
 
 Rails 為每個環境都存有 log 檔案，放在 `log` 目錄下。這些 log 檔案拿來 debug 非常有用，可以瞭解應用程式當下究竟在幹嘛。但正式運行的應用程式，可能不想要記錄所有的資訊。
 
@@ -1124,8 +1113,7 @@ config.filter_redirect.concat ['s3.amazonaws.com', /private_path/]
 
 匹配的 URL 會被標記成 `'[FILTERED]'`。
 
-14. Rescue
----------------
+## Rescue
 
 > Exception 異常
 
@@ -1191,8 +1179,7 @@ end
 
 注意！特定的異常只有在 `ApplicationController` 裡面可以捕捉的到，因為他們在 Controller 被實例化出來之前，或 action 執行之前便發生了。參考 Pratik Naik 的[文章](http://m.onkey.org/2008/7/20/rescue-from-dispatching)來了解更多關於這個問題的細節。
 
-15. Force HTTPS protocol
------------------------------------
+## Force HTTPS protocol
 
 有時候出於安全性考量，可能想讓特定的 Controller 只可以透過 HTTPS 來存取。可以在 Controller 使用 `force_ssl` 方法：
 
