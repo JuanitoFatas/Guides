@@ -26,7 +26,7 @@ zh-CN 請移駕由 [@AndorChen][ac] 翻譯的 => http://docs-china.com/rails/
 
 ## Copyright Declaration
 
-Unless otherwise noted, all contents are under CC BY-SA 3.0 license or any later version. <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc/3.0/88x31.png" /></a>
+Unless otherwise noted, all contents are under CC BY-SA 3.0 license or any later version. <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a>
 
 Code is under Public Domain (Unlicense). Please read [UNLICENSE](/UNLICENSE).
 
