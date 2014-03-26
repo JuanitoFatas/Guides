@@ -1,6 +1,6 @@
 # Active Record Migrations
 
-Migration，遷移。Active Record 眾多功能之一，可以追蹤管理資料庫的 schema，而不是寫死。最棒的是 Migration 提供了簡潔的 Ruby DSL，讓管理資料庫的 table 更方便。
+Migration，遷移。Active Record 眾多功能之一，可以追蹤[管理資料庫的 schema](http://en.wikipedia.org/wiki/Schema_migration)，而不是寫死。最棒的是 Migration 提供了簡潔的 Ruby DSL，讓管理資料庫的 table 更方便。
 
 __學習目標__
 
