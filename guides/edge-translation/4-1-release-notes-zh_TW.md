@@ -519,8 +519,7 @@ Active Model
 
 * `String#gsub(pattern,'')` 可簡寫為 `String#remove(pattern)`。[Commit](https://github.com/rails/rails/commit/5da23a3f921f0a4a3139495d2779ab0d3bd4cb5f)
 
-* 新增 `Hash#compact` and `Hash#compact!` for removing items with nil value
-  from hash. ([Pull Request](https://github.com/rails/rails/pull/13632))
+* 新增 `Hash#compact` 與 `Hash#compact!` 來移除 hash 中的 nil。 [PR#13632](https://github.com/rails/rails/pull/13632)
 
 * `blank?` and `present?` 會返回 singleton。 ([Commit](https://github.com/rails/rails/commit/126dc47665c65cd129967cbd8a5926dddd0aa514))
 
