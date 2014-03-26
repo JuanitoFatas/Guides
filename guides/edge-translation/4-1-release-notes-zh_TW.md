@@ -48,7 +48,7 @@ Spring is running:
 
 請查閱 [Spring README](https://github.com/rails/spring/blob/master/README.md) 了解所有功能。
 
-參考 [Ruby on Rails 升級指南](http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html) 來了解如何在現有專案裡導入 Spring。
+參考 [Ruby on Rails 升級指南](http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html)來了解如何在現有專案裡導入 Spring。
 
 ### `config/secrets.yml`
 
@@ -71,7 +71,7 @@ development:
 => "SOMEKEY"
 ```
 
-參考 [Ruby on Rails 升級指南](http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html) 來了解如何在現有專案裡導入此功能。
+參考 [Ruby on Rails 升級指南](http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html)來了解如何在現有專案裡導入此功能。
 
 ### Action Pack Variants
 
@@ -168,7 +168,7 @@ Rails.application.message_verifier(:remember_me).verify(tampered_token)
 
 ### Module#concerning
 
-一種更自然、輕量級的方式來拆分類的功能。
+一種自然、輕量級的方式來拆分 Class 內的職責。
 
 ```ruby
 class Todo < ActiveRecord::Base
@@ -277,23 +277,16 @@ xhr :post, :create, format: :js
 
 * 將 Action View 從 Action Pack 裡整個抽離出來。 [PR#11032](https://github.com/rails/rails/pull/11032)
 
-* Log which keys were affected by deep
-  munge. ([Pull Request](https://github.com/rails/rails/pull/13813))
+* 記錄受 deep munge 影響的 key。 [PR#13813](https://github.com/rails/rails/pull/13813)
 
 * New config option `config.action_dispatch.perform_deep_munge` to opt out of
   params "deep munging" that was used to address security vulnerability
   CVE-2013-0155. ([Pull Request](https://github.com/rails/rails/pull/13188))
 
-* New config option `config.action_dispatch.cookies_serializer` for specifying a
-  serializer for the signed and encrypted cookie jars. (Pull Requests
-  [1](https://github.com/rails/rails/pull/13692),
-  [2](https://github.com/rails/rails/pull/13945) /
-  [More Details](upgrading_ruby_on_rails.html#cookies-serializer))
+* 新設定 `config.action_dispatch.cookies_serializer`。用來指定加密與簽署 cookie jars 的 serializer。 [PR#13692](https://github.com/rails/rails/pull/13692) & [PR#13945](https://github.com/rails/rails/pull/13945) & [更多資訊](http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html#cookies-serializer)
 
-* Added `render :plain`, `render :html` and `render
-  :body`. ([Pull Request](https://github.com/rails/rails/pull/14062) /
-  [More Details](upgrading_ruby_on_rails.html#rendering-content-from-string))
-
+* 新增 `render :plain`、`render :html` 以及 `render
+  :body`。 [PR#14062](https://github.com/rails/rails/pull/14062) & [更多資訊](http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html#rendering-content-from-string)
 
 Action Mailer
 -------------
@@ -302,8 +295,7 @@ Action Mailer
 
 ### 值得一提的變化
 
-* Added mailer previews feature based on 37 Signals mail_view
-  gem. ([Commit](https://github.com/rails/rails/commit/d6dec7fcb6b8fddf8c170182d4fe64ecfc7b2261))
+* 新增 Mailer 預覽信件功能（基於 37 Signals 公司所開發的 mail_view Gem。）[Commit](https://github.com/rails/rails/commit/d6dec7fcb6b8fddf8c170182d4fe64ecfc7b2261)
 
 *  Action Mailer 產生 mail 的時間會寫到 log 裡。 [PR#12556](https://github.com/rails/rails/pull/12556)
 
@@ -374,11 +366,9 @@ Active Record
 
 ### 值得一提的變化
 
-* Default scopes are no longer overridden by chained conditions.
+* 預設 scope 不會再被一連串的條件語句給覆蓋掉。
 
-  Before this change when you defined a `default_scope` in a model
-  it was overridden by chained conditions in the same field. Now it
-  is merged like any other scope. [More Details](upgrading_ruby_on_rails.html#changes-on-default-scopes).
+  之前的行為：若在 Model 有定義 `default_scope`，則會被一連串的條件語句給覆蓋掉。現在會像其它 Scope 一樣合併。[更多細節](http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html#changes-on-default-scopes)
 
 * 新增 `ActiveRecord::Base.to_param` 來顯示漂亮的 URL。 [PR#12891](https://github.com/rails/rails/pull/12891)
 
@@ -416,32 +406,21 @@ Active Record
 
 * 若明確指定了 `RAILS_ENV`，則不要建立或刪除資料庫。 [PR#13629](https://github.com/rails/rails/pull/13629)
 
-* `Relation` no longer has mutator methods like `#map!` and `#delete_if`. Convert
-  to an `Array` by calling `#to_a` before using these methods. ([Pull Request](https://github.com/rails/rails/pull/13314))
+* `Relation` 不再有像是 `#map!` 以及 `#delete_if` 的 mutator 方法。要使用這些方法之前，先呼叫 `#to_a`。 [PR#13314](https://github.com/rails/rails/pull/13314)
 
-* `find_in_batches`, `find_each`, `Result#each` and `Enumerable#index_by` now
-  return an `Enumerator` that can calculate its
-  size. ([Pull Request](https://github.com/rails/rails/pull/13938))
+* `find_in_batches`、`find_each`、`Result#each` 以及 `Enumerable#index_by`，現在會回傳 `Enumerator`，可以用來計算 `size`。[PR#13938](https://github.com/rails/rails/pull/13938)
 
-* `scope`, `enum` and Associations now raise on "dangerous" name
-  conflicts. ([Pull Request](https://github.com/rails/rails/pull/13450),
-  [Pull Request](https://github.com/rails/rails/pull/13896))
+* `scope`、`enum` 以及 Associations 現在對“危險的”名稱會拋出警告。 [PR#13450](https://github.com/rails/rails/pull/13450) & [PR#13896](https://github.com/rails/rails/pull/13896)
 
-* `second` through `fifth` methods act like the `first`
-  finder. ([Pull Request](https://github.com/rails/rails/pull/13757))
+* 確保 `second` 致 `fifth` 的 Finder 方法與 `first` 行為一致。 [PR#13757](https://github.com/rails/rails/pull/13757)
 
-* Make `touch` fire the `after_commit` and `after_rollback`
-  callbacks. ([Pull Request](https://github.com/rails/rails/pull/12031))
+* `touch` 方法會觸發 `after_commit` 與 `after_rollback` Callbacks. [PR#12031](https://github.com/rails/rails/pull/12031)
 
-* Enable partial indexes for `sqlite >= 3.8.0`.
-  ([Pull Request](https://github.com/rails/rails/pull/13350))
+* `sqlite >= 3.8.0` 啟用 partial indexes。 [PR#13350](https://github.com/rails/rails/pull/13350)
 
-* Make `change_column_null`
-  revertible. ([Commit](https://github.com/rails/rails/commit/724509a9d5322ff502aefa90dd282ba33a281a96))
+* 讓 `change_column_null` 是可逆操作。[Commit](https://github.com/rails/rails/commit/724509a9d5322ff502aefa90dd282ba33a281a96)
 
-* Added a flag to disable schema dump after migration. This is set to `false`
-  by default in the production environment for new applications.
-  ([Pull Request](https://github.com/rails/rails/pull/13948))
+* 加入一個 flag 來禁止資料庫遷移後的 schema dump。Production 環境預設為 `false`。 [PR#13948](https://github.com/rails/rails/pull/13948)
 
 Active Model
 ------------
@@ -456,12 +435,9 @@ Active Model
 
 * `ActiveModel::Dirty` 加入新的 API：`reset_changes` 與 `changes_applied`，來控制改變的狀態。
 
-* Ability to specify multiple contexts when defining a
-  validation. ([Pull Request](https://github.com/rails/rails/pull/13754))
+* 定義 validation 可以指定多個 context。 [PR#13754](https://github.com/rails/rails/pull/13754)
 
-* `attribute_changed?` now accepts a hash to check if the attribute was changed
-  `:from` and/or `:to` a given
-  value. ([Pull Request](https://github.com/rails/rails/pull/13131))
+* `attribute_changed?` 現在可以接受 hash，來檢查 attribute 是否從 `:from` 變到 `:to`。 [PR#13131](https://github.com/rails/rails/pull/13131)
 
 ## Active Support
 
@@ -518,8 +494,8 @@ Active Model
 
 * 棄用了 `ActiveSupport.encode_big_decimal_as_string` 選項。這個功能被抽成了[activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder) Gem，請參考 [PR#12183](https://github.com/rails/rails/pull/ 12183) 與[這裡](upgrading_ruby_on_rails.html#changes-in-json-handling)。
 
-* Deprecate custom `BigDecimal`
-  serialization. ([Pull Request](https://github.com/rails/rails/pull/13911))
+* 棄用自訂的 `BigDecimal`
+  serialization。 [PR#13911](https://github.com/rails/rails/pull/13911)
 
 ### 值得一提的變化
 
@@ -529,40 +505,30 @@ Active Model
 
 * 新增 `ActiveSupport::Testing::TimeHelpers#travel` 與 `#travel_to`。這些方法透過 stubbing `Time.now` 與 `Date.today`，可設定任何時間，坐時光旅行。
 
-* Added `ActiveSupport::Testing::TimeHelpers#travel_back`. This method returns
-  the current time to the original state, by removing the stubs added by `travel`
-  and `travel_to`. ([Pull Request](https://github.com/rails/rails/pull/13884))
+* 新增 `ActiveSupport::Testing::TimeHelpers#travel_back`。這個方法將當下時間回到原本的狀態。透過移除 `travel` 與 `travel_to` 加入的 stubs 辦到。 [PR#13884](https://github.com/rails/rails/pull/13884)
 
 * 新增 `Numeric#in_milliseconds`，像是 1 小時有幾毫秒：`1.hour.in_milliseconds`。可以將時間轉成毫秒，再餵給 JavaScript 的 `getTime()` 函數。[Commit](https://github.com/rails/rails/commit/423249504a2b468d7a273cbe6accf4f21cb0e643)
 
 * 新增了 `Date#middle_of_day`、`DateTime#middle_of_day` 與 `Time#middle_of_day`
   方法。同時添加了 `midday`、`noon`、`at_midday`、`at_noon`、`at_middle_of_day` 作為別名。[PR#10879](https://github.com/rails/rails/pull/10879)
 
-* Added `Date#all_week/month/quarter/year` for generating date
-  ranges. ([Pull Request](https://github.com/rails/rails/pull/9685))
+* 新增 `Date#all_week/month/quarter/year` 用來產生一組日期範圍。  [PR#9685](https://github.com/rails/rails/pull/9685)
 
-* Added `Time.zone.yesterday` and
-  `Time.zone.tomorrow`. ([Pull Request](https://github.com/rails/rails/pull/12822))
+* 新增 `Time.zone.yesterday` 以及
+  `Time.zone.tomorrow`。 [PR#12822](https://github.com/rails/rails/pull/12822)
 
 * `String#gsub(pattern,'')` 可簡寫為 `String#remove(pattern)`。[Commit](https://github.com/rails/rails/commit/5da23a3f921f0a4a3139495d2779ab0d3bd4cb5f)
 
-* Added `Hash#compact` and `Hash#compact!` for removing items with nil value
+* 新增 `Hash#compact` and `Hash#compact!` for removing items with nil value
   from hash. ([Pull Request](https://github.com/rails/rails/pull/13632))
 
-* `blank?` and `present?` commit to return
-  singletons. ([Commit](https://github.com/rails/rails/commit/126dc47665c65cd129967cbd8a5926dddd0aa514))
+* `blank?` and `present?` 會返回 singleton。 ([Commit](https://github.com/rails/rails/commit/126dc47665c65cd129967cbd8a5926dddd0aa514))
 
-* Default the new `I18n.enforce_available_locales` config to `true`, meaning
-  `I18n` will make sure that all locales passed to it must be declared in the
-  `available_locales`
-  list. ([Pull Request](https://github.com/rails/rails/commit/8e21ae37ad9fef6b7393a84f9b5f2e18a831e49a))
+* 新的設定： `I18n.enforce_available_locales` 預設是 `true`。代表 `I18n` 會確保所有傳入的 locale 都預先在 `available_locales` 裡聲明。 [PR#13341](https://github.com/rails/rails/pull/13341)
 
-* Introduce `Module#concerning`: a natural, low-ceremony way to separate
-  responsibilities within a
-  class. ([Commit](https://github.com/rails/rails/commit/1eee0ca6de975b42524105a59e0521d18b38ab81))
+* 引入 `Module#concerning`：一種自然、輕量級的方式來拆分 Class 內的職責。[Commit](https://github.com/rails/rails/commit/1eee0ca6de975b42524105a59e0521d18b38ab81)
 
-* Added `Object#presence_in` to simplify value whitelisting.
-  ([Commit](https://github.com/rails/rails/commit/4edca106daacc5a159289eae255207d160f22396))
+* 新增 `Object#presence_in` 來簡化對數值做白名單。[Commit](https://github.com/rails/rails/commit/4edca106daacc5a159289eae255207d160f22396)
 
 ## 致謝
 
@@ -574,7 +540,6 @@ Active Model
 
 [What's new in Rails 4.1 | Coherence.io](http://coherence.io/blog/2013/12/17/whats-new-in-rails-4-1.html)
 [What's new in Rails 4.1](http://www.slideshare.net/godfreykfc/rails-41)
-
 
 [rails]: https://github.com/rails/rails
 [Railties-CHANGELOG]: https://github.com/rails/rails/blob/4-1-stable/railties/CHANGELOG.md
