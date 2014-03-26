@@ -1,11 +1,4 @@
-Action Controller 概覽
-==========================
-
-__特別要強調的翻譯名詞__
-
-> application 應用程式 <br>
-> Parameters 參數 <br>
-> Client 客戶端
+# Action Controller 概覽
 
 本篇介紹 Controller 的工作原理、Controller 如何與應用程式的 Request 生命週期結合在一起。
 
@@ -22,8 +15,7 @@ __特別要強調的翻譯名詞__
 
 ----------------------------------------------------------------
 
-1. Controller 做了什麼？
---------------------------
+## Controller 做了什麼？
 
 Action Controller 是 MVC 的 C，Controller。一個 Request 進來，路由決定是那個 Controller 的工作後，便把工作指派給 Controller，Controller 負責處理該 Request，給出對應的 Output。幸運的是，Action Controller 把大部分的苦差事都給您辦好了，您只需按照一些規範來寫代碼，事情便豁然開朗。
 
@@ -121,6 +113,10 @@ GET /clients?ids[]=1&ids[]=2&ids[]=3
 注意：上例 URL 會編碼為 `"/clients?ids%5B%5D=1&ids%5B%5D=2&ids%5B%5D=3"`，因為 `[]` 對 URL 來說是非法字元。多數情況下，瀏覽器會處理字元合法與否的問題，自動將非法字元做編碼。Rails 收到時會自己解碼。但當你要手動將 Request 發給 Server 時，要記得自己處理好這件事。
 
 `params[:ids]` 現在會是 `["1", "2", "3"]`。注意參數的值永遠是 String。Rails 不會試著去臆測或是轉換類型。
+
+NOTE: Values such as `[]`, `[nil]` or `[nil, nil, ...]` in `params` are replaced
+with `nil` for security reasons by default. See [Security Guide](security.html#unsafe-query-generation)
+for more information.
 
 要送出 Hash 形式的參數，在中括號裡聲明 Hash 與 key 的名稱：
 
@@ -380,7 +376,7 @@ YourApp::Application.config.session_store :cookie_store, key: '_your_app_session
 YourApp::Application.config.session_store :cookie_store, key: '_your_app_session', domain: ".example.com"
 ```
 
-Rails 替 CookieStore 設了一個 secret key，用來簽署 Session 資料。這個 key 可以在 `config/initializers/secret_token.rb` 裡修改。
+Rails 替 CookieStore 設了一個 secret key，用來簽署 Session 資料。這個 key 可以在 `config/secrets.yml` 裡修改。
 
 在命令行敲入 `rake secret` 來產生新的一組 key，填到這個檔案裡，記得重開。若是開源專案，記得要保密 `secret_key_base`，如使用 [SettingsLogic](https://github.com/binarylogic/settingslogic) 這個 Gem。
 
@@ -391,10 +387,21 @@ Rails 替 CookieStore 設了一個 secret key，用來簽署 Session 資料。�
 # key 變了先前的 cookie 都會失效！
 
 # 確保 secret 至少有 30 個隨機字元，沒有一般的單字（防禦字典查表攻擊）。
-# 可以使用 `rake secret` 來產生安全的 secure key。
+# You can use `rake secret` to generate a secure secret key.
 
-# 若你將程式公開分享，則不要公開 secret_key_base。
-YourApp::Application.config.secret_key_base = '49d3f3de9ed86c74b94ad6bd0...'
+# Make sure the secrets in this file are kept private
+# if you're sharing your code publicly.
+
+development:
+  secret_key_base: a75d...
+
+test:
+  secret_key_base: 492f...
+
+# Do not keep production secrets in the repository,
+# instead read values from the environment.
+production:
+  secret_key_base: <%= ENV["SECRET_KEY_BASE"] %>
 ```
 
 **注意：更改 `secret_key_base` 之後，先前簽署的 Session 都會失效。**
@@ -577,6 +584,62 @@ end
 
 **注意 Session 用賦 `nil` 值來清空，cookie 要使用 `cookies.delete(:key)` 刪掉。**
 
+Rails also provides a signed cookie jar and an encrypted cookie jar for storing
+sensitive data. The signed cookie jar appends a cryptographic signature on the
+cookie values to protect their integrity. The encrypted cookie jar encrypts the
+values in addition to signing them, so that they cannot be read by the end user.
+Refer to the [API documentation](http://api.rubyonrails.org/classes/ActionDispatch/Cookies.html)
+for more details.
+
+These special cookie jars use a serializer to serialize the assigned values into
+strings and deserializes them into Ruby objects on read.
+
+You can specify what serializer to use:
+
+```ruby
+Rails.application.config.action_dispatch.cookies_serializer = :json
+```
+
+The default serializer for new applications is `:json`. For compatibility with
+old applications with existing cookies, `:marshal` is used when `serializer`
+option is not specified.
+
+You may also set this option to `:hybrid`, in which case Rails would transparently
+deserialize existing (`Marshal`-serialized) cookies on read and re-write them in
+the `JSON` format. This is useful for migrating existing applications to the
+`:json` serializer.
+
+It is also possible to pass a custom serializer that responds to `load` and
+`dump`:
+
+```ruby
+Rails.application.config.action_dispatch.cookies_serializer = MyCustomSerializer
+```
+
+When using the `:json` or `:hybrid` serializer, you should beware that not all
+Ruby objects can be serialized as JSON. For example, `Date` and `Time` objects
+will be serialized as strings, and `Hash`es will have their keys stringified.
+
+```ruby
+class CookiesController < ApplicationController
+  def set_cookie
+    cookies.encrypted[:expiration_date] = Date.tomorrow # => Thu, 20 Mar 2014
+    redirect_to action: 'read_cookie'
+  end
+
+  def read_cookie
+    cookies.encrypted[:expiration_date] # => "2014-03-20"
+  end
+end
+```
+
+It's advisable that you only store simple data (strings and numbers) in cookies.
+If you have to store complex objects, you would need to handle the conversion
+manually when reading the values on subsequent requests.
+
+If you use the cookie session store, this would apply to the `session` and
+`flash` hash as well.
+
 7. Rendering XML 與 JSON 資料
 ------------------------------------------
 
@@ -699,7 +762,7 @@ class ApplicationController < ActionController::Base
 end
 
 class LoginFilter
-  def self.filter(controller)
+  def self.before(controller)
     unless controller.send(:logged_in?)
       controller.flash[:error] = "You must be logged in"
       controller.redirect_to controller.new_login_url
@@ -710,8 +773,11 @@ end
 
 這也不推薦使用，因為不是在 controller 的 scope 下執行，所以需要傳 `controller` 作為參數。`LoginFilter` class 有一個 class method `filter`，會在 `ApplicationController` 的 action 執行前執行。用 Class 來實作 “around” filters 也可以使用同樣的 `filter` 方法，必須使用 `yield` 才能執行 action。或者是使用 `before` 與 `after` 的組合來達到 `around` 的效果。
 
-9. Request Forgery Protection
-------------------------------------------
+<!-- new src of above -->
+
+Again, this is not an ideal example for this filter, because it's not run in the scope of the controller but gets the controller passed as an argument. The filter class must implement a method with the same name as the filter, so for the `before_action` filter the class must implement a `before` method, and so on. The `around` method must `yield` to execute the action.
+
+## Request Forgery Protection
 
 跨站偽造請求（CSRF, Cross-site request forgery）是利用 A 站的使用者，給 B 站發送 Request 的一種攻擊手法，比如利用 A 站的梁山伯，去新增、修改、刪除 B 站祝英台的資料。
 
@@ -1086,7 +1152,7 @@ class ApplicationController < ActionController::Base
   private
 
     def record_not_found
-      render text: "404 沒有找到", status: 404
+      render plain: "404 沒有找到", status: 404
     end
 end
 ```
@@ -1148,8 +1214,9 @@ end
 
 請注意，若你發現要給許多 Controller 都加上 `force_ssl`，可以在環境設定檔開啟 `config.force_ssl` 選項。
 
-16. 延伸閱讀
-------------------------------
+## 譯者補充
+
+### 延伸閱讀
 
 [ActionController | Ruby on Rails 實戰聖經](http://ihower.tw/rails3/actioncontroller.html)
 
