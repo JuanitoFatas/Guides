@@ -1,11 +1,5 @@
 # 客製與新增 Rails Generator 與 Template
 
-__特別要強調的翻譯名詞__
-
-> invoke 調用
-
-> 不翻譯的名詞我用英文大寫，如 Generator、Template。
-
 要改進工作流程，Rails Generators 是基本工具。
 這篇指南教你如何自幹 Generator 、客製化 Rails 的 Generator。
 
@@ -19,36 +13,7 @@ __特別要強調的翻譯名詞__
 * 如何用替代方案避免覆寫一大組 Generator。
 * 如何新建應用程序 Template。
 
-## 目錄
-
-- [1. 初次接觸](#1-初次接觸)
-- [2. 第一個 Generator](#2-第一個-generator)
-- [3. 新建 Generator](#3-新建-generator)
-- [4. Generators 查找順序](#4-generators-查找順序)
-- [5. 客製化工作流程](#5-客製化工作流程)
-- [6. 更改 Generator 的 Template 來客製化工作流程](#6-更改-generator-的-template-來客製化工作流程)
-- [7. 加入 Generators 替代方案](#7-加入-generators-替代方案)
-- [8. 應用程式 Templates](#8-應用程式-templates)
-- [9. Generator 方法](#9-generator-方法)
-    - [`gem`](#gem)
-    - [`gem_group`](#gem_group)
-    - [`add_source`](#add_source)
-    - [`inject_into_file`](#inject_into_file)
-    - [`gsub_file`](#gsub_file)
-    - [`application`](#application)
-    - [`git`](#git)
-    - [`vendor`](#vendor)
-    - [`lib`](#lib)
-    - [`rakefile`](#rakefile)
-    - [`initializer`](#initializer)
-    - [`generate`](#generate)
-    - [`rake`](#rake)
-    - [`capify!`](#capify!)
-    - [`route`](#route)
-    - [`readme`](#readme)
-- [延伸閱讀](#延伸閱讀)
-
-# 1. 初次接觸
+## 初次接觸
 
 最開始用 `rails` 指令時，其實就使用了 Rails Generator。要查看 Rails 完整的 Generator 清單，輸入 `rails generate`：
 
@@ -64,7 +29,7 @@ $ rails generate
 $ rails generate helper --help
 ```
 
-# 2. 第一個 Generator
+## 第一個 Generator
 
 從 Rails 3.0 起，Generator 用 [Thor](https://github.com/erikhuda/thor)
 重寫了。Thor 負責解析命令行參數、具有強大的檔案處理 API。輕輕鬆鬆便能打造一個 Generator，如何寫個能在 `config/initializers` 目錄下產生 `initializer` 檔案（`initializer.rb`）的 Generator 呢？
@@ -123,9 +88,7 @@ class InitializerGenerator < Rails::Generators::Base
 end
 ```
 
-<!-- 另一種方式是將敘述寫在 `USAGE` 檔案裡，再讀進來。下節示範。 -->
-
-# 3. 新建 Generator
+## 新建 Generator
 
 新建 Generator：用 `rails generate` 指令。
 
@@ -203,7 +166,7 @@ copy_file "initializer.rb", "config/initializers/#{file_name}.rb"
 
 `file_name` 方法怎麼來的？從 [`Rails::Generators::NamedBase` 繼承而來](https://github.com/rails/rails/blob/master/railties/lib/rails/generators/named_base.rb)
 
-# 4. Generators 查找順序
+## Generators 查找順序
 
 執行 `rails generate initializer core_extensions` 時，Rails 怎麼知道要用哪個 Generator？查找順序如下：
 
@@ -220,7 +183,7 @@ generators/initializer_generator.rb
 
 這是因為 `lib` 屬於 `$LOAD_PATH`，Rails 會自動幫我們加載。
 
-# 5. 客製化工作流程
+## 客製化工作流程
 
 Rails 原生的 Generator 非常靈活，可用來客製化鷹架。打開 `config/application.rb`，修改設定：
 
@@ -391,7 +354,7 @@ hook_for :test_framework, as: :helper
 
 大功告成！
 
-# 6. 更改 Generator 的 Template 來客製化工作流程
+## 更改 Generator 的 Template 來客製化工作流程
 
 上例我們不過給 helper Generator 新增一行程式碼，沒加別的功能。其實還有更簡單的方法，即換掉 Rails helper Generator （`Rails::Generators::HelperGenerator`）原生的 Template。
 
@@ -431,7 +394,7 @@ end
 
 可以參考：[自定義 Rails 的 Scaffold 模版提高開發效率 - 李华顺](http://huacnlee.com/blog/how-to-custom-scaffold-templates-in-rails3/)
 
-# 7. 加入 Generators 替代方案
+## 加入 Generators 替代方案
 
 Generator 最後要加入的功能是替代方案（Fallbacks）。舉個例子，假設想在 `TestUnit` 加入像是 [shoulda](https://github.com/thoughtbot/shoulda) 的功能。由於 TestUnit 已實作所有 Rails Generators 需要的方法，而 Shoulda 不過是覆寫某部分功能，不需要為了 Shoulda 重新實作這些 Generators，可以告訴 Rails 在 `Shoulda` 命名空間下沒找到 Generator 時可以用 `TestUnit`
 
@@ -486,7 +449,7 @@ $ rails generate scaffold Comment body:text
 
 Fallback 允許 Generator 各司其職、提高程式碼重用性、減少程式碼重複性。
 
-# 8. 應用程式 Templates
+## 應用程式 Templates
 
 現在已經會用 Generator 了，那想客製化產生出來的應用程式該怎麼做？透過應用程式 Templates 來實作。下面是 Templates API 的概要，詳細資訊請查閱 [Rails Application Templates guide](http://edgeguides.rubyonrails.org/rails_application_templates.html)。
 
@@ -523,7 +486,7 @@ $ rails new thud -m https://gist.github.com/radar/722911/raw/
 
 了解更多關於 Application Template 的內容：[#148 App Templates in Rails 2.3 - RailsCasts](http://railscasts.com/episodes/148-app-templates-in-rails-2-3)
 
-# 9. Generator 方法
+## Generator 方法
 
 以下是 Rails Generator 與 template 內可用的方法（[源碼](https://github.com/rails/rails/blob/master/railties/lib/rails/generators/actions.rb)）
 
@@ -747,7 +710,9 @@ route "resources :people"
 readme "README"
 ```
 
-# 延伸閱讀
+## 譯者補充
+
+### 延伸閱讀
 
 [#218 Making Generators in Rails 3 - RailsCasts](http://railscasts.com/episodes/218-making-generators-in-rails-3)
 

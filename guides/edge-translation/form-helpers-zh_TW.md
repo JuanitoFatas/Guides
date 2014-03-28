@@ -1,58 +1,10 @@
-# [Form Helpers][fh]
+# Action View Form Helpers
 
-__特別要強調的翻譯名詞__
+表單（Form）是給使用者輸入的介面，web application 裡面最基礎的元素之一。表單寫起來很繁瑣，Rails 提供很多有用的 helper 讓你快速建立出符合不同需求的表單。
 
-> render 渲染
+## 簡單的表單
 
-表單（Form）是給使用者輸入的介面，web application 裡面最基礎的元素之一。表單寫起來很繁瑣，Rails 提供很多有用的 helper 讓你快速製造出符合不同需求的表單。
-
-## 目錄
-
-- [1. 簡單的表單](#1-簡單的表單)
-  - [1.1 通用搜索表單](#11-通用搜索表單)
-    - [1.2 Form Helper 呼叫裡傳多個 Hash](#12-form-helper-呼叫裡傳多個-hash)
-    - [1.3 生成表單的 Helpers](#13-生成表單的-helpers)
-      - [1.3.1 Checkbox](#131-checkbox)
-      - [1.3.2 Radio Buttons](#132-radio-buttons)
-    - [1.4 其它相關的 Helper](#14-其它相關的-helpers)
-- [2. 處理 Model Object 的 Helpers](#2-處理-model-object-的-helpers)
-  - [2.1 Model Object Helpers](#21-model-object-helpers)
-  - [2.2 將表單綁定至 Object](#22-將表單綁定至-object)
-  - [2.3 Record Identification](#23-record-identification)
-    - [2.3.1 處理 namespace](#231-處理-namespace)
-  - [2.4 PATCH、PUT、DELETE 表單是怎麼工作的？](#24-patch、put、delete-表單是怎麼工作的？)
-- [3. 輕鬆製作下拉式選單](#3-輕鬆製作下拉式選單)
-  - [3.1 Select 與 Option 標籤](#31-select-與-option-標籤)
-  - [3.2 處理 Models 的下拉選單](#32-處理-models-的下拉選單)
-  - [3.3 從任意 objects 集合來的 option tags](#33-從任意-objects-集合來的-option-tags)
-  - [3.4 Time Zone 與 Country](#34-time-zone-與-country)
-- [4. 使用日期與時間的 Form Helpers](#4-使用日期與時間的-form-helpers)
-    - [Barebones Helpers](#barebones-helpers)
-    - [Model Object Helpers](#model-object-helpers)
-    - [4.3 常見選項](#43-常見選項)
-    - [4.4 單一選項](#44-單一選項)
-- [5. 上傳檔案](#5-上傳檔案)
-    - [5.1 究竟上傳了什麼](#51-究竟上傳了什麼)
-    - [5.2 處理 Ajax](#52-處理-ajax)
-- [6. 客製化 Form Builders](#6-客製化-form-builders)
-- [7. 了解參數的命名規範](#7-了解參數的命名規範)
-  - [7.1 基本結構](#71-基本結構)
-  - [7.2 結合起來](#72-結合起來)
-  - [7.3 使用 Form Helpers](#73-使用-form-helpers)
-- [8. 給外部的 resource 使用的表單](#8-給外部的-resource-使用的表單)
-- [9. 打造複雜的表單](#9-打造複雜的表單)
-  - [9.1 設定 Model](#91-設定-model)
-  - [9.2 製作表單](#92-製作表單)
-  - [9.3 控制器層面](#93-控制器層面)
-    - [9.4 移除 Objects](#94-移除-objects)
-    - [9.5 避免有空的 Record](#95-避免有空的-record)
-    - [9.6 動態加入 Fields](#96-動態加入-fields)
-- [表單相關的 RubyGems](#表單相關的-rubygems)
-- [延伸閱讀](#延伸閱讀)
-
-# 1. 簡單的表單
-
-最基本的 form helper：`form_tag`
+最基本的 Form Helper：`form_tag`
 
 ```erb
 <%= form_tag do %>
@@ -60,7 +12,7 @@ __特別要強調的翻譯名詞__
 <% end %>
 ```
 
-按下表單送出時，會對頁面做 POST。假設上面這個表單在 `/home/index`，產生的 HTML 如下：
+按下送出時，會對頁面做 POST。假設上面這個表單針對的是 `/home/index`，則產生的 HTML 如下：
 
 ```html
 <form accept-charset="UTF-8" action="/home/index" method="post">
@@ -72,9 +24,9 @@ __特別要強調的翻譯名詞__
 </form>
 ```
 
-注意到 HTML 裡有個額外的 `div` 元素，裡面有兩個 `input`。第一個 `input` 讓瀏覽器使用 `UTF-8`。第二個 `input` 是 Rails 內建用來防止 __CSRF (cross-site request forgery protection)__ 攻擊的安全機制，每個非 GET 的表單，Rails 都會幫你產生一個這樣的 `authenticity_token`。
+注意到 HTML 裡有個額外的 `div` 元素，裡面有兩個 `input`。第一個 `input` 告訴瀏覽器使用 `UTF-8`。第二個 `input` 是 Rails 內建用來防止 __CSRF (cross-site request forgery protection)__ 攻擊的安全機制，每個非 GET 的表單，Rails 都會幫你產生一個這樣的 `authenticity_token`。
 
-## 1.1 通用搜索表單
+### 通用搜索表單
 
 最簡單的表單就是搜索表單了，通常有：
 
@@ -107,7 +59,7 @@ ID 是根據表單名稱（上例為 `q`）所產生，可供 CSS 或 JavaScript
 
 __切記：搜索表單用正確的 HTTP 動詞：GET。__
 
-### 1.2 Form Helper 呼叫裡傳多個 Hash
+### Form Helper 呼叫裡傳多個 Hash
 
 `form_tag` 接受 2 個參數： __動作發生的路徑（path）與選項（以 hash 形式傳入）__。可指定送出時要用的方法、更改表單元素的 `class` 等。
 
@@ -131,7 +83,7 @@ form_tag({controller: "people", action: "search"}, method: "get", class: "nifty_
 # => '<form accept-charset="UTF-8" action="/people/search" method="get" class="nifty_form">'
 ```
 
-### 1.3 生成表單的 Helpers
+### 生成表單的 Helpers
 
 Rails 提供一系列的 Helpers，可以產生 checkbox、text field、radio buttons 等。
 
@@ -147,7 +99,7 @@ __`_tag` 結尾的 helper 會生成一個 `<input>`__ ：
 
 取出資料：`params[:query]`
 
-#### 1.3.1 Checkbox
+#### Checkbox
 
 Checkbox 是多選框，讓使用者有一系列可多選的選項：
 
@@ -169,7 +121,7 @@ Checkbox 是多選框，讓使用者有一系列可多選的選項：
 
 `checkbox_box_tag` 第一個參數是 `input` 的 `name`，第二個參數通常是 `input` 的 `value`，當該 checkbox 被選中時，`value` 可在 `params` 取得。
 
-#### 1.3.2 Radio Buttons
+#### Radio Buttons
 
 跟 checkbox 類似，但只能選一個。
 
@@ -193,7 +145,7 @@ Checkbox 是多選框，讓使用者有一系列可多選的選項：
 
 __記得要給 checkbox 與 radio button 加上 `label`，這樣可按的區域更廣。__
 
-### 1.4 其它相關的 helpers
+### 其它相關的 helpers
 
 textareas、password fields、hidden fields、search fields、telephone fields、date fields、time fields、color fields、datetime fields、datetime-local fields、month fields、week fields、url fields、email fields、number fields 及 range fields， __其中 search、telephone、date、time、color、datetime、datetime-local、month、week、url、email、number 以及 range 是 HTML5 才有的 input type__。
 
@@ -237,9 +189,9 @@ textareas、password fields、hidden fields、search fields、telephone fields�
 <input id="percent_" max="100" min="1" name="percent[]" type="range" />
 ```
 
-# 2. 處理 Model Object 的 Helpers
+## 處理 Model Object 的 Helpers
 
-## 2.1 Model Object Helpers
+### Model Object Helpers
 
 表單通常拿來編輯或新建 Model object。帶有 `_tag` 字尾的 Helpers 可以解決這件事，但太繁瑣了。Rails 提供更多方便的 Helpers（沒有 `_tag` 字尾），像是 `text_field`、`text_area` 等，用來處理 Model objects。
 
@@ -267,7 +219,7 @@ textareas、password fields、hidden fields、search fields、telephone fields�
 
 __警告：第一個參數必須是 instance 變數的“名稱”，如：`:person` 或 `"person"`，而不是傳實際的 instance 進去。__
 
-## 2.2 將表單綁定至 Object
+### 將表單綁定至 Object
 
 當 `Person` 有很多 attributes 時，我們得一直重複傳入 `:person` 來生成對應的表單。Rails 提供了 `form_for` 讓你把表單綁定至 model 的 object。
 
@@ -326,7 +278,7 @@ end
 </form>
 ```
 
-## 2.3 Record Identification
+### Record Identification
 
 假設你依循 RESTful 風格：
 
@@ -348,7 +300,6 @@ form_for(@article, url: articles_path)
 form_for(@article)
 ```
 
-
 編輯一個 resource
 
 ```ruby
@@ -365,7 +316,7 @@ form_for(@article)
 
 __寫 `form_for` 最好指定 `:url`，這是一個常見的新手錯誤。__
 
-### 2.3.1 處理 namespace
+#### 處理 namespace
 
 如果你有 namespace 的 route，`form_for` 也有個簡便的縮寫：
 
@@ -387,7 +338,7 @@ form_for admin_article_path(@article)
 form_for [:admin, :management, @article]
 ```
 
-## 2.4 PATCH、PUT、DELETE 表單是怎麼工作的？
+### PATCH、PUT、DELETE 表單是怎麼工作的？
 
 Rails 框架提倡使用 _RESTful_ 風格來設計  application 。這表示會有很多 “PATCH” 以及 “DELETE” 請求（request），而不是 “GET” 與 “POST”，但多數瀏覽器在送出表單時，不支援非 `GET` 或 `POST` 的請求。Rails 透過一個 `name` 為 `_method` 的 hidden `input` 來將 PATCH 請求，模擬成 POST。
 
@@ -409,7 +360,7 @@ form_tag(search_path, method: "patch")
 
 在送出資料時，Rails 會將 `_method` 考慮進去，模擬成一個 POST 請求。
 
-# 3. 輕鬆製作下拉式選單
+## 輕鬆製作下拉式選單
 
 HTML 純手寫下拉式選單（Select box）需要花很多功夫，比如說有 12 個城市的下拉選單：
 
@@ -424,7 +375,7 @@ HTML 純手寫下拉式選單（Select box）需要花很多功夫，比如說�
 
 瞧 Rails 如何化繁為簡。
 
-## 3.1 Select 與 Option 標籤
+### Select 與 Option 標籤
 
 最通用的 helper 便是 `select_tag`，用來生成 `<select> … </select>`，內有 option 標籤：
 
@@ -486,7 +437,7 @@ __注意：__ `options_for_select` 的第二個參數的類型，必須與你想
 ...
 ```
 
-## 3.2 處理 Models 的下拉選單
+### 處理 Models 的下拉選單
 
 多數情況下，form controls 會與特定的資料庫模型綁在一起，而由於你預期 Rails 會提供客製化的
 
@@ -515,7 +466,7 @@ Helper 給你用，沒錯，Rails 已經幫你想好了！表單處理 Model 對
 
 上例 Person 與 City Model 存在 `belongs_to` 關係，在使用 `select` 時必須傳入 foreign key，否則會報這個錯誤：`ActiveRecord::AssociationTypeMismatch`。
 
-## 3.3 從任意 objects 集合來的 option tags
+### 從任意 objects 集合來的 option tags
 
 `options_for_select` 需要給一個 array 參數，包含了 option 的 `text` 與 `value`。但要是已經有了 City Model，想要直接從 Model 裡生成這些選項該怎麼做？
 
@@ -542,7 +493,7 @@ __注意 `options_from_collection_for_select` 參數 `value` 與 `text` 的順�
 
 `collection_select` = `select_tag` + `options_from_collection_for_select`
 
-## 3.4 Time Zone 與 Country
+### Time Zone 與 Country
 
 要詢問使用者在哪個時區，可以使用
 
@@ -556,7 +507,7 @@ Rails 過去使用 `country_select` 供選擇國家，但這已從 Rails 拿掉�
 
 某些名稱是不是國家是有爭議的，這也是為什麼要從 Rails 拿掉的原因。
 
-# 4. 使用日期與時間的 Form Helpers
+## 使用日期與時間的 Form Helpers
 
 先前有 `_tag` 的 helper 稱為 _barebones helper_，沒有 `_tag_` 的則是操作 model objects 的 helper。
 
@@ -624,13 +575,13 @@ Date.civil(params[:start_date][:year].to_i, params[:start_date][:month].to_i, pa
 
 當傳給 `Person.new` 或是 `Person.update` 時，Active Record 注意到這些參數是給 `birth_date` attribute 使用的，並從字尾的 `(ni)` 察覺出先後順序。
 
-### 4.3 常見選項
+### 常見選項
 
 預設不輸入任何 option，Rails 會使用當下的年月日來產生下拉式選單。比如年份，Rails 通常會產生前後 5 年。如果這個範圍不合適，可以用 `:start_year` 及 `end_year` 來修改。完整的選項清單請查閱 [API documentation](http://api.rubyonrails.org/classes/ActionView/Helpers/DateHelper.html)。
 
 __經驗法則：跟 model 用 `date_select`、其它情況用 `select_date`。__
 
-### 4.4 單一選項
+### 單一元件
 
 有時候只想顯示年月份當中的某一個，Rails 也有提供這些 helper：
 
@@ -683,7 +634,7 @@ __經驗法則：跟 model 用 `date_select`、其它情況用 `select_date`。_
 </select>
 ```
 
-# 5. 上傳檔案
+## 上傳檔案
 
 常見的任務是上傳檔案，無論是圖片或是 CSV。最最最重要的事情是，__必須__把 encoding 設成 `"multipart/form-data"`。`form_for` 已經設定好了、`form_tag` 要自己設定。
 
@@ -707,7 +658,7 @@ Rails 提供的 helper 通常都是成對的：barebone 的 `file_field_tag` 以
 
 第二個表單：`params[:person][:picture]`
 
-### 5.1 究竟上傳了什麼
+### 究竟上傳了什麼
 
 從 `params` 取出來的 object 是 `IO` 子類別的 instance。根據檔案大小的不同，可能是 `StringIO` 或是 `File` 的 instance。這兩個情況裡，object 都會有一個 `original_filename` attribute，內容是檔案名稱；`content_type` attribute 包含了檔案的 MIME 類型。下面的程式碼，上傳檔案至 `#{Rails.root}/public/uploads`，並用原來的名字儲存。
 
@@ -725,7 +676,7 @@ end
 
 若使用者沒有傳檔案，則對應的參數會是空字串。
 
-### 5.2 處理 Ajax
+### 處理 Ajax
 
 檔案上傳要做成 Ajax 不像 `form_for` 加個 `remote: true` 選項那麼簡單。因為 Serialization 是用戶端的 JavaScript 解決，JavaScript 不能從計算機裡讀取檔案，所以檔案無法上傳。最常見的解決辦法是插入一個 iframe，作為表單提交的目的地。
 
@@ -735,7 +686,7 @@ end
 
 [JangoSteve/remotipart](https://github.com/JangoSteve/remotipart)
 
-# 6. 客製化 Form Builders
+## 客製化 Form Builders
 
 `form_for` 與 `fields_for` 是 `FormBuilder` 的 instance。`FormBuilder` 將顯示表單元素都抽象到單一的 object 裡，我們也可以自己寫一個 form builder。
 
@@ -771,7 +722,7 @@ end
 <%= render partial: f %>
 ```
 
-# 7. 了解參數的命名規範
+## 了解參數的命名規範
 
 用 Rack 的參數解析器來實驗不同的 query，用來了解參數的命名規範。
 
@@ -780,7 +731,7 @@ Rack::Utils.parse_query "name=fred&phone=0123456789"
 # => {"name"=>"fred", "phone"=>"0123456789"}
 ```
 
-## 7.1 基本結構
+### 基本結構
 
 舉例
 
@@ -818,7 +769,7 @@ Hash 可以嵌套：
 
 `params[:person][:phone_number]` 會是使用者輸入的多組電話。
 
-## 7.2 結合起來
+### 結合起來
 
 hash 裡可以有 array，或是 array 裡可以有 hash。舉例來說，表單可以讓你填入任何地址：
 
@@ -842,7 +793,7 @@ Array 參數跟 `check_box` 配合的不好。根據 HTML 的規範來看，沒�
 
 要用 Array 類型的參數最好使用 `check_box_tag` 或是使用 hash 形式的參數。
 
-## 7.3 使用 Form Helpers
+### 使用 Form Helpers
 
 `form_for` 與 `fields_for` 都接受 `:index` 選項。
 
@@ -904,7 +855,7 @@ __`fields_for` 或 `form_for` 傳入的名字 ＋ index 的值 ＋ 屬性名稱_
 <% end %>
 ```
 
-# 8. 給外部的 resource 使用的表單
+## 給外部的 resource 使用的表單
 
 如果需要將資料 POST 到外部的 resource，通常外部的 resource 會給你一個 token，可以用 `form_tag` 加入這個選項：
 
@@ -938,11 +889,11 @@ __`fields_for` 或 `form_for` 傳入的名字 ＋ index 的值 ＋ 屬性名稱_
 <% end %>
 ```
 
-# 9. 打造複雜的表單
+## 打造複雜的表單
 
 許多 app 需要複雜的表單。舉例來說，創造一個 `Person`，你可能想讓使用者，使用者可填地址，用同個表單填多組地址（戶籍地址、通訊地址、公司地址...等）而之後 `Person` 編輯個人資料的時候要可以新增、修改或取消已輸入的地址。
 
-## 9.1 設定 Model
+### 設定 Model
 
 Active Record 在 model 層級提供了 `accepts_nested_attributes_for` 方法：
 
@@ -959,7 +910,7 @@ end
 
 這給 `Person` 創建了一個 `addresses_attributes=` 方法，讓你可 `create`、`update` 及（選擇性） `destroy` 地址。也就是說透過 `Person` 這個父類別，來操縱 `Address`。
 
-## 9.2 製作表單
+### 巢狀表單
 
 下面這個表單讓使用者（`Person`）可以填多組地址：
 
@@ -1016,7 +967,7 @@ end
 
 如果地址已經儲存了，`fields_for` 自動生成一個隱藏的 `input`，有已存 record 的 `id`。可以讓 `fields_for` 不要自動產生，給入一個 `include_id: false` 即可。
 
-## 9.3 控制器層面
+### 控制器層面
 
 通常需要在傳給 model 之前，要在 controller 設定[參數的白名單](action_controller_overview.html#strong-parameters)
 
@@ -1032,7 +983,7 @@ private
   end
 ```
 
-### 9.4 移除 Objects
+### 移除 Objects
 
 可以允許 `Person` 刪除 `Address`，透過傳入 `allow_destroy: true` 選項給 `accepts_nested_attributes_for`：
 
@@ -1072,7 +1023,7 @@ def person_params
 end
 ```
 
-### 9.5 避免有空的 Record
+### 避免有空的 Record
 
 比如有三組地址，有一組使用者沒有輸入，要忽略沒有輸入的表單，加入 `:reject_if` 選項至 `accepts_nested_attributes_for`。`reject_if:` 所給入的 `lambda` 返回假時，Active Record 不會把相關聯的對象 build 出來給 hash。下面的例子當 `kind` attribute 有輸入時，才會新增一組地址。
 
@@ -1085,11 +1036,13 @@ end
 
 也可以用 `:all_blank` 選項，在所有 attributes 為空時，不會儲存這個 record。
 
-### 9.6 動態加入 Fields
+### 動態加入 Fields
 
 與其一開始就渲染多組地址，不如加入一個按鈕 `Add new address`，讓使用者自己決定何時要新增一組地址，不是比較好嗎？但 Rails 不支援這個功能。用 JavaScript 輪詢來實現是一個常見的解決辦法。
 
-# 表單相關的 RubyGems
+## 譯者補充
+
+### 表單相關 RubyGems
 
 最多人使用的是這兩個 RubyGem，
 
@@ -1101,12 +1054,6 @@ end
 
 其它製作表單的 Gems 可參考: [Form Builders | The Ruby Toolbox](https://www.ruby-toolbox.com/categories/rails_form_builders)
 
-# 延伸閱讀
-
-* [Form Helpers — Ruby on Rails Guides][fh]
-
-* [Ruby on Rails 實戰聖經 | ActionView Helpers 輔助方法](http://ihower.tw/rails3/actionview-helpers.html)
+### 延伸閱讀
 
 第九章關於 Nested Forms 可參考 [Railscasts #196 (Pro)](http://railscasts.com/episodes/196-nested-model-form-revised)。
-
-[fh]: http://edgeguides.rubyonrails.org/form_helpers.html
