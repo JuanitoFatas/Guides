@@ -175,7 +175,7 @@ controller.action_name %>
 
 路由裡定義的參數也會放在 `params` 裡，像是 `:id`。
 
-假設有一張 `Client` 的清單，`Client 有兩種狀態，分別為 Active 與 Inactive。我們可以加入一條路由，來捕捉 `Client` 的狀態：
+假設有一張 `Client` 的清單，`Client` 有兩種狀態，分別為 Active 與 Inactive。我們可以加入一條路由，來捕捉 `Client` 的狀態：
 
 ```ruby
 get '/clients/:status' => 'clients#index', foo: 'bar'
