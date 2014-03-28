@@ -5,11 +5,11 @@
 讀完本篇可能會學到.....
 
 * Request 進到 Controller 的流程。
-* 限制傳入 Controller 的參數。
+* 如何限制傳入 Controller 的參數。
 * 資料存在 Session 或 Cookie 裡的應用場景。
-* 如何在處理 Request 時，使用 Filters 來附加行為。
+* 如何在處理 Request 時，使用 Filters 來執行程式。
 * 如何使用 Action Controller 內建的 HTTP 驗證機制。
-* 如何用串流方式將資料傳給使用者。
+* 如何用串流方式將資料直接傳給使用者。
 * 如何過濾應用程式 Log 裡的敏感資料。
 * 如何在 Request 生命週期裡，處理可能拋出的異常。
 
@@ -17,13 +17,13 @@
 
 ## Controller 是幹嘛的？
 
-Action Controller 是 MVC 的 C，Controller。一個 Request 進來，路由決定是那個 Controller 的工作後，便把工作指派給 Controller，Controller 負責處理該 Request，給出對應的 Output。幸運的是，Action Controller 把大部分的苦差事都給您辦好了，您只需按照一些規範來寫代碼，事情便豁然開朗。
+Action Controller 是 MVC 的 C，Controller。一個 Request 進來，路由決定是那個 Controller 的工作後，便把工作指派給 Controller，Controller 負責處理該 Request，給出對應的 Output。幸運的是，Action Controller 把大部分的苦差事都給您辦好了，您只需遵循一些簡單的規範來寫程式，事情便豁然開朗。
 
-對多數按照 [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer) 規範來編寫的應用程式來說，Controller 的工作便是接收 Request，按照 Request 的請求，去 Model 取或寫資料，並將資料交給 View，來產生出 HTML。
+對多數按照 [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer) 規範來編寫的應用程式來說，Controller 的工作便是接收 Request，按照 Request 的請求，去 Model 取或寫資料，將資料交給 View，來產生出 HTML。Controller 要處理別的事情也可以，上面是 Controller 的主要功能。
 
 Controller 因此可以想成是 Model 與 View 的中間人。負責替 Model 將資料傳給 View，讓 View 可以顯示資料給使用者。Controller 也將使用者更新或儲存的資料，存回 Model。
 
-路由過程的細節可以查閱 [Rails Routing From the Outside In](http://edgeguides.rubyonrails.org/routing.html)。
+路由（動詞）的詳細過程可以查閱 [Rails Routing From the Outside In](http://edgeguides.rubyonrails.org/routing.html)。
 
 ## Controller 命名慣例
 
@@ -33,13 +33,13 @@ Rails Controller 的命名慣例是以**複數形式結尾**，但也是有例�
 
 偏好 `SiteAdminsController` 勝過 `SitesAdminsController`。
 
-遵循慣例便可享受內建 Rails Router 的功能，如：`resources`、`resource` 等，而無需特地修飾 `:path`、`controller`，便可保持 URL 與 path Helpers 的一致性。更多詳情請參考 [Layouts & Rendering Guide](/guides/edge/layouts_and_rendering.md) 一篇。
+遵循慣例便可享受內建 Rails Router 的功能，如：`resources`、`resource` 等，而無需特地修飾 `:path`、`controller`，便可保持 URL 與 path Helpers 的一致性。詳細內容請參考 [Layouts & Rendering Guide](/guides/edge/layouts_and_rendering.md) 一篇。
 
 注意：Controller 的命名慣例與 Model 的命名慣例不同，Model 命名慣例是**單數形式**。
 
 ## Methods 與 Actions
 
-Controller 繼承自 `ApplicationController`，但 Controller 其實與普通的 Ruby Class 一樣，都擁有 methods。當應用程式收到 Request 時，Router 會決定這要交給那個 Controller 的那個 Action 來處理，接著 Rails 實例化出該 Controller 的 instance，呼叫與 Action 名稱相同的 Method。
+Controller 是從 `ApplicationController` 繼承而來的類別，但 Controller 其實與 Ruby 的類別沒有不同，擁有許多 Methods。當應用程式收到 Request 時，Router 會決定這要交給那個 Controller 的那個 Action 來處理，接著 Rails 新建該 Controller 的 instance，呼叫與 Action 同名的 Method。
 
 ```ruby
 class ClientsController < ApplicationController
@@ -48,7 +48,7 @@ class ClientsController < ApplicationController
 end
 ```
 
-假設使用者跑去 `/clients/new`，想要新增 `client`，Rails 實例化 `ClientsController` 的 instance，並呼叫 `new` 來處理。注意 `new` 雖沒有內容，但 Rails 預設行為會 `render` `new.html.erb`。
+假設使用者跑去 `/clients/new`，想要新增 `client`，Rails 新建 `ClientsController` 的 instance，並呼叫 `new` 來處理。注意 `new` 雖沒有內容，但 Rails 的預設行為會 `render` `new.html.erb`，除非 action 裡指定要做別的事。
 
 先前提過 Controller 可從 Model 取資料，再拿給 View，該怎麼做呢？
 
@@ -58,17 +58,17 @@ def new
 end
 ```
 
-只要在與 View 對應的 action 裡，將資料取出放至 instance 變數，如此一來便可在 View 裡取用 `@client`。
+只要在與 View 對應的 Action 裡，將資料取出放至 instance 變數，如此一來便可在 View 裡取用 `@client`。上例便是如何在 `new.html.erb` 取用 `@client` 的例子。
 
 詳情請參考 [Layouts & Rendering Guide](layouts_and_rendering.html) 一篇。
 
 `ApplicationController` 繼承自 `ActionController::Base`，`ActionController::Base` 定義了許多有用的 Methods。本篇會提到一些，若是好奇定義了些什麼方法，可參考 [ActionController::Base 的 API 文件](http://edgeapi.rubyonrails.org/classes/ActionController/Base.html)，或是閱讀 [ActionController::Base 的原始碼](https://github.com/rails/rails/blob/master/actionpack/lib/action_controller/base.rb)。
 
-只有公有方法可以被外部作為 `action` 呼叫。所以輔助方法、Filter 方法，最好藏在 `protected` 或 `private` 裡。
+只有公有方法才可以被外部作為 `action` 呼叫。所以輔助方法（auxiliary methods）、Filter 方法，最好用 `protected` 或 `private` 隱藏起來。
 
 ## Parameters
 
-通常會想在 Controller 裡，存取由使用者傳入的資料，或是其他的參數。Web 應用程式有兩種參數。第一種是由 URL 的部份組成，這種叫做 “query string parameters”。Query String 是 URL `?` 號後面的任何字串，通常是透過 HTTP `GET` 傳遞。第二種參數是 “POST data”，透過 HTTP `POST` 傳遞，故得名 “POST data”。這通常是使用者從表單填入的訊息。叫做 POST data 的原因是，這種參數只能作為 HTTP POST Request 的一部分來傳遞。Rails 並不區分 Query String Parameter 或 POST Parameter，兩者皆可在 Controller 裡取用，從 `params` hash 裡取出：
+通常會想在 Controller 裡取得使用者傳入的資料，或是其他的參數。Web 應用程式有兩種參數。第一種是由 URL 的部份組成，這種叫做 “query string parameters”。Query String 是 URL `?` 號後面的任何字串，通常是透過 HTTP `GET` 傳遞。第二種參數是 “POST data”。通常是由使用者在表單輸入的資料。叫做 POST data 的原因是，這種參數只能作為 HTTP POST Request 的一部分來傳遞。Rails 並不區分 Query String Parameter 或 POST Parameter，兩者皆可在 Controller 裡取用，這些資料存放在 `params` Hash：
 
 ```ruby
 class ClientsController < ApplicationController
@@ -97,25 +97,23 @@ class ClientsController < ApplicationController
 end
 ```
 
-### Hash 與 Array 參數
+### Hash 與 陣列參數
 
 `params` Hash 不侷限於一維的 Hash，可以是巢狀結構；或是 Hash 裡面包有陣列，都可以。
 
-若是想要以陣列形式傳遞參數，在 key 的名稱後方附加 `[]` 即可，如下所示：
+若是想要以陣列形式來傳遞參數，在 key 的名稱後方附加 `[]` 即可，如下所示：
 
 ```
 GET /clients?ids[]=1&ids[]=2&ids[]=3
 ```
 
-注意：上例 URL 會編碼為 `"/clients?ids%5B%5D=1&ids%5B%5D=2&ids%5B%5D=3"`，因為 `[]` 對 URL 來說是非法字元。多數情況下，瀏覽器會處理字元合法與否的問題，自動將非法字元做編碼。Rails 收到時會自己解碼。但當你要手動將 Request 發給 Server 時，要記得自己處理好這件事。
+注意：上例 URL 會編碼為 `"/clients?ids%5B%5D=1&ids%5B%5D=2&ids%5B%5D=3"`，因為 `[]` 對 URL 來說是非法字元。多數情況下，瀏覽器會處理字元合法與否的問題，自動對非法字元做編碼。Rails 收到時會自己解碼。但若是你要手動發 Request 給伺服器時，要記得自己處理好這件事。
 
-`params[:ids]` 現在會是 `["1", "2", "3"]`。注意參數的值永遠是 String。Rails 不會試著去臆測或是轉換類型。
+`params[:ids]` 現在會是 `["1", "2", "3"]`。注意！參數的值永遠是 String。Rails 不會試著去臆測或是轉換類型。
 
-NOTE: Values such as `[]`, `[nil]` or `[nil, nil, ...]` in `params` are replaced
-with `nil` for security reasons by default. See [Security Guide](security.html#unsafe-query-generation)
-for more information.
+注意，`params` 裡像是 `[]`、`[nil]` 或是 `[nil, nil, ...]` 基於安全考量，會自動替換成 `nil`。詳情請參考 [Security Guide](http://edgeguides.rubyonrails.org/security.html#unsafe-query-generation)。
 
-要送出 Hash 形式的參數，在中括號裡聲明 Hash 與 key 的名稱：
+要送出 Hash 形式的參數，在中括號裡指定 key 的名稱：
 
 ```html
 <form accept-charset="UTF-8" action="/clients" method="post">
@@ -128,54 +126,54 @@ for more information.
 
 這個表單送出時，`params[:client]` 的數值會是 `{ "name" => "Acme", "phone" => "12345", "address" => { "postcode" => "12345", "city" => "Carrot City" } }`
 
-注意 `params[:client][:address]` 是巢狀結構。
+注意 `params[:client][:address]` 是巢狀的 Hash 結構。
 
-`params` Hash 其實是 `ActiveSupport::HashWithIndifferentAccess` 的 instance，`ActiveSupport::HashWithIndifferentAccess` 與一般 Hash 相同，不同的是取出 Hash 的值時，key 可以用字串與符號：`params[:foo]` 等同於 `params["foo"]`。
+`params` Hash 其實是 `ActiveSupport::HashWithIndifferentAccess` 的 instance，`ActiveSupport::HashWithIndifferentAccess` 與一般 Hash 相同，不同的是取出 Hash 的值時，key 可以用字串與符號，即 `params[:foo]` 等同於 `params["foo"]`。
 
 ### JSON 參數
 
-在撰寫 Web Service 的應用程式時，通常會需要處理 JSON 格式的參數。若 Request 的 `"Content-Type"` header 是 `"application/json"`，Rails 會自動將收到的 JSON 參數轉換好（將 JSON 轉成 Ruby 的 Hash），存至 `params` 裡。
+在寫 Web Service 的應用程式時，通常會需要處理 JSON 格式的參數。若 Request 的 `"Content-Type"` header 是 `"application/json"`，Rails 會自動將收到的 JSON 參數轉換好（將 JSON 轉成 Ruby 的 Hash），存至 `params` 裡。用起來與一般 Hash 沒有不同。
 
-送出的 JSON
+收到的 JSON
 
 ```json
 { "company": { "name": "acme", "address": "123 Carrot Street" } }
 ```
 
-進來的資料
+獲得的資料
 
 ```ruby
 params[:company] => { "name" => "acme", "address" => "123 Carrot Street" }
 ```
 
-除此之外，如果開啟了 `config.wrap_parameters` 選項，或是在 Controller 呼叫了 `wrap_parameters`，可以忽略掉 JSON 參數的 Root element，即 JSON 參數的內容會被拷貝到 `params` 裡，並有著對應的 key：
+除此之外，如果開啟了 `config.wrap_parameters` 選項，或是在 Controller 呼叫了 `wrap_parameters`，可以忽略掉 JSON 參數的 Root 元素，Rails 會以 Contorller 的名稱作為 key 的名稱，將 JSON 內容以該 key 存放在 `params` 裡。
 
-送出的 JSON
+收到的 JSON（`config.wrap_parameters`、或在 Controller 裡呼叫了 `wrap_parameters`）
 
 ```json
 { "name": "acme", "address": "123 Carrot Street" }
 ```
 
-傳給 `CompaniesController` 時，會自動推測出 Hash 名稱，放在 `:company` key 裡：
+則傳給 `CompaniesController` 時，轉換好的參數會存在 `params[:company]`：
 
 ```ruby
 { name: "acme", address: "123 Carrot Street", company: { name: "acme", address: "123 Carrot Street" } }
 ```
 
-關於如何客製化 key 名稱，或針對某些特殊的參數執行 `wrap_parameters`，請查閱 [ActionController::ParamsWrapper 的 API 文件](http://edgeapi.rubyonrails.org/classes/ActionController/ParamsWrapper.html)。
+關於如何客製化 key 的名稱，或針對某些特殊的參數執行 `wrap_parameters`，請查閱 [ActionController::ParamsWrapper 的 API 文件](http://edgeapi.rubyonrails.org/classes/ActionController/ParamsWrapper.html)。
 
-**解析 XML 的功能現已抽成 [actionpack-xml_parser](https://github.com/rails/actionpack-xml_parser) Gem。**
+**解析 XML 的功能現已抽成 [actionpack-xml_parser](https://github.com/rails/actionpack-xml_parser) 這個 RubyGem。**
 
 ### Routing 參數
 
-`params` Hash 永遠會有兩個 key：`:controller` 與 `:action`，分別是當下呼叫的 Controller，與 Action 的名稱。若想知道現在的 Controller 以及 Action 名稱時，請使用 `controller_name` 與 `action_name`，不要直接從 `params` 裡取：
+`params` Hash 永遠會有兩個 key：`:controller` 與 `:action`，分別是當下呼叫的 Controller，與 Action 的名稱。但若是想知道當下的 Controller 以及 Action 名稱時，請使用 `controller_name` 與 `action_name`，不要直接從 `params` 裡取：
 
 ```ruby
 controller.controller_name %>
 controller.action_name %>
 ```
 
-路由定義裡的參數也會放在 `params` 裡，像是 `:id`。
+路由裡定義的參數也會放在 `params` 裡，像是 `:id`。
 
 假設有一張 `Client` 的清單，`Client 有兩種狀態，分別為 Active 與 Inactive。我們可以加入一條路由，來捕捉 `Client` 的狀態：
 
@@ -183,7 +181,7 @@ controller.action_name %>
 get '/clients/:status' => 'clients#index', foo: 'bar'
 ```
 
-這個情況裡，當使用者打開 `/clients/active` 這一頁，`params[:status]` 會被設成 `"active"`，`params[:foo]` 也會被設成 `"bar"`，就像是我們從 query string 傳進去那樣。同樣的，`params[:action]` 也會被設成 `index`。
+這個情況裡，當使用者打開 `/clients/active` 這一頁，`params[:status]` 便會被設成 `"active"`，`params[:foo]` 也會被設成 `"bar"`，就像是我們原本透過 query string 傳進去那樣。同樣的，`params[:action]` 也會被設成 `index`。
 
 ### `default_url_options`
 
