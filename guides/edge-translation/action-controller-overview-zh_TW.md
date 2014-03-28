@@ -185,7 +185,7 @@ get '/clients/:status' => 'clients#index', foo: 'bar'
 
 ### `default_url_options`
 
-可以為 URL 產生設定預設的參數，在 Controller 定義一個叫做 `default_url_options` 的方法。這個方法必須回傳期望的預設值，且 key 必須是 `Symbol`：
+可以設定 URL 預設產生的參數。首先在 Controller 定義一個叫做 `default_url_options` 的方法。這個方法必須回傳一個 Hash。key 必須是 `Symbol`，值為你需要的內容（`I18n.locale`），：
 
 ```ruby
 class ApplicationController < ActionController::Base
@@ -195,17 +195,17 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-這些選項會被作為預設的選項，用來傳給 `url_for`，但還是可以被覆寫掉。
+產生 URL 時會採用這些選項，作為預設值。還是可以用 `url_for` 覆寫掉。
 
-如果你在 `ApplicationController` 定義 `default_url_options`，如上例，則產生所有 URL 的時候，都會傳入 `default_url_options` 內所定義的參數。`default_url_options` 也可以在特定的 Controller 裡定義，如此一來便只會影響與定義 `default_url_options` Controller 有關 URL 的產生。
+如果你在 `ApplicationController` 定義 `default_url_options`，如上例。則產生所有 URL 的時候，都會傳入 `default_url_options` 內所定義的參數。`default_url_options` 也可以在特定的 Controller 裡定義，如此一來便只會影響與定義 `default_url_options` Controller 有關 URL 的產生。
 
 ### Strong Parameters
 
 > 大量賦值 Mass Assignment
 
-原先大量賦值是由 Active Model 來處理，透過白名單來過濾不可賦值的參數。有了 Strong Parameter 之後，這件工作交給 Action Controller 負責。
+原先大量賦值是由 Active Model 來處理，透過白名單來過濾不可賦值的參數。也就是得明確指定那些屬性可以賦值，避免掉不該被賦值的屬性被賦值了。有了 Strong Parameter 之後，這件工作交給 Action Controller 負責。
 
-除此之外，還可以限制哪些參數必須傳入，若是沒傳的話，Rails 預先定義好的 `raise`/`rescue` 會處理好，並返回 400 Bad Request。
+除此之外，還可以限制必須傳入那些參數。若是沒給入這些必要參數時，Rails 預先定義好的 `raise`/`rescue` 會處理好，回傳 400 Bad Request。
 
 ```ruby
 class PeopleController < ActionController::Base
@@ -233,19 +233,17 @@ class PeopleController < ActionController::Base
 end
 ```
 
-#### Permitted Scalar Values
+#### 允許使用的純量值
 
-> 純量類型 Scalar Types
-
-假定你允許可以傳入 `:id`。
+假設允許傳入 `:id`。
 
 ```ruby
 params.permit(:id)
 ```
 
-若 `params` 有 `:id`，並且 `:id` 有相對應的值。便可以通過白名單檢查，不然 `:id` 就會被過濾掉。這也是為什麼無法注入 array、Hash 或任何其他的物件。
+若 `params` 有 `:id`，並且 `:id` 有相對應的值。便可以透過白名單檢查，否則 `:id` 就會被過濾掉。這也是為什麼無法注入陣列、Hash 或任何其他的物件。
 
-允許的純量類型有：
+這種單一屬性允許的類型有（純量類別）：
 
 `String`、`Symbol`、`NilClass`、`Numeric`、`TrueClass`、`FalseClass`、`Date`、`Time`、`DateTime`、`StringIO`、`IO`、`ActionDispatch::Http::UploadedFile` 以及
 `Rack::Test::UploadedFile`。
@@ -262,11 +260,11 @@ params.permit(id: [])
 params.require(:log_entry).permit!
 ```
 
-`params` 裡的 `:log_entry` hash 以及裡面所有的子 Hash 都會允許做大量賦值。**使用 `permit!` 要非常小心**，因為這允許了 Model 所有的 attributes，都可以做大量賦值，要是之後 Model 新增了 `admin` attribute 而沒注意到 `permit!`，可能就會出問題了。
+`params` 裡的 `:log_entry` hash 以及裡面所有的子 Hash 此時都允許做大量賦值。**使用 `permit!` 要非常小心**，因為這允許了 Model 所有的 attributes，都可以做大量賦值，要是之後 Model 新增了 `admin` attribute 而沒注意到 `permit!`，可能就會出問題了。
 
-#### Nested Parameters
+#### 巢狀參數
 
-允許巢狀參數做大量賦值：
+要允許巢狀參數做大量賦值，比如：
 
 ```ruby
 params.permit(:name, { emails: [] },
@@ -274,21 +272,15 @@ params.permit(:name, { emails: [] },
                          { family: [ :name ], hobbies: [] }])
 ```
 
-This declaration whitelists the `name`, `emails` and `friends`
-attributes. It is expected that `emails` will be an array of permitted
-scalar values and that `friends` will be an array of resources with
-specific attributes : they should have a `name` attribute (any
-permitted scalar values allowed), a `hobbies` attribute as an array of
-permitted scalar values, and a `family` attribute which is restricted
-to having a `name` (any permitted scalar values allowed, too).
+此時的白名單（可以做大量賦值）包含了：`name`、`emails` 以及 `friends` 屬性。且 `emails` 會是陣列形式、`friends` 會是由 resource 組成的陣列，需要有 `name`、`hobbies` （必須是陣列形式）、以及 `family` （只允許有 `name`）。
 
 #### 更多例子
 
-你可能也想在 `new` action 裡使用允許的 attributes。但這帶出了一個問題，你無法 `require`，因為呼叫 `new` 的時候，資料根本還不存在，這時可以用 `fetch`：
+你可能也想在 `new` action 裡使用允許的屬性。但這帶出了一個問題，你無法 `require`，因為呼叫 `new` 的時候，資料根本還不存在，這時可以用 `fetch`：
 
 ```ruby
 # 使用 `fetch` 你可以設定預設值，並使用
-# Strong Parameters 的 API
+# Strong Parameters 的 API 來取出
 params.fetch(:blog, {}).permit(:title, :author)
 ```
 
@@ -299,11 +291,7 @@ params.fetch(:blog, {}).permit(:title, :author)
 params.require(:author).permit(:name, books_attributes: [:title, :id, :_destroy])
 ```
 
-Hash key 是整數的處理方式不大一樣，
-Hashes with integer keys are treated differently and you can declare
-the attributes as if they were direct children. You get these kinds of
-parameters when you use `accepts_nested_attributes_for` in combination
-with a `has_many` association:
+當 Hash 的 key 是整數時，處理的方式不大一樣。可以宣告屬性是子 Hash。在 `has_many` 的 Association 裡使用 `accepts_nested_attributes_for` 時會得到這種類型的參數：
 
 ```ruby
 # 白名單過濾下列資料
@@ -314,9 +302,9 @@ with a `has_many` association:
 params.require(:book).permit(:title, chapters_attributes: [:title])
 ```
 
-#### Outside the Scope of Strong Parameters
+#### Strong Parameters 處理不了的問題
 
-Strong Parameter API 不是銀彈，無法處理所有白名單的問題。但可以簡單地將 API 與你的程式碼混合使用，來因應不同的需求。
+Strong Parameter API 不是銀彈，無法處理所有關於白名單的問題。但可以簡單地將 Strong Parameter API 與你的程式混合使用，來對付不同的需求。
 
 假想看看，你想要給某個 attribute 加上白名單，該 attribute 可以包含一個 Hash，裡面可能有任何 key。使用 Strong Parameter 你無法允許有任何 key 的 Hash，但你可以這麼做：
 
