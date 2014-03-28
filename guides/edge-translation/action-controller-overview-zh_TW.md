@@ -342,7 +342,7 @@ CookieStore 大約可以存 4KB 的資料，其他儲存機制可以存更多，
 # YourApp::Application.config.session_store :active_record_store
 ```
 
-當簽署 Session 資料時，Rails 設了一個 session key（用 cookie 的名字），這個名字可在 `config/initializers/session_store.rb` 裡修改：
+簽署 Session 資料時，Rails 設了一個 Session key（cookie 的名字），這個名字可在 `config/initializers/session_store.rb` 裡修改：
 
 ```ruby
 # 修改此文件時記得重新啟動 Server
@@ -356,9 +356,7 @@ YourApp::Application.config.session_store :cookie_store, key: '_your_app_session
 YourApp::Application.config.session_store :cookie_store, key: '_your_app_session', domain: ".example.com"
 ```
 
-Rails 替 CookieStore 設了一個 secret key，用來簽署 Session 資料。這個 key 可以在 `config/secrets.yml` 裡修改。
-
-在命令行敲入 `rake secret` 來產生新的一組 key，填到這個檔案裡，記得重開。若是開源專案，記得要保密 `secret_key_base`，如使用 [SettingsLogic](https://github.com/binarylogic/settingslogic) 這個 Gem。
+Rails 替 CookieStore 設了一個 secret key，用來簽署加密 Session 資料。這個 key 可以在 `config/secrets.yml` 裡修改。
 
 ```ruby
 # 修改此文件時記得重新啟動 Server
@@ -367,10 +365,10 @@ Rails 替 CookieStore 設了一個 secret key，用來簽署 Session 資料。�
 # key 變了先前的 cookie 都會失效！
 
 # 確保 secret 至少有 30 個隨機字元，沒有一般的單字（防禦字典查表攻擊）。
-# You can use `rake secret` to generate a secure secret key.
+# 可以使用 `rake secret` 來產生一個安全的 secret key.
 
-# Make sure the secrets in this file are kept private
-# if you're sharing your code publicly.
+# 如果要將程式碼公開，
+# 不要公開這個檔案裡的 secret。
 
 development:
   secret_key_base: a75d...
@@ -378,19 +376,19 @@ development:
 test:
   secret_key_base: 492f...
 
-# Do not keep production secrets in the repository,
-# instead read values from the environment.
+# Repository 裡不要放 Production 的 secrets。
+# 把 secrets 放在環境變數裡讀進來。
 production:
   secret_key_base: <%= ENV["SECRET_KEY_BASE"] %>
 ```
 
 **注意：更改 `secret_key_base` 之後，先前簽署的 Session 都會失效。**
 
-### Accessing the Session
+### 存取 Session
 
 在 Controller 可以透過 `session` 這個 instance method 來存取 Session。
 
-**注意：Session 是惰性加載的。如果沒用到 Session，便不會載入 Session。若是不想要 Session，無需關掉 Session，不要用便是。
+**注意：Session 是惰性加載的。如果 action 沒用到 Session，便不會載入 Session。若是不想用 Session，無需關掉 Session，不要用便是。
 
 Session 以類似於 Hash 的方式儲存（鍵值對）：
 
@@ -409,7 +407,7 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-要在 Session 裡存值，只要像使用 Hash 一樣操作即可：
+要在 Session 裡存值，給 Hash 的 key 賦值即可：
 
 ```ruby
 class LoginsController < ApplicationController
@@ -438,7 +436,7 @@ end
 
 要將整個 session 清掉，使用 `reset_session`。
 
-### The Flash
+### Flash 訊息
 
 Flash 是 Session 特殊的一部分，可以從一個 Request，傳遞（錯誤、提示）訊息到下個 Request，下個 Request 結束後，便會自動清除 Flash。
 
@@ -456,9 +454,7 @@ class LoginsController < ApplicationController
 end
 ```
 
-`destroy` action 轉向到應用程式的 `root_url`，並顯示 `"成功登出了"`。
-
-`redirect_to` 也接受 flash 訊息參數：
+注意也可以直接在 `redirect_to` 設定 flash 訊息：
 
 ```ruby
 redirect_to root_url, notice: "You have successfully logged out."
@@ -466,10 +462,10 @@ redirect_to root_url, alert: "You're stuck here!"
 redirect_to root_url, flash: { referral_code: 1234 }
 ```
 
-上面的 `destroy` action 最後導向回應用程式的 `root_url`，導回到 `root_url` 後會顯示`"成功登出了"`訊息。接下來便不關 `destroy` 的事了。
+上面的 `destroy` action 導向到應用程式的 `root_url`，導回到 `root_url` 後會顯示`"成功登出了"`的訊息。注意到 Flash 訊息永遠是上個 action 所設定的。
 
 
-Flash 也用來顯示錯誤或是提示訊息，通常會在 `app/views/layout/application.html.erb` 加入 Flash 訊息：
+通常都會用 Flash 來顯示錯誤、提示訊息等，通常會在應用程式的 layout `app/views/layout/application.html.erb` 加入 Flash 訊息：
 
 ```erb
 <html>
@@ -515,7 +511,7 @@ end
 
 #### `flash.now`
 
-預設情況下，加入值至 `flash` 會訊息在下次 Request 可以取用，但有時候你想在同個 Request 裡顯示這些訊息。舉例來說，如果 `create` action 無法儲存，你想要直接 `render` `new` template，這不會發另一個 Request，但你仍想顯示訊息，這時候便可以使用 `flash.now`：
+預設情況下，加入值至 `flash`，只能在下次 Request 可以取用，但有時會想在同個 Request 裡使用這些訊息。舉例來說，如果 `create` action 無法儲存，你想要直接 `render` `new` template，這不會發另一個 Request，但仍需要顯示訊息，這時候便可以使用 `flash.now`：
 
 ```ruby
 class ClientsController < ApplicationController
