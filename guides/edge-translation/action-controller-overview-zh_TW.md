@@ -316,26 +316,24 @@ end
 
 ## Session
 
-應用程式為每個使用者都準備了一個 Session，可以儲存小量的資料，資料在 Request 之間都會保存下來。Session 僅在 Controller 與 View 可存取，有下列幾種儲存機制：
+每個使用者應用程式都準備了一個 Session，可以儲存小量的資料，資料在 Request 之間都會保存下來。Session 僅在 Controller 與 View 裡面可以使用，Session 儲存機制如下：
 
-* `ActionDispatch::Session::CookieStore` ─ 資料存在用戶端。
+* `ActionDispatch::Session::CookieStore` ─ 所有資料都存在用戶端。
 * `ActionDispatch::Session::CacheStore` ─ 資料存在 Rails 的 Cache。
 * `ActionDispatch::Session::ActiveRecordStore` ─ 資料使用 Active Record 存在資料庫（需要 `activerecord-session_store` RubyGem）。
 * `ActionDispatch::Session::MemCacheStore` ─ 資料存在 memcached（這是遠古時代的實作方式，考慮改用 CacheStore 吧）。
 
-所有的儲存機制，會為每個 Session，在 Cookie 裡存一個獨立的 Session ID。必須要存在 Cookie 裡，因為 Rails 不允許你在 URL 傳遞 session ID（不安全）。
+所有的 Session 儲存機制都會使用一個 Cookie。在 Cookie 裡為每個 Session 存一個獨立的 Session ID。Session ID 必須要存在 Cookie 裡，因為 Rails 不允許你在 URL 傳遞 Session ID（不安全）。
 
-對於多數的儲存機制來說，ID 用來在 Server 端查詢 Session 資料。
+多數的儲存機制使用 Session ID 到伺服器上查詢 Session 資料，譬如到資料庫裡查詢。但有個例外，會把 Session 資料全部存在 Cookie，即 CookieStore 的儲存方式。優點是非常輕量，完全不用設定。存在 Cookie 的資料經過加密簽署，防止有心人士竄改。即便是擁有 Session 資料存取權的人也無法讀取內容（內容經過加密）。如果 Cookie 的資料遭到修改，Rails 也不會使用這個資料。
 
-For most stores, this ID is used to look up the session data on the server, e.g. in a database table. There is one exception, and that is the default and recommended session store - the CookieStore - which stores all session data in the cookie itself (the ID is still available to you if you need it). This has the advantage of being very lightweight and it requires zero setup in a new application in order to use the session. The cookie data is cryptographically signed to make it tamper-proof. And it is also encrypted so anyone with access to it can't read its contents. (Rails will not accept it if it has been edited).
+CookieStore 大約可以存 4KB 的資料，其他儲存機制可以存更多，但通常 4KB 已經夠用了。不管用的是那種儲存機制，不建議在 Session 裡存大量資料。特別要避免將複雜的物件儲存在 Session 裡（除了 Ruby 基本物件之外的東西都不要存，比如 Model 的 instance）。因為伺服器可能沒辦法在 Request 之間重新將物件還原，便會導致錯誤發生。
 
-CookieStore 可以存大約 4KB 的資料，其他儲存機制可以存更多，但這通常已經很足夠了。不管儲存機制用的是那一種，存大量資料在 Session 都是不鼓勵的行為。特別要避免儲存複雜的物件在 Session 裡，因為 Server 可能沒辦法在 Request 之間重新將物件還原，便會導致錯誤發生。
-
-若 User Session 沒有儲存重要的資料，或不需要保存很久（比如只是用來顯示 Flash message）。可以考慮使用 `ActionDispatch::Session::CacheStore`。這會將 Session 存在應用程式所設定的 Cache 裡。優點是利用現有的 Cache 架構來儲存，不用額外管理或是設定 Session 的儲存方式。缺點是 Session 生命週期短、可能隨時會消失。
+若 User Session 沒有儲存重要的資料，或者存放短期的資料（比如只是用來顯示 Flash message）。可以考慮使用 `ActionDispatch::Session::CacheStore`。這會將 Session 存在應用程式所設定的 Cache 裡。優點是利用現有的 Cache 架構來儲存，不用額外管理或是設定 Session 的儲存方式。缺點是 Session 生命週期短、隨時可能會消失。
 
 關於如何安全地儲存 Session，請閱讀 [Security Guide](/guides/edge/security.md)。
 
-若是需要不同的 Session 儲存機制，可以在 `config/initializers/session_store.rb` 裡更改：
+若是需要不同的 Session 儲存機制，可以在 `config/initializers/session_store.rb` 裡設定：
 
 ```ruby
 # 使用資料庫來存 Session，而不是使用預設的 cookie 來存。
