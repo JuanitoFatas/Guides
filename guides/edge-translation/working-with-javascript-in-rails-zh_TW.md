@@ -235,7 +235,7 @@ class UsersController < ApplicationController
 
 以及 `index` View (`app/views/users/index.html.erb`)：
 
-```erb
+```html+erb
 <b>Users</b>
 
 <ul id="users">
@@ -257,7 +257,7 @@ class UsersController < ApplicationController
 <li><%= user.name %></li>
 ```
 
-index 頁面上半部列出用戶，下半部提供新建用戶的表單。
+`index` 頁面上半部列出用戶，下半部提供新建用戶的表單。
 
 下面的表單會呼叫 Users Controller 的 `create` action。因為表單有 `remote: true` 這個選項，Request 會使用 Ajax Post 到 Users Controller，等待 Controller 回應 JavaScript。處理這個 Request 的 `create` action 會像是：
 
@@ -342,10 +342,6 @@ $(document).on "page:change", ->
 * [Railscasts: Unobtrusive JavaScript](http://railscasts.com/episodes/205-unobtrusive-javascript)
 * [Railscasts: Turbolinks](http://railscasts.com/episodes/390-turbolinks)
 
-## 譯者補充
-
-中文推薦閱讀 [@Rei](https://twitter.com/chloerei) 所寫的 [Rails 3.2 的 Ajax 嚮導][rails-3-2-ajax-by-rei]。
-
 [jquery-ujs-wiki]: https://github.com/rails/jquery-ujs/wiki/ajax
 [ps]: https://developer.mozilla.org/en-US/docs/DOM/Manipulating_the_browser_history#The_pushState(\).C2.A0method
 [rails-js]: https://github.com/rails/jquery-ujs/blob/master/src/rails.js
@@ -353,6 +349,4 @@ $(document).on "page:change", ->
 [form_tag]: http://api.rubyonrails.org/classes/ActionView/Helpers/FormTagHelper.html#method-i-form_tag
 [link_to]: http://api.rubyonrails.org/classes/ActionView/Helpers/UrlHelper.html#method-i-link_to
 [button_to]: http://api.rubyonrails.org/classes/ActionView/Helpers/UrlHelper.html#method-i-button_to
-
 [ujs]: http://zh.wikipedia.org/zh-tw/Unobtrusive_JavaScript
-[rails-3-2-ajax-by-rei]: http://chloerei.com/2012/04/21/rails-3-2-ajax-guide/
