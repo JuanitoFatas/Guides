@@ -601,7 +601,7 @@ end
 
 ## Rendering XML 與 JSON 資料
 
-在 `ActionController` 裡 render `XML` 或是 `JSON` 真是再簡單不過了，看看下面這個用鷹架產生出的 Controller：
+在 `ActionController` 裡 render `XML` 或是 `JSON` 真是再簡單不過了，看看下面這個用 Scaffold 產生出來的 Controller：
 
 ```ruby
 class UsersController < ApplicationController
@@ -616,7 +616,7 @@ class UsersController < ApplicationController
 end
 ```
 
-注意這裡 `render` XML 的時候是寫 `render xml: @users`，而不是 `render xml: @users.to_xml`。如果 `render` 的物件不是字串的話，Rails 會自動替我們呼叫 `to_xml`。
+注意這裡 `render` XML 的時候是寫 `render xml: @users`，而不是 `render xml: @users.to_xml`。如果 `render` 的物件不是字串的話，Rails 會自動呼叫 `to_xml`。
 
 ## Filters
 
@@ -660,7 +660,7 @@ end
 `:only`   選項用來決定這個 filter 只需要檢查哪幾個 `action`，
 `:except` 選項則是決定這個 filter 不需要檢查哪幾個 `action`。
 
-### After Filters and Around Filters
+### After Filters 與 Around Filters
 
 “before” filter 在 `action` 前執行，也可以在 `action` 後執行：“after” filter。
 
@@ -692,7 +692,7 @@ end
 
 你也可以自己生 Response，不需要用 `yield`。若是沒使用 `yield`，則 `show` action 便不會被執行。
 
-### Other Ways to Use Filters
+### Filter 其它使用方式
 
 Filters 一般的使用方式是，先建立一個 `private` 方法，在使用 `*_action` 來針對特定 `action` 執行該 `private` 方法。但還有兩種方式，也可以達到 filters 的效果。
 
@@ -734,7 +734,7 @@ end
 
 Again, this is not an ideal example for this filter, because it's not run in the scope of the controller but gets the controller passed as an argument. The filter class must implement a method with the same name as the filter, so for the `before_action` filter the class must implement a `before` method, and so on. The `around` method must `yield` to execute the action.
 
-## Request Forgery Protection
+## Request 偽造保護
 
 跨站偽造請求（CSRF, Cross-site request forgery）是利用 A 站的使用者，給 B 站發送 Request 的一種攻擊手法，比如利用 A 站的梁山伯，去新增、修改、刪除 B 站祝英台的資料。
 
@@ -776,7 +776,7 @@ end
 
 參閱 [Security Guide](http://edgeguides.rubyonrails.org/security.html) 來了解更多關於安全性的問題。
 
-## The Request and Response Objects
+## Request 與 Response 物件
 
 Request 生命週期裡，每個 Controller 都有兩個 accessor 方法，`request` 與 `response`。
 
@@ -784,7 +784,7 @@ Request 生命週期裡，每個 Controller 都有兩個 accessor 方法，`requ
 
 `response` 方法則包含即將回給 client 的 `response` 物件。
 
-### The `request` Object
+### `request` 物件
 
 `request` object 帶有許多從 client 端而來的有用資訊。關於所有可用的方法，請查閱 [ActionDispatch::Request API 文件](http://api.rubyonrails.org/classes/ActionDispatch/Request.html)。而所有可存取的 properties 有：
 
@@ -802,7 +802,7 @@ Request 生命週期裡，每個 Controller 都有兩個 accessor 方法，`requ
 | remote_ip                                 | Client 的 IP 位址。|
 | url                                       | Request 使用的完整 URL 位址。|
 
-#### `path_parameters`, `query_parameters`, and `request_parameters`
+#### `path_parameters`、`query_parameters` 以及 `request_parameters`
 
 Rails 將所有與 Request 一起送來的參數，不管是 query string 還是 post body 而來的參數，都蒐集在 `params` Hash 裡。
 
@@ -818,7 +818,7 @@ Request 物件有三個 accessors，讓你取出這些參數，分別是 `query_
   { 'action' => 'my_action', 'controller' => 'my_controller' }
   ```
 
-### The `response` Object
+### `response` 物件
 
 `response` 物件通常不會直接使用，會在執行 action 與 render 即將送回給使用者的資料時建立出 `response` 物件。有時候需要處理 Response 再回給 User 時有用，比如在 `after` Filter 處理這件事。這時便可以存取到 Response，甚至透過 setters 來改變 Response 部分的值。
 
@@ -831,7 +831,7 @@ Request 物件有三個 accessors，讓你取出這些參數，分別是 `query_
 | charset                | Response 使用的編碼集，預設是 "UTF-8"。|
 | headers                | Response 使用的 Header。|
 
-#### Setting Custom Headers
+#### 自訂 Header
 
 若是想給 Response 自定 Header，修改 `response.headers`。`headers` 是一個 Hash，將 Response Header 的名稱與值關連起來，某些值 Rails 已經幫你設定好了。假設你的 API 需要回一個特殊的 Header，`X-TOP-SECRET-HEADER`，在 Controller 便可以這麼寫：
 
@@ -841,16 +841,16 @@ response.headers["X-TOP-SECRET-HEADER"] = '123456789'
 
 若是要設定每個 response 的預設 Header，可在 `config/application.rb` 裡設定，詳情參考 [Configuring Rails Applications - 3.8 Configuring Action Dispatch](http://edgeguides.rubyonrails.org/configuring.html#configuring-action-dispatch) 一節。
 
-## HTTP Authentications
+## HTTP 驗證
 
 Rails 內建了兩種 HTTP 驗證方法：
 
 * Basic Authentication（基礎驗證）
 * Digest Authentication
 
-### HTTP Basic Authentication
+### HTTP 基本驗證
 
-「HTTP 基礎驗證」是一種主流瀏覽器與 HTTP 客戶端皆支援的驗證方式。舉個例子，假設有一段管理員才能瀏覽的區塊，必須在瀏覽器的 HTTP basic dialog 視窗輸入 `username` 與 `password`，確保身分是管理員才可瀏覽。
+「HTTP 基本驗證」是一種主流瀏覽器與 HTTP 客戶端皆支援的驗證方式。舉個例子，假設有一段管理員才能瀏覽的區塊，必須在瀏覽器的 HTTP basic dialog 視窗輸入 `username` 與 `password`，確保身分是管理員才可瀏覽。
 
 在 Rails 裡只要使用一個方法：`http_basic_authenticate_with` 即可。
 
@@ -862,9 +862,9 @@ end
 
 有了這行代碼之後，可以從 `AdminsController` 切出 namespace，讓要管控的 Controller 繼承 `AdminsController`。
 
-### HTTP Digest Authentication
+### HTTP 摘要驗證
 
-HTTP digest authentication 比 HTTP Basic Authentication 高級一些，不需要使用者透過網路傳送未加密的密碼（但採用 HTTPS 的情況下，HTTP Basic Authentication 是安全的）。使用 digest authentication 也只需要一個方法：`authenticate_or_request_with_http_digest`。
+HTTP 摘要驗證比 HTTP 基本驗證高級一些，不需要使用者透過網路傳送未加密的密碼（但採用 HTTPS 的情況下，HTTP Basic Authentication 是安全的）。使用摘要驗證也只需要一個方法：`authenticate_or_request_with_http_digest`。
 
 ```ruby
 class AdminsController < ApplicationController
@@ -892,7 +892,7 @@ end
 
 最後 `authenticate` 返回 `true` 或 `false`，決定驗證是否成功。
 
-## Streaming and File Downloads
+## 串流與檔案下載
 
 有時候想給使用者傳檔案，而不是渲染 HTML 頁面。Rails 所有的 Controller 都有 `send_data` 與 `send_file`，可以用來串流資料給 Client。`send_file` 是個簡單傳檔案的方法，只要輸入檔案名稱，便可串流內容。
 Sometimes you may want to send a file to the user instead of rendering an HTML page. All controllers in Rails have the `send_data` and the `send_file` methods, which will both stream data to the client. `send_file` is a convenience method that lets you provide the name of a file on the disk and it will stream the contents of that file for you.
@@ -925,7 +925,7 @@ end
 
 上例的 `download_pdf` 會呼叫產生 PDF 文件的 private 方法，並返回一個字串。這個字串會串流給使用者，讓使用者可以依其推薦的檔案名稱來下載檔案。有時候串流檔案給使用者時，你可能不希望他們下載檔案。舉圖片的例子來說，圖片可以嵌入在 HTML。要跟瀏覽器說，某種檔案不是用來下載的，可以設定 `:disposition` 選項為 `"inline"`。預設值是 `"attachment"`。
 
-### Sending Files
+### 傳送檔案
 
 若想傳送硬碟上的檔案，使用 `send_file`：
 
@@ -949,7 +949,7 @@ end
 
 **講個秘訣：不推薦透過 Rails 來串流靜態檔案。可以將檔案存在 public 目錄，讓使用者透過 Nginx 或其他 Server 下載會比較有效率，串流檔案避免讓 Request 過整個 Rails stack。**
 
-### RESTful Downloads
+### RESTful 風格的下載
 
 `send_data` 可以用，但打造 RESTful 應用程式時，不需要將檔案下載切成不同的 action。在 REST 世界裡，上例的 PDF 檔案可以想成另一種 Client 資源的表現方式。Rails 提供簡單有序的方式來實作 “RESTful 式的下載”。以下是如何重寫上例，讓 PDF 下載成為 `show` action 的一部分，而無需使用任何串流：
 
@@ -981,13 +981,13 @@ Mime::Type.register "application/pdf", :pdf
 GET /clients/1.pdf
 ```
 
-### Live Streaming of Arbitrary Data
+### 即時串流任何資料
 
 > Module 模組
 
 Rails 允許你串流檔案之外的資料。實際上，可以透過 Response 物件來串流任何資料。`ActionController::Live` 模組允許你與瀏覽器之間建立持久的連結。使用此模組，能夠在任何時間送任何資料給瀏覽器。
 
-#### Incorporating Live Streaming
+#### 導入即時串流
 
 > Class 類別
 
@@ -1013,7 +1013,7 @@ end
 
 上例有幾件事情要注意。我們需要確保 Response Stream 使用完之後要關閉。忘記關掉 Response Stream 會導致 socket 永遠打開。另一件事是，在寫出 Response Stream 前，要設定 Content-Type 為 `text/event-stream`。這是因為 headers 無法在送出 Response 之後（`response.committed` 返回一個真值之時）更改，比如上面的 `response.stream.write "hello world\n"`。
 
-#### Example Usage
+#### 應用場景
 
 假設你正在做一個卡拉 OK 機器，而使用者想要獲得特定歌曲的歌詞。每首 `Song` 的歌詞都有特定的行數，而每一行所花費的時間是 `num_beats`。
 
@@ -1039,7 +1039,7 @@ end
 
 上面的程式碼僅在歌手唱完上一句，才會發送下句歌詞。
 
-#### Streaming Considerations
+#### 串流需要考量的事情
 
 串流任意資料是個非常強大的工具。像上個例子，可以選擇何時、與傳送何種資料。但有幾件事情需要注意：
 
@@ -1047,11 +1047,11 @@ end
 * 忘記關掉 Response Stream 會使 socket 一直開著。記得使用完 Response Stream 要 `close` 掉。
 * WEBrick 伺服器會自動將所有的 Response 放入緩衝區，所以 `include ActionController::Live` 不會起作用。必須使用不會自動將 Response 放入緩衝區的伺服器。
 
-## Log Filtering
+## 過濾 Log
 
 Rails 為每個環境都存有 log 檔案，放在 `log` 目錄下。這些 log 檔案拿來 debug 非常有用，可以瞭解應用程式當下究竟在幹嘛。但正式運行的應用程式，可能不想要記錄所有的資訊。
 
-### Parameters Filtering
+### 過濾參數
 
 可以從 log 檔案過濾掉特定的 Request 參數，在 `config/application.rb` 裡的 `config.filter_parameters` 設定。
 
@@ -1061,9 +1061,9 @@ config.filter_parameters << :password
 
 設定過的參數在 log 裡會被改成 `[FILTERED]`，確保 log 外洩時，輸入的密碼不會跟著外洩。
 
-### Redirects Filtering
+### 過濾轉址
 
-有時候會想要從 log 檔案過濾某些應用程式 redirect_to 的地方。可以透過設定 `config.filter_redirect` 來達成：
+有時候會想要從 log 檔案過濾某些應用程式 `redirect_to` 的地方。可以透過設定 `config.filter_redirect` 來達成：
 
 ```ruby
 config.filter_redirect << 's3.amazonaws.com'
@@ -1085,7 +1085,7 @@ config.filter_redirect.concat ['s3.amazonaws.com', /private_path/]
 
 Rails 預設處理 exception 的方式是 `"500 Internal Server Error"`。若 Request 是從 local 端發出，會有 backtrace 資訊，讓你來查找錯誤究竟在哪裡。若 Request 是從 Remote 端而來，則 Rails 僅顯示 `"500 Internal Server Error"`。若是使用者試圖存取不存在的路徑，Rails 則會回 `"404 Not Found"`。有時你會想自定這些錯誤的處理及顯示方式。接著讓我們看看 Rails 當中，處理錯誤與異常的幾個層級：
 
-### The Default 500, 404 and 422 Templates
+### 預設的 500、404 與 422 模版
 
 跑在 production 環境的應用程式，預設會 `render` 404、500 或 422 錯誤訊息，分別在 `public` 目錄下面的 `404.html`、`500.html` 與 `422.html`。你可以修改 `404.html` 或是 `500.html` 或 `422.html`。**注意這些是靜態文件。**
 
@@ -1143,7 +1143,7 @@ end
 
 注意！特定的異常只有在 `ApplicationController` 裡面可以捕捉的到，因為他們在 Controller 被實例化出來之前，或 action 執行之前便發生了。參考 Pratik Naik 的[文章](http://m.onkey.org/2008/7/20/rescue-from-dispatching)來了解更多關於這個問題的細節。
 
-## Force HTTPS protocol
+## 強制使用 HTTPS 協定
 
 有時候出於安全性考量，可能想讓特定的 Controller 只可以透過 HTTPS 來存取。可以在 Controller 使用 `force_ssl` 方法：
 
