@@ -529,7 +529,7 @@ end
 
 ## Cookies
 
-應用程式可以在客戶端儲存小量的資料，這種資料我們稱作 Cookie。Cookie 在 Request 與 Session 之間是不會消失的。Rails 提供了簡單存取 Cookies 的方法，`cookies`，跟 `session` 方法很像：
+應用程式可以在客戶端儲存小量的資料，這種資料稱為 Cookie。Cookie 在 Request 之間是不會消失，可以用來存 Session。Rails 裡存取 Cookies 的非常簡單，`cookies`，用起來跟 `session` 類似，和 Hash 用法相同：
 
 ```ruby
 class CommentsController < ApplicationController
@@ -557,43 +557,28 @@ class CommentsController < ApplicationController
 end
 ```
 
-**注意 Session 用賦 `nil` 值來清空，cookie 要使用 `cookies.delete(:key)` 刪掉。**
+**注意 Session 是用賦 `nil` 值來清空某個鍵的值；Cookie 則要使用 `cookies.delete(:key)` 刪掉。**
 
-Rails also provides a signed cookie jar and an encrypted cookie jar for storing
-sensitive data. The signed cookie jar appends a cryptographic signature on the
-cookie values to protect their integrity. The encrypted cookie jar encrypts the
-values in addition to signing them, so that they cannot be read by the end user.
-Refer to the [API documentation](http://api.rubyonrails.org/classes/ActionDispatch/Cookies.html)
-for more details.
+Rails 也提供簽署 Cookie 與加密 Cookie，用來儲存敏感資料。簽署 Cookie 裡的數值會附上加密過的簽名，確保值被竄改。加密 Cookie 不僅會在值附加簽名的基礎上再次加密，讓終端使用者無法讀取。詳細資料請閱讀 [API 文件](http://api.rubyonrails.org/classes/ActionDispatch/Cookies.html)
 
-These special cookie jars use a serializer to serialize the assigned values into
-strings and deserializes them into Ruby objects on read.
 
-You can specify what serializer to use:
+這兩種特殊的 Cookie 使用一個 Serializer，將數值序列化成字串，讀取時再反序列化回值。
+
+指定使用的 Serializer：
 
 ```ruby
 Rails.application.config.action_dispatch.cookies_serializer = :json
 ```
 
-The default serializer for new applications is `:json`. For compatibility with
-old applications with existing cookies, `:marshal` is used when `serializer`
-option is not specified.
+Rails 新版的預設 Serializer 是 `:json`。為了與舊版的應用程式裡的 Cookie 相容，使用 `:marshal` Serializer。也可以設成 `:hybrid`。讀到以 `Marshal` 序列化的 Cookie 時會用 `:marshal` 來反序列化。並重新使用 `JSON` 格式寫回去。這在將現有應用程式的 Serializer 升級到 `:json` 時很有用。
 
-You may also set this option to `:hybrid`, in which case Rails would transparently
-deserialize existing (`Marshal`-serialized) cookies on read and re-write them in
-the `JSON` format. This is useful for migrating existing applications to the
-`:json` serializer.
-
-It is also possible to pass a custom serializer that responds to `load` and
-`dump`:
+使用自訂的 Serializer 也可以（必須要實作 `load` 與 `dump`）：
 
 ```ruby
 Rails.application.config.action_dispatch.cookies_serializer = MyCustomSerializer
 ```
 
-When using the `:json` or `:hybrid` serializer, you should beware that not all
-Ruby objects can be serialized as JSON. For example, `Date` and `Time` objects
-will be serialized as strings, and `Hash`es will have their keys stringified.
+在使用 `:json` 或 `hybrid` Serializer 時，應該要注意到不是所有的 Ruby 物件都可以轉成 JSON。舉個例子，`Date` 與 `Time` 物件會被序列化成字串，Hash 的鍵也會變成字串。
 
 ```ruby
 class CookiesController < ApplicationController
@@ -608,12 +593,11 @@ class CookiesController < ApplicationController
 end
 ```
 
-It's advisable that you only store simple data (strings and numbers) in cookies.
-If you have to store complex objects, you would need to handle the conversion
-manually when reading the values on subsequent requests.
+建議 Cookie 裡只存放簡單的資料（像是數字與字串）。
 
-If you use the cookie session store, this would apply to the `session` and
-`flash` hash as well.
+若必須存放複雜的物件，需要自己在接下來的 Request 裡手動轉換。
+
+如果 Session 採用的是 CookieStore 儲存機制，則上面的規則， `session` 與 `flash` 通樣適用。
 
 ## Rendering XML 與 JSON 資料
 
