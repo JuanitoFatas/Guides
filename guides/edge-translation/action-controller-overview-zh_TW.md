@@ -894,8 +894,7 @@ end
 
 ## 串流與檔案下載
 
-有時候想給使用者傳檔案，而不是渲染 HTML 頁面。Rails 所有的 Controller 都有 `send_data` 與 `send_file`，可以用來串流資料給 Client。`send_file` 是個簡單傳檔案的方法，只要輸入檔案名稱，便可串流內容。
-Sometimes you may want to send a file to the user instead of rendering an HTML page. All controllers in Rails have the `send_data` and the `send_file` methods, which will both stream data to the client. `send_file` is a convenience method that lets you provide the name of a file on the disk and it will stream the contents of that file for you.
+有時候想給使用者傳檔案，而不是 render HTML 頁面。Rails 所有的 Controller 都有 `send_data` 與 `send_file` 方法，可以用來串流資料。`send_file` 是個簡單傳檔案的方法，只要輸入檔案名稱，便可串流該檔案的內容。
 
 要串流資料給 Client，使用 `send_data`：
 
