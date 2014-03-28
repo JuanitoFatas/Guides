@@ -201,8 +201,6 @@ end
 
 ### Strong Parameters
 
-> 大量賦值 Mass Assignment
-
 原先大量賦值是由 Active Model 來處理，透過白名單來過濾不可賦值的參數。也就是得明確指定那些屬性可以賦值，避免掉不該被賦值的屬性被賦值了。有了 Strong Parameter 之後，這件工作交給 Action Controller 負責。
 
 除此之外，還可以限制必須傳入那些參數。若是沒給入這些必要參數時，Rails 預先定義好的 `raise`/`rescue` 會處理好，回傳 400 Bad Request。
@@ -982,13 +980,9 @@ GET /clients/1.pdf
 
 ### 即時串流任何資料
 
-> Module 模組
-
 Rails 允許你串流檔案之外的資料。實際上，可以透過 Response 物件來串流任何資料。`ActionController::Live` 模組允許你與瀏覽器之間建立持久的連結。使用此模組，能夠在任何時間送任何資料給瀏覽器。
 
 #### 導入即時串流
-
-> Class 類別
 
 在 Controller 類別內部引入 `ActionController::Live` 讓 Controller 內部所有的 action 皆可串流資料：
 
@@ -1078,13 +1072,11 @@ config.filter_redirect.concat ['s3.amazonaws.com', /private_path/]
 
 ## Rescue
 
-> Exception 異常
-
 每個應用程式都可能有 bugs，或是拋出異常，這些都需要處理。舉例來說，使用者點了一個連結，該連結的 resource 已經不在資料庫了，Active Record 會拋出 `ActiveRecord::RecordNotFound` exception。
 
 Rails 預設處理 exception 的方式是 `"500 Internal Server Error"`。若 Request 是從 local 端發出，會有 backtrace 資訊，讓你來查找錯誤究竟在哪裡。若 Request 是從 Remote 端而來，則 Rails 僅顯示 `"500 Internal Server Error"`。若是使用者試圖存取不存在的路徑，Rails 則會回 `"404 Not Found"`。有時你會想自定這些錯誤的處理及顯示方式。接著讓我們看看 Rails 當中，處理錯誤與異常的幾個層級：
 
-### 預設的 500、404 與 422 模版
+### 內建的 500、404 與 422 模版
 
 跑在 production 環境的應用程式，預設會 `render` 404、500 或 422 錯誤訊息，分別在 `public` 目錄下面的 `404.html`、`500.html` 與 `422.html`。你可以修改 `404.html` 或是 `500.html` 或 `422.html`。**注意這些是靜態文件。**
 
