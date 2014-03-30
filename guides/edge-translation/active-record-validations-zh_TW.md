@@ -101,10 +101,7 @@ CAUTION: 有許多種方法可以改變資料庫裡物件的狀態。某些方�
 
 ### `valid?` 與 `invalid?`
 
-To verify whether or not an object is valid, Rails uses the `valid?` method.
-You can also use this method on your own. `valid?` triggers your validations
-and returns true if no errors were found in the object, and false otherwise.
-As you saw above:
+檢查物件是否有效，Rails 使用的是 `valid?` 方法。您也可以直接呼叫此方法，來觸發驗證。物件若沒有錯誤會回傳 `true`，反之回傳 `false`。前面已經見過了：
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -115,13 +112,9 @@ Person.create(name: "John Doe").valid? # => true
 Person.create(name: nil).valid? # => false
 ```
 
-After Active Record has performed validations, any errors found can be accessed
-through the `errors.messages` instance method, which returns a collection of errors.
-By definition, an object is valid if this collection is empty after running
-validations.
+Active Record 做完驗證後，所有找到的錯誤都可透過 `errors.messages` 這個實例方法來存取，會回傳錯誤集合。就定義來說，物件做完驗證後，錯誤集合為空才是有效的。
 
-Note that an object instantiated with `new` will not report errors even if it's
-technically invalid, because validations are not run when using `new`.
+注意到用 `new` 實例化出來的物件，即便有錯誤也不會說，因為 `new` 是不會觸發任何驗證的。
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -153,21 +146,13 @@ end
 # => ActiveRecord::RecordInvalid: Validation failed: Name can't be blank
 ```
 
-`invalid?` is simply the inverse of `valid?`. It triggers your validations,
-returning true if any errors were found in the object, and false otherwise.
+`invalid?` 是 `valid?` 的反相。物件找到任何錯誤回傳 `true`，反之回傳 `false`。
 
 ### `errors[]`
 
-To verify whether or not a particular attribute of an object is valid, you can
-use `errors[:attribute]`. It returns an array of all the errors for
-`:attribute`. If there are no errors on the specified attribute, an empty array
-is returned.
+要檢查物件的特定屬性是否有效，可以使用 `errors[:attribute]`，會以陣列形式返回該屬性的所有錯誤，沒有錯誤則返回空陣列。
 
-This method is only useful _after_ validations have been run, because it only
-inspects the errors collection and does not trigger validations itself. It's
-different from the `ActiveRecord::Base#invalid?` method explained above because
-it doesn't verify the validity of the object as a whole. It only checks to see
-whether there are errors found on an individual attribute of the object.
+這個方法只有在驗證後呼叫才有用，因為它只是檢查 `errors` 集合，而不會觸發驗證。`errors[:attribute]` 與 `ActiveRecord::Base#invalid?` 方法不同，因為它不是檢查整個物件的有效性，只是檢查物件單一屬性是否有錯誤。
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -178,38 +163,21 @@ end
 >> Person.create.errors[:name].any? # => true
 ```
 
-We'll cover validation errors in greater depth in the [Working with Validation
-Errors](#working-with-validation-errors) section. For now, let's turn to the
-built-in validation helpers that Rails provides by default.
+在[處理驗證錯誤]一節會更深入講解驗證錯誤。現在讓我們看看 Rails 內建的驗證 Helpers 有那些。
 
 驗證 Helpers
 ------------------
 
-Active Record offers many pre-defined validation helpers that you can use
-directly inside your class definitions. These helpers provide common validation
-rules. Every time a validation fails, an error message is added to the object's
-`errors` collection, and this message is associated with the attribute being
-validated.
+Active Record 提供了許多預先定義的驗證 Helpers 供您直接在類別定義中使用。這些 Helpers 提供了常見的驗證規則。每當驗證失敗時，驗證訊息會新增到物件的 `errors` 集合，這個訊息與出錯的屬性是相關聯的。
 
-Each helper accepts an arbitrary number of attribute names, so with a single
-line of code you can add the same kind of validation to several attributes.
 
-All of them accept the `:on` and `:message` options, which define when the
-validation should be run and what message should be added to the `errors`
-collection if it fails, respectively. The `:on` option takes one of the values
-`:create` or `:update`. There is a default error
-message for each one of the validation helpers. These messages are used when
-the `:message` option isn't specified. Let's take a look at each one of the
-available helpers.
+每個 Helper 皆接受任意數量的屬性名稱，所以一行程式碼，便可給多個屬性加入同樣的驗證。
+
+所有的 Helpers 皆接受 `:on` 與 `:message` 選項，分別用來指定何時做驗證、出錯時的錯誤訊息。每個驗證 Helpers 都有預設的錯誤訊息。這些訊息在沒有指定 `:message` 選項時很有用。讓我們看看每一個可用的 Helpers。
 
 ### `acceptance`
 
-This method validates that a checkbox on the user interface was checked when a
-form was submitted. This is typically used when the user needs to agree to your
-application's terms of service, confirm reading some text, or any similar
-concept. This validation is very specific to web applications and this
-'acceptance' does not need to be recorded anywhere in your database (if you
-don't have a field for it, the helper will just create a virtual attribute).
+這個方法在表單送出時，檢查 UI 的 checkbox 是否有打勾。這對於使用者需要接受服務條款、隱私權政策等相關的場景下很有用。這個驗證僅針對網頁應用程式，且不需要存入資料庫（如果沒有為 `acceptance` 開一個欄位，Helper 自己會使用一個虛擬屬性）。
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -217,10 +185,9 @@ class Person < ActiveRecord::Base
 end
 ```
 
-The default error message for this helper is _"must be accepted"_.
+這個 Helper 預設的錯誤訊息是 _"must be accepted"_。
 
-It can receive an `:accept` option, which determines the value that will be
-considered acceptance. It defaults to "1" and can be easily changed.
+這個方法接受一個 `:accept` 選項，用來決定什麼值代表“接受”。預設是 “1”，改成別的也很簡單。
 
 ```ruby
 class Person < ActiveRecord::Base
