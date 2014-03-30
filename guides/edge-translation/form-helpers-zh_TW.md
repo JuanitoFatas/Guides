@@ -464,7 +464,17 @@ Helper 給你用，沒錯，Rails 已經幫你想好了！表單處理 Model 對
 <%= f.select(:city_id, ...) %>
 ```
 
-上例 Person 與 City Model 存在 `belongs_to` 關係，在使用 `select` 時必須傳入 foreign key，否則會報這個錯誤：`ActiveRecord::AssociationTypeMismatch`。
+`select` Helper 也可以傳一個區塊：
+
+```erb
+<%= f.select(:city_id) do %>
+  <% [['Lisbon', 1], ['Madrid', 2]].each do |c| -%>
+    <%= content_tag(:option, c.first, value: c.last) %>
+  <% end %>
+<% end %>
+```
+
+WARNING: 上例 Person 與 City Model 存在 `belongs_to` 關係，在使用 `select` 時必須傳入 foreign key，否則會報這個錯誤：`ActiveRecord::AssociationTypeMismatch`。
 
 ### 從任意 objects 集合來的 option tags
 
