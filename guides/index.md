@@ -1,6 +1,8 @@
 # [官方 Rails Edge Guides][edge] 譯文
 
-## Chinese Translation (zh-TW + zh-CN)
+## Chinese Translation (zh-TW)
+
+zh-CN please visit: docs-china.com/rails/
 
 ## Start Here
 
@@ -13,7 +15,7 @@
 
 | English| Traditional Chinese| Simplified Chinese|
 |:--:|:--:|:--:|
-|[Active Record Basics](/guides/edge/active_record_basics.md)|[Work In Progress](/guides/edge-translation/active-record-basics-zh_TW.md)|to be translated|
+|[Active Record Basics](/guides/edge/active_record_basics.md)|[zh-TW](/guides/edge-translation/active-record-basics-zh_TW.md)|to be translated|
 |[Active Record Migrations](/guides/edge/migrations.md)|[zh-TW](/guides/edge-translation/migrations-zh_TW.md)|[zh-CN](/guides/edge-translation/migrations-zh_CN.md)|
 |[Active Record Validations](/guides/edge/active_record_validations.md)|[Work In Progress](/guides/edge-translation/active-record-validations-zh_TW.md)|to be translated|
 |[Active Record Callbacks](/guides/edge/active_record_callbacks.md)|[zh-TW](/guides/edge-translation/active-record-callbacks-zh_TW.md)|[zh-CN](/guides/edge-translation/active-record-callbacks-zh_CN.md)|
