@@ -266,7 +266,7 @@ class Product < ActiveRecord::Base
 end
 ```
 
-`format` 預設錯誤訊息是  _"is invalid"_.
+`format` 預設錯誤訊息是  _"is invalid"_。
 
 ### `inclusion`
 
@@ -464,7 +464,7 @@ end
 
 WARNING: 注意某些資料庫預設搜尋是不分大小寫的。
 
-預設錯誤訊息是 _"has already been taken"_.
+預設錯誤訊息是 _"has already been taken"_。
 
 ### `validates_with`
 
@@ -508,7 +508,7 @@ end
 
 注意自己寫的這個驗證類別（上例為 `GoodnessValidator`），在應用程式生命週期內**只會實例化一次**，而不是每次驗證時就實例化一次。所以使用實例變數時要很小心。
 
-如果驗證類別足夠複雜的話，需要用到實例變數，可以用 純 Ruby 物件（Plain Old Ruby Object, PORO） 來取代：
+如果驗證類別足夠複雜的話，需要用到實例變數，可以用純 Ruby 物件（Plain Old Ruby Object, PORO） 來取代：
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -553,12 +553,11 @@ end
 常見驗證選項
 -------------------------
 
-These are common validation options:
+以下是常見的驗證選項：
 
 ### `:allow_nil`
 
-The `:allow_nil` option skips the validation when the value being validated is
-`nil`.
+`:allow_nil` 選項當驗證的值為 `nil` 時略過驗證。
 
 ```ruby
 class Coffee < ActiveRecord::Base
@@ -569,9 +568,7 @@ end
 
 ### `:allow_blank`
 
-The `:allow_blank` option is similar to the `:allow_nil` option. This option
-will let validation pass if the attribute's value is `blank?`, like `nil` or an
-empty string for example.
+`:allow_nil` 選項當驗證的值為 `blank?` 時，即 `blank?` 回傳 `true` 時，略過驗證。
 
 ```ruby
 class Topic < ActiveRecord::Base
@@ -584,19 +581,11 @@ Topic.create(title: nil).valid? # => true
 
 ### `:message`
 
-As you've already seen, the `:message` option lets you specify the message that
-will be added to the `errors` collection when validation fails. When this
-option is not used, Active Record will use the respective default error message
-for each validation helper.
+如上已經介紹過，`message` 選項可在驗證失敗時，加上錯誤訊息至 `errors` 集合。沒給入此選項時，Active Record 會使用預設的錯誤訊息。
 
 ### `:on`
 
-The `:on` option lets you specify when the validation should happen. The
-default behavior for all the built-in validation helpers is to be run on save
-(both when you're creating a new record and when you're updating it). If you
-want to change it, you can use `on: :create` to run the validation only when a
-new record is created or `on: :update` to run the validation only when a record
-is updated.
+`:on` 選項可指定驗證發生時機。所有驗證方法預設在 `save` 時會觸發驗證（也就是新建與更新時）。也可以指定只在新建時做驗證 `on: :create`，或是只在更新時做驗證  `on: :update`。
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -721,13 +710,13 @@ end
 The validation only runs when all the `:if` conditions and none of the
 `:unless` conditions are evaluated to `true`.
 
-Performing Custom Validations
+使用自定驗證
 -----------------------------
 
 When the built-in validation helpers are not enough for your needs, you can
 write your own validators or validation methods as you prefer.
 
-### Custom Validators
+### 自定 Validators
 
 Custom validators are classes that extend `ActiveModel::Validator`. These
 classes must implement a `validate` method which takes a record as an argument
@@ -773,7 +762,7 @@ end
 As shown in the example, you can also combine standard validations with your
 own custom validators.
 
-### Custom Methods
+### 自定方法
 
 You can also create methods that verify the state of your models and add
 messages to the `errors` collection when they are invalid. You must then
@@ -816,7 +805,7 @@ class Invoice < ActiveRecord::Base
 end
 ```
 
-Working with Validation Errors
+處理驗證錯誤
 ------------------------------
 
 In addition to the `valid?` and `invalid?` methods covered earlier, Rails provides a number of methods for working with the `errors` collection and inquiring about the validity of objects.
@@ -956,7 +945,7 @@ person.valid? # => true
 person.errors.size # => 0
 ```
 
-Displaying Validation Errors in Views
+在 View 顯示驗證失敗訊息
 -------------------------------------
 
 Once you've created a model and added validations, if that model is created via
