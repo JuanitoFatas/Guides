@@ -197,9 +197,7 @@ end
 
 ### `validates_associated`
 
-You should use this helper when your model has associations with other models
-and they also need to be validated. When you try to save your object, `valid?`
-will be called upon each one of the associated objects.
+當 Model 與其它 Model 有關聯，且與之關聯的 Model 也需要驗證時，用這個方法來處理。在儲存物件時，會對相關聯的物件呼叫 `valid?`。
 
 ```ruby
 class Library < ActiveRecord::Base
@@ -208,21 +206,15 @@ class Library < ActiveRecord::Base
 end
 ```
 
-This validation will work with all of the association types.
+所有的關聯類型皆適用此方法。
 
-CAUTION: Don't use `validates_associated` on both ends of your associations.
-They would call each other in an infinite loop.
+CAUTION: 不要在關聯的兩邊都使用 `validates_associated`。它們會互相呼叫陷入無窮迴圈。
 
-The default error message for `validates_associated` is _"is invalid"_. Note
-that each associated object will contain its own `errors` collection; errors do
-not bubble up to the calling model.
+`validates_associated` 預設錯誤訊息是 _"is invalid"_。注意到每個關聯的物件會有自己的 `errors` 集合。錯誤不會集中到呼叫該方法的 Model。
 
 ### `confirmation`
 
-You should use this helper when you have two text fields that should receive
-exactly the same content. For example, you may want to confirm an email address
-or a password. This validation creates a virtual attribute whose name is the
-name of the field that has to be confirmed with "_confirmation" appended.
+當有兩個 text field 內容需要完全相同時，使用這個方法。比如可能想要確認 E-mail 或密碼兩次輸入是否相同。這個驗證會新建一個虛擬屬性，名字是該欄位（field）的名稱，後面加上 `_confirmation`。
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -230,16 +222,14 @@ class Person < ActiveRecord::Base
 end
 ```
 
-In your view template you could use something like
+在 View 模版（template）裡，可以這麼用：
 
 ```erb
 <%= text_field :person, :email %>
 <%= text_field :person, :email_confirmation %>
 ```
 
-This check is performed only if `email_confirmation` is not `nil`. To require
-confirmation, make sure to add a presence check for the confirmation attribute
-(we'll take a look at `presence` later on this guide):
+只有 `email_confirmation` 不為 `nil` 時，才會做驗證。需要確認的話，記得要給 `email_confirmation` 屬性加上存在性（presence）驗證（稍後介紹 `presence`）：
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -248,12 +238,11 @@ class Person < ActiveRecord::Base
 end
 ```
 
-The default error message for this helper is _"doesn't match confirmation"_.
+`confirmation` 預設錯誤訊息是  _"doesn't match confirmation"_。
 
 ### `exclusion`
 
-This helper validates that the attributes' values are not included in a given
-set. In fact, this set can be any enumerable object.
+這個方法驗證屬性是否“不屬於”某個給定的集合。集合可以是任何 `Enumerable` 的物件。
 
 ```ruby
 class Account < ActiveRecord::Base
@@ -262,18 +251,13 @@ class Account < ActiveRecord::Base
 end
 ```
 
-The `exclusion` helper has an option `:in` that receives the set of values that
-will not be accepted for the validated attributes. The `:in` option has an
-alias called `:within` that you can use for the same purpose, if you'd like to.
-This example uses the `:message` option to show how you can include the
-attribute's value.
+`exclusion` 有 `:in` 選項，接受一組數值，決定屬性“不可接受”的值。`:in` 別名為 `:within`。上例使用了 `:message` 選項來示範如何在錯誤訊息裡印出屬性的值。
 
-The default error message is _"is reserved"_.
+`exclusion` 預設錯誤訊息是  _"is reserved"_。
 
 ### `format`
 
-This helper validates the attributes' values by testing whether they match a
-given regular expression, which is specified using the `:with` option.
+這個方法驗證屬性的值是否匹配一個透過 `:with` 給定的正規表達式。
 
 ```ruby
 class Product < ActiveRecord::Base
@@ -282,12 +266,11 @@ class Product < ActiveRecord::Base
 end
 ```
 
-The default error message is _"is invalid"_.
+`format` 預設錯誤訊息是  _"is invalid"_.
 
 ### `inclusion`
 
-This helper validates that the attributes' values are included in a given set.
-In fact, this set can be any enumerable object.
+這個方法驗證屬性是否“屬於”某個給定的集合。集合可以是任何 `Enumerable` 的物件。
 
 ```ruby
 class Coffee < ActiveRecord::Base
@@ -296,17 +279,13 @@ class Coffee < ActiveRecord::Base
 end
 ```
 
-The `inclusion` helper has an option `:in` that receives the set of values that
-will be accepted. The `:in` option has an alias called `:within` that you can
-use for the same purpose, if you'd like to. The previous example uses the
-`:message` option to show how you can include the attribute's value.
+`inclusion` 有 `:in` 選項，接受一組數值，決定屬性“可接受”的值。`:in` 的別名為 `:within`。上例使用了 `:message` 選項來示範如何在錯誤訊息裡印出屬性的值。
 
-The default error message for this helper is _"is not included in the list"_.
+`inclusion` 預設錯誤訊息是 _"is not included in the list"_。
 
 ### `length`
 
-This helper validates the length of the attributes' values. It provides a
-variety of options, so you can specify length constraints in different ways:
+這個方法驗證屬性值的長度。有多種選項來限制長度（如下所示）：
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -317,19 +296,14 @@ class Person < ActiveRecord::Base
 end
 ```
 
-The possible length constraint options are:
+長度限制選項有：
 
-* `:minimum` - The attribute cannot have less than the specified length.
-* `:maximum` - The attribute cannot have more than the specified length.
-* `:in` (or `:within`) - The attribute length must be included in a given
-  interval. The value for this option must be a range.
-* `:is` - The attribute length must be equal to the given value.
+* `:minimum` - 屬性值的長度的最小值。
+* `:maximum` - 屬性值的長度的最大值。
+* `:in` (or `:within`) - 屬性值的長度所屬的區間。這個選項的值必須是一個範圍。
+* `:is` - T屬性值的長度必須等於。
 
-The default error messages depend on the type of length validation being
-performed. You can personalize these messages using the `:wrong_length`,
-`:too_long`, and `:too_short` options and `%{count}` as a placeholder for the
-number corresponding to the length constraint being used. You can still use the
-`:message` option to specify an error message.
+預設錯誤訊息取決於用的是那種長度驗證方法。可以使用 `:wrong_length`、`too_long`、`too_short` 選項，以及 `%{count}` 來客製化訊息。使用 `:message` 也是可以的。
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -338,8 +312,7 @@ class Person < ActiveRecord::Base
 end
 ```
 
-This helper counts characters by default, but you can split the value in a
-different way using the `:tokenizer` option:
+這個方法計算長度的預設單位是字元。但可以用 `:tokenizer` 選項來修改，比如取一個字為最小單位：
 
 ```ruby
 class Essay < ActiveRecord::Base
@@ -353,30 +326,22 @@ class Essay < ActiveRecord::Base
 end
 ```
 
-Note that the default error messages are plural (e.g., "is too short (minimum
-is %{count} characters)"). For this reason, when `:minimum` is 1 you should
-provide a personalized message or use `presence: true` instead. When
-`:in` or `:within` have a lower limit of 1, you should either provide a
-personalized message or call `presence` prior to `length`.
+注意到預設的錯誤訊息是複數。（例如，"is too short (minimum
+is %{count} characters)"）。故當 `:minimum` 為 1 時，要提供一個自訂的訊息，或者是使用 `presence: true` 取代。當 `:in` 或 `:within` 下限小於 1 時，應該要提供一個自訂的訊息，或者是在驗證 `length` 之前，先驗證 `presence`。
 
 ### `numericality`
 
-This helper validates that your attributes have only numeric values. By
-default, it will match an optional sign followed by an integral or floating
-point number. To specify that only integral numbers are allowed set
-`:only_integer` to true.
+這個方法驗證屬性是不是純數字。預設會匹配帶有正負號（可選）的整數或浮點數。只允許整數可以透過將 `:only_integer` 為 `true`。
 
-If you set `:only_integer` to `true`, then it will use the
+`:only_integer` 為 `true`，會使用下面的正規表達式來檢查屬性的值：
 
 ```ruby
 /\A[+-]?\d+\Z/
 ```
 
-regular expression to validate the attribute's value. Otherwise, it will try to
-convert the value to a number using `Float`.
+否則會嘗試使用 `Float` 將值轉為數字。
 
-WARNING. Note that the regular expression above allows a trailing newline
-character.
+WARNING. 注意上面的正規表達式允許最後有新行字元。
 
 ```ruby
 class Player < ActiveRecord::Base
@@ -385,28 +350,17 @@ class Player < ActiveRecord::Base
 end
 ```
 
-Besides `:only_integer`, this helper also accepts the following options to add
-constraints to acceptable values:
+除了 `only_integer` 之外，這個方法也接受下列選項，用來限制允許的數值：
 
-* `:greater_than` - Specifies the value must be greater than the supplied
-  value. The default error message for this option is _"must be greater than
-  %{count}"_.
-* `:greater_than_or_equal_to` - Specifies the value must be greater than or
-  equal to the supplied value. The default error message for this option is
-  _"must be greater than or equal to %{count}"_.
-* `:equal_to` - Specifies the value must be equal to the supplied value. The
-  default error message for this option is _"must be equal to %{count}"_.
-* `:less_than` - Specifies the value must be less than the supplied value. The
-  default error message for this option is _"must be less than %{count}"_.
-* `:less_than_or_equal_to` - Specifies the value must be less than or equal the
-  supplied value. The default error message for this option is _"must be less
-  than or equal to %{count}"_.
-* `:odd` - Specifies the value must be an odd number if set to true. The
-  default error message for this option is _"must be odd"_.
-* `:even` - Specifies the value must be an even number if set to true. The
-  default error message for this option is _"must be even"_.
+* `:greater_than` - 屬性的值必須大於指定的值。預設錯誤訊息是 _"must be greater than %{count}"_。
+* `:greater_than_or_equal_to` - 屬性的值必須大於指定的值。預設錯誤訊息是 _"must be greater than or equal to %{count}"_。
+* `:equal_to` - 屬性的值必須等於指定的值。預設錯誤訊息是 _"must be equal to %{count}"_。
+* `:less_than` - 屬性的值必須小於指定的值。預設錯誤訊息是 _"must be less than %{count}"_。
+* `:less_than_or_equal_to` - 屬性的值必須小於等於指定的值。預設錯誤訊息是 _"must be less than or equal to %{count}"_。
+* `:odd` - 若 `:odd` 設為 `true`，則屬性的值必須是奇數。預設錯誤訊息是 _"must be odd"_。
+* `:even` - 若 `:even` 設為 `true`，則屬性的值必須是奇數。預設錯誤訊息是 _"must be even"_。
 
-The default error message is _"is not a number"_.
+`numericality` 預設錯誤訊息是 _"is not a number"_.
 
 ### `presence`
 
@@ -447,7 +401,7 @@ If you validate the presence of an object associated via a `has_one` or
 Since `false.blank?` is true, if you want to validate the presence of a boolean
 field you should use `validates :field_name, inclusion: { in: [true, false] }`.
 
-The default error message is _"can't be blank"_.
+預設錯誤訊息是 _"can't be blank"_.
 
 ### `absence`
 
@@ -488,7 +442,7 @@ If you validate the absence of an object associated via a `has_one` or
 Since `false.present?` is false, if you want to validate the absence of a boolean
 field you should use `validates :field_name, exclusion: { in: [true, false] }`.
 
-The default error message is _"must be blank"_.
+預設錯誤訊息是 _"must be blank"_.
 
 ### `uniqueness`
 
@@ -532,7 +486,7 @@ end
 WARNING. Note that some databases are configured to perform case-insensitive
 searches anyway.
 
-The default error message is _"has already been taken"_.
+預設錯誤訊息是 _"has already been taken"_.
 
 ### `validates_with`
 
