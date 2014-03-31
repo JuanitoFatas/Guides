@@ -468,7 +468,7 @@ WARNING: 注意某些資料庫預設搜尋是不分大小寫的。
 
 ### `validates_with`
 
-This helper passes the record to a separate class for validation.
+這個方法將記錄傳入，另開一類別來驗證。
 
 ```ruby
 class GoodnessValidator < ActiveModel::Validator
@@ -484,24 +484,18 @@ class Person < ActiveRecord::Base
 end
 ```
 
-NOTE: Errors added to `record.errors[:base]` relate to the state of the record
-as a whole, and not to a specific attribute.
+NOTE: 注意錯誤會加到 `record.errors[:base]`。這個錯誤與整個物件有關，不單屬於某個屬性。
 
-The `validates_with` helper takes a class, or a list of classes to use for
-validation. There is no default error message for `validates_with`. You must
-manually add errors to the record's errors collection in the validator class.
+`validates_with` 方法接受一個類別，或一組類別。`validates_with` 沒有預設錯誤訊息。你必須要手動新增錯誤到記錄的 `errors` 集合。
 
-To implement the validate method, you must have a `record` parameter defined,
-which is the record to be validated.
+實作 `validate` 方法時，參數必須要有 `record`，來表示要被驗證的那條記錄。
 
-Like all other validations, `validates_with` takes the `:if`, `:unless` and
-`:on` options. If you pass any other options, it will send those options to the
-validator class as `options`:
+與所有的驗證類似，`validates_with` 接受 `:if`、`:unless`，以及 `:on` 選項。如果傳入其它的選項，預設會被放入 `options` Hash（參考下例）：
 
 ```ruby
 class GoodnessValidator < ActiveModel::Validator
   def validate(record)
-    if options[:fields].any?{|field| record.send(field) == "Evil" }
+    if options[:fields].any? { |field| record.send(field) == "Evil" }
       record.errors[:base] << "This person is evil"
     end
   end
@@ -512,12 +506,9 @@ class Person < ActiveRecord::Base
 end
 ```
 
-Note that the validator will be initialized *only once* for the whole application
-life cycle, and not on each validation run, so be careful about using instance
-variables inside it.
+注意自己寫的這個驗證類別（上例為 `GoodnessValidator`），在應用程式生命週期內**只會實例化一次**，而不是每次驗證時就實例化一次。所以使用實例變數時要很小心。
 
-If your validator is complex enough that you want instance variables, you can
-easily use a plain old Ruby object instead:
+如果驗證類別足夠複雜的話，需要用到實例變數，可以用 純 Ruby 物件（Plain Old Ruby Object, PORO） 來取代：
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -541,12 +532,11 @@ class GoodnessValidator
 end
 ```
 
+`validates_with` 沒有預設錯誤訊息。
+
 ### `validates_each`
 
-This helper validates attributes against a block. It doesn't have a predefined
-validation function. You should create one using a block, and every attribute
-passed to `validates_each` will be tested against it. In the following example,
-we don't want names and surnames to begin with lower case.
+這個方法採用區塊（block）來驗證屬性。沒有預先定義的驗證功能。可以在程式碼區塊裡寫要驗證的行為，`validates_each` 指定的每個屬性，會傳入區塊做驗證。比如下例檢查名與姓是否以小寫字母開頭：
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -556,10 +546,9 @@ class Person < ActiveRecord::Base
 end
 ```
 
-The block receives the record, the attribute's name and the attribute's value.
-You can do anything you like to check for valid data within the block. If your
-validation fails, you should add an error message to the model, therefore
-making it invalid.
+這個區塊接受記錄、屬性名稱、屬性值。在區塊裡可以寫任何驗證行為。驗證失敗時應給 Model 新增錯誤訊息，才能把記錄標記成非法的。
+
+`validates_each` 沒有預設錯誤訊息。
 
 常見驗證選項
 -------------------------
