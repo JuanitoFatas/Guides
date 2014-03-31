@@ -603,8 +603,7 @@ end
 嚴格驗證
 ------------------
 
-You can also specify validations to be strict and raise
-`ActiveModel::StrictValidationFailed` when the object is invalid.
+如傳入了 `strict: true`，當物件為無效時，會拋出 `ActiveModel::StrictValidationFailed`。
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -614,7 +613,7 @@ end
 Person.new.valid?  # => ActiveModel::StrictValidationFailed: Name can't be blank
 ```
 
-There is also an ability to pass custom exception to `:strict` option.
+可自定要拋出的異常：
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -627,18 +626,11 @@ Person.new.valid?  # => TokenGenerationException: Token can't be blank
 條件式驗證
 ----------------------
 
-Sometimes it will make sense to validate an object only when a given predicate
-is satisfied. You can do that by using the `:if` and `:unless` options, which
-can take a symbol, a string, a `Proc` or an `Array`. You may use the `:if`
-option when you want to specify when the validation **should** happen. If you
-want to specify when the validation **should not** happen, then you may use the
-`:unless` option.
+某些時候只有在物件滿足了給定條件時，再進行驗證比較合理。可以透過 `:if` 與 `:unless` 選項來辦到此事。它們接受符號、字串、`Proc` 或 `Array`。`:if` 可以指定驗證發生時機，而 `:unless` 則是指定驗證略過時機。
 
-### Using a Symbol with `:if` and `:unless`
+### `:if` 與 `:unless`：使用 Symbol
 
-You can associate the `:if` and `:unless` options with a symbol corresponding
-to the name of a method that will get called right before validation happens.
-This is the most commonly used option.
+`:if` 與 `:uinless` 接受符號，這個符號代表了驗證執行之前所需呼叫的方法。這是最常見的用途。
 
 ```ruby
 class Order < ActiveRecord::Base
@@ -650,11 +642,9 @@ class Order < ActiveRecord::Base
 end
 ```
 
-### Using a String with `:if` and `:unless`
+### `:if` 與 `:unless`：使用 String
 
-You can also use a string that will be evaluated using `eval` and needs to
-contain valid Ruby code. You should use this option only when the string
-represents a really short condition.
+`:if` 與 `:unless` 也接受字串，字串需要是有效的 Ruby 程式碼，會使用 `eval` 來對字串求值。極短的條件式可以使用字串：
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -662,12 +652,9 @@ class Person < ActiveRecord::Base
 end
 ```
 
-### Using a Proc with `:if` and `:unless`
+### `:if` 與 `:unless`：使用 `Proc`
 
-Finally, it's possible to associate `:if` and `:unless` with a `Proc` object
-which will be called. Using a `Proc` object gives you the ability to write an
-inline condition instead of a separate method. This option is best suited for
-one-liners.
+最後，`:if` 與 `:unless` 也可以接受 `Proc` 物件。使用 `Proc` 可以寫把一行的條件式寫在區塊裡，而不用另外寫在方法裡。一行的條件式最適合用 `Proc`：
 
 ```ruby
 class Account < ActiveRecord::Base
@@ -676,10 +663,9 @@ class Account < ActiveRecord::Base
 end
 ```
 
-### Grouping Conditional validations
+### 組合條件式驗證
 
-Sometimes it is useful to have multiple validations use one condition, it can
-be easily achieved using `with_options`.
+有時候多個驗證需要共用一個條件式，可以透過 `with_options` 來實作：
 
 ```ruby
 class User < ActiveRecord::Base
@@ -690,14 +676,11 @@ class User < ActiveRecord::Base
 end
 ```
 
-All validations inside of `with_options` block will have automatically passed
-the condition `if: :is_admin?`
+所有在 `with_options` 區塊內的驗證都會傳入 `if: :is_admin?` 驗證。
 
-### Combining Validation Conditions
+### 結合驗證條件
 
-On the other hand, when multiple conditions define whether or not a validation
-should happen, an `Array` can be used. Moreover, you can apply both `:if` and
-`:unless` to the same validation.
+另一方面來看，當驗證發生於否取決於多條條件時，可以使用 `Array`。此外，`:if` 與 `:unless` 也可以混用。以下是一個綜合的例子：
 
 ```ruby
 class Computer < ActiveRecord::Base
@@ -707,21 +690,16 @@ class Computer < ActiveRecord::Base
 end
 ```
 
-The validation only runs when all the `:if` conditions and none of the
-`:unless` conditions are evaluated to `true`.
+這條驗證只在滿足了所有 `:if` 的條件，以及 `:unless` 條件求值結果為 `true` 時才執行。
 
 使用自定驗證
 -----------------------------
 
-When the built-in validation helpers are not enough for your needs, you can
-write your own validators or validation methods as you prefer.
+當內建的驗證不夠用時，可以自己定義 validator 或驗證方法。
 
 ### 自定 Validators
 
-Custom validators are classes that extend `ActiveModel::Validator`. These
-classes must implement a `validate` method which takes a record as an argument
-and performs the validation on it. The custom validator is called using the
-`validates_with` method.
+自定 Validator 是擴展 `ActiveModel::Validator` 的類別，且必須實作 `validate` 方法，此方法接受 `record` 作為參數，驗證行為寫在這個方法裡。寫好 Validator，使用時則是用 `validates_with`。
 
 ```ruby
 class MyValidator < ActiveModel::Validator
@@ -738,12 +716,7 @@ class Person
 end
 ```
 
-The easiest way to add custom validators for validating individual attributes
-is with the convenient `ActiveModel::EachValidator`. In this case, the custom
-validator class must implement a `validate_each` method which takes three
-arguments: record, attribute and value which correspond to the instance, the
-attribute to be validated and the value of the attribute in the passed
-instance.
+加入自定 Validator 來驗證每一個屬性的最簡單方法是使用 `ActiveModel::EachValidator`。在這個例子裡，自定的 Validator 類別必須實作一個 `validate_each` 方法，接受三個參數，`record`、`attribute` 以及 `value`，分別對應到要驗證的紀錄、屬性、屬性值。
 
 ```ruby
 class EmailValidator < ActiveModel::EachValidator
@@ -759,18 +732,13 @@ class Person < ActiveRecord::Base
 end
 ```
 
-As shown in the example, you can also combine standard validations with your
-own custom validators.
+如上例所示，也可以在自定的 Validator 裡結合標準的驗證方法。
 
 ### 自定方法
 
-You can also create methods that verify the state of your models and add
-messages to the `errors` collection when they are invalid. You must then
-register these methods by using the `validate` class method, passing in the
-symbols for the validation methods' names.
+也可以寫方法來驗證 Model 的狀態，並在 Model 狀態無效的情況下將錯誤加入 `errors` 集合。必須使用 `validate` 這個類別方法來註冊。
 
-You can pass more than one symbol for each class method and the respective
-validations will be run in the same order as they were registered.
+這個類別方法接受多個符號，執行的順序按照註冊的順序。
 
 ```ruby
 class Invoice < ActiveRecord::Base
@@ -791,9 +759,7 @@ class Invoice < ActiveRecord::Base
 end
 ```
 
-By default such validations will run every time you call `valid?`. It is also
-possible to control when to run these custom validations by giving an `:on`
-option to the `validate` method, with either: `:create` or `:update`.
+預設情況下，每當你呼叫 `valid?` 時，都會執行這些自定的驗證方法。也可以透過 `:on` 來決定何時觸發自定驗證方法，可指定 `:create` 或 `:update`。
 
 ```ruby
 class Invoice < ActiveRecord::Base
@@ -808,13 +774,13 @@ end
 處理驗證錯誤
 ------------------------------
 
-In addition to the `valid?` and `invalid?` methods covered earlier, Rails provides a number of methods for working with the `errors` collection and inquiring about the validity of objects.
+除了前面介紹過的 `valid?` 與 `invalid?` 之外，Rails 提供了許多方法來處理 `errors` 集合、查詢物件的有效性。
 
-The following is a list of the most commonly used methods. Please refer to the `ActiveModel::Errors` documentation for a list of all the available methods.
+以下是最常使用的方法。請參考 `ActiveModel::Errors` 的文件來了解所有可用的方法。
 
 ### `errors`
 
-Returns an instance of the class `ActiveModel::Errors` containing all errors. Each key is the attribute name and the value is an array of strings with all errors.
+此方法回傳 `ActiveModel::Errors` 類別的實例，包含了所有的錯誤。屬性名稱為鍵，值為由錯誤訊息字串組成的陣列，
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -833,7 +799,7 @@ person.errors.messages # => {}
 
 ### `errors[]`
 
-`errors[]` is used when you want to check the error messages for a specific attribute. It returns an array of strings with all error messages for the given attribute, each string with one error message. If there are no errors related to the attribute, it returns an empty array.
+`errors[]` 用來檢查特定屬性的錯誤訊息。會回傳給定屬性的錯誤訊息字串陣列，每個字串都是一個錯誤訊息。如果該屬性沒有錯誤，則返回空陣列。
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -856,7 +822,7 @@ person.errors[:name]
 
 ### `errors.add`
 
-The `add` method lets you manually add messages that are related to particular attributes. You can use the `errors.full_messages` or `errors.to_a` methods to view the messages in the form they might be displayed to a user. Those particular messages get the attribute name prepended (and capitalized). `add` receives the name of the attribute you want to add the message to, and the message itself.
+`errors.add` 方法讓你手動加上特定屬性的錯誤訊息。可以使用 `errors.full_messages` 或是 `errors.to_a` 方法來檢視最終將呈現給使用者的錯誤訊息。這些特定的錯誤訊息前面會附上屬性名稱（大寫形式）。`errors.add` 接受的參數為：要加上錯誤訊息的屬性、錯誤訊息內容。
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -874,7 +840,7 @@ person.errors.full_messages
  # => ["Name cannot contain the characters !@#%*()_-+="]
 ```
 
-Another way to do this is using `[]=` setter
+另一種方式是使用 `[]=` Setter。
 
 ```ruby
   class Person < ActiveRecord::Base
@@ -894,7 +860,7 @@ Another way to do this is using `[]=` setter
 
 ### `errors[:base]`
 
-You can add error messages that are related to the object's state as a whole, instead of being related to a specific attribute. You can use this method when you want to say that the object is invalid, no matter the values of its attributes. Since `errors[:base]` is an array, you can simply add a string to it and it will be used as an error message.
+可以針對整個物件本身新增錯誤訊息，而不是針對某個特定的屬性。不論是那個值所導致的錯誤，想要把物件標記為無效的時候，可以使用這個方法。由於 `errors[:base]` 是個陣列，可以加入字串進去，字串會被當成錯誤訊息使用。
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -906,7 +872,7 @@ end
 
 ### `errors.clear`
 
-The `clear` method is used when you intentionally want to clear all the messages in the `errors` collection. Of course, calling `errors.clear` upon an invalid object won't actually make it valid: the `errors` collection will now be empty, but the next time you call `valid?` or any method that tries to save this object to the database, the validations will run again. If any of the validations fail, the `errors` collection will be filled again.
+`errors.clear` 方法可以清除 `errors` 集合裡的所有錯誤。當然了，對無效物件呼叫 `errors.clear` 不會使其有效，只是清除了錯誤訊息。下次再呼叫 `valid?`，或是其它會呼叫 `save` 的方法時，驗證再次觸發，失敗的錯誤訊息仍會將錯誤填入 `errors` 集合。
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -929,7 +895,7 @@ p.errors[:name]
 
 ### `errors.size`
 
-The `size` method returns the total number of error messages for the object.
+`size` 方法回傳物件錯誤訊息的總數。
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -948,19 +914,13 @@ person.errors.size # => 0
 在 View 顯示驗證失敗訊息
 -------------------------------------
 
-Once you've created a model and added validations, if that model is created via
-a web form, you probably want to display an error message when one of the
-validations fail.
+一旦 Model 建好，也加入驗證。用表單新建模型時，可能會需要在驗證失敗的欄位顯示錯誤訊息。
 
-Because every application handles this kind of thing differently, Rails does
-not include any view helpers to help you generate these messages directly.
-However, due to the rich number of methods Rails gives you to interact with
-validations in general, it's fairly easy to build your own. In addition, when
-generating a scaffold, Rails will put some ERB into the `_form.html.erb` that
-it generates that displays the full list of errors on that model.
+因為每個應用程式處理錯誤的方式不同，Rails 沒有直接提供 View Helpers 供您直接產生這些錯誤訊息。
 
-Assuming we have a model that's been saved in an instance variable named
-`@post`, it looks like this:
+然而，Rails 大量豐富的驗證方法，自己寫一個顯示錯誤的 View Helper 也不難。當使用 Scaffold 產生時，Rails 會在 `_form.html.erb` 加入一些 ERB，用來產生 Model 的完整錯誤清單。
+
+假設我們有個 Model 存在實例變數 `@post` 裡，View 則可以這麼寫：
 
 ```ruby
 <% if @post.errors.any? %>
@@ -976,9 +936,7 @@ Assuming we have a model that's been saved in an instance variable named
 <% end %>
 ```
 
-Furthermore, if you use the Rails form helpers to generate your forms, when
-a validation error occurs on a field, it will generate an extra `<div>` around
-the entry.
+再者，如果使用 Rails 的表單 Helpers 來產生表單時，當某個欄位驗證失敗時，Rails 會在該欄位包一個 `<div>`。
 
 ```
 <div class="field_with_errors">
@@ -986,9 +944,9 @@ the entry.
 </div>
 ```
 
-可以給這個 div 加上任何樣式。Rails 產生的 Scaffold，預設的 CSS 樣式為：
+這個 div 可以加上任何樣式。Rails Scaffold 預設產生的 CSS 樣式為：
 
-```
+```css
 .field_with_errors {
   padding: 2px;
   background-color: red;
@@ -996,4 +954,4 @@ the entry.
 }
 ```
 
-這表示任何有錯誤的欄位會有 2px 的紅框。
+任何有錯誤的欄位都會加上 2px 的紅框。
