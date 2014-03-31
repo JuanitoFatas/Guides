@@ -360,13 +360,11 @@ end
 * `:odd` - 若 `:odd` 設為 `true`，則屬性的值必須是奇數。預設錯誤訊息是 _"must be odd"_。
 * `:even` - 若 `:even` 設為 `true`，則屬性的值必須是奇數。預設錯誤訊息是 _"must be even"_。
 
-`numericality` 預設錯誤訊息是 _"is not a number"_.
+`numericality` 預設錯誤訊息是 _"is not a number"_。
 
 ### `presence`
 
-This helper validates that the specified attributes are not empty. It uses the
-`blank?` method to check if the value is either `nil` or a blank string, that
-is, a string that is either empty or consists of whitespace.
+這個方法驗證指定的屬性是否“存在”。使用 `blank?` 來檢查數值是否為 `nil` 或空字串（僅有空白的字串也是空字串）。
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -374,9 +372,7 @@ class Person < ActiveRecord::Base
 end
 ```
 
-If you want to be sure that an association is present, you'll need to test
-whether the associated object itself is present, and not the foreign key used
-to map the association.
+想確保關聯物件是否存在，需要檢查關聯物件本身，而不是檢查對應的外鍵。
 
 ```ruby
 class LineItem < ActiveRecord::Base
@@ -385,8 +381,7 @@ class LineItem < ActiveRecord::Base
 end
 ```
 
-In order to validate associated records whose presence is required, you must
-specify the `:inverse_of` option for the association:
+而在 `Order` 這一邊，要用 `inverse_of` 來檢查關聯的物件是否存在。
 
 ```ruby
 class Order < ActiveRecord::Base
@@ -394,20 +389,16 @@ class Order < ActiveRecord::Base
 end
 ```
 
-If you validate the presence of an object associated via a `has_one` or
-`has_many` relationship, it will check that the object is neither `blank?` nor
-`marked_for_destruction?`.
+如透過 `has_one` 或 `has_many` 關係來驗證關聯的物件是否存在，則會對該物件呼叫 `blank?` 與 `marked_for_destruction?`，來確定存在性。
 
-Since `false.blank?` is true, if you want to validate the presence of a boolean
-field you should use `validates :field_name, inclusion: { in: [true, false] }`.
+由於 `false.blank?` 為 `true`，如果想驗證布林欄位的存在性，應該要使用 `validates :field_name, inclusion: { in: [true, false] }`。
 
-預設錯誤訊息是 _"can't be blank"_.
+預設錯誤訊息是 _"can't be blank"_。
 
 ### `absence`
 
-This helper validates that the specified attributes are absent. It uses the
-`present?` method to check if the value is not either nil or a blank string, that
-is, a string that is either empty or consists of whitespace.
+這個方法驗證是否“不存在”。使用 `present?` 來檢查數值是否為非 `nil` 或非空字串（僅有空白的字串也是空字串）。
+
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -415,9 +406,7 @@ class Person < ActiveRecord::Base
 end
 ```
 
-If you want to be sure that an association is absent, you'll need to test
-whether the associated object itself is absent, and not the foreign key used
-to map the association.
+想確保關聯物件是否“不存在”，需要檢查關聯物件本身，而不是檢查對應的外鍵。
 
 ```ruby
 class LineItem < ActiveRecord::Base
@@ -426,8 +415,7 @@ class LineItem < ActiveRecord::Base
 end
 ```
 
-In order to validate associated records whose absence is required, you must
-specify the `:inverse_of` option for the association:
+而在 `Order` 這一邊，要用 `inverse_of` 來檢查關聯的物件是否不存在。
 
 ```ruby
 class Order < ActiveRecord::Base
@@ -439,20 +427,15 @@ If you validate the absence of an object associated via a `has_one` or
 `has_many` relationship, it will check that the object is neither `present?` nor
 `marked_for_destruction?`.
 
-Since `false.present?` is false, if you want to validate the absence of a boolean
-field you should use `validates :field_name, exclusion: { in: [true, false] }`.
+如透過 `has_one` 或 `has_many` 關係來驗證關聯的物件是否存在，則會對該物件呼叫 `present?` 與 `marked_for_destruction?`，來確定不存在性。
 
-預設錯誤訊息是 _"must be blank"_.
+由於 `false.present?` 為 `false`，如果想驗證布林欄位的存在性，應該要使用 `validates :field_name, exclusion: { in: [true, false] }`。
+
+預設錯誤訊息是 _"must be blank"_。
 
 ### `uniqueness`
 
-This helper validates that the attribute's value is unique right before the
-object gets saved. It does not create a uniqueness constraint in the database,
-so it may happen that two different database connections create two records
-with the same value for a column that you intend to be unique. To avoid that,
-you must create a unique index on both columns in your database. See
-[the MySQL manual](http://dev.mysql.com/doc/refman/5.6/en/multiple-column-indexes.html)
-for more details about multiple column indexes.
+這個方法在物件儲存前，驗證屬性值是否是唯一的。此方法只是在應用層面檢查，不對資料庫做約束。同時有兩個資料庫連接，便有可能建立出兩個相同的紀錄。要避免則是需要在資料庫加上 unique 索引，請參考 [MySQL 手冊](http://dev.mysql.com/doc/refman/5.6/en/multiple-column-indexes.html)來了解多欄索引該怎麼做。
 
 ```ruby
 class Account < ActiveRecord::Base
@@ -460,11 +443,9 @@ class Account < ActiveRecord::Base
 end
 ```
 
-The validation happens by performing an SQL query into the model's table,
-searching for an existing record with the same value in that attribute.
+這個驗證透過對 Model 的資料表執行一條 SQL 查詢語句，搜尋是否已經有同樣數值的紀錄存在。
 
-There is a `:scope` option that you can use to specify other attributes that
-are used to limit the uniqueness check:
+`:scope` 選項可以用另一個屬性來限制唯一性：
 
 ```ruby
 class Holiday < ActiveRecord::Base
@@ -473,9 +454,7 @@ class Holiday < ActiveRecord::Base
 end
 ```
 
-There is also a `:case_sensitive` option that you can use to define whether the
-uniqueness constraint will be case sensitive or not. This option defaults to
-true.
+另有 `:case_sensitive` 選項可以用來定義是否要分大小寫。此選項預設開啟。
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -483,8 +462,7 @@ class Person < ActiveRecord::Base
 end
 ```
 
-WARNING. Note that some databases are configured to perform case-insensitive
-searches anyway.
+WARNING: 注意某些資料庫預設搜尋是不分大小寫的。
 
 預設錯誤訊息是 _"has already been taken"_.
 
