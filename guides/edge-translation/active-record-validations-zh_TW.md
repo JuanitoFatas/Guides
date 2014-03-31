@@ -81,7 +81,7 @@ CAUTION: 有許多種方法可以改變資料庫裡物件的狀態。某些方�
 
 ### 略過驗證
 
-以下這些方法會略過驗證，不考慮資料有效無效便將物件存入資料庫。應謹慎使用。
+以下這些方法會略過驗證，將物件存入資料庫時不會考慮資料的有效性。應謹慎使用。
 
 * `decrement!`
 * `decrement_counter`
@@ -101,7 +101,7 @@ CAUTION: 有許多種方法可以改變資料庫裡物件的狀態。某些方�
 
 ### `valid?` 與 `invalid?`
 
-檢查物件是否有效，Rails 使用的是 `valid?` 方法。您也可以直接呼叫此方法，來觸發驗證。物件若沒有錯誤會回傳 `true`，反之回傳 `false`。前面已經見過了：
+檢查物件是否有效，Rails 使用的是 `valid?` 方法。可以直接呼叫此方法來觸發驗證。物件若沒有錯誤會回傳 `true`，反之回傳 `false`。前面已經見過了：
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -114,7 +114,7 @@ Person.create(name: nil).valid? # => false
 
 Active Record 做完驗證後，所有找到的錯誤都可透過 `errors.messages` 這個實例方法來存取，會回傳錯誤集合。就定義來說，物件做完驗證後，錯誤集合為空才是有效的。
 
-注意到用 `new` 實例化出來的物件，即便有錯誤也不會說，因為 `new` 是不會觸發任何驗證的。
+注意到用 `new` 實例化出來的物件，即便有錯誤也不會說，因為 `new` 不會觸發任何驗證。
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -163,7 +163,7 @@ end
 >> Person.create.errors[:name].any? # => true
 ```
 
-在[處理驗證錯誤]一節會更深入講解驗證錯誤。現在讓我們看看 Rails 內建的驗證 Helpers 有那些。
+在[7 處理驗證錯誤](#)一節會更深入講解驗證錯誤。現在讓我們看看 Rails 內建的驗證 Helpers 有那些。
 
 驗證 Helpers
 ------------------
