@@ -414,35 +414,35 @@ WARNING: 條件是純字串可能有 SQL injection 的風險。舉例來說，`C
 
 ### 陣列條件
 
-如果我們要找的 `orders_count`，不一定固定是 2，可能是不定的數字？
+如果我們要找的 `orders_count`，不一定固定是 2，可能是不定的數字：
 
 ```ruby
 Client.where("orders_count = ?", params[:orders])
 ```
 
-Active Record 會將 `?` 換成 `params[:orders]`。也可聲明多個條件：
+Active Record 會將 `?` 換成 `params[:orders]` 做查詢。也可聲明多個條件，條件式後的元素，對應到條件裡的每個 `?`。
 
 ```ruby
 Client.where("orders_count = ? AND locked = ?", params[:orders], false)
 ```
 
-這樣的程式碼
+上例第一個 `?` 會換成 `params[:orders]`，第二個則會換成 SQL 裡的 `false` （根據不同的 adapter 而異）。
+
+這麼寫
 
 ```ruby
 Client.where("orders_count = ?", params[:orders])
 ```
 
-比下面這個好多了
+比下面這種寫法好多了
 
 ```ruby
 Client.where("orders_count = #{params[:orders]}")
 ```
 
-因為比較安全。直接將變數插入條件字串裡，不論變數是什麼，都會直接存到資料庫裡。這表示從惡意使用者傳來的變數，會直接存到資料庫。這麼做是把資料庫放在風險裡不管啊！一旦有人知道可以隨意將任何字串插入資料庫裡，他們可以做任何事。
+因為前者比較安全。直接將變數插入條件字串裡，不論變數是什麼，都會直接存到資料庫裡。這表示從惡意使用者傳來的變數，會直接存到資料庫。這麼做是把資料庫放在風險裡不管啊！一旦有人知道，可以隨意將任何字串插入資料庫裡，就可以做任何想做的事。__絕對不要直接將變數插入條件字串裡。__
 
-__絕對不要直接將變數插入條件字串裡。__
-
-關於更多 SQL injection 的資料，請參考 [Ruby on Rails 安全指南](edgeguides.rubyonrails.org/security.html#sql-injection)。
+TIP: 關於更多 SQL injection 的資料，請參考 [Ruby on Rails 安全指南](edgeguides.rubyonrails.org/security.html#sql-injection)。
 
 #### 佔位符
 
