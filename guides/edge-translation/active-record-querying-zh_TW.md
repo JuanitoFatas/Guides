@@ -5,21 +5,21 @@ Active Record 查詢接口
 
 讀完本篇，您將學到：
 
-* 如何使用各種方法與條件來取出資料庫記錄。
-* 如何排序、取出某幾個屬性、分組、其它用來找出記錄的特性。
+* 如何使用各種方法與條件來取出資料庫記錄（record）。
+* 如何排序、取出某幾個屬性、分組、其它用來找出資料庫記錄的特性。
 * 如何使用 Eager load 來減少資料庫查詢的次數。
-* 如何使用動態的 Finder 方法。
-* 如何檢查特定記錄是否存在。
+* 如何使用 Active Record 動態的 Finder 方法。
+* 如何檢查特定的資料庫記錄是否存在。
 * 如何在 Active Record Model 裡做各式計算。
 * 如何對 Active Record Relation 使用 `EXPLAIN`。
 
 --------------------------------------------------------------------------------
 
-如果習慣寫純 SQL 來查詢資料庫，則會發現在 Rails 裡有更好的方式可以執行同樣操作。Active Record 適用於大多數場景，很少還會需要寫 SQL。
+如果習慣寫純 SQL 來查詢資料庫，則會發現在 Rails 裡有更好的方式可以執行同樣的操作。Active Record 適用於大多數場景，需要寫 SQL 的場景會變得非常少。
 
 本篇之後的例子都會用下列的 Model 來講解：
 
-TIP: 除非特別說明，否則上列 Model 都用 `id` 作為主鍵。
+TIP: 除非特別說明，否則下列 Model 都用 `id` 作為主鍵。
 
 ```ruby
 class Client < ActiveRecord::Base
@@ -47,7 +47,7 @@ class Role < ActiveRecord::Base
 end
 ```
 
-Active Record 為幫你到資料庫查詢，相容多數資料庫（MySQL、PostgreSQL 以及 SQLite 等）。不管用的是那個資料庫，Active Record 方法格式保持一致。
+Active Record 幫你對資料庫做查詢，相容多數資料庫（MySQL、PostgreSQL 以及 SQLite 等）。不管用的是何種資料庫，Active Record 方法格式保持一致。
 
 取出資料
 ----------
@@ -86,7 +86,7 @@ Finder 方法有：
 
 * 將傳入的參數轉換成對應的 SQL 語句。
 * 執行 SQL 語句，去資料庫取回對應的結果。
-* 將每個查詢結果根據適當的 Model 實例化出 Ruby 物件。
+* 將每個查詢結果，根據適當的 Model 實例化出 Ruby 物件。
 * 有 `after_find` 回呼的話，執行它們。
 
 ### 取出單一物件
@@ -114,8 +114,6 @@ SELECT * FROM clients WHERE (clients.id = 10) LIMIT 1
 #### `take`
 
 `Model.take` 從資料庫取出一筆記錄，不考慮順序，比如：
-
-`Model.take` retrieves a record without any implicit ordering. For example:
 
 ```ruby
 client = Client.take
@@ -338,9 +336,9 @@ end
 
 但在資料表很大的時候，這個方法便不實用了。由於 `User.all.each` 告訴 Active Record 一次去把整張表抓出來，再為表的每一列建出物件，最後將所有的物件放到記憶體裡。如果資料庫裡存了非常多筆記錄，可能會把記憶體用光。
 
-Rails 提供了兩個方法來解決這個問題，將記錄對記憶體來說有效率的大小，分批處理。第一個方法是 `find_each`，取出一批記錄，並將每筆記錄傳入至區塊裡，可取單一筆記錄。第二個方法是 `find_in_batches`，一次取一批記錄，整批放至區塊裡，整批記錄以陣列形式取用。
+Rails 提供了兩個方法來解決這個問題，將記錄針對記憶體來說有效率的大小，分批處理。第一個方法是 `find_each`，取出一批記錄，並將每筆記錄傳入至區塊裡，可取單一筆記錄。第二個方法是 `find_in_batches`，一次取一批記錄，整批放至區塊裡，整批記錄以陣列形式取用。
 
-TIP: `find_each` 與 `find_in_batches` 方法專門用來解決大量記錄，無法放至記憶體的批次處理。如果只是一千筆資料，使用平常的查詢方法便足夠了。
+TIP: `find_each` 與 `find_in_batches` 方法專門用來解決大量記錄，處理無法一次放至記憶體的大量記錄。如果只是一千筆資料，使用平常的查詢方法便足夠了。
 
 #### `find_each`
 
@@ -354,7 +352,7 @@ end
 
 ##### `find_each` 選項
 
-The `find_each` 方法接受多數 `find` 所允許的選項，除了 `:order` 與 `:limit`，這兩個選項保留供 `find_each` 內部使用。
+`find_each` 方法接受多數 `find` 所允許的選項，除了 `:order` 與 `:limit`，這兩個選項保留供 `find_each` 內部使用。
 
 此外有兩個額外的選項，`:batch_size` 與 `:start`。
 
@@ -370,7 +368,7 @@ end
 
 **`:start`**
 
-預設記錄按主鍵升序取出，主鍵類型必須是整數。批次預設從最小 ID 開始，可用 `:start` 選項可以設定批次的起始 ID。在前次被中斷的批量處理重新開始的場景下很有用。
+預設記錄按主鍵升序取出，主鍵類型必須是整數。批次預設從最小的 ID 開始，可用 `:start` 選項可以設定批次的起始 ID。在前次被中斷的批量處理重新開始的場景下很有用。
 
 舉例來說，本週總共有 5000 封信要發。1-1999 已經發過了，便可以使用此選項從 2000 開始發信：
 
@@ -384,10 +382,7 @@ end
 
 #### `find_in_batches`
 
-`find_in_batches` 方法與 `find_each` 類似，皆用來取出記錄。差別在於 `find_in_batchs` 取出記錄放入陣列傳至區塊，而 `find_each` 是一筆一筆放入區塊。下例
-
-
- method is similar to `find_each`, since both retrieve batches of records. The difference is that `find_in_batches` yields _batches_ to the block as an array of models, instead of individually. The following example will yield to the supplied block an array of up to 1000 invoices at a time, with the final block containing any remaining invoices:
+`find_in_batches` 方法與 `find_each` 類似，皆用來取出記錄。差別在於 `find_in_batchs` 取出記錄放入陣列傳至區塊，而 `find_each` 是一筆一筆放入區塊。下例會一次將 1000 張發票拿到區塊裡處理：
 
 ```ruby
 # Give add_invoices an array of 1000 invoices at a time
@@ -396,24 +391,26 @@ Invoice.find_in_batches(include: :invoice_lines) do |invoices|
 end
 ```
 
-NOTE: The `:include` option allows you to name associations that should be loaded alongside with the models.
+NOTE: `:include` 選項可以指定需要跟 Model 一起載入的關聯。
 
 ##### `find_in_batches` 接受的選項
 
-The `find_in_batches` method accepts the same `:batch_size` and `:start` options as `find_each`, as well as most of the options allowed by the regular `find` method, except for `:order` and `:limit`, which are reserved for internal use by `find_in_batches`.
+`find_in_batches` 方法接受和 `find_each` 一樣的選項： `:batch_size` 與 `:start`，以及多數 `find` 接受的參數，除了 `:order` 與 `:limit` 之外。
+
+`find_in_batches` 方法接受和 `find_each` 一樣的選項： `:batch_size` 與 `:start`，以及多數 `find` 接受的參數，除了 `:order` 與 `:limit` 之外。這兩個選項保留供 `find_in_batches` 內部使用。
 
 條件
 ----------
 
-`where` 方法允許你輸入條件來回傳記錄，`where` 即代表了 SQL 語句的 `WHERE` 部分。
+`where` 方法允許取出符合條件的記錄，`where` 即代表了 SQL 語句的 `WHERE` 部分。
 
 條件可以是字串、陣列、或是 Hash。
 
 ### 字串條件
 
-Client.where("orders_count = '2'")` 會回傳所有 `orders_count` 是 2 的 clients。
+直接將要使用的條件，以字串形式傳入 `where` 即可。如 `Client.where("orders_count = '2'")` 會回傳所有 `orders_count` 是 2 的 clients。
 
-警告：條件是純字串可能有 SQL injection 的風險。舉例來說，`Client.where("first_name LIKE '%#{params[:first_name]}%'")` 是不安全的，參考下節如何將字串條件改用陣列來處理。
+WARNING: 條件是純字串可能有 SQL injection 的風險。舉例來說，`Client.where("first_name LIKE '%#{params[:first_name]}%'")` 是不安全的，參考下節如何將字串條件改用陣列來處理。
 
 ### 陣列條件
 
