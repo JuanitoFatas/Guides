@@ -1,33 +1,25 @@
-# Active Record Query Interface
+Active Record 查詢接口
+=============================
 
-__特別要強調的翻譯名詞__
+本篇詳細介紹各種用 Active Record 多種從資料庫取出資料的方法。
 
-|原文|翻譯|原文|翻譯|
-|:--|:--|:--|:--|
-|Query|查詢語句|Interface|介面|
-|Attributes|屬性|Record|記錄|
-|Primary Key|主鍵|Object|物件|
-|Raise|拋出|Exception|異常|
+讀完本篇，您將學到：
 
-----
-
-本篇詳細介紹各種用 Active Record 從資料庫取出資料的方法。
-
-讀完本篇可能會學到.....
-
-* 如何使用各式各樣的方法與條件來取出資料庫記錄。
-* 如何排序、取出某幾個屬性、分組、其它用來找出記錄的方法。
+* 如何使用各種方法與條件來取出資料庫記錄。
+* 如何排序、取出某幾個屬性、分組、其它用來找出記錄的特性。
 * 如何使用 Eager load 來減少資料庫查詢的次數。
-* 如何使用動態的 finder 方法。
+* 如何使用動態的 Finder 方法。
 * 如何檢查特定記錄是否存在。
-* 如何對 Active Record Model 做各式計算。
+* 如何在 Active Record Model 裡做各式計算。
 * 如何對 Active Record Relation 使用 `EXPLAIN`。
 
 --------------------------------------------------------------------------------
 
-手寫純 SQL 速度快，但 Rails 提供了許多便利的方法，萬不得以再用 SQL。
+如果習慣寫純 SQL 來查詢資料庫，則會發現在 Rails 裡有更好的方式可以執行同樣操作。Active Record 適用於大多數場景，很少還會需要寫 SQL。
 
 本篇之後的例子都會用下列的 Model 來講解：
+
+TIP: 除非特別說明，否則上列 Model 都用 `id` 作為主鍵。
 
 ```ruby
 class Client < ActiveRecord::Base
@@ -55,13 +47,14 @@ class Role < ActiveRecord::Base
 end
 ```
 
-__注意！除非特別說明，否則上列 Model 都用 `id` 作為主鍵。__
+Active Record 為幫你到資料庫查詢，相容多數資料庫（MySQL、PostgreSQL 以及 SQLite 等）。不管用的是那個資料庫，Active Record 方法格式保持一致。
 
-用 Active Record 的好處是，不管資料庫用哪一套，Active Record 的方法保持一致。
+取出資料
+----------
 
-## 取出資料
+Active Record 提供了多種 Finder 方法，用來從資料庫裡取出物件。每個 Finder 方法允許傳參數，來對資料庫執行不同的查詢，而無需直接寫純 SQL。
 
-Active Record 提供了下列方法，供你從資料庫裡取出資料，這些方法在 Rails 裡叫做 “finder 方法”。每個方法允許你傳參數，來組合出不同的查詢語句。
+Finder 方法有：
 
 * `bind`
 * `create_with`
@@ -87,14 +80,14 @@ Active Record 提供了下列方法，供你從資料庫裡取出資料，這些
 * `uniq`
 * `where`
 
-__上列方法皆會回傳一個 `ActiveRecord::Relation` 實例。__
+以上方法皆會回傳一個 `ActiveRecord::Relation` 實例。
 
-`Model.find(options)` 的主要功能可以總結為：
+`Model.find(options)` 的主要操作可以總結如下：
 
-* 將傳入的參數轉換成對應的 sql 語句。
-* 執行 SQL 語句，取回對應的結果。
-* 給結果實例化出對應的 Ruby 物件。
-* 執行 `after_find` Callbacks。
+* 將傳入的參數轉換成對應的 SQL 語句。
+* 執行 SQL 語句，去資料庫取回對應的結果。
+* 將每個查詢結果根據適當的 Model 實例化出 Ruby 物件。
+* 有 `after_find` 回呼的話，執行它們。
 
 ### 取出單一物件
 
@@ -102,10 +95,10 @@ Active Record 提供數種方式來取出一個物件。
 
 #### 透過主鍵
 
-使用 `Model.find(primary_key)`，可以取出與傳入主鍵對應的物件：
+使用 `Model.find(primary_key)` 來取出給定主鍵的物件，比如：
 
 ```ruby
-# 找出主鍵為 10 的 client。
+# Find the client with primary key (id) 10.
 client = Client.find(10)
 # => #<Client id: 10, first_name: "Ryan">
 ```
@@ -116,11 +109,13 @@ client = Client.find(10)
 SELECT * FROM clients WHERE (clients.id = 10) LIMIT 1
 ```
 
-如果沒找到符合條件的 record，會拋出 `ActiveRecord::RecordNotFound` 異常。
+如果 `Model.find(primary_key)` 沒找到符合條件的記錄，則會拋出 `ActiveRecord::RecordNotFound` 異常。
 
 #### `take`
 
-`Model.take` 從資料庫取出一筆記錄，但不排序：
+`Model.take` 從資料庫取出一筆記錄，不考慮順序，比如：
+
+`Model.take` retrieves a record without any implicit ordering. For example:
 
 ```ruby
 client = Client.take
@@ -133,11 +128,13 @@ client = Client.take
 SELECT * FROM clients LIMIT 1
 ```
 
-資料庫如果沒 record，`Model.take` 會回傳 `nil`。
+如果沒找到記錄，`Model.take` 會回傳 `nil`，不會拋出異常。
+
+TIP: 取得的記錄根據使用的資料庫引擎會有不同結果。
 
 #### `first`
 
-`Model.first` 用主鍵取出第一筆資料：
+`Model.first` 按主鍵排序，取出第一筆資料，比如：
 
 ```ruby
 client = Client.first
@@ -150,11 +147,11 @@ client = Client.first
 SELECT * FROM clients ORDER BY clients.id ASC LIMIT 1
 ```
 
-如果沒找到符合條件的 record，`Model.first` 會回傳 `nil`。
+如果沒找到記錄，`Model.first` 會回傳 `nil`，不會拋出異常。
 
 #### `last`
 
-`Model.last` 用主鍵取出最後一筆資料：
+`Model.last` 按主鍵排序，取出最後一筆資料，比如：
 
 ```ruby
 client = Client.last
@@ -167,7 +164,7 @@ client = Client.last
 SELECT * FROM clients ORDER BY clients.id DESC LIMIT 1
 ```
 
-如果沒找到符合條件的 record，`Model.last` 會回傳 `nil`。
+如果沒找到記錄，`Model.last` 會回傳 `nil`，不會拋出異常。
 
 #### `find_by`
 
@@ -189,7 +186,7 @@ Client.where(first_name: 'Lifo').take
 
 #### `take!`
 
-`Model.take!` 從資料庫取出一筆記錄，但不排序：
+`Model.take!` 從資料庫取出一筆記錄，不考慮任何順序，比如：
 
 ```ruby
 client = Client.take!
@@ -202,11 +199,11 @@ client = Client.take!
 SELECT * FROM clients LIMIT 1
 ```
 
-資料庫如果沒 record，`Model.take!` 會拋出 `ActiveRecord::RecordNotFound`。
+如果沒找到記錄，`Model.take!` 會拋出 `ActiveRecord::RecordNotFound`。
 
 #### `first!`
 
-`Model.first!` 用主鍵取出第一筆資料：
+`Model.first!` 按主鍵排序，取出第一筆資料，比如：
 
 ```ruby
 client = Client.first!
@@ -219,11 +216,11 @@ client = Client.first!
 SELECT * FROM clients ORDER BY clients.id ASC LIMIT 1
 ```
 
-如果沒找到符合條件的 record，`Model.first!` 會拋出 `ActiveRecord::RecordNotFound`。
+如果沒找到記錄，`Model.first!` 會拋出 `ActiveRecord::RecordNotFound` 異常。
 
 #### `last!`
 
-`Model.last` 用主鍵取出最後一筆資料：
+`Model.last!` 按主鍵排序，取出最後一筆資料，比如：
 
 ```ruby
 client = Client.last!
@@ -236,11 +233,11 @@ client = Client.last!
 SELECT * FROM clients ORDER BY clients.id DESC LIMIT 1
 ```
 
-如果沒找到符合條件的 record，`Model.last!` 會拋出 `ActiveRecord::RecordNotFound`。
+如果沒找到記錄，`Model.last!` 會拋出 `ActiveRecord::RecordNotFound` 異常。
 
 #### `find_by!`
 
-`Model.find_by!` 找到第一筆符合條件的紀錄。如果沒找到符合條件的 record，會拋出 `ActiveRecord::RecordNotFound`。
+`Model.find_by!` 找第一筆符合條件的紀錄。
 
 ```ruby
 Client.find_by! first_name: 'Lifo'
@@ -256,15 +253,17 @@ Client.find_by! first_name: 'Jon'
 Client.where(first_name: 'Lifo').take!
 ```
 
+如果沒找到符合條件的記錄，`Model.find_by!` 會拋出 `ActiveRecord::RecordNotFound` 異常。
+
 ### 取出多個物件
 
-#### 透過主鍵
+#### 使用多個主鍵
 
-`Model.find(array_of_primary_key)` 接受一列主鍵，並以陣列形式返回所有匹配的結果。
+`Model.find(array_of_primary_key)` 接受以主鍵組成的陣列，並以陣列形式返回所有匹配的結果，比如：
 
 ```ruby
-# 找到主鍵從 1 至 10 的 clients。
-client = Client.find([1, 10]) # 或簡寫為 Client.find(1, 10)
+# Find the clients with primary keys 1 and 10.
+client = Client.find([1, 10]) # Or even Client.find(1, 10)
 # => [#<Client id: 1, first_name: "Lifo">, #<Client id: 10, first_name: "Ryan">]
 ```
 
@@ -274,11 +273,11 @@ client = Client.find([1, 10]) # 或簡寫為 Client.find(1, 10)
 SELECT * FROM clients WHERE (clients.id IN (1,10))
 ```
 
-警告：如果沒有全找到符合條件的 record，會拋出 `ActiveRecord::RecordNotFound` 異常。
+WARNING: 只要有一個主鍵沒找到對應的紀錄，`Model.find(array_of_primary_key)` 會拋出 ActiveRecord::RecordNotFound` 異常。
 
-#### take
+#### `take`
 
-`Model.take(limit)` 從頭取出 `limit` 指定範圍內的多筆記錄（不排序）：
+`Model.take(limit)` 取出 `limit` 筆記錄，不考慮順序：
 
 ```ruby
 Client.take(2)
@@ -292,9 +291,9 @@ Client.take(2)
 SELECT * FROM clients LIMIT 2
 ```
 
-#### first
+#### `first`
 
-`Model.first(limit)` 從頭取出 `limit` 指定範圍內的多筆記錄（按主鍵排序）：
+`Model.first(limit)` 按主鍵排序，取出 `limit` 筆記錄：
 
 ```ruby
 Client.first(2)
@@ -308,9 +307,9 @@ Client.first(2)
 SELECT * FROM clients ORDER BY id ASC LIMIT 2
 ```
 
-#### last
+#### `last`
 
-`Model.last(limit)` 從最後開始取出 `limit` 指定範圍內的多筆記錄（按主鍵排序）：
+`Model.last(limit)` 按主鍵排序，從後取出 `limit` 筆記錄：
 
 ```ruby
 Client.last(2)
@@ -326,32 +325,26 @@ SELECT * FROM clients ORDER BY id DESC LIMIT 2
 
 ### 批次取出多筆記錄
 
-我們常需要處理多筆記錄，比如寄信給使用者，或是轉出資料。
+處理多筆記錄是常見的需求，比如寄信給使用者，轉出資料。
 
-可能會想到這麼做：
+直覺可能會這麼做：
 
 ```ruby
-# 如果有數千個使用者，非常沒效率。
+# 如果有數千個使用者，效率非常差。
 User.all.each do |user|
   NewsLetter.weekly_deliver(user)
 end
 ```
 
-`User.all.each` 會叫 Active Record 去抓整個表，
+但在資料表很大的時候，這個方法便不實用了。由於 `User.all.each` 告訴 Active Record 一次去把整張表抓出來，再為表的每一列建出物件，最後將所有的物件放到記憶體裡。如果資料庫裡存了非常多筆記錄，可能會把記憶體用光。
 
-But this approach becomes increasingly impractical as the table size increases, since `User.all.each` instructs Active Record to fetch _the entire table_ in a single pass, build a model object per row, and then keep the entire array of model objects in memory. Indeed, if we have a large number of records, the entire collection may exceed the amount of memory available.
+Rails 提供了兩個方法來解決這個問題，將記錄對記憶體來說有效率的大小，分批處理。第一個方法是 `find_each`，取出一批記錄，並將每筆記錄傳入至區塊裡，可取單一筆記錄。第二個方法是 `find_in_batches`，一次取一批記錄，整批放至區塊裡，整批記錄以陣列形式取用。
 
-Rails 提供了兩個方法，來解決這樣的問題：`find_each` 與 `find_in_batch`。
-
-Rails provides two methods that address this problem by dividing records into memory-friendly batches for processing. The first method, `find_each`, retrieves a batch of records and then yields _each_ record to the block individually as a model. The second method, `find_in_batches`, retrieves a batch of records and then yields _the entire batch_ to the block as an array of models.
-
-TIP: The `find_each` and `find_in_batches` methods are intended for use in the batch processing of a large number of records that wouldn't fit in memory all at once. If you just need to loop over a thousand records the regular find methods are the preferred option.
+TIP: `find_each` 與 `find_in_batches` 方法專門用來解決大量記錄，無法放至記憶體的批次處理。如果只是一千筆資料，使用平常的查詢方法便足夠了。
 
 #### `find_each`
 
-`find_each`
-
-The `find_each` method retrieves a batch of records and then yields _each_ record to the block individually as a model. In the following example, `find_each` will retrieve 1000 records (the current default for both `find_each` and `find_in_batches`) and then yield each record individually to the block as a model. This process is repeated until all of the records have been processed:
+`find_each` 方法取出一批記錄，將每筆記錄傳入區塊裡。下面的例子，將以 `find_each` 來取出 1000 筆記錄（`find_each` 與 `find_in_batches` 的預設值），並傳至區塊。一次處理 1000 筆，直至記錄通通處理完畢為止：
 
 ```ruby
 User.find_each do |user|
@@ -359,15 +352,15 @@ User.find_each do |user|
 end
 ```
 
-##### `find_each` 接受的選項
+##### `find_each` 選項
 
-The `find_each` method accepts most of the options allowed by the regular `find` method, except for `:order` and `:limit`, which are reserved for internal use by `find_each`.
+The `find_each` 方法接受多數 `find` 所允許的選項，除了 `:order` 與 `:limit`，這兩個選項保留供 `find_each` 內部使用。
 
-Two additional options, `:batch_size` and `:start`, are available as well.
+此外有兩個額外的選項，`:batch_size` 與 `:start`。
 
 **`:batch_size`**
 
-The `:batch_size` option allows you to specify the number of records to be retrieved in each batch, before being passed individually to the block. For example, to retrieve records in batches of 5000:
+`:batch_size` 選項允許你在將各筆記錄傳進區塊前，指定一批要取多少筆記錄。比如一次取 5000 筆：
 
 ```ruby
 User.find_each(batch_size: 5000) do |user|
@@ -377,9 +370,9 @@ end
 
 **`:start`**
 
-By default, records are fetched in ascending order of the primary key, which must be an integer. The `:start` option allows you to configure the first ID of the sequence whenever the lowest ID is not the one you need. This would be useful, for example, if you wanted to resume an interrupted batch process, provided you saved the last processed ID as a checkpoint.
+預設記錄按主鍵升序取出，主鍵類型必須是整數。批次預設從最小 ID 開始，可用 `:start` 選項可以設定批次的起始 ID。在前次被中斷的批量處理重新開始的場景下很有用。
 
-For example, to send newsletters only to users with the primary key starting from 2000, and to retrieve them in batches of 5000:
+舉例來說，本週總共有 5000 封信要發。1-1999 已經發過了，便可以使用此選項從 2000 開始發信：
 
 ```ruby
 User.find_each(start: 2000, batch_size: 5000) do |user|
@@ -387,11 +380,14 @@ User.find_each(start: 2000, batch_size: 5000) do |user|
 end
 ```
 
-Another example would be if you wanted multiple workers handling the same processing queue. You could have each worker handle 10000 records by setting the appropriate `:start` option on each worker.
+另個例子是想要多個 worker 處理同個佇列時。可以使用 `:start` 讓每個 worker 分別處理 10000 筆記錄。
 
 #### `find_in_batches`
 
-The `find_in_batches` method is similar to `find_each`, since both retrieve batches of records. The difference is that `find_in_batches` yields _batches_ to the block as an array of models, instead of individually. The following example will yield to the supplied block an array of up to 1000 invoices at a time, with the final block containing any remaining invoices:
+`find_in_batches` 方法與 `find_each` 類似，皆用來取出記錄。差別在於 `find_in_batchs` 取出記錄放入陣列傳至區塊，而 `find_each` 是一筆一筆放入區塊。下例
+
+
+ method is similar to `find_each`, since both retrieve batches of records. The difference is that `find_in_batches` yields _batches_ to the block as an array of models, instead of individually. The following example will yield to the supplied block an array of up to 1000 invoices at a time, with the final block containing any remaining invoices:
 
 ```ruby
 # Give add_invoices an array of 1000 invoices at a time
