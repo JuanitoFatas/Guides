@@ -929,29 +929,29 @@ end
 連接資料表
 --------------
 
-Active Record provides a finder method called `joins` for specifying `JOIN` clauses on the resulting SQL. There are multiple ways to use the `joins` method.
+Active Record 提供一個 Finder 方法，`joins`。用來對 SQL 指定 `JOIN` 子句。`joins` 有多種使用方式。
 
-### Using a String SQL Fragment
+### 使用字串形式的 SQL 片段
 
-You can just supply the raw SQL specifying the `JOIN` clause to `joins`:
+在 `joins` 裡寫純 SQL 來指定 `JOIN`：
 
 ```ruby
 Client.joins('LEFT OUTER JOIN addresses ON addresses.client_id = clients.id')
 ```
 
-This will result in the following SQL:
+會產生下面的 SQL：
 
 ```sql
 SELECT clients.* FROM clients LEFT OUTER JOIN addresses ON addresses.client_id = clients.id
 ```
 
-### Using Array/Hash of Named Associations
+### 使用關聯名稱的陣列或 Hash 形式
 
-WARNING: This method only works with `INNER JOIN`.
+WARNING: 此法僅對 `INNER JOIN` 有效。
 
-Active Record lets you use the names of the [associations](association_basics.html) defined on the model as a shortcut for specifying `JOIN` clause for those associations when using the `joins` method.
+Active Record 允許在使用 `joins` 方法時，使用關聯名稱來指定 `JOIN` 子句。
 
-For example, consider the following `Category`, `Post`, `Comment`, `Guest` and `Tag` models:
+舉個例子，以下有 `Category`、`Post`、`Comment`、`Guest` 以及 `Tag` Models：
 
 ```ruby
 class Category < ActiveRecord::Base
@@ -978,30 +978,30 @@ class Tag < ActiveRecord::Base
 end
 ```
 
-Now all of the following will produce the expected join queries using `INNER JOIN`:
+接下來，以下的方法都會使用 `INNER JOIN` 來產生出連接查詢（join queries）：
 
-#### Joining a Single Association
+#### 連接單個關聯
 
 ```ruby
 Category.joins(:posts)
 ```
 
-This produces:
+會產生：
 
 ```sql
 SELECT categories.* FROM categories
   INNER JOIN posts ON posts.category_id = categories.id
 ```
 
-Or, in English: "return a Category object for all categories with posts". Note that you will see duplicate categories if more than one post has the same category. If you want unique categories, you can use `Category.joins(:posts).uniq`.
+用白話解釋是：“依文章分類來回傳分類物件”。注意到如果有 `post` 是相同類別，會看到重複的分類物件。若要去掉重複結果，可以使用 `Category.joins(:posts).uniq`。
 
-#### Joining Multiple Associations
+#### 連接多個關聯
 
 ```ruby
 Post.joins(:category, :comments)
 ```
 
-This produces:
+會產生：
 
 ```sql
 SELECT posts.* FROM posts
@@ -1009,15 +1009,15 @@ SELECT posts.* FROM posts
   INNER JOIN comments ON comments.post_id = posts.id
 ```
 
-Or, in English: "return all posts that have a category and at least one comment". Note again that posts with multiple comments will show up multiple times.
+用白話解釋是：“依分類來回傳文章物件，且文章至少有一則評論”。有多則評論的文章將會出現很多次。
 
-#### Joining Nested Associations (Single Level)
+#### 連接一層巢狀關聯
 
 ```ruby
 Post.joins(comments: :guest)
 ```
 
-This produces:
+會產生：
 
 ```sql
 SELECT posts.* FROM posts
@@ -1025,15 +1025,15 @@ SELECT posts.* FROM posts
   INNER JOIN guests ON guests.comment_id = comments.id
 ```
 
-Or, in English: "return all posts that have a comment made by a guest."
+用白話解釋是：“回傳所有有訪客評論的文章”。
 
-#### Joining Nested Associations (Multiple Level)
+#### 連接多層巢狀關聯
 
 ```ruby
 Category.joins(posts: [{comments: :guest}, :tags])
 ```
 
-This produces:
+會產生：
 
 ```sql
 SELECT categories.* FROM categories
@@ -1043,32 +1043,33 @@ SELECT categories.* FROM categories
   INNER JOIN tags ON tags.post_id = posts.id
 ```
 
-### Specifying Conditions on the Joined Tables
+### 對連接的資料表指定條件
 
-You can specify conditions on the joined tables using the regular [Array](#array-conditions) and [String](#pure-string-conditions) conditions. [Hash conditions](#hash-conditions) provides a special syntax for specifying conditions for the joined tables:
+可以對連接的資料表使用一般的[陣列](#)與[字串](#)條件。[Hash]條件則是有提供特殊的語法來下條件：
 
 ```ruby
 time_range = (Time.now.midnight - 1.day)..Time.now.midnight
 Client.joins(:orders).where('orders.created_at' => time_range)
 ```
 
-An alternative and cleaner syntax is to nest the hash conditions:
+另一種更簡潔的寫法是使用巢狀 Hash：
 
 ```ruby
 time_range = (Time.now.midnight - 1.day)..Time.now.midnight
 Client.joins(:orders).where(orders: {created_at: time_range})
 ```
 
-This will find all clients who have orders that were created yesterday, again using a `BETWEEN` SQL expression.
+會用 `BETWEEN` 找到所有昨天下訂單的客戶。
 
-Eager Loading Associations
+Eager Loading 關聯
 --------------------------
 
-Eager loading is the mechanism for loading the associated records of the objects returned by `Model.find` using as few queries as possible.
 
-**N + 1 queries problem**
+Eager loading 是載入由 `Model.find` 回傳的物件關聯記錄的機制，將查詢數降到最低。
 
-Consider the following code, which finds 10 clients and prints their postcodes:
+**N + 1 查詢問題**
+
+考慮以下程式碼。找出 10 個客戶，並印出郵遞區號：
 
 ```ruby
 clients = Client.limit(10)
@@ -1078,13 +1079,13 @@ clients.each do |client|
 end
 ```
 
-This code looks fine at the first sight. But the problem lies within the total number of queries executed. The above code executes 1 (to find 10 clients) + 10 (one per each client to load the address) = **11** queries in total.
+程式碼一眼看起來沒什麼問題。但問題是總共執行了幾次查詢。上例程式碼總共會執行 **11** 次查詢，1 次用來取得 10 位客戶、10 次用來取得客戶地址的郵遞區號。
 
-**Solution to N + 1 queries problem**
+**N + 1 查詢的解法**
 
-Active Record lets you specify in advance all the associations that are going to be loaded. This is possible by specifying the `includes` method of the `Model.find` call. With `includes`, Active Record ensures that all of the specified associations are loaded using the minimum possible number of queries.
+Active Record 可預先指定所有會載入的關聯。透過使用 `Model.find` 搭配 `includes` 方法。有了 `includes`，Active Record 確保所有指定的關聯用最少次的查詢來加載。
 
-Revisiting the above case, we could rewrite `Client.limit(10)` to use eager load addresses:
+用 Eager Loading 重寫上例：
 
 ```ruby
 clients = Client.includes(:address).limit(10)
@@ -1094,7 +1095,7 @@ clients.each do |client|
 end
 ```
 
-The above code will execute just **2** queries, as opposed to **11** queries in the previous case:
+上面的程式碼只會執行 **2** 次查詢。
 
 ```sql
 SELECT * FROM clients LIMIT 10
@@ -1102,45 +1103,45 @@ SELECT addresses.* FROM addresses
   WHERE (addresses.client_id IN (1,2,3,4,5,6,7,8,9,10))
 ```
 
-### Eager Loading Multiple Associations
+### Eager Loading 多個關聯
 
-Active Record lets you eager load any number of associations with a single `Model.find` call by using an array, hash, or a nested hash of array/hash with the `includes` method.
+使用 `Model.find` 與 `includes` 方法，Active Record 可以 Eager Load 任意數量的關聯。關聯可以以陣列、Hash 或是巢狀 Hash（內有陣列、Hash）形式指定。
 
-#### Array of Multiple Associations
+#### 陣列有多個關聯
 
 ```ruby
 Post.includes(:category, :comments)
 ```
 
-This loads all the posts and the associated category and comments for each post.
+會加載所有文章，以及每篇文章的類別與評論。
 
-#### Nested Associations Hash
+#### 巢狀關聯 Hash
 
 ```ruby
 Category.includes(posts: [{comments: :guest}, :tags]).find(1)
 ```
 
-This will find the category with id 1 and eager load all of the associated posts, the associated posts' tags and comments, and every comment's guest association.
+會找到 `category` `id` 為 1 的類別，並加載與類別相關聯的文章。以及文章的標籤與評論跟評論的 `guest` 關聯。
 
-### Specifying Conditions on Eager Loaded Associations
+### 對 Eager Loaded 關聯下條件
 
-Even though Active Record lets you specify conditions on the eager loaded associations just like `joins`, the recommended way is to use [joins](#joining-tables) instead.
+雖然 Active Record 允許您像 `joins` 那樣對 eager loaded 關聯下條件，但推薦的做法是使用[連接資料表](#)。
 
-However if you must do this, you may use `where` as you would normally.
+但若非要這麼做，可以像平常那樣使用 `where`：
 
 ```ruby
 Post.includes(:comments).where("comments.visible" => true)
 ```
 
-This would generate a query which contains a `LEFT OUTER JOIN` whereas the `joins` method would generate one using the `INNER JOIN` function instead.
+產生的查詢語句會有 `LEFT OUTER JOIN`，而 `joins` 產生的是 `INNER JOIN`。
 
 ```ruby
-  SELECT "posts"."id" AS t0_r0, ... "comments"."updated_at" AS t1_r5 FROM "posts" LEFT OUTER JOIN "comments" ON "comments"."post_id" = "posts"."id" WHERE (comments.visible = 1)
+SELECT "posts"."id" AS t0_r0, ... "comments"."updated_at" AS t1_r5 FROM "posts" LEFT OUTER JOIN "comments" ON "comments"."post_id" = "posts"."id" WHERE (comments.visible = 1)
 ```
 
-If there was no `where` condition, this would generate the normal set of two queries.
+如果沒有下 `where` 條件，則會像平常那樣產生兩條查詢。
 
-If, in the case of this `includes` query, there were no comments for any posts, all the posts would still be loaded. By using `joins` (an INNER JOIN), the join conditions **must** match, otherwise no records will be returned.
+上例若文章都沒有評論，仍會載入所有文章。然而使用 `joins` （`INNER JOIN`）**必須**要滿足連接條件，不然不會回傳任何記錄。
 
 Scopes
 ------
