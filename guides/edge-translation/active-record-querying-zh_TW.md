@@ -801,11 +801,13 @@ SELECT * FROM clients WHERE orders_count > 10 ORDER BY clients.id DESC
 空 Relation
 -------------
 
-The `none` method returns a chainable relation with no records. Any subsequent conditions chained to the returned relation will continue generating empty relations. This is useful in scenarios where you need a chainable response to a method or a scope that could return zero results.
+`none` 方法回傳一個不包含任何記錄、可連鎖使用的 Relation。`none` 回傳的 Relation 上做查詢，仍會回傳空的 Relation。應用場景是回傳的 Relation 可能沒有記錄，但需要可以連鎖使用。
 
 ```ruby
 Post.none # returns an empty Relation and fires no queries.
 ```
+
+回傳空的 Relation，不會對資料庫下查詢。
 
 ```ruby
 # The visible_posts method below is expected to return a Relation.
@@ -823,10 +825,13 @@ def visible_posts
 end
 ```
 
+上例 `visible_posts` 可能沒有可見的 `posts`，但之後還有 `where` 子句，此時沒有 `posts` 的情況可以使用 `Post.none`。
+
+
 唯讀物件
 ----------------
 
-Active Record provides `readonly` method on a relation to explicitly disallow modification of any of the returned objects. Any attempt to alter a readonly record will not succeed, raising an `ActiveRecord::ReadOnlyRecord` exception.
+Active Record 提供 `readonly` 方法，用來禁止修改回傳的物件。試圖要修改 `readonly` 物件徒勞無功，並會拋出 `ActiveRecord::ReadOnlyRecord` 異常。
 
 ```ruby
 client = Client.readonly.first
@@ -834,25 +839,26 @@ client.visits += 1
 client.save
 ```
 
-As `client` is explicitly set to be a readonly object, the above code will raise an `ActiveRecord::ReadOnlyRecord` exception when calling `client.save` with an updated value of _visits_.
+`client` 明確設定為唯讀物件，上面的程式碼在執行到 `client.save` 時會拋出 `ActiveRecord::ReadOnlyRecord` 異常，因為 `visits` 的數值改變了。
 
-Locking Records for Update
+更新時鎖定記錄
 --------------------------
 
-Locking is helpful for preventing race conditions when updating records in the database and ensuring atomic updates.
+鎖定可以避免更新可能發生的 race condition，確保更新是原子性的操作。
 
-Active Record provides two locking mechanisms:
 
-* Optimistic Locking
-* Pessimistic Locking
+Active Record 提供兩種鎖定機制：
 
-### Optimistic Locking
+* 樂觀鎖定（Optimistic Locking）
+* 悲觀鎖定（Pessimistic Locking）
 
-Optimistic locking allows multiple users to access the same record for edits, and assumes a minimum of conflicts with the data. It does this by checking whether another process has made changes to a record since it was opened. An `ActiveRecord::StaleObjectError` exception is thrown if that has occurred and the update is ignored.
+### 樂觀鎖定
 
-**Optimistic locking column**
+樂觀鎖定允許多個使用者編輯相同的紀錄，並假設資料衝突發生衝突的可能性最小。透過檢查該記錄從資料庫取出後，是否有另個進程修改此記錄。如果有其他進程同時修改記錄時，會拋出 `ActiveRecord::StaleObjectError` 異常。
 
-In order to use optimistic locking, the table needs to have a column called `lock_version` of type integer. Each time the record is updated, Active Record increments the `lock_version` column. If an update request is made with a lower value in the `lock_version` field than is currently in the `lock_version` column in the database, the update request will fail with an `ActiveRecord::StaleObjectError`. Example:
+**樂觀鎖定欄位**
+
+要使用樂觀鎖定，資料表需要加一個叫做 `lock_version` 的整數欄位。記錄更新時，Active Record 會遞增 `lock_version`。如果正在更新的記錄的 `lock_version` 比資料庫裡的 `lock_version` 值小時，會拋出 `ActiveRecord::StaleObjectError`，比如：
 
 ```ruby
 c1 = Client.find(1)
@@ -865,11 +871,11 @@ c2.name = "should fail"
 c2.save # Raises an ActiveRecord::StaleObjectError
 ```
 
-You're then responsible for dealing with the conflict by rescuing the exception and either rolling back, merging, or otherwise apply the business logic needed to resolve the conflict.
+拋出異常後您要負責處理，將異常救回來。看是要回滾、合併或是根據商業邏輯來處理衝突。
 
-This behavior can be turned off by setting `ActiveRecord::Base.lock_optimistically = false`.
+這個行為可以透過設定 `ActiveRecord::Base.lock_optimistically = false` 來關掉。
 
-To override the name of the `lock_version` column, `ActiveRecord::Base` provides a class attribute called `locking_column`:
+`lock_version` 欄位名可以透過 `ActiveRecord::Base` 提供的類別屬性 `locking_column` 來覆蓋：
 
 ```ruby
 class Client < ActiveRecord::Base
@@ -877,11 +883,11 @@ class Client < ActiveRecord::Base
 end
 ```
 
-### Pessimistic Locking
+### 悲觀鎖定
 
-Pessimistic locking uses a locking mechanism provided by the underlying database. Using `lock` when building a relation obtains an exclusive lock on the selected rows. Relations using `lock` are usually wrapped inside a transaction for preventing deadlock conditions.
+悲觀鎖定使用資料庫提供的鎖定機制。在建立 Relation 時，使用 `lock` 可以對選擇的列獲得一個互斥鎖。通常使用 `lock` 的 Relation 會包在 transaction 裡，避免死鎖的情況發生。
 
-For example:
+比如：
 
 ```ruby
 Item.transaction do
@@ -891,7 +897,7 @@ Item.transaction do
 end
 ```
 
-The above session produces the following SQL for a MySQL backend:
+上面的程式碼在 MySQL 會產生如下 SQL：
 
 ```sql
 SQL (0.2ms)   BEGIN
@@ -900,7 +906,7 @@ Item Update (0.4ms)   UPDATE `items` SET `updated_at` = '2009-02-07 18:05:56', `
 SQL (0.8ms)   COMMIT
 ```
 
-You can also pass raw SQL to the `lock` method for allowing different types of locks. For example, MySQL has an expression called `LOCK IN SHARE MODE` where you can lock a record but still allow other queries to read it. To specify this expression just pass it in as the lock option:
+`lock` 方法可以傳純 SQL，來使用不同種類的鎖。比如 MySQL 有 `LOCK IN SHARE MODE`，鎖定記錄同時允許查詢讀取。直接傳入 `lock` 即可使用：
 
 ```ruby
 Item.transaction do
@@ -909,7 +915,7 @@ Item.transaction do
 end
 ```
 
-If you already have an instance of your model, you can start a transaction and acquire the lock in one go using the following code:
+如果已經有 Model 的實例，使用以下寫法，可以將操作包在 transaction 裡，並同時獲得鎖：
 
 ```ruby
 item = Item.first
@@ -920,7 +926,7 @@ item.with_lock do
 end
 ```
 
-Joining Tables
+連接資料表
 --------------
 
 Active Record provides a finder method called `joins` for specifying `JOIN` clauses on the resulting SQL. There are multiple ways to use the `joins` method.
