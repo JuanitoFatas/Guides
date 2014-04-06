@@ -1437,7 +1437,7 @@ nick.save
 用 SQL 查詢
 --------------
 
-If you'd like to use your own SQL to find records in a table you can use `find_by_sql`. The `find_by_sql` method will return an array of objects even if the underlying query returns just a single record. For example you could run this query:
+如果想用 SQL 在資料表裡找記錄可以使用：`find_by_sql`。`find_by_sql` 方法會將查詢到的物件放在陣列裡回傳，即便只有一條記錄符合。比如可以執行以下查詢：
 
 ```ruby
 Client.find_by_sql("SELECT * FROM clients
@@ -1445,11 +1445,11 @@ Client.find_by_sql("SELECT * FROM clients
   ORDER clients.created_at desc")
 ```
 
-`find_by_sql` provides you with a simple way of making custom calls to the database and retrieving instantiated objects.
+`find_by_sql` 提供自定查詢的簡單方式，並會將取出的物件實例化。
 
 ### `select_all`
 
-`find_by_sql` has a close relative called `connection#select_all`. `select_all` will retrieve objects from the database using custom SQL just like `find_by_sql` but will not instantiate them. Instead, you will get an array of hashes where each hash indicates a record.
+`find_by_sql` 有個類似的方法：`connection#select_all`。 `select_all` 會使用自定的 SQL 語句從資料庫取出物件，但不會實例化物件。會回傳一個 `ActiveRecord::Result` 物件，可以使用 `to_ary` 或 `to_hash` 將 `ActiveRecord::Result` 轉成陣列，每筆記錄皆是陣列裡的一個 Hash。
 
 ```ruby
 Client.connection.select_all("SELECT * FROM clients WHERE id = '1'")
@@ -1457,7 +1457,7 @@ Client.connection.select_all("SELECT * FROM clients WHERE id = '1'")
 
 ### `pluck`
 
-`pluck` can be used to query a single or multiple columns from the underlying table of a model. It accepts a list of column names as argument and returns an array of values of the specified columns with the corresponding data type.
+`pluck` 可以用來查詢資料表的一個或多個欄位。接受欄位名稱作為參數，並回傳由指定欄位值所組成的陣列。
 
 ```ruby
 Client.where(active: true).pluck(:id)
@@ -1473,7 +1473,7 @@ Client.pluck(:id, :name)
 # => [[1, 'David'], [2, 'Jeremy'], [3, 'Jose']]
 ```
 
-`pluck` makes it possible to replace code like:
+以下程式碼：
 
 ```ruby
 Client.select(:id).map { |c| c.id }
@@ -1483,7 +1483,7 @@ Client.select(:id).map(&:id)
 Client.select(:id, :name).map { |c| [c.id, c.name] }
 ```
 
-with:
+可以用 `pluck` 取代：
 
 ```ruby
 Client.pluck(:id)
@@ -1491,10 +1491,7 @@ Client.pluck(:id)
 Client.pluck(:id, :name)
 ```
 
-Unlike `select`, `pluck` directly converts a database result into a Ruby `Array`,
-without constructing `ActiveRecord` objects. This can mean better performance for
-a large or often-running query. However, any model method overrides will
-not be available. For example:
+與 `select` 不同，`pluck` 直接將從資料庫查詢的結果，轉成 Ruby 的 `Array`，而沒有建出 `ActiveRecord` 物件。可大幅提昇常用、大量查詢的執行效能。但任何 Model 可用的方法便無法使用了，如：
 
 ```ruby
 class Client < ActiveRecord::Base
@@ -1510,9 +1507,7 @@ Client.pluck(:name)
 # => ["David", "Jeremy", "Jose"]
 ```
 
-Furthermore, unlike `select` and other `Relation` scopes, `pluck` triggers an immediate
-query, and thus cannot be chained with any further scopes, although it can work with
-scopes already constructed earlier:
+此外，`pluck` 不像 `select` 與其他 `Relation` 作用域，`pluck` 會直接觸發查詢，無法供之後的作用域連鎖使用，但可以與已經建立的作用域連鎖使用：
 
 ```ruby
 Client.pluck(:name).limit(1)
@@ -1524,7 +1519,7 @@ Client.limit(1).pluck(:name)
 
 ### `ids`
 
-`ids` can be used to pluck all the IDs for the relation using the table's primary key.
+`ids` 可以用來 `pluck` 所有 ID（取得資料表所有的主鍵）：
 
 ```ruby
 Person.ids
