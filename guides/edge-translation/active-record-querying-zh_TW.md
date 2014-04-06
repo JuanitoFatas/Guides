@@ -1600,29 +1600,29 @@ Post.first.categories.many?
 計算
 ------------
 
-This section uses count as an example method in this preamble, but the options described apply to all sub-sections.
+本節以 `count` 為例，`count` 適用的選項所有子章節亦適用。
 
-All calculation methods work directly on a model:
+所有計算方法都可直接在 Model 上呼叫：
 
 ```ruby
 Client.count
 # SELECT count(*) AS count_all FROM clients
 ```
 
-Or on a relation:
+或在 Active Record Relation 呼叫：
 
 ```ruby
 Client.where(first_name: 'Ryan').count
 # SELECT count(*) AS count_all FROM clients WHERE (first_name = 'Ryan')
 ```
 
-You can also use various finder methods on a relation for performing complex calculations:
+也可以對 Active Record Relation 使用不同的查詢方法，來做複雜的計算：
 
 ```ruby
 Client.includes("orders").where(first_name: 'Ryan', orders: {status: 'received'}).count
 ```
 
-Which will execute:
+會執行下面的 SQL：
 
 ```sql
 SELECT count(DISTINCT clients.id) AS count_all FROM clients
@@ -1630,68 +1630,68 @@ SELECT count(DISTINCT clients.id) AS count_all FROM clients
   (clients.first_name = 'Ryan' AND orders.status = 'received')
 ```
 
-### Count
+### 計數
 
-想知道 Model 有多少筆記錄，呼叫 `Client.count` 即可，要知道 Model 裡特定欄位有幾個非空，可以用 `count(:field)`，如 `Client.count(:age)`。
+想知道 Model 資料表裡有多少筆記錄，呼叫 `Client.count` 即可。也可以查詢特定欄位有幾筆記錄：`Client.count(:age)`。
 
-For options, please see the parent section, [Calculations](#calculations).
+可用選項請參考[計算](#計算)一節。
 
-### Average
+### 平均
 
-If you want to see the average of a certain number in one of your tables you can call the `average` method on the class that relates to the table. This method call will look something like this:
+如果想找出資料表特定欄位的平均值，使用 `average` 方法：
 
 ```ruby
 Client.average("orders_count")
 Client.average(:orders_count)
 ```
 
-This will return a number (possibly a floating point number such as 3.14159265) representing the average value in the field.
+會回傳指定欄位的平均值，可能是浮點數（比如 3.14159265）。
 
-For options, please see the parent section, [Calculations](#calculations).
+可用選項請參考[計算](#計算)一節。
 
-### Minimum
+### 最小值
 
-If you want to find the minimum value of a field in your table you can call the `minimum` method on the class that relates to the table. This method call will look something like this:
+如果想找出資料表特定欄位的最小值，使用 `min` 方法：
 
 ```ruby
 Client.minimum("age")
 Client.minimum(:age)
 ```
 
-For options, please see the parent section, [Calculations](#calculations).
+可用選項請參考[計算](#計算)一節。
 
-### Maximum
+### 最大值
 
-If you want to find the maximum value of a field in your table you can call the `maximum` method on the class that relates to the table. This method call will look something like this:
+如果想找出資料表特定欄位的最大值，使用 `max` 方法：
 
 ```ruby
 Client.maximum("age")
 Client.maximum(:age)
 ```
 
-For options, please see the parent section, [Calculations](#calculations).
+可用選項請參考[計算](#計算)一節。
 
-### Sum
+### 和
 
-If you want to find the sum of a field for all records in your table you can call the `sum` method on the class that relates to the table. This method call will look something like this:
+如果想找出資料表裡某欄位所有記錄的和，使用 `sum` 方法：
 
 ```ruby
 Client.sum("orders_count")
 Client.sum(:orders_count)
 ```
 
-For options, please see the parent section, [Calculations](#calculations).
+可用選項請參考[計算](#計算)一節。
 
-Running EXPLAIN
+執行 EXPLAIN
 ---------------
 
-You can run EXPLAIN on the queries triggered by relations. For example,
+可以對 Active Record Relation 使用 `explain`，比如：
 
 ```ruby
 User.where(id: 1).joins(:posts).explain
 ```
 
-may yield
+可能輸出如下（MySQL）：
 
 ```
 EXPLAIN for: SELECT `users`.* FROM `users` INNER JOIN `posts` ON `posts`.`user_id` = `users`.`id` WHERE `users`.`id` = 1
@@ -1704,10 +1704,7 @@ EXPLAIN for: SELECT `users`.* FROM `users` INNER JOIN `posts` ON `posts`.`user_i
 2 rows in set (0.00 sec)
 ```
 
-under MySQL.
-
-Active Record performs a pretty printing that emulates the one of the database
-shells. So, the same query running with the PostgreSQL adapter would yield instead
+Active Record 會根據使用的資料庫不同，按照資料庫 Shell 的方式印出。在 PostgreSQL 可能會輸出：
 
 ```
 EXPLAIN for: SELECT "users".* FROM "users" INNER JOIN "posts" ON "posts"."user_id" = "users"."id" WHERE "users"."id" = 1
@@ -1722,15 +1719,13 @@ EXPLAIN for: SELECT "users".* FROM "users" INNER JOIN "posts" ON "posts"."user_i
 (6 rows)
 ```
 
-Eager loading may trigger more than one query under the hood, and some queries
-may need the results of previous ones. Because of that, `explain` actually
-executes the query, and then asks for the query plans. For example,
+Eager loading 可能會觸發多條查詢，某些查詢依賴先前查詢的結果。由於這個原因，`explain` 會實際執行該查詢，並詢問要查詢那一個，比如：
 
 ```ruby
 User.where(id: 1).includes(:posts).explain
 ```
 
-yields
+會輸出（MySQL）：
 
 ```
 EXPLAIN for: SELECT `users`.* FROM `users`  WHERE `users`.`id` = 1
@@ -1750,12 +1745,9 @@ EXPLAIN for: SELECT `posts`.* FROM `posts`  WHERE `posts`.`user_id` IN (1)
 1 row in set (0.00 sec)
 ```
 
-under MySQL.
-
 ### 解讀 EXPLAIN
 
-Interpretation of the output of EXPLAIN is beyond the scope of this guide. The
-following pointers may be helpful:
+解讀 EXPLAIN 的輸出超出本指南的範疇。延伸閱讀：
 
 * SQLite3: [EXPLAIN QUERY PLAN](http://www.sqlite.org/eqp.html)
 
