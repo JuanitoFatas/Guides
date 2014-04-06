@@ -1143,12 +1143,12 @@ SELECT "posts"."id" AS t0_r0, ... "comments"."updated_at" AS t1_r5 FROM "posts" 
 
 上例若文章都沒有評論，仍會載入所有文章。然而使用 `joins` （`INNER JOIN`）**必須**要滿足連接條件，不然不會回傳任何記錄。
 
-Scopes
+作用域
 ------
 
-Scoping allows you to specify commonly-used queries which can be referenced as method calls on the association objects or models. With these scopes, you can use every method previously covered such as `where`, `joins` and `includes`. All scope methods will return an `ActiveRecord::Relation` object which will allow for further methods (such as other scopes) to be called on it.
+作用域（Scopes）允許將常用查詢定義成關聯物件或 Model 的方法。作用域可以使用前面介紹過的 `where`、`joins`、`includes` 等方法。所有作用域方法會回傳一個 `ActiveRecord::Relation` 物件，允許之後的方法（像是作用域）來繼續呼叫。
 
-To define a simple scope, we use the `scope` method inside the class, passing the query that we'd like to run when this scope is called:
+要定義一個簡單的作用域，在類別裡使用 `scope` 方法，傳入呼叫此作用域時想執行的查詢即可：
 
 ```ruby
 class Post < ActiveRecord::Base
@@ -1156,7 +1156,7 @@ class Post < ActiveRecord::Base
 end
 ```
 
-This is exactly the same as defining a class method, and which you use is a matter of personal preference:
+這與定義一個類別方法完全相同，用那個完全是個人喜好：
 
 ```ruby
 class Post < ActiveRecord::Base
@@ -1166,7 +1166,7 @@ class Post < ActiveRecord::Base
 end
 ```
 
-Scopes are also chainable within scopes:
+作用域可以與其它作用域連鎖使用：
 
 ```ruby
 class Post < ActiveRecord::Base
@@ -1175,22 +1175,22 @@ class Post < ActiveRecord::Base
 end
 ```
 
-To call this `published` scope we can call it on either the class:
+要呼叫 `published` 作用域，可以在類上呼叫：
 
 ```ruby
 Post.published # => [published posts]
 ```
 
-Or on an association consisting of `Post` objects:
+或是對由 `Post` 物件組成的關聯使用：
 
 ```ruby
 category = Category.first
 category.posts.published # => [published posts belonging to this category]
 ```
 
-### Passing in arguments
+### 傳入參數
 
-Your scope can take arguments:
+作用域可接受參數：
 
 ```ruby
 class Post < ActiveRecord::Base
@@ -1198,13 +1198,13 @@ class Post < ActiveRecord::Base
 end
 ```
 
-Call the scope as if it were a class method:
+像呼叫類別方法那般使用作用域
 
 ```ruby
 Post.created_before(Time.zone.now)
 ```
 
-However, this is just duplicating the functionality that would be provided to you by a class method.
+這只是重複類別方法可提供的功能。
 
 ```ruby
 class Post < ActiveRecord::Base
@@ -1214,15 +1214,15 @@ class Post < ActiveRecord::Base
 end
 ```
 
-Using a class method is the preferred way to accept arguments for scopes. These methods will still be accessible on the association objects:
+作用域需要接受參數偏好使用類別方法。接受參數的類別方法仍可在關聯物件上使用：
 
 ```ruby
 category.posts.created_before(time)
 ```
 
-### Merging of scopes
+### 合併作用域
 
-Just like `where` clauses scopes are merged using `AND` conditions.
+和 `where` 條件類似，作用域使用 SQL 的 `AND` 來合併。
 
 ```ruby
 class User < ActiveRecord::Base
@@ -1234,24 +1234,21 @@ User.active.inactive
 # => SELECT "users".* FROM "users" WHERE "users"."state" = 'active' AND "users"."state" = 'inactive'
 ```
 
-We can mix and match `scope` and `where` conditions and the final sql
-will have all conditions joined with `AND` .
+`scope` 作用域與 `where` 條件可以混用，最終的 SQL 會用 `AND` 把所有條件連結起來。
 
 ```ruby
 User.active.where(state: 'finished')
 # => SELECT "users".* FROM "users" WHERE "users"."state" = 'active' AND "users"."state" = 'finished'
 ```
 
-If we do want the `last where clause` to win then `Relation#merge` can
-be used .
+如果想讓最後一個 `where` 條件覆蓋先前的，可以使用 `Relation#merge`。
 
 ```ruby
 User.active.merge(User.inactive)
 # => SELECT "users".* FROM "users" WHERE "users"."state" = 'inactive'
 ```
 
-One important caveat is that `default_scope` will be overridden by
-`scope` and `where` conditions.
+一個重要的提醒是 `default_scope` 會被 `scope` 作用域與 `where` 條件覆蓋掉。
 
 ```ruby
 class User < ActiveRecord::Base
@@ -1270,14 +1267,11 @@ User.where(state: 'inactive')
 # => SELECT "users".* FROM "users" WHERE "users"."state" = 'inactive'
 ```
 
-As you can see above the `default_scope` is being overridden by both
-`scope` and `where` conditions.
+如上所見，`default_scope` 被 `scope` 與 `where` 覆蓋掉了。
 
+### 使用預設作用域
 
-### Applying a default scope
-
-If we wish for a scope to be applied across all queries to the model we can use the
-`default_scope` method within the model itself.
+若想要所有的查詢皆使用某個預設的作用域，可以使用 `default_scope`。
 
 ```ruby
 class Client < ActiveRecord::Base
@@ -1285,15 +1279,13 @@ class Client < ActiveRecord::Base
 end
 ```
 
-When queries are executed on this model, the SQL query will now look something like
-this:
+當這個 Model 執行查詢時，執行的 SQL 會像是：
 
 ```sql
 SELECT * FROM clients WHERE removed_at IS NULL
 ```
 
-If you need to do more complex things with a default scope, you can alternatively
-define it as a class method:
+如果預設作用域需要做更複雜的事，可以用類別方法來取代：
 
 ```ruby
 class Client < ActiveRecord::Base
@@ -1303,20 +1295,17 @@ class Client < ActiveRecord::Base
 end
 ```
 
-### Removing All Scoping
+### 移除所有作用域
 
-If we wish to remove scoping for any reason we can use the `unscoped` method. This is
-especially useful if a `default_scope` is specified in the model and should not be
-applied for this particular query.
+如果想移除作用域，可以使用 `unscoped` 方法。這在特定查詢不需要使用 `default_scope` 時特別有用。
 
 ```ruby
 Client.unscoped.load
 ```
 
-This method removes all scoping and will do a normal query on the table.
+`unscoped` 會移除所有的作用域，回到原本正常的資料表查詢。
 
-Note that chaining `unscoped` with a `scope` does not work. In these cases, it is
-recommended that you use the block form of `unscoped`:
+注意把 `unscoped` 與 `scope` 連起來用是無效的。這種情況下推薦使用 `unscoped` 的區塊形式：
 
 ```ruby
 Client.unscoped {
@@ -1324,35 +1313,35 @@ Client.unscoped {
 }
 ```
 
-動態 Finders 方法
+動態查詢方法
 ------------------
 
-NOTE: Rails 4.0 已棄用動態 Finder 方法，並在 4.1 移除這些方法。最佳實踐是使用 Active Record 的 scope 來取代。可以在 [activerecord-deprecated_finders](https://github.com/rails/activerecord-deprecated_finders。
+NOTE: Rails 4.0 已棄用動態查詢方法，並在 4.1 移除這些方法。最佳實踐是使用 Active Record 的 scope 來取代。可以在 [activerecord-deprecated_finders](https://github.com/rails/activerecord-deprecated_finders。
 ) Gem 找到這些棄用的方法。
 
-For every field (also known as an attribute) you define in your table, Active Record provides a finder method. If you have a field called `first_name` on your `Client` model for example, you get `find_by_first_name` for free from Active Record. If you have a `locked` field on the `Client` model, you also get `find_by_locked` and methods.
+每個資料表裡定義的欄位（又稱屬性），Active Record 都提供一個 Finder 方法。假設 `Client` Model 有 `first_name`，則 Active Record 便會有 `find_by_first_name` 方法可用。若 `Client` Model 有 `locked`，則 Active Record 便會有 `find_by_locked` 方法可用。
 
-You can specify an exclamation point (`!`) on the end of the dynamic finders to get them to raise an `ActiveRecord::RecordNotFound` error if they do not return any records, like `Client.find_by_name!("Ryan")`
+在動態查詢方法名稱最後加上驚嘆號（`!`），可以獲得對應的 BANG 版本，即未找到符合的記錄時，會拋出 `ActiveRecord::RecordNotFound` 異常，像是 `Client.find_by_name!("Ryan")`。
 
-If you want to find both by name and locked, you can chain these finders together by simply typing "`and`" between the fields. For example, `Client.find_by_first_name_and_locked("Ryan", true)`.
+如果同時想找多個欄位，可以在方法名中間使用 `and` 連起來，比如：`Client.find_by_first_name_and_locked("Ryan", true)`。
 
 尋找或新建物件
 --------------------------
 
-當找不到記錄時，新建一個物件是很常見的需求。可以透過 `find_or_create_by`、`find_or_create_by!` 來實作。
+在找不到記錄情況，新建一個物件是很常見的需求。可以透過 `find_or_create_by`、`find_or_create_by!` 來實作。
 
 ### `find_or_create_by`
 
-The `find_or_create_by` method checks whether a record with the attributes exists. If it doesn't, then `create` is called. Let's see an example.
+`find_or_create_by` 方法檢查指定屬性的記錄是否存在。不存在便呼叫 `create`，看個例子。
 
-Suppose you want to find a client named 'Andy', and if there's none, create one. You can do so by running:
+假設想找到名稱是 `'Andy'` 的客戶，沒找到便新建。可以這麼做：
 
 ```ruby
 Client.find_or_create_by(first_name: 'Andy')
 # => #<Client id: 1, first_name: "Andy", orders_count: 0, locked: true, created_at: "2011-08-30 06:09:27", updated_at: "2011-08-30 06:09:27">
 ```
 
-The SQL generated by this method looks like this:
+這個方法產生的 SQL 看起來像是：
 
 ```sql
 SELECT * FROM clients WHERE (clients.first_name = 'Andy') LIMIT 1
@@ -1361,22 +1350,17 @@ INSERT INTO clients (created_at, first_name, locked, orders_count, updated_at) V
 COMMIT
 ```
 
-`find_or_create_by` returns either the record that already exists or the new record. In our case, we didn't already have a client named Andy so the record is created and returned.
+`find_or_create_by` 會回傳已存在的紀錄，或是新建一筆記錄。在上面的例子裡，沒有找到 Andy 這個客戶，便新建一筆再回傳。
 
-The new record might not be saved to the database; that depends on whether validations passed or not (just like `create`).
+新記錄可能沒有存至資料庫；這取決於驗證是否通過（就像 `create` 一樣）。
 
-Suppose we want to set the 'locked' attribute to `false` if we're
-creating a new record, but we don't want to include it in the query. So
-we want to find the client named "Andy", or if that client doesn't
-exist, create a client named "Andy" which is not locked.
-
-We can achieve this in two ways. The first is to use `create_with`:
+假設我們想新建客戶時把 `locked` 屬性設為 `false`，但不想要包含在查詢裡。也就是沒找到叫 Andy 的客戶時，新建一位未鎖定的 Andy 客戶。有兩種方法可以做到，第一種是使用 `create_with`：
 
 ```ruby
 Client.create_with(locked: false).find_or_create_by(first_name: 'Andy')
 ```
 
-The second way is using a block:
+第二種是使用區塊：
 
 ```ruby
 Client.find_or_create_by(first_name: 'Andy') do |c|
@@ -1384,18 +1368,17 @@ Client.find_or_create_by(first_name: 'Andy') do |c|
 end
 ```
 
-The block will only be executed if the client is being created. The
-second time we run this code, the block will be ignored.
+區塊只在新建客戶時執行，已有客戶便會忽略掉區塊。
 
 ### `find_or_create_by!`
 
-You can also use `find_or_create_by!` to raise an exception if the new record is invalid. Validations are not covered on this guide, but let's assume for a moment that you temporarily add
+也可以使用 `find_or_create_by!` 在建立的新紀錄為無效記錄時拋出異常。本文未涵蓋有關驗證的內容，但假設你不小心把這行加到了 `Client` Model：
 
 ```ruby
 validates :orders_count, presence: true
 ```
 
-to your `Client` model. If you try to create a new `Client` without passing an `orders_count`, the record will be invalid and an exception will be raised:
+若沒有傳入 `orders_count` 而要建立新客戶時，則會拋出 `ActiveRecord::RecordInvalid` 異常：
 
 ```ruby
 Client.find_or_create_by!(first_name: 'Andy')
@@ -1404,11 +1387,7 @@ Client.find_or_create_by!(first_name: 'Andy')
 
 ### `find_or_initialize_by`
 
-The `find_or_initialize_by` method will work just like
-`find_or_create_by` but it will call `new` instead of `create`. This
-means that a new model instance will be created in memory but won't be
-saved to the database. Continuing with the `find_or_create_by` example, we
-now want the client named 'Nick':
+`find_or_initialize_by` 方法的工作原理與 `find_or_create_by` 相同，但沒找到時會用 `new` 而不是 `create`。這表示新紀錄會放在記憶體，不會存到資料庫。沿用 `find_or_create_by` 例子 ，假設我們現在想找叫做 Nick 的客戶：
 
 ```ruby
 nick = Client.find_or_initialize_by(first_name: 'Nick')
@@ -1421,13 +1400,13 @@ nick.new_record?
 # => true
 ```
 
-Because the object is not yet stored in the database, the SQL generated looks like this:
+由於這個物件還沒存到資料庫，產生出來的 SQL 像是：
 
 ```sql
 SELECT * FROM clients WHERE (clients.first_name = 'Nick') LIMIT 1
 ```
 
-When you want to save it to the database, just call `save`:
+當想存到資料庫時，呼叫 `save` 即可：
 
 ```ruby
 nick.save
