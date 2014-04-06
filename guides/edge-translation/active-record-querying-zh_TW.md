@@ -1715,7 +1715,7 @@ EXPLAIN for: SELECT `posts`.* FROM `posts`  WHERE `posts`.`user_id` IN (1)
 
 ### 解讀 EXPLAIN
 
-解讀 EXPLAIN 的輸出超出本指南的範疇。延伸閱讀：
+解讀 EXPLAIN 的輸出超出本指南的範疇。下面列出幾篇可能有用的文章：
 
 * SQLite3: [EXPLAIN QUERY PLAN](http://www.sqlite.org/eqp.html)
 
