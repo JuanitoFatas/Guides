@@ -1,4 +1,4 @@
-Active Record 查詢接口
+Active Record 查詢
 =============================
 
 本篇詳細介紹各種用 Active Record 多種從資料庫取出資料的方法。
