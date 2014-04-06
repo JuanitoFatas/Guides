@@ -1324,13 +1324,11 @@ Client.unscoped {
 }
 ```
 
-Dynamic Finders
----------------
+動態 Finders 方法
+------------------
 
-NOTE: Dynamic finders have been deprecated in Rails 4.0 and will be
-removed in Rails 4.1. The best practice is to use Active Record scopes
-instead. You can find the deprecation gem at
-https://github.com/rails/activerecord-deprecated_finders
+NOTE: Rails 4.0 已棄用動態 Finder 方法，並在 4.1 移除這些方法。最佳實踐是使用 Active Record 的 scope 來取代。可以在 [activerecord-deprecated_finders](https://github.com/rails/activerecord-deprecated_finders。
+) Gem 找到這些棄用的方法。
 
 For every field (also known as an attribute) you define in your table, Active Record provides a finder method. If you have a field called `first_name` on your `Client` model for example, you get `find_by_first_name` for free from Active Record. If you have a `locked` field on the `Client` model, you also get `find_by_locked` and methods.
 
@@ -1338,10 +1336,10 @@ You can specify an exclamation point (`!`) on the end of the dynamic finders to 
 
 If you want to find both by name and locked, you can chain these finders together by simply typing "`and`" between the fields. For example, `Client.find_by_first_name_and_locked("Ryan", true)`.
 
-Find or Build a New Object
+尋找或新建物件
 --------------------------
 
-It's common that you need to find a record or create it if it doesn't exist. You can do that with the `find_or_create_by` and `find_or_create_by!` methods.
+當找不到記錄時，新建一個物件是很常見的需求。可以透過 `find_or_create_by`、`find_or_create_by!` 來實作。
 
 ### `find_or_create_by`
 
@@ -1436,7 +1434,7 @@ nick.save
 # => true
 ```
 
-Finding by SQL
+用 SQL 查詢
 --------------
 
 If you'd like to use your own SQL to find records in a table you can use `find_by_sql`. The `find_by_sql` method will return an array of objects even if the underlying query returns just a single record. For example you could run this query:
