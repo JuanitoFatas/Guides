@@ -1542,19 +1542,16 @@ Person.ids
 # SELECT person_id FROM people
 ```
 
-Existence of Objects
+物件存在性
 --------------------
 
-If you simply want to check for the existence of the object there's a method called `exists?`.
-This method will query the database using the same query as `find`, but instead of returning an
-object or collection of objects it will return either `true` or `false`.
+想檢查物件是否存在，可以使用 `exists?`。`exists` 會使用與 `find` 相同的 SQL 語句查詢資料庫，但不會回傳物件集合，而是回傳 `true` 或 `false`。
 
 ```ruby
 Client.exists?(1)
 ```
 
-The `exists?` method also takes multiple values, but the catch is that it will return `true` if any
-one of those records exists.
+`exists` 方法可接受多個數值，但只要有一個記錄存在，便會回傳 `true`。
 
 ```ruby
 Client.exists?(id: [1,2,3])
@@ -1562,22 +1559,21 @@ Client.exists?(id: [1,2,3])
 Client.exists?(name: ['John', 'Sergei'])
 ```
 
-It's even possible to use `exists?` without any arguments on a model or a relation.
+`exists?` 不傳任何參數也可以。
 
 ```ruby
 Client.where(first_name: 'Ryan').exists?
 ```
 
-The above returns `true` if there is at least one client with the `first_name` 'Ryan' and `false`
-otherwise.
+如果至少有一位客戶名稱是 `'Ryan'` 則回傳 `true`，否則回傳 `false`。
 
 ```ruby
 Client.exists?
 ```
 
-The above returns `false` if the `clients` table is empty and `true` otherwise.
+`clients` 資料表為空時回傳 `false`，反之 `true`。
 
-You can also use `any?` and `many?` to check for existence on a model or relation.
+`any?` 與 `many?` 也可以用來檢查 Model 或 Relation 的存在性。
 
 ```ruby
 # via a model
