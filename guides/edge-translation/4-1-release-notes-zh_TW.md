@@ -1,6 +1,5 @@
-# Ruby on Rails 4.1 發佈記
-
-PR#12389 代表 Rails Repository 上 12389 號 Pull Request。
+Ruby on Rails 4.1 發佈記
+================================
 
 Rails 4.1 精華摘要：
 
@@ -11,11 +10,13 @@ Rails 4.1 精華摘要：
 
 本篇僅涵蓋主要的變化。要了解關於已修復的 Bug、功能變更等，請參考 [Rails GitHub 主頁][rails]上各個 Gem 的 CHANGELOG 或是 [Rails 的提交歷史](https://github.com/rails/rails/commits/master)。
 
-## 升級至 Rails 4.1
+升級至 Rails 4.1
+------------------
 
 如果您正試著升級現有的應用程式至 Rails 4.1，最好有廣的測試覆蓋度。首先應先升級至 4.0，再升上 4.1。升級需要注意的事項在此篇 [Ruby on Rails 升級指南](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md#2-從-rails-40-升級到-rails-41)可以找到。
 
-## 主要的新功能
+主要的新功能
+------------
 
 ### 應用程式預加載器：Spring
 
@@ -209,7 +210,8 @@ post :create, format: :js
 xhr :post, :create, format: :js
 ```
 
-## Railties
+Railties
+------------
 
 請參考 [Changelog][Railties-CHANGELOG] 來了解更多細節。
 
@@ -243,7 +245,8 @@ xhr :post, :create, format: :js
 
 * 引入一個方便的方法： `Rails.gem_version`，來回傳 `Gem::Version.new(Rails.version)` 的值，一個更加可靠的方式來做版本比對。 [PR#14103](https://github.com/rails/rails/pull/14103)
 
-## Action Pack
+Action Pack
+--------------
 
 請參考 [Changelog][AP-CHANGELOG] 來了解更多細節。
 
@@ -286,7 +289,8 @@ xhr :post, :create, format: :js
 * 新增 `render :plain`、`render :html` 以及 `render
   :body`。 [PR#14062](https://github.com/rails/rails/pull/14062) & [更多資訊](http://edgeguides.rubyonrails.org/upgrading_ruby_on_rails.html#rendering-content-from-string)
 
-## Action Mailer
+Action Mailer
+------------------
 
 請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/actionmailer/CHANGELOG.md) 來了解更多細節。
 
@@ -296,7 +300,8 @@ xhr :post, :create, format: :js
 
 *  Action Mailer 產生 mail 的時間會寫到 log 裡。 [PR#12556](https://github.com/rails/rails/pull/12556)
 
-## Active Record
+Active Record
+------------------
 
 請參考 [Changelog][AR-CHANGELOG] 來了解更多細節。
 
@@ -419,7 +424,7 @@ xhr :post, :create, format: :js
 * 加入一個 flag 來禁止資料庫遷移後的 schema dump。Production 環境預設為 `false`。 [PR#13948](https://github.com/rails/rails/pull/13948)
 
 Active Model
-------------
+--------------
 
 請參考 [Changelog][AM-CHANGELOG] 來了解更多細節。
 
@@ -435,7 +440,8 @@ Active Model
 
 * `attribute_changed?` 現在可以接受 hash，來檢查 attribute 是否從 `:from` 變到 `:to`。 [PR#13131](https://github.com/rails/rails/pull/13131)
 
-## Active Support
+Active Support
+------------------
 
 請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/activesupport/CHANGELOG.md) 來了解更多細節。
 
@@ -525,16 +531,10 @@ Active Model
 
 * 新增 `Object#presence_in` 來簡化對數值做白名單。[Commit](https://github.com/rails/rails/commit/4edca106daacc5a159289eae255207d160f22396)
 
-## 致謝
+致謝
+---------
 
 許多人花了寶貴的時間貢獻至 Rails 專案，使 Rails 成為更穩定、更強韌的網路框架，參考[完整的 Rails 貢獻者清單](http://contributors.rubyonrails.org/)，感謝所有的貢獻者！
-
-## 譯者補充
-
-### 延伸閱讀
-
-[What's new in Rails 4.1 | Coherence.io](http://coherence.io/blog/2013/12/17/whats-new-in-rails-4-1.html)
-[What's new in Rails 4.1](http://www.slideshare.net/godfreykfc/rails-41)
 
 [rails]: https://github.com/rails/rails
 [Railties-CHANGELOG]: https://github.com/rails/rails/blob/4-1-stable/railties/CHANGELOG.md
