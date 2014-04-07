@@ -82,7 +82,7 @@ zh-CN please visit: docs-china.com/rails/
 
 | English| Traditional Chinese| Simplified Chinese|
 |:--:|:--:|:--:|
-|[Upgrading Ruby on Rails](/guides/edge/upgrading_ruby_on_rails.md)|[zh-TW](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md)|[zh-CN](/guides/edge-translation/upgrading-ruby-on-rails-zh_CN.md)|
+|[Upgrading Ruby on Rails](/guides/edge/upgrading_ruby_on_rails.md)|[Work In Progress](/guides/edge-translation/upgrading-ruby-on-rails-zh_TW.md)|[zh-CN](/guides/edge-translation/upgrading-ruby-on-rails-zh_CN.md)|
 |[Ruby on Rails 4.1 Release Notes](/guides/edge/4_1_release_notes.md)|[zh-TW](/guides/edge-translation/4-1-release-notes-zh_TW.md)|[zh-CN](/guides/edge-translation/4-1-release-notes-zh_CN.md)|
 |[Ruby on Rails 4.0 Release Notes](/guides/edge/4_0_release_notes.md)|to be translated|to be translated|
 |[Ruby on Rails 3.2 Release Notes](/guides/edge/3_2_release_notes.md)|to be translated|to be translated|
