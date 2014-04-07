@@ -213,7 +213,7 @@ class CreateCustomers < ActiveRecord::Migration
 end
 ```
 
-### `has_many :through` 關聯
+### The `has_many :through` Association
 
 A `has_many :through` association is often used to set up a many-to-many connection with another model. This association indicates that the declaring model can be matched with zero or more instances of another model by proceeding _through_ a third model. For example, consider a medical practice where patients make appointments to see physicians. The relevant association declarations could look like this:
 
@@ -234,7 +234,7 @@ class Patient < ActiveRecord::Base
 end
 ```
 
-![has_many :through Association Diagram](../images/has_many_through.png)
+![has_many :through Association Diagram](images/has_many_through.png)
 
 The corresponding migration might look like this:
 
@@ -318,7 +318,7 @@ class AccountHistory < ActiveRecord::Base
 end
 ```
 
-![has_one :through Association Diagram](../images/has_one_through.png)
+![has_one :through Association Diagram](images/has_one_through.png)
 
 The corresponding migration might look like this:
 
@@ -359,7 +359,7 @@ class Part < ActiveRecord::Base
 end
 ```
 
-![has_and_belongs_to_many Association Diagram](../images/habtm.png)
+![has_and_belongs_to_many Association Diagram](images/habtm.png)
 
 The corresponding migration might look like this:
 
@@ -509,7 +509,7 @@ class CreatePictures < ActiveRecord::Migration
 end
 ```
 
-![Polymorphic Association Diagram](../images/polymorphic.png)
+![Polymorphic Association Diagram](images/polymorphic.png)
 
 ### Self Joins
 
@@ -526,18 +526,31 @@ end
 
 With this setup, you can retrieve `@employee.subordinates` and `@employee.manager`.
 
-秘訣、技巧與警告
+In your migrations/schema, you will add a references column to the model itself.
+
+```ruby
+class CreateEmployees < ActiveRecord::Migration
+  def change
+    create_table :employees do |t|
+      t.references :manager
+      t.timestamps
+    end
+  end
+end
+```
+
+Tips, Tricks, and Warnings
 --------------------------
 
-以下是使用 Active Record 關聯時，需要注意的事項：
+Here are a few things you should know to make efficient use of Active Record associations in your Rails applications:
 
-* 控制快取(Caching)
-* 避免命名衝突
-* 更新 schema
-* 控制關聯的存取範圍 (scope)
-* 雙向關聯
+* Controlling caching
+* Avoiding name collisions
+* Updating the schema
+* Controlling association scope
+* Bi-directional associations
 
-### 控制快取
+### Controlling Caching
 
 All of the association methods are built around caching, which keeps the result of the most recent query available for further operations. The cache is even shared across methods. For example:
 
@@ -743,7 +756,7 @@ automatically:
 * :polymorphic
 * :foreign_key
 
-關聯完整參考手冊
+Detailed Association Reference
 ------------------------------
 
 The following sections give the details of each type of association, including the methods that they add and the options that you can use when declaring an association.
@@ -754,7 +767,7 @@ The `belongs_to` association creates a one-to-one match with another model. In d
 
 #### Methods Added by `belongs_to`
 
-When you declare a `belongs_to` association, the declaring class automatically gains four methods related to the association:
+When you declare a `belongs_to` association, the declaring class automatically gains five methods related to the association:
 
 * `association(force_reload = false)`
 * `association=(associate)`
@@ -900,8 +913,12 @@ end
 Counter cache columns are added to the containing model's list of read-only attributes through `attr_readonly`.
 
 ##### `:dependent`
+If you set the `:dependent` option to:
 
-If you set the `:dependent` option to `:destroy`, then deleting this object will call the `destroy` method on the associated object to delete that object. If you set the `:dependent` option to `:delete`, then deleting this object will delete the associated object _without_ calling its `destroy` method. If you set the `:dependent` option to `:restrict`, then attempting to delete this object will result in a `ActiveRecord::DeleteRestrictionError` if there are any associated objects.
+* `:destroy`, when the object is destroyed, `destroy` will be called on its
+associated objects.
+* `:delete`, when the object is destroyed, all its associated objects will be
+deleted directly from the database without calling their `destroy` method.
 
 WARNING: You should not specify this option on a `belongs_to` association that is connected with a `has_many` association on the other class. Doing so can lead to orphaned records in your database.
 
@@ -1058,7 +1075,7 @@ The `has_one` association creates a one-to-one match with another model. In data
 
 #### Methods Added by `has_one`
 
-When you declare a `has_one` association, the declaring class automatically gains four methods related to the association:
+When you declare a `has_one` association, the declaring class automatically gains five methods related to the association:
 
 * `association(force_reload = false)`
 * `association=(associate)`
@@ -1325,7 +1342,7 @@ The `has_many` association creates a one-to-many relationship with another model
 
 #### Methods Added by `has_many`
 
-When you declare a `has_many` association, the declaring class automatically gains 13 methods related to the association:
+When you declare a `has_many` association, the declaring class automatically gains 16 methods related to the association:
 
 * `collection(force_reload = false)`
 * `collection<<(object, ...)`
@@ -1814,7 +1831,7 @@ The `has_and_belongs_to_many` association creates a many-to-many relationship wi
 
 #### Methods Added by `has_and_belongs_to_many`
 
-When you declare a `has_and_belongs_to_many` association, the declaring class automatically gains 13 methods related to the association:
+When you declare a `has_and_belongs_to_many` association, the declaring class automatically gains 16 methods related to the association:
 
 * `collection(force_reload = false)`
 * `collection<<(object, ...)`
