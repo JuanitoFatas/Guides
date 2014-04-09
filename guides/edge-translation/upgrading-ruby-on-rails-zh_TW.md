@@ -31,10 +31,6 @@ Rails 通常與最新的 Ruby 一起前進：
 
 ### CSRF protection from remote `<script>` tags
 
-或是...."阿阿阿測試為什麼壞了！！！？"
-
-跨站
-
 Cross-site request forgery (CSRF) protection now covers GET requests with
 JavaScript responses, too. That prevents a third-party site from referencing
 your JavaScript URL and attempting to run it to extract sensitive data.
