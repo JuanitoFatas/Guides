@@ -14,7 +14,7 @@ Active Record 關聯
 為什麼需要關聯？
 -----------------
 
-為什麼 Model 之間要有關聯？關聯簡化了常見的操作，程式碼撰寫起來更簡單。比如，一個簡單的 Rails 應用程式，有顧客與訂單 Model。每個顧客可有多筆訂單。若沒有關聯功能，則 Model 看起來會像是：
+為什麼 Model 之間要有關聯？關聯簡化了常見的操作，程式碼撰寫起來更簡單。比如，一個簡單的 Rails 應用程式，有顧客與訂單 Model。每位顧客可有多筆訂單。若沒有關聯功能，則 Model 看起來會像是：
 
 ```ruby
 class Customer < ActiveRecord::Base
@@ -69,7 +69,7 @@ end
 關聯種類
 -------------------------
 
-In Rails, an _association_ is a connection between two Active Record models. Associations are implemented using macro-style calls, so that you can declaratively add features to your models. For example, by declaring that one model `belongs_to` another, you instruct Rails to maintain Primary Key-Foreign Key information between instances of the two models, and you also get a number of utility methods added to your model. Rails supports six types of associations:
+Rails 的關聯是兩個 Active Record Model 之間的連接。關聯以宏風格的呼叫方式實作，以宣告的形式加入功能到 Model 裡。舉例來說，透過宣告一個 Model 屬於另一個，你告訴 Rails 如何維護這兩個 Model 的主、外鍵，同時 Rails 為 Model 新增許多實用方法。Rails 支援以下六種關聯：
 
 * `belongs_to`
 * `has_one`
@@ -78,9 +78,9 @@ In Rails, an _association_ is a connection between two Active Record models. Ass
 * `has_one :through`
 * `has_and_belongs_to_many`
 
-In the remainder of this guide, you'll learn how to declare and use the various forms of associations. But first, a quick introduction to the situations where each association type is appropriate.
+本篇餘下的章節，您將學會如何宣告、使用各種關聯。但首先讓我們快速介紹一下每個關聯的應用場景。
 
-### The `belongs_to` Association
+### `belongs_to` 關聯
 
 A `belongs_to` association sets up a one-to-one connection with another model, such that each instance of the declaring model "belongs to" one instance of the other model. For example, if your application includes customers and orders, and each order can be assigned to exactly one customer, you'd declare the order model this way:
 
@@ -113,7 +113,7 @@ class CreateOrders < ActiveRecord::Migration
 end
 ```
 
-### The `has_one` Association
+### The `has_one` 關聯
 
 A `has_one` association also sets up a one-to-one connection with another model, but with somewhat different semantics (and consequences). This association indicates that each instance of a model contains or possesses one instance of another model. For example, if each supplier in your application has only one account, you'd declare the supplier model like this:
 
@@ -144,7 +144,7 @@ class CreateSuppliers < ActiveRecord::Migration
 end
 ```
 
-### The `has_many` Association
+### The `has_many` 關聯
 
 A `has_many` association indicates a one-to-many connection with another model. You'll often find this association on the "other side" of a `belongs_to` association. This association indicates that each instance of the model has zero or more instances of another model. For example, in an application containing customers and orders, the customer model could be declared like this:
 
@@ -177,7 +177,7 @@ class CreateCustomers < ActiveRecord::Migration
 end
 ```
 
-### The `has_many :through` Association
+### The `has_many :through` 關聯
 
 A `has_many :through` association is often used to set up a many-to-many connection with another model. This association indicates that the declaring model can be matched with zero or more instances of another model by proceeding _through_ a third model. For example, consider a medical practice where patients make appointments to see physicians. The relevant association declarations could look like this:
 
@@ -259,7 +259,7 @@ With `through: :sections` specified, Rails will now understand:
 @document.paragraphs
 ```
 
-### The `has_one :through` Association
+### The `has_one :through` 關聯
 
 A `has_one :through` association sets up a one-to-one connection with another model. This association indicates
 that the declaring model can be matched with one instance of another model by proceeding _through_ a third model.
@@ -309,7 +309,7 @@ class CreateAccountHistories < ActiveRecord::Migration
 end
 ```
 
-### The `has_and_belongs_to_many` Association
+### The `has_and_belongs_to_many` 關聯
 
 A `has_and_belongs_to_many` association creates a direct many-to-many connection with another model, with no intervening model. For example, if your application includes assemblies and parts, with each assembly having many parts and each part appearing in many assemblies, you could declare the models this way:
 
@@ -422,7 +422,7 @@ The simplest rule of thumb is that you should set up a `has_many :through` relat
 
 You should use `has_many :through` if you need validations, callbacks, or extra attributes on the join model.
 
-### Polymorphic Associations
+### Polymorphic 關聯
 
 A slightly more advanced twist on associations is the _polymorphic association_. With polymorphic associations, a model can belong to more than one other model, on a single association. For example, you might have a picture model that belongs to either an employee model or a product model. Here's how this could be declared:
 
@@ -503,7 +503,7 @@ class CreateEmployees < ActiveRecord::Migration
 end
 ```
 
-Tips, Tricks, and Warnings
+秘訣、技巧與警告
 --------------------------
 
 Here are a few things you should know to make efficient use of Active Record associations in your Rails applications:
@@ -514,7 +514,7 @@ Here are a few things you should know to make efficient use of Active Record ass
 * Controlling association scope
 * Bi-directional associations
 
-### Controlling Caching
+### 控制快取
 
 All of the association methods are built around caching, which keeps the result of the most recent query available for further operations. The cache is even shared across methods. For example:
 
@@ -533,11 +533,11 @@ customer.orders(true).empty?    # discards the cached copy of orders
                                 # and goes back to the database
 ```
 
-### Avoiding Name Collisions
+### 避免命名衝突
 
 You are not free to use just any name for your associations. Because creating an association adds a method with that name to the model, it is a bad idea to give an association a name that is already used for an instance method of `ActiveRecord::Base`. The association method would override the base method and break things. For instance, `attributes` or `connection` are bad names for associations.
 
-### Updating the Schema
+### 更新資料庫綱要
 
 Associations are extremely useful, but they are not magic. You are responsible for maintaining your database schema to match your associations. In practice, this means two things, depending on what sort of associations you are creating. For `belongs_to` associations you need to create foreign keys, and for `has_and_belongs_to_many` associations you need to create the appropriate join table.
 
@@ -600,7 +600,7 @@ end
 
 We pass `id: false` to `create_table` because that table does not represent a model. That's required for the association to work properly. If you observe any strange behavior in a `has_and_belongs_to_many` association like mangled models IDs, or exceptions about conflicting IDs, chances are you forgot that bit.
 
-### Controlling Association Scope
+### 控制關聯的作用域
 
 By default, associations look for objects only within the current module's scope. This can be important when you declare Active Record models within a module. For example:
 
@@ -656,7 +656,7 @@ module MyApplication
 end
 ```
 
-### Bi-directional Associations
+### 雙向關聯
 
 It's normal for associations to work in two directions, requiring declaration on two different models:
 
