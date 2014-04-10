@@ -48,13 +48,13 @@ Active Record 預設使用某種命名慣例來找出 Model 與資料表的對�
 * 資料表 - 複數形，由底線分隔多個單字。
 * Model 類別 - 單數形，第一個字母大寫。
 
-| Model / Class | Table / Schema |
-| ------------- | -------------- |
-| `Post`        | `posts`        |
-| `LineItem`    | `line_items`   |
-| `Deer`        | `deers`        |
-| `Mouse`       | `mice`         |
-| `Person`      | `people`       |
+    | Model / Class | Table / Schema |
+    | ------------- | -------------- |
+    | `Post`        | `posts`        |
+    | `LineItem`    | `line_items`   |
+    | `Deer`        | `deers`        |
+    | `Mouse`       | `mice`         |
+    | `Person`      | `people`       |
 
 
 ### 資料庫綱要慣例
