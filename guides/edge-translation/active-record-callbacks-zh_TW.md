@@ -89,6 +89,7 @@ end
 * `around_create`
 * `after_create`
 * `after_save`
+* `after_commit/after_rollback`
 
 ### 更新物件
 
@@ -100,12 +101,14 @@ end
 * `around_update`
 * `after_update`
 * `after_save`
+* `after_commit/after_rollback`
 
 ### 摧毀物件
 
 * `before_destroy`
 * `around_destroy`
 * `after_destroy`
+* `after_commit/after_rollback`
 
 __警告！__ `after_save` 在 `create` 與 `update` 都會執行，並總是在更為具體的 `after_create` 與 `after_update` 之後執行！
 
