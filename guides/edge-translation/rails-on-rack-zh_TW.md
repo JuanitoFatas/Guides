@@ -39,7 +39,7 @@ Rack 提供了簡單、精簡、模組化的介面，在 Ruby 裡開發 web 應�
 
 假設我們的 Rails 應用程式叫做 `myapp`
 
-`MyApp::Application` 便是 Rails 應用程式的 Rack object，可以用 `Rails.application` 來存取。
+`Rails.application` 便是 Rails 應用程式的 Rack object，可以用 `Rails.application` 來存取。
 
 ## 2.2 `rails server`
 
@@ -158,7 +158,7 @@ use ActionDispatch::ParamsParser
 use Rack::Head
 use Rack::ConditionalGet
 use Rack::ETag
-run MyApp::Application.routes
+run Rails.application.routes
 ```
 
 每個 middleware 的用途在 [3.3 內部 Middleware Stack](#33-內部-middleware-stack) 小節講解。

@@ -343,21 +343,21 @@ CookieStore 大約可以存 4KB 的資料，其他儲存機制可以存更多，
 # 使用資料庫來存 Session，而不是使用預設的 cookie 來存。
 # 注意，不要存任何高度敏感的資料在 Session。
 # （建立 Session table: "rails g active_record:session_migration"）
-# YourApp::Application.config.session_store :active_record_store
+# Rails.application.config.session_store :active_record_store
 ```
 
 簽署 Session 資料時，Rails 設了一個 Session key（cookie 的名字），這個名字可在 `config/initializers/session_store.rb` 裡修改：
 
 ```ruby
 # 修改此文件時記得重新啟動 Server
-YourApp::Application.config.session_store :cookie_store, key: '_your_app_session'
+Rails.application.config.session_store :cookie_store, key: '_your_app_session'
 ```
 
 也可以傳入 `:domain` key，來指定 cookie 的 domain name：
 
 ```ruby
 # 修改此文件時記得重新啟動 Server
-YourApp::Application.config.session_store :cookie_store, key: '_your_app_session', domain: ".example.com"
+Rails.application.config.session_store :cookie_store, key: '_your_app_session', domain: ".example.com"
 ```
 
 Rails 替 CookieStore 設了一個 secret key，用來簽署加密 Session 資料。這個 key 可以在 `config/secrets.yml` 裡修改。
