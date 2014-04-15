@@ -75,7 +75,7 @@ end
 
 desc "Update edge guides from Rails repo."
 task :update_guide do
-  system "cd #{RAILS_EDGE_REPO_PATH} && git pull"
+  system "cd #{RAILS_EDGE_REPO_PATH} && git checkout master && git pull"
     puts "Pulling Latest Changes from rails/rails..."
   system "cp #{RAILS_EDGE_REPO_PATH}/*.md #{DOCGUIDES_REPO_PATH}/guides/edge/"
     puts "All Guides Updated Successfully."
