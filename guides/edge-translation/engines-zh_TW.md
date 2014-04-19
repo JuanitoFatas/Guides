@@ -1115,6 +1115,20 @@ get :index
 get :index, use_route: :blorgh
 ```
 
+This tells the application that you still want to perform a `GET` request to the
+`index` action of this controller, but you want to use the engine's route to get
+there, rather than the application's one.
+
+Another way to do this is to assign the `@routes` instance variable to `Engine.routes` in your test setup:
+
+```ruby
+setup do
+  @routes = Engine.routes
+end
+```
+
+This will also ensure url helpers for the engine will work as expected in your tests.
+
 # 6. 增進 Engine 的功能
 
 本節講解如何在宿主應用程式裡，為 Engine 新增新功能，或是覆寫 Engine 的功能。
