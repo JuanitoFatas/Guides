@@ -2,7 +2,7 @@
 
 ## Chinese Translation (zh-TW)
 
-zh-CN please visit: docs-china.com/rails/
+zh-CN please visit: http://docs-china.com/rails/
 
 ## Start Here
 
@@ -34,8 +34,8 @@ zh-CN please visit: docs-china.com/rails/
 
 | English| Traditional Chinese| Simplified Chinese|
 |:--:|:--:|:--:|
-|[Action Controller Overview](/guides/edge/action_controller_overview.md)|[Work In Progress](/guides/edge-translation/action-controller-overview-zh_TW.md)|to be translated|
-|[Rails Routing from the Outside In](/guides/edge/routing.md)|to be translated|to be translated|
+|[Action Controller Overview](/guides/edge/action_controller_overview.md)|[zh-TW](/guides/edge-translation/action-controller-overview-zh_TW.md)|to be translated|
+|[Rails Routing from the Outside In](/guides/edge/routing.md)|[zh-TW](/guides/edge-translation/routing-zh_TW.md)|to be translated|
 
 ## Digging Deeper
 
