@@ -1,49 +1,39 @@
-# Rails on Rack
+Rails on Rack
+================
 
-講解 Rails 與 Rack 的關係。
+本篇介紹 Rails 與 Rack 的整合、如何與其他 Rack 組件互動。
 
-讀完可能會學到...
+讀完本篇，您將了解：
 
-* 在 Rails 裡如何使用 Rack Middleware。
-* ActionPack 內部的 Middleware 介紹。
-* 如何自定一個 Middleware。
+* 如何在 Rails 裡使用 Rack Middleware。
+* ActionPack  Middleware 的內部工作原理。
+* 如何自定 Middleware。
 
-## 目錄
+--------------------------------------------------------------------------------
 
-- [1. 簡介 Rack](#1-簡介-rack)
-- [2. Rails on Rack](#2-rails-on-rack)
-  - [2.1 Rails 應用程式的 Rack Object](#21-rails-應用程式的-rack-object)
-  - [2.2 `rails server`](#22-rails-server)
-  - [2.3 `rack up`](#23-rack-up)
-- [3. Action Dispatcher Middleware Stack](#3-action-dispatcher-middleware-stack)
-  - [3.1 查看 Middleware Stack](#31-查看-middleware-stack)
-  - [3.2 設定 Middleware Stack](#32-設定-middleware-stack)
-    - [3.2.1 新增 Middleware](#321-新增-middleware)
-    - [3.2.2 Swapping a Middleware](#322-swapping-a-middleware)
-    - [3.2.3 Middleware Stack is an Enumerable](#323-middleware-stack-is-an-enumerable)
-  - [3.3 內部 Middleware Stack](#33-內部-middleware-stack)
-  - [3.4 使用 Rack Builder](#34-使用-rack-builder)
-- [4. 學習資源](#4-學習資源)
-  - [4.1 學習 Rack](#41-學習-rack)
-  - [4.2 理解 Middlewares](#42-理解-middlewares)
+WARNING: 本篇需要先了解 Rack 協定，以及 Rack 的相關概念，譬如：什麼是 Middleware、什麼是 URL 映射以及 `Rack::Builder` 等知識。
 
-# 1. 簡介 Rack
+Rack 簡介
+--------------------
 
-Rack 提供了簡單、精簡、模組化的介面，在 Ruby 裡開發 web 應用程式的介面。Rack 將 HTTP request 與 response 包裝成最簡單的形式，統整了 web 伺服器、web 框架、使用者與伺服器之間所需的軟體、API（這也是為什麼會稱為 middleware），全包裝成一個簡單的方法，`call`。
+Rack 給使用 Ruby 開發的網路應用程式，提供了精簡、模組化、容易介接的介面。Rack 將 HTTP 請求與響應，盡可能包裝成最簡單的形式，給網路框架、伺服器以及框架與伺服器之間的軟體（Middleware）提供了一個統一的 API 接口，`call` 方法。
 
-更多內容請參考：[Rack 介紹](/articles/020-rack.md)、[Rack API Documentation](http://rack.rubyforge.org/doc/)、[Rack Wiki](https://github.com/rack/rack/wiki/Tutorials)。
+更多內容請參考：[Rack API 文件](http://rack.rubyforge.org/doc/)。
 
-# 2. Rails on Rack
+深入解釋 Rack 超出本篇的範疇。若不熟悉 Rack 的基礎知識，請閱讀[參考資料](#參考資料)一節。
 
-## 2.1 Rails 應用程式的 Rack Object
+Rails on Rack
+----------------
 
-假設我們的 Rails 應用程式叫做 `myapp`
+### Rails 應用程式的 Rack 物件
 
-`Rails.application` 便是 Rails 應用程式的 Rack object，可以用 `Rails.application` 來存取。
+`ApplicationName::Application` 是 Rails 應用程式主要的 Rack 物件。任何與 Rack 相容的 Web 伺服器，都應該使用 `ApplicationName::Application` 物件來執行 Rails 應用程式。`Rails.application` 是 `ApplicationName::Application` 物件 的引用。
 
-## 2.2 `rails server`
+### `rails server`
 
-執行 `rails server` 的時候，會新建一個 Rack object，並啟動伺服器：
+`rails server` 建立 `Rack::Server` 物件並啟動伺服器。
+
+以下是 `rails server` 如何建立 `Rack::Server` 的實體。
 
 ```ruby
 Rails::Server.new.tap do |server|
@@ -53,8 +43,7 @@ Rails::Server.new.tap do |server|
 end
 ```
 
-`Rails::Server` 從 `::Rack::Server` 繼承而來，用 `start` 來呼叫 `call`：
-
+`Rails::Server` 繼承自 `Rack::Server`，並呼叫 `Rack::Server#start` 方法：
 
 ```ruby
 class Server < ::Rack::Server
@@ -65,7 +54,7 @@ class Server < ::Rack::Server
 end
 ```
 
-Rails 如何加載 Middlewares?
+以下是如何載入 Middlewares：
 
 ```ruby
 def middleware
@@ -76,16 +65,16 @@ def middleware
 end
 ```
 
-開發模式下，多 2 個 Middleware：
+`Rails::Rack::Debugger` 主要只在開發模式下有用。下表解釋了加載的 Middleware 的用途：
 
 | Middleware | 用途 |
 | :--------- | :------ |
 | Rails::Rack::Debugger | 啟動 Debugger
-| Rack::ContentLength   | 計算 response 有幾個 byte，並設定 HTTP Content-Length header|
+| Rack::ContentLength   | 計算響應有幾個 byte，並設定 HTTP Content-Length 標頭|
 
-## 2.3 `rack up`
+### `rackup`
 
-可以不用 `rails server` 來啟動 Rails，修改 Rails 專案的 `config.ru` 即可：
+若想用 `rackup` 來取代 `rails server`，可以修改 Rails 應用程式根目錄下的 `config.ru`：
 
 ```ruby
 # Rails.root/config.ru
@@ -102,37 +91,29 @@ run Rails.application
 $ rackup config.ru
 ```
 
-`rackup` 更多選項：
+了解 `rackup` 接受的其他選項：
 
 ```bash
 $ rackup --help
 ```
 
-# 3. Action Dispatcher Middleware Stack
+Action Dispatcher Middleware Stack
+-------------------------------------
 
-許多 Action Dispatcher 內部的組件（Component）都是以 Rack Middleware 的方式實作。
+許多 Action Dispatcher 的內部組件都是以 Rack Middleware 的方式所實作。`Rails::Application` 使用了 `ActionDispatch::MiddlewareStack`，將內部與外部的 Middleware 結合起來，形成完整的 Rails Rack 應用程式。
 
-`Rails::Application` 使用了 `ActionDispatch::MiddlewareStack` 將內部與外部的 Middleware 結合起來。
 
-一句話總結：
+NOTE: Rails 的 `ActionDispatch::MiddlewareStack` 等同於 `Rack::Builder`，但靈活性更高、更多功能，專門為了滿足 Rails 需求所打造。
 
-Rack 有 `Rack::Builder`；Rails 有 `ActionDispatch::MiddlewareStack`。
+### 檢視 Middleware Stack
 
-## 3.1 查看 Middleware Stack
-
-新建一個 Rails app：
-
-```bash
-$ rails new MyApp
-```
-
-查看 Middleware stack：
+Rails 有一個好用的 Rake 任務，可檢視使用中的 Middleware stack：
 
 ```bash
 $ rake middleware
 ```
 
-輸出：
+新建出來的 Rails 應用程式，輸出結果會像是：
 
 ```ruby
 use Rack::Sendfile
@@ -161,25 +142,31 @@ use Rack::ETag
 run Rails.application.routes
 ```
 
-每個 middleware 的用途在 [3.3 內部 Middleware Stack](#33-內部-middleware-stack) 小節講解。
+上列 Middlewares 在[內部 Middlewares](#內部-middleware-stack) 一節分別介紹。
 
-## 3.2 設定 Middleware Stack
+### 設定 Middleware Stack
 
-Rails 提供了 `config.middleware` 介面，讓你新增、移除、修改 middleware stack。
+Rails 提供了簡單的設定接口：`config.middleware`，用來新增、刪除、修改 Middleware Stack 裡的 Middleware。可以在 `application.rb` 或是特定環境的設定檔：`environments/<environment>.rb` 來使用這個設定。
 
-整個應用程式的設定，在 `config/application.rb`；針對不同環境，在 `config/environments/<environment>.rb` 設定。
+#### 新增 Middleware
 
-### 3.2.1 新增 Middleware
+使用下面任一方法來新增 Middleware 到 Middleware Stack：
 
-|語法|用途|
-|:--|:--|
-|`config.middleware.use(new_middleware, args)`|新增 middleware 到 Middleware stack 的底部|
-|`config.middleware.insert_before(existing_middleware, new_middleware, args)`|新增 middleware 在某個 middleware 之前。|
-|`config.middleware.insert_after(existing_middleware, new_middleware, args)`|新增 middleware 在某個 middleware 之後。|
+**`config.middleware.use(new_middleware, args)`**
 
-範例：
+* 新增 Middleware 到 Middleware Stack 的底部
+
+**`config.middleware.insert_before(existing_middleware, new_middleware, args)`**
+
+* 新增 Middleware 在某個現有的 Middleware 之前。
+
+**`config.middleware.insert_after(existing_middleware, new_middleware, args)`**
+
+* 新增 Middleware 在某個現有的 Middleware 之後。
 
 ```ruby
+# config/application.rb
+
 # Push Rack::BounceFavicon at the bottom
 config.middleware.use Rack::BounceFavicon
 
@@ -188,9 +175,9 @@ config.middleware.use Rack::BounceFavicon
 config.middleware.insert_after ActiveRecord::QueryCache, Lifo::Cache, page_cache: false
 ```
 
-### 3.2.2 Swapping a Middleware
+#### 交換 Middleware 順序
 
-將 Middleware stack 的 middleware 交換加載順序：
+使用 `config.middleware.swap` 來交換現有 Middleware Stack 中，Middleware 的順序。
 
 ```ruby
 # config/application.rb
@@ -199,18 +186,28 @@ config.middleware.insert_after ActiveRecord::QueryCache, Lifo::Cache, page_cache
 config.middleware.swap ActionDispatch::ShowExceptions, Lifo::ShowExceptions
 ```
 
-### 3.2.3 Middleware Stack is an Enumerable
+#### 刪除 Middleware
 
-Middleware Stack 其實就是 Ruby 的 Enumerable。任何 Enumerable 可用的方法都有提供。Middleware Stack 也實現了 3 個 Array 的方法：`[]`、`unshift`、`delete`。
-
-__刪掉某個 middleware__
+加入下行程式碼到應用程式設定檔，來刪除 Middleware：
 
 ```ruby
 # config/application.rb
 config.middleware.delete "Rack::Lock"
 ```
 
-__移除與 session 有關的 middlewares__
+現在檢視 Middleware Stack，會發現 `Rack::Lock` 已經被刪除了。
+
+```bash
+$ rake middleware
+use Rack::Sendfile
+use ActionDispatch::Static
+use #<ActiveSupport::Cache::Strategy::LocalCache::Middleware:0x000000029a0838>
+use Rack::Runtime
+...
+run Rails.application.routes
+```
+
+若想移除與 Session 有關的 Middleware：
 
 ```ruby
 # config/application.rb
@@ -219,59 +216,124 @@ config.middleware.delete "ActionDispatch::Session::CookieStore"
 config.middleware.delete "ActionDispatch::Flash"
 ```
 
-__移除瀏覽器相關的 middleware__
+或移除與瀏覽器相關的 Middleware：
 
 ```ruby
 # config/application.rb
 config.middleware.delete "Rack::MethodOverride"
 ```
 
-## 3.3 內部 Middleware Stack
+### 內部 Middleware Stack
 
-Action Controller 多數的功能皆以 middleware 的方式實現，下面這個清單介紹每個 middleware 的用途：
+Action Controller 大多數的功能皆以 Middleware 的方式實作，以下解釋每個 Middleware 的用途：
 
-| Middleware | Purpose |
-| :-- | :-- |
-| **`ActionDispatch::Static`** | 讓 Rails 提供靜態 assets。可透過 `config.serve_static_assets` 選項來開啟或關閉。 |
-| **`Rack::Lock`** | 將 `env["rack.multithread"]` 設為 `false` 可將應用程式包在 Mutex 裡。|
-| **`ActiveSupport::Cache::Strategy::LocalCache::Middleware`** | 用來做 memory cache。注意，此 cache 不是線程安全的。|
-| **`Rack::Runtime`** | 設定 X-Runtime header，並記錄這個 Request 跑多久（秒為單位）。|
-| **`Rack::MethodOverride`** | 透過 `params[:_method]` 允許重寫方法。這也是用來處理 HTTP PUT 與 DELETE 方法的 middleware。|
-| **`ActionDispatch::RequestId`** | 給 response 產生獨立的 `X-Request-Id` Header，並啟用 `ActionDispatch::Request#uuid` 方法。|
-| **`Rails::Rack::Logger`** | 告訴 log 有 Request 進來了，Request 結束時，清空 log。|
-| **`ActionDispatch::ShowExceptions`** | Rescue 任何由應用程式拋出的 exception，並呼叫 exceptions app，將 expception 包裝成適合顯示給使用者的格式。|
-| **`ActionDispatch::DebugExceptions`** | 負責記錄 exceptions 並在 request 為本機的情況下，顯示 debugging 頁面。|
-| **`ActionDispatch::RemoteIp`** | 檢查 IP spoofing 攻擊。|
-| **`ActionDispatch::Reloader`** | 準備及清除 callbacks。在開發模式下用來重新加載程式碼的 middleware。|
-| **`ActionDispatch::Callbacks`** | 處理請求前，先執行預備好的 callback。|
-| **`ActiveRecord::Migration::CheckPending`** | 檢查是否有未執行的 migrations，若有，拋出 `PendingMigrationError` 錯誤。|
-| **`ActiveRecord::ConnectionAdapters::ConnectionManagement`** | 每個請求結束後，若 `rack.test` 不為真，則將作用中的連結（active connection）結束。|
-| **`ActiveRecord::QueryCache`** | 啟用 Active Record 的 query cache。|
-| **`ActionDispatch::Cookies`** | 幫 Request 設定 cookie。|
-| **`ActionDispatch::Session::CookieStore`** | 負責把 session 存到 cookie。|
-| **`ActionDispatch::Flash`** | `config.action_controller.session_store` 設定為真時，設定 [flash][theflash] keys。|
-| **`ActionDispatch::ParamsParser`** | 將參數解析成 `params` hash。|
-| **`ActionDispatch::Head`** | 將 HTTP HEAD 請求轉換成 GET 請求處理。|
-| **`Rack::ConditionalGet`** | 讓 Server 支持 HTTP 的 Conditional GET。|
-| **`Rack::ETag`** | 為所有字串 body 加上 ETag header，用來驗證 cache 之用。|
+**`Rack::Sendfile`**
 
-以上的 middleware 都可以在自己的 Rack stack 裡使用。
+* 設定伺服器的 `X-Sendfile` 標頭（header）。使用 `config.action_dispatch.x_sendfile_header` 來設定。
 
-# 4. 學習資源
+**`ActionDispatch::Static`**
 
-## 4.1 學習 Rack
+* 用來決定是否由 Rails 提供靜態 assets。使用 `config.serve_static_assets` 選項來啟用或禁用（`true` 啟用）。
 
-* [Official Rack Website](http://rack.github.io)
-* [Introducing Rack](http://chneukirchen.org/blog/archive/2007/02/introducing-rack.html)
+**`Rack::Lock`**
+
+* 將 `env["rack.multithread"]` 設為 `false` ，則可將應用程式包在 Mutex 裡。
+
+**`ActiveSupport::Cache::Strategy::LocalCache::Middleware`**
+
+* 用來做 memory cache。注意，此 cache 不是線程安全的。
+
+**`Rack::Runtime`**
+
+* 設定 X-Runtime 標頭，並記錄請求的執行時間（秒為單位）。
+
+**`Rack::MethodOverride`**
+
+* 如有設定 `params[:_method]`，則允許可以重寫方法。這個 Middleware 實作了 HTTP `PUT` 與 `DELETE` 方法。
+
+**`ActionDispatch::RequestId`**
+
+* 在響應中產生獨立的 `X-Request-Id` 標頭，並啟用 `ActionDispatch::Request#uuid` 方法。
+
+**`Rails::Rack::Logger`**
+
+* 請求開始時通知 Log，請求結束寫入 Log。
+
+**`ActionDispatch::ShowExceptions`**
+
+* Rescue 任何由應用程式拋出的異常，並呼叫處理異常的程式，將異常以適合的格式顯示給使用者。
+
+**`ActionDispatch::DebugExceptions`**
+
+* 負責記錄異常，並在請求來自本機時，顯示除錯頁面。
+
+**`ActionDispatch::RemoteIp`**
+
+* 檢查 IP 欺騙攻擊。
+
+**`ActionDispatch::Reloader`**
+
+* 準備與清除回呼。主要在開發模式下用來重新加載程式碼。
+
+**`ActionDispatch::Callbacks`**
+
+* 處理請求前，先執行預備好的回呼。
+
+**`ActiveRecord::Migration::CheckPending`**
+
+* 檢查是否有未執行的遷移檔案，有的話拋出 `PendingMigrationError` 錯誤。
+
+**`ActiveRecord::ConnectionAdapters::ConnectionManagement`**
+
+* 每個請求結束後，若 `rack.test` 不為真，則將作用中的連線清除。
+
+**`ActiveRecord::QueryCache`**
+
+* 啟用 Active Record 的查詢快取。
+
+**`ActionDispatch::Cookies`**
+
+* 幫請求設定 Cookie。
+
+**`ActionDispatch::Session::CookieStore`**
+
+* 負責把 Session 存到 Cookie。
+
+**`ActionDispatch::Flash`**
+
+`config.action_controller.session_store` 設定為真時，設定[提示訊息](action_controller_overview.html#提示訊息)的鍵。
+
+**`ActionDispatch::ParamsParser`**
+
+* 解析請求的參數放到 `params` Hash 裡。
+
+**`ActionDispatch::Head`**
+
+* 將 HTTP `HEAD` 請求轉換成 `GET` 請求處理。
+
+**`Rack::ConditionalGet`**
+
+* 給伺服器加入 HTTP 的 Conditional `GET` 支持，頁面沒有變化，就不會回傳響應。
+
+**`Rack::ETag`**
+
+* 為所有字串 Body 加上 ETag 標頭，用來驗證快取。
+
+TIP: 以上所有的 Middleware 都可以在自定的 Rack Stack 使用。
+
+參考資料
+---------
+
+### 學習 Rack
+
+* [Rack 官方網站](http://rack.github.io)
+* [介紹 Rack](http://chneukirchen.org/blog/archive/2007/02/introducing-rack.html)
 * [Ruby on Rack #1 - Hello Rack!](http://m.onkey.org/ruby-on-rack-1-hello-rack)
 * [Ruby on Rack #2 - The Builder](http://m.onkey.org/ruby-on-rack-2-the-builder)
 * [#317 Rack App from Scratch (pro) - RailsCasts](http://railscasts.com/episodes/317-rack-app-from-scratch)
 * [#222 Rack in Rails 3 - RailsCasts](http://railscasts.com/episodes/222-rack-in-rails-3)
 
-## 4.2 理解 Middlewares
+### 理解 Middlewares
 
 * [List of Rack Middlewares](https://github.com/rack/rack/wiki/List-of-Middleware)
-
-* [#151 Rack Middleware - RailsCasts](http://railscasts.com/episodes/151-rack-middleware)
-
-[theflash]: http://edgeguides.rubyonrails.org/action_controller_overview.html#the-flash
+* [Railscast on Rack Middlewares](http://railscasts.com/episodes/151-rack-middleware)
