@@ -2,9 +2,9 @@
 
 ## 狀態
 
-zh-CN 請移駕由 [@AndorChen][ac] 翻譯的 => http://docs-china.com/rails/
+zh-CN 請移駕由 [@AndorChen][ac] 翻譯的 :point_right: http://docs-china.com/rails/
 
-zh-TW 逐漸遷移到 rails.ruby.tw。
+zh-TW 逐漸遷移到 http://rails.ruby.tw。
 
 ## Copyright Declaration
 
