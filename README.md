@@ -8,7 +8,11 @@
 
 ## Copyright Declaration
 
-Unless otherwise noted, all contents are under CC BY-SA 3.0 license or any later version. <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a>
+Unless otherwise noted, all contents are under CC BY-SA 4.0 license or any later version. <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a>
+
+![CC-BY-SA](CC-BY-SA.png)
+
+Unless otherwise noted, all contents are under [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/) or any later version.
 
 Code is under Public Domain (Unlicense). Please read [UNLICENSE](/UNLICENSE).
 
