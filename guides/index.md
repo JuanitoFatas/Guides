@@ -48,7 +48,7 @@ zh-CN please visit: http://docs-china.com/rails/
 |[Securing Rails Applications](/guides/edge/security.md)|to be translated|to be translated|
 |[Debugging Rails Applications](/guides/edge/debugging_rails_applications.md)|to be translated|to be translated|
 |[Configuring Rails Applications](/guides/edge/configuring.md)|to be translated|to be translated|
-|[Rails Command Line Tools and Rake Tasks](/guides/edge/command_line.md)|to be translated|to be translated|
+|[Rails Command Line Tools and Rake Tasks](/guides/edge/command_line.md)|[zh-TW](/guides/edge-translation/command-line-zh_TW.md|to be translated|
 |[Caching with Rails](/guides/edge/caching_with_rails.md)|to be translated|to be translated|
 |[Asset Pipeline](/guides/edge/asset_pipeline.md)|to be translated|to be translated|
 |[Working with JavaScript in Rails](/guides/edge/working_with_javascript_in_rails.md)|[zh-TW](/guides/edge-translation/working-with-javascript-in-rails-zh_TW.md)|[zh-CN](/guides/edge-translation/working-with-javascript-in-rails-zh_CN.md)|
