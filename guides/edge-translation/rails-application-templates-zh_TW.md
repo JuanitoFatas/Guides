@@ -1,42 +1,36 @@
 Rails 應用程式模版
-===========================
+=================
 
-__特別要強調的翻譯名詞__
+應用程式模版其實就是 Ruby 檔案，內含新增 Gems、Initializers 等的 DSL，用來建立、更新 Rails 專案。
 
-> Application Template ＝ 應用程式模版。
+讀完本篇，您將了解：
 
-> Template ＝ 模版。模版
-
-應用程式模版是一套用來給 Rails 專案添磚加瓦的 DSL。
-
-讀完本篇可能會學到.....
-
-* 怎麼使用模版來產生、客製化 Rails 應用程式。
-* 如何用 Rails 模版 API 寫出可重用的應用程式模版。
+* 如何使用模版來產生、客製化 Rails 應用程式。
+* 如何使用 Rails 的模版 API 撰寫出可複用的應用程式模版。
 
 --------------------------------------------------------------------------------
 
-使用方式
----------
+用途
+-----
 
-要套用模版需要告訴 Rails 模版放在哪。可放在本機（PATH）或是遠端（URL）。
+要套用模版，首先需要提供 Rails 產生器並用 `-m` 選項附上模版的位置。位置可以是個檔案或是 URL。
 
 ```bash
 $ rails new blog -m ~/template.rb
 $ rails new blog -m http://example.com/template.rb
 ```
 
-Rails 提供了 `rails:template` 這個 rake 任務，用來幫現有的 Rails 應用程式套版。模版的位置需傳入 `LOCATION` 變數。
+可以使用 `rake rails:template` 來套用模版到現有的 Rails 應用程式。模版的位置需要使用 `LOCATION` 這個環境變數傳入。再強調一次，模版的位置可以是檔案或 URL。
 
 ```bash
-$ rake rails:template LOCATION=~/template.rb
-$ rake rails:template LOCATION=http://example.com/template.rb
+$ bin/rake rails:template LOCATION=~/template.rb
+$ bin/rake rails:template LOCATION=http://example.com/template.rb
 ```
 
 模版 API
 ------------
 
-模版 API 非常簡單，直接看個例子：
+Rails 模版 API 很容易理解。看下面這個 Rails 模版的典型例子：
 
 ```ruby
 # template.rb
@@ -49,17 +43,20 @@ git add: "."
 git commit: %Q{ -m 'Initial commit' }
 ```
 
-下面為模版 API 的概覽：
+下節概述模版 API 主要提供的方法：
 
 ### gem(*args)
 
-加入 gem 至應用程式的 Gemfile。
+新增 `gem` 到應用程式的 `Gemfile`。
+
+舉個例子，加入 `bj` 與 `nokogiri` 到 `Gemfile`：
 
 ```ruby
+gem "bj"
 gem "nokogiri"
 ```
 
-注意！加入至 Gemfile，並不會安裝它，需自己執行 `bundle install`。
+請注意這不會安裝，要執行 `bundle install` 才會安裝：
 
 ```bash
 bundle install
@@ -67,7 +64,9 @@ bundle install
 
 ### gem_group(*names, &block)
 
-幫 Gem 分組。
+將 Gem 分組。
+
+譬如只想要在開發與測試環境下載入 `rspec-rails`：
 
 ```ruby
 gem_group :development, :test do
@@ -77,31 +76,29 @@ end
 
 ### add_source(source, options = {})
 
-新增 Gem 的來源。
+新增 RubyGems 來源網站到 `Gemfile`。
 
 ```ruby
-add_source "http://ruby.taobao.org/"
+add_source "http://code.whytheluckystiff.net"
 ```
 
 ### environment/application(data=nil, options={}, &block)
 
-在 `config/application.rb` application 類別定義後面，新增一行程式碼。
+新增程式到 `config/application.rb`。
 
-Adds a line inside the `Application` class for `config/application.rb`.
-
-If `options[:env]` is specified, the line is appended to the corresponding file in `config/environments`.
+若有指定環境 `options[:env]`，則程式會加到 `config/environments` 下對應的環境設定檔裡。
 
 ```ruby
 environment 'config.action_mailer.default_url_options = {host: "http://yourwebsite.example.com"}', env: 'production'
 ```
 
-A block can be used in place of the `data` argument.
+`data` 參數可以是區塊。
 
 ### vendor/lib/file/initializer(filename, data = nil, &block)
 
-Adds an initializer to the generated application's `config/initializers` directory.
+新增 initializer 到 `config/initializers` 目錄下。
 
-Let's say you like using `Object#not_nil?` and `Object#not_blank?`:
+假設想使用 `Object#not_nil?` 與 `Object#not_blank?`：
 
 ```ruby
 initializer 'bloatlol.rb', <<-CODE
@@ -117,9 +114,9 @@ initializer 'bloatlol.rb', <<-CODE
 CODE
 ```
 
-Similarly, `lib()` creates a file in the `lib/` directory and `vendor()` creates a file in the `vendor/` directory.
+`lib()` 則是在 `lib/` 目錄下建立檔案、`vender()` 在 `vender/` 目錄下建立檔案。
 
-There is even `file()`, which accepts a relative path from `Rails.root` and creates all the directories/files needed:
+還有一個 `file()` 方法，可在 `Rails.root` 的相對路徑下同時建立目錄與檔案。
 
 ```ruby
 file 'app/components/foo.rb', <<-CODE
@@ -128,11 +125,11 @@ file 'app/components/foo.rb', <<-CODE
 CODE
 ```
 
-That'll create the `app/components` directory and put `foo.rb` in there.
+這會建立出 `app/components` 目錄，並新增 `foo.rb`。
 
 ### rakefile(filename, data = nil, &block)
 
-Creates a new rake file under `lib/tasks` with the supplied tasks:
+在 `lib/tasks` 建立 Rake 檔案：
 
 ```ruby
 rakefile("bootstrap.rake") do
@@ -146,11 +143,9 @@ rakefile("bootstrap.rake") do
 end
 ```
 
-The above creates `lib/tasks/bootstrap.rake` with a `boot:strap` rake task.
-
 ### generate(what, *args)
 
-Runs the supplied rails generator with given arguments.
+使用給入的參數執行 Rails 的產生器：
 
 ```ruby
 generate(:scaffold, "person", "name:string", "address:text", "age:number")
@@ -158,7 +153,7 @@ generate(:scaffold, "person", "name:string", "address:text", "age:number")
 
 ### run(command)
 
-Executes an arbitrary command. Just like the backticks. Let's say you want to remove the `README.rdoc` file:
+執行任何命令，即反引號（`` ` ``）。譬如想移除 `README.rdoc` 檔案：
 
 ```ruby
 run "rm README.rdoc"
@@ -166,13 +161,13 @@ run "rm README.rdoc"
 
 ### rake(command, options = {})
 
-Runs the supplied rake tasks in the Rails application. Let's say you want to migrate the database:
+執行指定的 Rake 任務。
 
 ```ruby
 rake "db:migrate"
 ```
 
-You can also run rake tasks with a different Rails environment:
+也可以針對環境執行：
 
 ```ruby
 rake "db:migrate", env: 'production'
@@ -180,7 +175,7 @@ rake "db:migrate", env: 'production'
 
 ### route(routing_code)
 
-Adds a routing entry to the `config/routes.rb` file. In the steps above, we generated a person scaffold and also removed `README.rdoc`. Now, to make `PeopleController#index` the default page for the application:
+新增一筆路由到 `config/routes.rb`。譬如加一筆 `root` 路由：
 
 ```ruby
 route "root to: 'person#index'"
@@ -188,7 +183,7 @@ route "root to: 'person#index'"
 
 ### inside(dir)
 
-Enables you to run a command from the given directory. For example, if you have a copy of edge rails that you wish to symlink from your new apps, you can do this:
+在特定目錄下執行命令：
 
 ```ruby
 inside('vendor') do
@@ -198,7 +193,7 @@ end
 
 ### ask(question)
 
-`ask()` gives you a chance to get some feedback from the user and use it in your templates. Let's say you want your user to name the new shiny library you're adding:
+`ask()` 可以詢問使用者問題，並獲得使用者的輸入。比如詢問即將新增的函式庫名稱：
 
 ```ruby
 lib_name = ask("What do you want to call the shiny library ?")
@@ -212,18 +207,16 @@ CODE
 
 ### yes?(question) or no?(question)
 
-問問題，並獲得使用者輸入。yes?
-
-These methods let you ask questions from templates and decide the flow based on the user's answer. Let's say you want to freeze rails only if the user wants to:
+這兩個方法可以問問題，根據使用者的答案來決定執行流程。譬如根據使用者的回答，決定是否執行 `bundle package`：
 
 ```ruby
-rake("rails:freeze:gems") if yes?("Freeze rails gems?")
+system("bundle package") if yes?("Package all gems?")
 # no?(question) acts just the opposite.
 ```
 
 ### git(:command)
 
-Rails templates let you run any git command:
+Rails 模版可執行任何 git 命令：
 
 ```ruby
 git :init
@@ -231,22 +224,12 @@ git add: "."
 git commit: "-a -m 'Initial commit'"
 ```
 
-進階用法
---------------
+進階用途
+--------
 
-應用程式模版是在
+應用程式模版在 `Rails::Generators::AppGenerator` 實體的上下文裡求值。使用了由 [Thor](https://github.com/erikhuda/thor/blob/master/lib/thor/actions.rb#L209) 所提供的 `apply` 方法。這表示可以自己擴展、修改這個實體，以符所需。
 
-舉例來說，
-
-The application template is evaluated in the context of a
-`Rails::Generators::AppGenerator` instance. It uses the `apply` action
-provided by
-[Thor](https://github.com/erikhuda/thor/blob/master/lib/thor/actions.rb#L207).
-This means you can extend and change the instance to match your needs.
-
-For example by overwriting the `source_paths` method to contain the
-location of your template. Now methods like `copy_file` will accept
-relative paths to your template's location.
+舉個複寫 `source_paths` 方法的例子，讓 `source_path` 包含模版的位置。現在像是 `copy_file` 的方法會接受相對於模版的位置了。
 
 ```ruby
 def source_paths

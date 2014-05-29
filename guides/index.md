@@ -62,7 +62,7 @@ zh-CN please visit: http://docs-china.com/rails/
 |[The Basics of Creating Rails Plugins](/guides/edge/plugins.md)|to be translated|to be translated|
 |[Rails on Rack](/guides/edge/rails_on_rack.md)|[zh-TW](/guides/edge-translation/rails-on-rack-zh_TW.md)|[zh-CN](/guides/edge-translation/rails-on-rack-zh_CN.md)|
 |[Creating and Customizing Rails Generators & Templates](/guides/edge/generators.md)|[zh-TW](/guides/edge-translation/generators-zh_TW.md)|[zh-CN](/guides/edge-translation/generators-zh_CN.md)|
-|[Rails Application Templates](/guides/edge/rails-application-templates.md)|[Work In Progress](/guides/edge-translation/rails-application-templates-zh_TW.md)|_Available soon_|
+|[Rails Application Templates](/guides/edge/rails-application-templates.md)|[zh-TW](/guides/edge-translation/rails-application-templates-zh_TW.md)|_Available soon_|
 
 ## Contributing to Ruby on Rails
 
