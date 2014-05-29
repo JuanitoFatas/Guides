@@ -19,7 +19,7 @@ zh-CN please visit: http://docs-china.com/rails/
 |[Active Record Migrations](/guides/edge/migrations.md)|[zh-TW](/guides/edge-translation/migrations-zh_TW.md)|[zh-CN](/guides/edge-translation/migrations-zh_CN.md)|
 |[Active Record Validations](/guides/edge/active_record_validations.md)|[zh-TW](/guides/edge-translation/active-record-validations-zh_TW.md)|to be translated|
 |[Active Record Callbacks](/guides/edge/active_record_callbacks.md)|[zh-TW](/guides/edge-translation/active-record-callbacks-zh_TW.md)|[zh-CN](/guides/edge-translation/active-record-callbacks-zh_CN.md)|
-|[Active Record Associations](/guides/edge/association_basics.md)|[Work In Progress](/guides/edge-translation/association-basics-zh_TW.md)|to be translated|
+|[Active Record Associations](/guides/edge/association_basics.md)|[zh-TW](/guides/edge-translation/association-basics-zh_TW.md)|to be translated|
 |[Active Record Query Interface](/guides/edge/active_record_querying.md)|[zh-TW](/guides/edge-translation/active-record-querying-zh_TW.md)|to be translated|
 
 ## Views
