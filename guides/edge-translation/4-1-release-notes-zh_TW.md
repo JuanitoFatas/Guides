@@ -213,7 +213,7 @@ xhr :post, :create, format: :js
 Railties
 ------------
 
-請參考 [Changelog][Railties-CHANGELOG] 來了解更多細節。
+請參考 [CHANGELOG][Railties-CHANGELOG] 來了解更多細節。
 
 ### 移除
 
@@ -248,7 +248,7 @@ Railties
 Action Pack
 --------------
 
-請參考 [Changelog][AP-CHANGELOG] 來了解更多細節。
+請參考 [CHANGELOG][AP-CHANGELOG] 來了解更多細節。
 
 ### 移除
 
@@ -260,15 +260,15 @@ Action Pack
 
 * 更改 Action Controller 下列常數的名稱：
 
-  | 移除                                | 採用                            |
-  |:-----------------------------------|:--------------------------------|
-  | ActionController::AbstractRequest  | ActionDispatch::Request         |
-  | ActionController::Request          | ActionDispatch::Request         |
-  | ActionController::AbstractResponse | ActionDispatch::Response        |
-  | ActionController::Response         | ActionDispatch::Response        |
-  | ActionController::Routing          | ActionDispatch::Routing         |
-  | ActionController::Integration      | ActionDispatch::Integration     |
-  | ActionController::IntegrationTest  | ActionDispatch::IntegrationTest |
+    | 移除                                | 繼任                             |
+    |:-----------------------------------|:--------------------------------|
+    | ActionController::AbstractRequest  | ActionDispatch::Request         |
+    | ActionController::Request          | ActionDispatch::Request         |
+    | ActionController::AbstractResponse | ActionDispatch::Response        |
+    | ActionController::Response         | ActionDispatch::Response        |
+    | ActionController::Routing          | ActionDispatch::Routing         |
+    | ActionController::Integration      | ActionDispatch::Integration     |
+    | ActionController::IntegrationTest  | ActionDispatch::IntegrationTest |
 
 ### 值得一提的變化
 
@@ -292,7 +292,7 @@ Action Pack
 Action Mailer
 ------------------
 
-請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/actionmailer/CHANGELOG.md) 來了解更多細節。
+請參考 [CHANGELOG](https://github.com/rails/rails/blob/4-1-stable/actionmailer/CHANGELOG.md) 來了解更多細節。
 
 ### 值得一提的變化
 
@@ -303,7 +303,7 @@ Action Mailer
 Active Record
 ------------------
 
-請參考 [Changelog][AR-CHANGELOG] 來了解更多細節。
+請參考 [CHANGELOG][AR-CHANGELOG] 來了解更多細節。
 
 ### 移除
 
@@ -426,7 +426,7 @@ Active Record
 Active Model
 --------------
 
-請參考 [Changelog][AM-CHANGELOG] 來了解更多細節。
+請參考 [CHANGELOG][AM-CHANGELOG] 來了解更多細節。
 
 ### 棄用
 
@@ -443,7 +443,7 @@ Active Model
 Active Support
 ------------------
 
-請參考 [Changelog](https://github.com/rails/rails/blob/4-1-stable/activesupport/CHANGELOG.md) 來了解更多細節。
+請參考 [CHANGELOG](https://github.com/rails/rails/blob/4-1-stable/activesupport/CHANGELOG.md) 來了解更多細節。
 
 ### 移除
 
@@ -525,7 +525,7 @@ Active Support
 
 * `blank?` and `present?` 會返回 singleton。 ([Commit](https://github.com/rails/rails/commit/126dc47665c65cd129967cbd8a5926dddd0aa514))
 
-* 新的設定： `I18n.enforce_available_locales` 預設是 `true`。代表 `I18n` 會確保所有傳入的 locale 都預先在 `available_locales` 裡聲明。 [PR#13341](https://github.com/rails/rails/pull/13341)
+* 新的設定： `I18n.enforce_available_locales` 預設是 `true`。代表 `I18n` 會確保所有傳入的 locale 都預先在 `available_locales` 裡宣告。 [PR#13341](https://github.com/rails/rails/pull/13341)
 
 * 引入 `Module#concerning`：一種自然、輕量級的方式來拆分 Class 內的職責。[Commit](https://github.com/rails/rails/commit/1eee0ca6de975b42524105a59e0521d18b38ab81)
 
